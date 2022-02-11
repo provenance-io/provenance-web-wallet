@@ -1,0 +1,5 @@
+export const ICON_NAMES = {
+  ARROW: 'ICON::ARROW',
+  CLOSE: 'ICON::CLOSE',
+  PROVENANCE: 'ICON::PROVENANCE',
+};

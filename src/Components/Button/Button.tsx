@@ -3,11 +3,34 @@ import { StyledButton as BaseStyledButton } from '../Styled';
 import styled from 'styled-components';
 import { COLORS } from 'theme';
 
-const variations: { default: string; primary: string; secondary: string } = {
-  default: COLORS.NEUTRAL_700,
-  primary: COLORS.PRIMARY_500,
-  secondary: COLORS.SECONDARY_500,
-};
+interface Variation {
+  active: string;
+  border: string;
+  default: string;
+  hover: string;
+}
+
+const variations: { default: Variation; primary: Variation; secondary: Variation } =
+  {
+    default: {
+      active: COLORS.NEUTRAL_500,
+      border: COLORS.NEUTRAL_700,
+      default: COLORS.NEUTRAL_700,
+      hover: COLORS.NEUTRAL_800,
+    },
+    primary: {
+      active: COLORS.PRIMARY_300,
+      border: COLORS.PRIMARY_550,
+      default: COLORS.PRIMARY_550,
+      hover: COLORS.PRIMARY_650,
+    },
+    secondary: {
+      active: COLORS.SECONDARY_700,
+      border: COLORS.SECONDARY_400,
+      default: COLORS.SECONDARY_700,
+      hover: COLORS.SECONDARY_700,
+    },
+  };
 
 type StyledButtonProps = {
   variant?: 'default' | 'primary' | 'secondary';
@@ -21,8 +44,28 @@ const StyledButton = styled(BaseStyledButton)<StyledButtonProps>`
   color: ${COLORS.WHITE};
   font-weight: 500;
   font-size: 1.4rem;
-  background-color: ${({ variant = 'default' }) => variations[variant]};
+  border: 2px solid ${({ variant = 'default' }) => variations[variant].border};
+  background-color: ${({ variant = 'default' }) => variations[variant].default};
   cursor: pointer;
+
+  &:hover,
+  &:focus {
+    border-color: ${({ variant = 'default' }) =>
+      variant === 'default'
+        ? 'transparent'
+        : variant === 'secondary'
+        ? variations[variant].border
+        : COLORS.WHITE};
+    background-color: ${({ variant = 'default' }) => variations[variant].hover};
+  }
+
+  &:active {
+    background-color: ${({ variant = 'default' }) => variations[variant].active};
+  }
+
+  &:disabled {
+    opacity: 0.5;
+  }
 `;
 
 export type ButtonProps = {

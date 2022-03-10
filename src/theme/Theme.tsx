@@ -49,7 +49,12 @@ export type ThemeProps = {
   theme?: object;
 };
 
-export const Theme = ({ children, $colors = '', $fonts = '', theme = {} }: ThemeProps) => (
+export const Theme = ({
+  children,
+  $colors = '',
+  $fonts = '',
+  theme = {},
+}: ThemeProps) => (
   <ThemeProvider theme={{ ...baseTheme, ...theme }}>
     <HelmetProvider>
       <SpriteSheet />

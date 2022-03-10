@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "@provenanceio/walletconnect-js": "0.1.53",
+    "@provenanceio/walletconnect-js": "0.2.5",
     "@reduxjs/toolkit": "^1.7.2",
     "@walletconnect/client": "1.7.1",
     "bip39": "3.0.4",

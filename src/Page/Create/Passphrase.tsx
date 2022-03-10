@@ -1,7 +1,6 @@
 import { useNavigate } from 'react-router-dom';
 import styled, { css } from 'styled-components';
-import { useAppDispatch, useAppSelector } from 'redux/hooks';
-import { generateMnemonic } from 'redux/features/app/appSlice';
+import { useGeneric } from 'redux/hooks';
 import { BodyContent, CtaButton, Header } from 'Components';
 import { COLORS } from 'theme';
 import { useEffect } from 'react';
@@ -31,16 +30,15 @@ interface Props {
 }
 
 export const Passphrase = ({ nextUrl }: Props) => {
-  const dispatch = useAppDispatch();
   const navigate = useNavigate();
-  const mnemonic = useAppSelector((state) => state.app.mnemonic)?.split(' ');
+  const { mnemonic, generateMnemonic } = useGeneric();
 
   useEffect(() => {
     // if the mnemonic doesn't exist we need to generate it
     if (!mnemonic) {
-      dispatch(generateMnemonic());
+      generateMnemonic();
     }
-  }, [mnemonic, dispatch]);
+  }, [mnemonic, generateMnemonic]);
 
   return (
     <>
@@ -53,11 +51,12 @@ export const Passphrase = ({ nextUrl }: Props) => {
           text-align: center;
         `}
       >
-        Make sure to record these words in the correct order, using the corresponding numbers.
+        Make sure to record these words in the correct order, using the corresponding
+        numbers.
       </BodyContent>
 
       <MnuemonicList>
-        {mnemonic?.map((w, i) => (
+        {mnemonic?.split(' ').map((w, i) => (
           <BodyContent key={i}>
             <ListItemNumber as="span">{i + 1}</ListItemNumber> {w}
           </BodyContent>

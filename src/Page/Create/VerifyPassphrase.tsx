@@ -1,13 +1,5 @@
 import { useEffect, useState } from 'react';
-import {
-  BodyContent,
-  Button,
-  Checkbox,
-  CtaButton,
-  Div,
-  Header,
-  P,
-} from 'Components';
+import { BodyContent, Checkbox, CtaButton, Header } from 'Components';
 import { useNavigate } from 'react-router-dom';
 import { useAppSelector } from 'redux/hooks';
 import { css } from 'styled-components';
@@ -18,6 +10,7 @@ interface Props {
   nextUrl: string;
 }
 
+// TODO: Would like to rewrite this functino... straight copied it from stack overflow
 const getRandomSubarray = (arr: string[] = [], size: number = 0) => {
   var shuffled = arr.slice(0),
     i = arr.length,
@@ -48,7 +41,7 @@ export const VerifyPassphrase = ({ nextUrl }: Props) => {
   const [correct, setCorrect] = useState<boolean[]>([]);
   const [errorMsg, setErrorMsg] = useState('');
   const [verifyWords, setVerifyWords] = useState<string[][] | null>(null);
-  const mnemonic = useAppSelector((state) => state.app.mnemonic)?.split(' ');
+  const mnemonic = useAppSelector((state) => state.generic.mnemonic)?.split(' ');
 
   const handleCorrect = (ind: number, correct: boolean) => {
     setCorrect((arr) => {
@@ -106,6 +99,9 @@ export const VerifyPassphrase = ({ nextUrl }: Props) => {
       <Checkbox
         id="agree"
         label="I agree that I'm solely responsible for my wallet, and cannot recover my account the passphrase is lost."
+        onChange={() => {
+          console.log('CHECKBOX IN VERIFYPASSPHRASE NEEDS TO HANDLE A CHANGE');
+        }}
       />
 
       <CtaButton onClick={handleContinue}>Continue</CtaButton>

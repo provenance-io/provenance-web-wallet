@@ -28,7 +28,6 @@ type SpriteProps = {
   color?: string;
   height?: string;
   icon: string;
-
   width?: string;
 } & SvgProps;
 

@@ -1,9 +1,9 @@
 import { configureStore, ThunkAction, Action } from '@reduxjs/toolkit';
-import appReducer from './features/app/appSlice';
+import genericReducer from './features/generic/genericSlice';
 
 export const store = configureStore({
   reducer: {
-    app: appReducer,
+    generic: genericReducer,
   },
 });
 

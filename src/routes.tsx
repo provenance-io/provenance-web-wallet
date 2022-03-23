@@ -1,8 +1,9 @@
-import { Navigate } from 'react-router-dom';
+// import { Navigate } from 'react-router-dom';
 import {
   CreateComplete,
   CreateStart,
   Dashboard,
+  Landing,
   Login,
   Page,
   Passphrase,
@@ -31,7 +32,7 @@ export const routes = [
       </RequiresAuth>
     ),
     children: [
-      { index: true, element: <Navigate to={DASHBOARD_URL} /> },
+      { index: true, element: <Landing /> },
       { path: DASHBOARD_URL, element: <Dashboard /> },
     ],
   },

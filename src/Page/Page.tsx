@@ -12,8 +12,7 @@ export const Page = ({ children = null }: PageProps) => (
   <Div
     $css={css`
       background: ${COLORS.BACKGROUND_1};
-      min-height: 100vh;
-      height: 100%;
+      min-height: 100%;
     `}
   >
     <Outlet />

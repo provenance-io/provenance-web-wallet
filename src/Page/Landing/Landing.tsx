@@ -13,7 +13,8 @@ const Wrapper = styled.div`
   background: url(${bg}) no-repeat;
   background-size: cover;
   display: flex;
-  height: 100%;
+  height: 100vh;
+  min-height: 100%;
   flex-direction: column;
   align-items: center;
   text-align: center;

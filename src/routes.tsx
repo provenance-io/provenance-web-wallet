@@ -3,6 +3,7 @@ import {
   CreateComplete,
   CreateStart,
   Dashboard,
+  EnterSeed,
   Landing,
   Login,
   Page,
@@ -19,6 +20,7 @@ export const LOGIN_URL = '/login';
 
 // RECOVER URLS
 export const RECOVER_URL = '/recover';
+export const RECOVER_SEED_URL = '/recover/seed';
 
 // CREATE URLS
 export const CREATE_URL = '/create';
@@ -50,7 +52,14 @@ export const routes = [
   },
   {
     path: RECOVER_URL,
-    element: <Recover />,
+    element: <Page />,
+    children: [
+      { index: true, element: <Recover /> },
+      {
+        path: RECOVER_SEED_URL,
+        element: <EnterSeed />,
+      },
+    ]
   },
   {
     path: CREATE_URL,

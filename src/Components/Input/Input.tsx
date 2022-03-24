@@ -6,6 +6,8 @@ interface InputProps {
   label: string;
   type?: string;
   placeholder?: string;
+  value?: string | number,
+  onChange?: (e: any) => void
 }
 
 const InputGroup = styled.div`
@@ -36,9 +38,15 @@ const InputEl = styled.input`
   }
 `;
 
-export const Input = ({ id, label, type = 'text', ...rest }: InputProps) => (
+export const Input = ({ id, label, type = 'text', value, onChange, ...rest }: InputProps) => (
   <InputGroup>
     <Label htmlFor={id}>{label}</Label>
-    <InputEl id={id} type={type} {...rest} />
+    <InputEl
+      id={id}
+      type={type}
+      value={value}
+      onChange={onChange}
+      {...rest}
+    />
   </InputGroup>
 );

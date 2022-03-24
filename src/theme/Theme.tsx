@@ -44,7 +44,7 @@ export const GlobalStyles = createGlobalStyle<{
   }
 
   button, div, a, p {
-    letter-spacing: 0.16rem;
+    letter-spacing: 0.04rem;
   }
 
   #root {

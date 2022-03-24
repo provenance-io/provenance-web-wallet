@@ -4,3 +4,4 @@ export * from './Login';
 export * from './Page';
 export * from './RequiresAuth';
 export * from './Landing';
+export * from './Recover';

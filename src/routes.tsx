@@ -8,6 +8,7 @@ import {
   Page,
   Passphrase,
   PassphraseIntro,
+  Recover,
   RequiresAuth,
   VerifyPassphrase,
 } from 'Page';
@@ -15,6 +16,9 @@ import {
 export const APP_URL = '/';
 export const DASHBOARD_URL = '/dashboard';
 export const LOGIN_URL = '/login';
+
+// RECOVER URLS
+export const RECOVER_URL = '/recover';
 
 // CREATE URLS
 export const CREATE_URL = '/create';
@@ -43,6 +47,10 @@ export const routes = [
         <Login />
       </Page>
     ),
+  },
+  {
+    path: RECOVER_URL,
+    element: <Recover />,
   },
   {
     path: CREATE_URL,

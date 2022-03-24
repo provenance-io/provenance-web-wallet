@@ -1,38 +1,28 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Button, Sprite } from 'Components';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import bg from '../bg.png';
+import customizationCarousel from 'images/customization-carousel.svg';
+import { STATISTICS_URL } from 'consts';
+import { numberFormat } from 'utils';
+import { Title, InfoText } from 'Components';
 
 const Wrapper = styled.div`
-  padding: 225px 16px 42px 16px;
+  padding: 100px 16px 42px 16px;
   background: url(${bg}) no-repeat;
   background-size: cover;
-  height: 100%;
   display: flex;
+  height: 100%;
   flex-direction: column;
-  /* flex-wrap: wrap; */
   align-items: center;
   text-align: center;
+  font-family: 'Montserrat', 'sans-serif';
+  box-sizing: border-box;
 `;
 const CarouselContent = styled.div`
   cursor: pointer;
   user-select: none;
-`;
-const Title = styled.div`
-  margin-top: 40px;
-  font-weight: 700;
-  line-height: 2.6rem;
-  font-size: 2rem; 
-  letter-spacing: 1rem;
-  text-transform: uppercase;
-  font-family: 'Montserrat', 'sans-serif';
-`;
-const Text = styled.div`
-  margin: 64px auto 0;
-  font-size: 1.4rem;
-  line-height: 2.2rem;
-  max-width: 300px;
 `;
 const SliderControls = styled.div`
   margin-top: 102px;
@@ -53,37 +43,103 @@ const TextButton = styled.a`
   margin-top: 32px;
   cursor: pointer;
 `;
+const CustomizationImg = styled.img`
+  margin-top: 45px;
+  width: 210px;
+`;
+const StatsSection = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+  margin-top: 16px;
+`;
+const StatItem = styled.div`
+  flex-basis: 50%;
+  margin-top: 32px;
+`;
+const StatTitle = styled.div`
+  margin-top: 8px;
+  font-size: 1.4rem;
+`;
+const StatValue = styled.div`
+  font-size: 3.8rem;
+  font-weight: 300;
+`;
+const StatValueSmall = styled.span`
+  font-size: 2.4rem;
+`;
+
+interface Stats {
+  marketCap?: number,
+  validators?: number,
+  transactions?: number,
+  averageBlockTime?: number,
+}
 
 export const Landing:React.FC = () => {
   const [currentSlide, setCurrentSlide] = useState(1);
+  const [stats, setStats] = useState<Stats>({}); // { marketCap, validators, transactions, averageBlockTime }
+  const { marketCap, validators, transactions, averageBlockTime } = stats;
   const navigate = useNavigate();
+  // On load, pull latest stats (not needed in rest of app so keeping out of redux for now)
+  useEffect(() => {
+    window.fetch(STATISTICS_URL)
+    .then(response => response.json())
+    .then(data => { setStats(data); })
+  }, []);
 
-  const handleCreateWallet = () => {
-    navigate('/create');
+  const changePage = (location: string) => {
+    navigate(`/${location}`);
   };
   const handleSliderChange = () => {
     if (currentSlide < 3) setCurrentSlide(currentSlide + 1);
     else setCurrentSlide(1);
   };
+  const formatNumber = (value: number, digits = 1) => numberFormat({ rawValue: value, digits, extraOptions: { shorthand: true } });
+  const valueText = (value?: string | number, text?: string | number, position: 'front' | 'back' = 'front') => (
+    <>
+      {position === 'front' && <StatValueSmall>{text}</StatValueSmall>}
+      {value}
+      {position === 'back' && <StatValueSmall>{text}</StatValueSmall>}
+    </>
+  );
   const renderCarouselContent = () => {
     switch (currentSlide) {
       case 1: return (
         <CarouselContent onClick={handleSliderChange}>
           <Sprite icon='ICON::PROVENANCE' size="6rem" color='#3F80F3' />
           <Title>Provenance Wallet</Title>
-          <Text>A wallet provides an easy way to manage multiple blockchain accounts.</Text>
+          <InfoText>A wallet provides an easy way to manage multiple blockchain accounts.</InfoText>
         </CarouselContent>
       )
       case 2: return (
         <CarouselContent onClick={handleSliderChange}>
           <Title>Strong Fundamentals</Title>
-          <Text>Contract execution in seconds instead of weeks.</Text>
+          <StatsSection>
+            <StatItem>
+              <StatValue>{marketCap ? valueText(formatNumber(marketCap), '$') : 'N/A'}</StatValue>
+              <StatTitle>Market Cap</StatTitle>
+            </StatItem>
+            <StatItem>
+              <StatValue>{validators || 'N/A'}</StatValue>
+              <StatTitle>Validators</StatTitle>
+            </StatItem>
+            <StatItem>
+              <StatValue>{transactions ? formatNumber(transactions, 2) : 'N/A'}</StatValue>
+              <StatTitle>Transactions</StatTitle>
+            </StatItem>
+            <StatItem>
+              <StatValue>{averageBlockTime ? valueText(formatNumber(averageBlockTime, 3), 'sec', 'back') : 'N/A'}</StatValue>
+              <StatTitle>Avg Block Time</StatTitle>
+            </StatItem>
+          </StatsSection>
+          <InfoText>Contract execution in seconds instead of weeks.</InfoText>
         </CarouselContent>
       )
       case 3: return (
         <CarouselContent onClick={handleSliderChange}>
           <Title>Powerful Customization</Title>
-          <Text>Fully control your wallet and crypto, and manage it independently.</Text>
+          <CustomizationImg src={customizationCarousel} alt="Figure and Provenance Logos" />
+          <InfoText>Fully control your wallet and crypto, and manage it independently.</InfoText>
         </CarouselContent>
       )
       default: return null;
@@ -97,8 +153,8 @@ export const Landing:React.FC = () => {
         <Slider active={currentSlide === 2} onClick={() => setCurrentSlide(2)} />
         <Slider active={currentSlide === 3} onClick={() => setCurrentSlide(3)} />
       </SliderControls>
-      <Button variant='primary' onClick={handleCreateWallet}>Create Wallet</Button>
-      <TextButton>Recover Wallet</TextButton>
+      <Button variant='primary' onClick={() => changePage('create')}>Create Wallet</Button>
+      <TextButton onClick={() => changePage('recover')}>Recover Wallet</TextButton>
     </Wrapper>
   )
 };

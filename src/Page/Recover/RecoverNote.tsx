@@ -28,7 +28,7 @@ export const RecoverNote = () => {
       <Group>
         <Header title="Name Your Account" progress={66} />
         <Title size="1.6rem" weight={600}>Recover Account</Title>
-        <InfoText margin="16px auto 0 auto">In the following steps, you'll enter your 25-word recovery passphrase to recover your account</InfoText>
+        <InfoText margin="16px auto 0 auto">In the following steps, you'll enter your 24-word recovery passphrase to recover your account</InfoText>
         <Image src={recoverIntro} />
       </Group>
       <Button variant='primary' onClick={() => navigate('../seed')}>Continue</Button>

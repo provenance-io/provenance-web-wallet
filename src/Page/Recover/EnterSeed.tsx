@@ -3,10 +3,9 @@ import { mnemonicToSeedSync } from 'bip39';
 import { publicKeyCreate as secp256k1PublicKeyCreate } from 'secp256k1';
 import { base64ToBytes } from '@tendermint/belt';
 import type { Wallet } from '@tendermint/sig';
-import type { Bech32String, Bytes } from '@tendermint/types';
 import { useState } from 'react';
 import { Button, Header, Input } from 'Components';
-import { pasteMnumonic } from './pasteMnumonic';
+import { isMnumonic } from 'utils';
 
 const Wrapper = styled.div`
   padding: 30px 16px 48px 16px;
@@ -33,7 +32,6 @@ interface InputData {
 };
 
 export const EnterSeed:React.FC = () => {
-  pasteMnumonic();
   const totalSeeds = 24;
   const createInitialInputData = () => {
     // Clone all inputValues
@@ -58,6 +56,8 @@ export const EnterSeed:React.FC = () => {
     const newInputValues = [...inputValues];
     // Update target inputValue
     if (index !== undefined && field) {
+      // Remove any previous errors
+      newInputValues[index].error = '';
       newInputValues[index][field] = value;
       setInputValues(newInputValues);
     }
@@ -88,8 +88,17 @@ export const EnterSeed:React.FC = () => {
     const allInputsElements = [];
 
     const onInputChange = (i: number, e: any) => {
-      updateInput(i, 'error', '');
-      updateInput(i, 'value', e.target.value);
+      const value = e?.target?.value;
+      // Check first input to see if the value entered is an entire pasted mnumonic
+      if (i === 0) {
+        const wholeMnumonic = isMnumonic(value, totalSeeds);
+        if (wholeMnumonic) {
+          // Loop through each input and change the value to match the pasted mnumonic
+          wholeMnumonic.forEach((word, index) => {
+            updateInput(index, 'value', word);
+          });
+        } else updateInput(i, 'value', value);
+      } else updateInput(i, 'value', value);
     }
 
     for (let i = 0; i < total; i += 1) {
@@ -109,33 +118,12 @@ export const EnterSeed:React.FC = () => {
     return allInputsElements;
   };
 
-  const sha256 = (bytes: Bytes): Bytes => {
-    const buffer1 = bytes instanceof Buffer ? bytes : Buffer.from(bytes);
-    const buffer2 = createHash('sha256').update(buffer1).digest();
-
-    return bufferToBytes(buffer2);
-  }
-
-  const ripemd160 = (bytes: Bytes): Bytes => {
-    const buffer1 = bytes instanceof Buffer ? bytes : Buffer.from(bytes);
-    const buffer2 = createHash('ripemd160').update(buffer1).digest();
-
-    return bufferToBytes(buffer2);
-  }
-
-  const createAddress = (publicKey: Bytes, prefix: string = this.bech32MainPrefix): Bech32String => {
-    const hash1 = sha256(publicKey);
-    const hash2 = ripemd160(hash1);
-    const words = bech32ToWords(hash2);
-
-    return bech32Encode(prefix, words);
-  }
-
   const createWallet = (privateKeyString: string): Wallet  => {
     try {
       const privateKey = base64ToBytes(privateKeyString);
       const publicKey = secp256k1PublicKeyCreate(privateKey);
-      const address = createAddress(publicKey);
+      // const address = createAddress(publicKey);
+      const address = '12345abcde';
       return {
         privateKey,
         publicKey,

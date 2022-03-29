@@ -9,7 +9,7 @@ import { numberFormat } from 'utils';
 import { Title, InfoText } from 'Components';
 
 const Wrapper = styled.div`
-  padding: 100px 16px 42px 16px;
+  padding: 42px 16px;
   background: url(${bg}) no-repeat;
   background-size: cover;
   display: flex;
@@ -20,6 +20,7 @@ const Wrapper = styled.div`
   text-align: center;
   font-family: 'Montserrat', 'sans-serif';
   box-sizing: border-box;
+  justify-content: flex-end;
 `;
 const CarouselContent = styled.div`
   cursor: pointer;

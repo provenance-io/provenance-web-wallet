@@ -9,7 +9,8 @@ import {
   Page,
   Passphrase,
   PassphraseIntro,
-  Recover,
+  RecoverNote,
+  RecoverAccountName,
   RequiresAuth,
   VerifyPassphrase,
 } from 'Page';
@@ -20,6 +21,7 @@ export const LOGIN_URL = '/login';
 
 // RECOVER URLS
 export const RECOVER_URL = '/recover';
+export const RECOVER_NOTE_URL = '/recover/note';
 export const RECOVER_SEED_URL = '/recover/seed';
 
 // CREATE URLS
@@ -54,10 +56,14 @@ export const routes = [
     path: RECOVER_URL,
     element: <Page />,
     children: [
-      { index: true, element: <Recover /> },
+      { index: true, element: <RecoverAccountName /> },
       {
         path: RECOVER_SEED_URL,
         element: <EnterSeed />,
+      },
+      {
+        path: RECOVER_NOTE_URL,
+        element: <RecoverNote />,
       },
     ]
   },

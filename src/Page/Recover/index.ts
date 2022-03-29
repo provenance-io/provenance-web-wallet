@@ -1,2 +1,3 @@
-export * from './Recover';
+export * from './RecoverNote';
 export * from './EnterSeed';
+export * from './RecoverAccountName';

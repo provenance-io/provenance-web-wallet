@@ -158,7 +158,7 @@ export const EnterSeed:React.FC = () => {
 
   return (
     <Wrapper>
-      <Header title="Enter Recovery Passphrase"  progress={50} />
+      <Header title="Enter Recovery Passphrase" progress={100} />
       <InputSection>
         {createSeedInputs(totalSeeds)}
       </InputSection>

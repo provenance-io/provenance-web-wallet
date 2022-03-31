@@ -64,10 +64,10 @@ export const Dashboard = () => {
         </ButtonGroup>
         <AssetsTitle>My Assets</AssetsTitle>
         <AssetsContainer>
-          <Asset img="hash" name="hash" amount={4.20} />
-          <Asset img="usdf" name="usdf" amount={1.39} />
-          <Asset img="etf" name="etf" amount={10.22} />
-          <Asset img="inu" name="inu" amount={1000.49} />
+          <Asset img="hash" name="hash" amount={{ value: 500, change: 13.63 }} />
+          <Asset img="usdf" name="usdf" />
+          <Asset img="etf" name="etf" />
+          <Asset img="inu" name="inu" />
         </AssetsContainer>
       </Wrapper>
       <FooterNav />

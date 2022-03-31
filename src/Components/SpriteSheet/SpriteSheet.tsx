@@ -23,6 +23,11 @@ export const SpriteSheet = () => (
         />
       </svg>
     </g>
+    <g id={ICON_NAMES.CHEVRON}>
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 6 11">
+        <path stroke="currentColor" strokeLinecap="square" d="m1 2 4 4-4 4"/>
+      </svg>
+    </g>
     <g id={ICON_NAMES.CLOSE}>
       <svg viewBox="0 0 14 14" fill="none">
         <path

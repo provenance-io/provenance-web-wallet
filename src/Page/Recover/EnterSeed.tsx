@@ -1,5 +1,6 @@
 import styled from 'styled-components';
 import { mnemonicToSeedSync } from 'bip39';
+import { useNavigate } from 'react-router-dom';
 import { publicKeyCreate as secp256k1PublicKeyCreate } from 'secp256k1';
 import { base64ToBytes } from '@tendermint/belt';
 import type { Wallet } from '@tendermint/sig';
@@ -33,6 +34,7 @@ interface InputData {
 
 export const EnterSeed:React.FC = () => {
   const totalSeeds = 24;
+  const navigate = useNavigate();
   const createInitialInputData = () => {
     // Clone all inputValues
     const newInputValues = [];
@@ -118,21 +120,21 @@ export const EnterSeed:React.FC = () => {
     return allInputsElements;
   };
 
-  const createWallet = (privateKeyString: string): Wallet  => {
-    try {
-      const privateKey = base64ToBytes(privateKeyString);
-      const publicKey = secp256k1PublicKeyCreate(privateKey);
-      // const address = createAddress(publicKey);
-      const address = '12345abcde';
-      return {
-        privateKey,
-        publicKey,
-        address,
-      };
-    } catch (e) {
-      throw new Error('Failed to create wallet from private key');
-    }
-  }
+  // const createWallet = (privateKeyString: string): Wallet  => {
+  //   try {
+  //     const privateKey = base64ToBytes(privateKeyString);
+  //     const publicKey = secp256k1PublicKeyCreate(privateKey);
+  //     // const address = createAddress(publicKey);
+  //     const address = '12345abcde';
+  //     return {
+  //       privateKey,
+  //       publicKey,
+  //       address,
+  //     };
+  //   } catch (e) {
+  //     throw new Error('Failed to create wallet from private key');
+  //   }
+  // }
 
   const handleContinue = () => {
     // Clear out previous error
@@ -151,6 +153,8 @@ export const EnterSeed:React.FC = () => {
       // Create public and private keys
       // const wallet = ethers.Wallet.fromMnemonic(mnumonic);
       // console.log('wallet :', wallet);
+      // Redirect user to dashboard
+      navigate('/dashboard');
     }
     // If any error, show error message
     else setSubmitError(true);

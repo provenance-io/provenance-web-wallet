@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { Button, Sprite } from 'Components';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
-import bg from '../bg.png';
+import bg from 'images/bg.png';
 import customizationCarousel from 'images/customization-carousel.svg';
 import { STATISTICS_URL } from 'consts';
 import { numberFormat } from 'utils';

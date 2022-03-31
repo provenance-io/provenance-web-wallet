@@ -33,12 +33,28 @@ export const SpriteSheet = () => (
         />
       </svg>
     </g>
+    <g id={ICON_NAMES.DASHBOARD}>
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 17 16">
+        <path fill="currentColor" fillRule="evenodd" d="M.5 1.1V4h16V1.1C16.5 0 15.4 0 15.4 0H1.6S.5 0 .5 1.1Zm6 4.9h-6v8.9C.5 16 1.6 16 1.6 16h4.9V6Zm2 10h6.9c1.1 0 1.1-1.1 1.1-1.1V6h-8v10Z" clipRule="evenodd"/>
+      </svg>
+    </g>
+    <g id={ICON_NAMES.TRANSACTIONS}>
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 19 20">
+        <path fill="currentColor" d="m5.375 8-.937 1.171 2.437 1.95V8h-1.5Zm-2.5-2-.937-1.171L.474 6l1.464 1.171L2.875 6Zm2.5-2h1.5V.88L4.438 2.828 5.375 4Zm.937 2.829-2.5-2L1.938 7.17l2.5 2 1.874-2.34Zm-2.5.342 2.5-2L4.438 2.83l-2.5 2 1.874 2.34ZM6.875 8V4h-3v4h3Zm6.5 8 .937 1.171-2.436 1.95v-3.12l1.5-.001Zm2.5-2 .937-1.171 1.464 1.17-1.464 1.172L15.875 14Zm-2.5-2h-1.5V8.88l2.437 1.95-.937 1.17Zm-.937 2.829 2.5-2 1.874 2.342-2.5 2-1.874-2.342Zm2.5.342-2.5-2 1.874-2.342 2.5 2-1.874 2.342Zm-3.063.83v-4l3-.001v4h-3Z"/>
+        <path stroke="currentColor" strokeLinecap="square" strokeWidth="3" d="M5.375 6h10.5m-2.5 8.5h-10.5"/>
+      </svg>
+    </g>
     <g id={ICON_NAMES.PROVENANCE}>
       <svg fill="none" viewBox="0 0 32 32">
         <path
           fill="currentColor"
           d="M17.2 3.5L11.5 0 5.7 3.5 0 7v21.6L5.8 32v-9.9l5.7 3.5 5.8-3.5 5.7-3.5V7l-5.8-3.5zm-5.7 16.3l-5.8-3.5v-5.8L11.5 7l5.7 3.5v5.8l-5.7 3.5z"
         />
+      </svg>
+    </g>
+    <g id={ICON_NAMES.PROFILE}>
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 19 18">
+        <path fill="currentColor" fillRule="evenodd" d="M16.1 15A9 9 0 0 0 9.5 0a9 9 0 0 0-6.7 15c.8-1.4 2-2.4 3.5-3a5.3 5.3 0 1 1 6.3 0 8.4 8.4 0 0 1 3.5 3Zm-1.5 1.4c-.3-.4-.6-1-1-1.3a6.4 6.4 0 0 0-4.1-1.8 5.7 5.7 0 0 0-5.2 3 9 9 0 0 0 10.3.1ZM9.5 11a3.3 3.3 0 1 0 0-6.7 3.3 3.3 0 0 0 0 6.7Z" clipRule="evenodd"/>
       </svg>
     </g>
   </Svg>

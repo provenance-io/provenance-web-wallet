@@ -5,7 +5,6 @@ import {
   Dashboard,
   EnterSeed,
   Landing,
-  Login,
   Page,
   Passphrase,
   PassphraseIntro,
@@ -13,12 +12,17 @@ import {
   RecoverAccountName,
   RequiresAuth,
   VerifyPassphrase,
+  Transactions,
+  Profile,
 } from 'Page';
 
 export const APP_URL = '/';
+// DASHBOARD
 export const DASHBOARD_URL = '/dashboard';
-export const LOGIN_URL = '/login';
-
+// PROFILE
+export const PROFILE_URL = '/profile';
+// TRANSACTIONS
+export const TRANSACTIONS_URL = '/transactions';
 // RECOVER URLS
 export const RECOVER_URL = '/recover';
 export const RECOVER_NOTE_URL = '/recover/note';
@@ -41,17 +45,11 @@ export const routes = [
     ),
     children: [
       { index: true, element: <Landing /> },
-      { path: DASHBOARD_URL, element: <Dashboard /> },
     ],
   },
-  {
-    path: LOGIN_URL,
-    element: (
-      <Page>
-        <Login />
-      </Page>
-    ),
-  },
+  { path: DASHBOARD_URL, element: <Dashboard /> },
+  { path: TRANSACTIONS_URL, element: <Transactions /> },
+  { path: PROFILE_URL, element: <Profile /> },
   {
     path: RECOVER_URL,
     element: <Page />,

@@ -7,3 +7,4 @@ export * from './Input';
 export * from './Sprite';
 export * from './SpriteSheet';
 export * from './Typography';
+export * from './FooterNav';

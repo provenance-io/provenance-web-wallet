@@ -47,7 +47,7 @@ const StyledButton = styled(BaseStyledButton)<StyledButtonProps>`
   border: 2px solid ${({ variant = 'default' }) => variations[variant].border};
   background-color: ${({ variant = 'default' }) => variations[variant].default};
   cursor: pointer;
-
+  font-family: 'Gothic A1', sans-serif;
   &:hover,
   &:focus {
     border-color: ${({ variant = 'default' }) =>

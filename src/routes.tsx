@@ -3,6 +3,7 @@ import {
   CreateComplete,
   CreateStart,
   Dashboard,
+  DashboardMenu,
   EnterSeed,
   Landing,
   Page,
@@ -19,6 +20,7 @@ import {
 export const APP_URL = '/';
 // DASHBOARD
 export const DASHBOARD_URL = '/dashboard';
+export const DASHBOARD_MENU_URL = '/dashboard/menu';
 // PROFILE
 export const PROFILE_URL = '/profile';
 // TRANSACTIONS
@@ -39,31 +41,53 @@ export const routes = [
   {
     path: APP_URL,
     element: (
-      <RequiresAuth>
-        <Page />
-      </RequiresAuth>
+      <RequiresAuth />
     ),
     children: [
-      { index: true, element: <Landing /> },
+      // LANDING PAGE
+      { index: true, element: <Page bgImage align="center" justify='flex-end'><Landing /></Page> },
+      // DASHBOARD
+      {
+        path: DASHBOARD_URL,
+        element: <Page />,
+        children: [
+          { index: true, element: <Dashboard /> },
+          { path: DASHBOARD_MENU_URL, element: <DashboardMenu /> },
+        ]
+      },
+      // TRANSACTIONS
+      {
+        path: TRANSACTIONS_URL,
+        element: <Page />,
+        children: [
+          { index: true, element: <Transactions /> },
+        ],
+      },
+      // PROFILE
+      {
+        path: PROFILE_URL,
+        element: <Page />,
+        children: [
+          { index: true, element: <Profile /> },
+        ],
+      },
+      // RECOVER
+      {
+        path: RECOVER_URL,
+        element: <Page align='center'/>,
+        children: [
+          { index: true, element: <RecoverAccountName /> },
+          {
+            path: RECOVER_SEED_URL,
+            element: <EnterSeed />,
+          },
+          {
+            path: RECOVER_NOTE_URL,
+            element: <RecoverNote />,
+          },
+        ]
+      },
     ],
-  },
-  { path: DASHBOARD_URL, element: <Dashboard /> },
-  { path: TRANSACTIONS_URL, element: <Transactions /> },
-  { path: PROFILE_URL, element: <Profile /> },
-  {
-    path: RECOVER_URL,
-    element: <Page />,
-    children: [
-      { index: true, element: <RecoverAccountName /> },
-      {
-        path: RECOVER_SEED_URL,
-        element: <EnterSeed />,
-      },
-      {
-        path: RECOVER_NOTE_URL,
-        element: <RecoverNote />,
-      },
-    ]
   },
   {
     path: CREATE_URL,

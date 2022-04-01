@@ -2,32 +2,17 @@ import { useEffect, useState } from 'react';
 import { Button, Sprite } from 'Components';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
-import bg from 'images/bg.png';
 import customizationCarousel from 'images/customization-carousel.svg';
 import { STATISTICS_URL } from 'consts';
 import { numberFormat } from 'utils';
 import { Title, InfoText } from 'Components';
 
-const Wrapper = styled.div`
-  padding: 42px 16px;
-  background: url(${bg}) no-repeat;
-  background-size: cover;
-  display: flex;
-  height: 100vh;
-  min-height: 100%;
-  flex-direction: column;
-  align-items: center;
-  text-align: center;
-  font-family: 'Montserrat', 'sans-serif';
-  box-sizing: border-box;
-  justify-content: flex-end;
-`;
 const CarouselContent = styled.div`
   cursor: pointer;
   user-select: none;
 `;
 const SliderControls = styled.div`
-  margin-top: 102px;
+  margin-top: 50px;
   margin-bottom: 32px;
   display: flex;
 `;
@@ -44,6 +29,7 @@ const TextButton = styled.a`
   font-size: 1.4rem;
   margin-top: 32px;
   cursor: pointer;
+  font-family: 'Gothic A1', sans-serif;
 `;
 const CustomizationImg = styled.img`
   margin-top: 45px;
@@ -148,7 +134,7 @@ export const Landing:React.FC = () => {
     }
   };
   return (
-    <Wrapper>
+    <>
       {renderCarouselContent()}
       <SliderControls>
         <Slider active={currentSlide === 1} onClick={() => setCurrentSlide(1)} />
@@ -157,6 +143,6 @@ export const Landing:React.FC = () => {
       </SliderControls>
       <Button variant='primary' onClick={() => changePage('create')}>Create Wallet</Button>
       <TextButton onClick={() => changePage('recover')}>Recover Wallet</TextButton>
-    </Wrapper>
+    </>
   )
 };

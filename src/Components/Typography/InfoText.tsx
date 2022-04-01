@@ -4,6 +4,7 @@ interface StyleProps {
   size: string,
   margin: string,
   maxWidth: string,
+  font: 'PRIMARY' | 'SECONDARY',
 }
 
 const InfoTextStyled = styled.h1<StyleProps>`
@@ -12,7 +13,7 @@ const InfoTextStyled = styled.h1<StyleProps>`
   line-height: 2.2rem;
   margin: ${({ margin }) => margin};
   font-weight: 400;
-  font-family: 'Montserrat', 'sans-serif';
+  font-family: ${({ font }) => font === 'PRIMARY' ? "'Gothic A1', sans-serif" : "'Montserrat', sans-serif" };
 `;
 
 interface Props {
@@ -20,12 +21,14 @@ interface Props {
   className?: string,
   margin?: string,
   maxWidth?: string,
+  font?: 'PRIMARY' | 'SECONDARY',
 }
 
 export const InfoText:React.FC<Props> = ({
   size = '1.4rem',
   margin = '64px auto 0',
   maxWidth = '300px',
+  font = 'SECONDARY',
   className,
   children,
 }) => (
@@ -34,6 +37,7 @@ export const InfoText:React.FC<Props> = ({
     className={className}
     margin={margin}
     maxWidth={maxWidth}
+    font={font}
   >
     {children}
   </InfoTextStyled>

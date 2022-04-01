@@ -15,6 +15,7 @@ const InputGroup = styled.div`
   display: flex;
   flex-direction: column;
   gap: 10px;
+  font-family: 'Gothic A1', sans-serif;
 `;
 
 const Label = styled.label`

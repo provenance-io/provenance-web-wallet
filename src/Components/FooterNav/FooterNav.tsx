@@ -8,6 +8,7 @@ const Footer = styled.footer`
   display: flex;
   align-items: center;
   bottom: 0;
+  left: 0;
   background: black;
   height: 103px;
   width: 100%;

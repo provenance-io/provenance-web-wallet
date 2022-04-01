@@ -1,22 +1,7 @@
 import { Button, FooterNav, Asset } from 'Components';
 import styled from 'styled-components';
-import bg from 'images/bg.png';
 import { DashboardHeader } from './DashboardHeader';
 
-const Wrapper = styled.div`
-  padding: 42px 32px;
-  background: url(${bg}) no-repeat;
-  background-size: cover;
-  display: flex;
-  height: 100vh;
-  min-height: 100%;
-  flex-direction: column;
-  align-items: flex-start;
-  text-align: left;
-  font-family: 'Montserrat', 'sans-serif';
-  box-sizing: border-box;
-  z-index: 10;
-`;
 const PortfolioTitle = styled.div`
   font-size: 1.4rem;
   font-weight: 700;
@@ -48,28 +33,34 @@ const AssetsTitle = styled.div`
 `;
 const AssetsContainer = styled.div`
   width: 100%;
+  overflow-y: scroll;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  padding-bottom: 80px;
+  &::-webkit-scrollbar {
+    width: 0;
+    height: 0;
+  }
 `;
 
 export const Dashboard = () => {
 
   return (
     <>
-      <Wrapper>
-        <DashboardHeader />
-        <PortfolioTitle>Portfolio Value</PortfolioTitle>
-        <Value>$2,539.23</Value>
-        <ButtonGroup>
-          <Button variant='primary'>Send</Button>
-          <Button variant='primary'>Receive</Button>
-        </ButtonGroup>
-        <AssetsTitle>My Assets</AssetsTitle>
-        <AssetsContainer>
-          <Asset img="hash" name="hash" amount={{ value: 500, change: 13.63 }} />
-          <Asset img="usdf" name="usdf" />
-          <Asset img="etf" name="etf" />
-          <Asset img="inu" name="inu" />
-        </AssetsContainer>
-      </Wrapper>
+      <DashboardHeader />
+      <PortfolioTitle>Portfolio Value</PortfolioTitle>
+      <Value>$2,539.23</Value>
+      <ButtonGroup>
+        <Button variant='primary'>Send</Button>
+        <Button variant='primary'>Receive</Button>
+      </ButtonGroup>
+      <AssetsTitle>My Assets</AssetsTitle>
+      <AssetsContainer>
+        <Asset img="hash" name="hash" amount={{ value: 500, change: 13.63 }} />
+        <Asset img="usdf" name="usdf" />
+        <Asset img="etf" name="etf" />
+        <Asset img="inu" name="inu" />
+      </AssetsContainer>
       <FooterNav />
     </>
   );

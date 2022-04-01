@@ -3,16 +3,9 @@ import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
 import { ICON_NAMES } from 'consts';
 
-const Wrapper = styled.div`
-  padding: 30px 16px 48px 16px;
-  text-align: center;
-  display: flex;
-  flex-direction: column;
-  align-content: space-between;
-  height: 100vh;
-`;
 const Group = styled.div`
   flex-grow: 1;
+  text-align: center;
 `;
 const InputGroup = styled.div`
   text-align: left;
@@ -22,13 +15,13 @@ export const RecoverAccountName:React.FC = () => {
   const navigate = useNavigate();
 
   return (
-    <Wrapper>
+    <>
       <Group>
         <Header title="Name Your Account" progress={33} iconLeft={ICON_NAMES.CLOSE} />
-        <InfoText margin="16px auto 0 auto">
+        <InfoText margin="16px auto 0 auto" font="PRIMARY">
           Name your acount to easily identify it while using the Figure Tech Wallet.
         </InfoText>
-        <InfoText margin="16px auto 32px auto">
+        <InfoText margin="16px auto 32px auto" font="PRIMARY">
           These names are stored locally, and can only be seen by you.
         </InfoText>
         <InputGroup>
@@ -36,6 +29,6 @@ export const RecoverAccountName:React.FC = () => {
         </InputGroup>
       </Group>
       <Button variant='primary' onClick={() => navigate('../note')}>Continue</Button>
-    </Wrapper>
+    </>
   );
 };

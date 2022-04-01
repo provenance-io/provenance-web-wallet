@@ -9,9 +9,9 @@ import { Button, Header, Input } from 'Components';
 import { isMnumonic } from 'utils';
 
 const Wrapper = styled.div`
-  padding: 30px 16px 48px 16px;
-  text-align: center;
+  width: 100%;
 `;
+
 const InputSection = styled.div`
   text-align: left;
   margin-top: 40px;

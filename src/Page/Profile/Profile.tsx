@@ -1,30 +1,62 @@
-import { Title, FooterNav } from 'Components';
+import { FooterNav, Sprite } from 'Components';
+import { useNavigate } from 'react-router-dom';
+import { ICON_NAMES } from 'consts';
 import styled from 'styled-components';
-import bg from 'images/bg.png';
 
-const Wrapper = styled.div`
-  padding: 42px 16px;
-  background: url(${bg}) no-repeat;
-  background-size: cover;
-  display: flex;
-  height: 100vh;
-  min-height: 100%;
-  flex-direction: column;
-  align-items: center;
+const Container = styled.div`
+  width: 100%;
+  font-family: 'Gothic A1', sans-serif;
+  font-size: 1.4rem;
+`;
+const Title = styled.div`
+  font-weight: 700;
+  margin-bottom: 8px;
   text-align: center;
-  font-family: 'Montserrat', 'sans-serif';
-  box-sizing: border-box;
-  z-index: 10;
+`;
+const SectionTitle = styled.div`
+  font-weight: 700;
+  font-size: 1.9rem;
+  border-bottom: 1px solid #3d4151;
+  padding-bottom: 16px;
+  margin-top: 32px;
+`;
+const SectionOption = styled.div`
+  border-bottom: 1px solid #3d4151;
+  padding: 20px 20px;
+  font-weight: 400;
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  transition: 250ms all;
+  &:hover {
+    background: #3d4151;
+  }
+  &:active {
+    background: #2c3040;
+  }
 `;
 
 export const Profile = () => {
+  const navigate = useNavigate();
+
+  const createOption = (name: string, url: string, external?: boolean) => (
+    <SectionOption onClick={() => external ? window.location.replace(url) : navigate(url)}>
+      {name}
+      <Sprite icon={ICON_NAMES.CHEVRON} size="1.3rem" />
+    </SectionOption>
+  );
 
   return (
-    <>
-      <Wrapper>
-        <Title size="1.6rem" weight={600}>Profile</Title>
-      </Wrapper>
+    <Container>
+      <Title>Profile</Title>
+      <SectionTitle>Security</SectionTitle>
+      {createOption('Pin Code', './pin-code')}
+      {createOption('Reset Wallets', './reset-wallets')}
+      <SectionTitle>General</SectionTitle>
+      {createOption('About Provenance Blockchain', 'https://provenance.io', true)}
+      {createOption('More Information', 'https://docs.provenance.io', true)}
       <FooterNav />
-    </>
+    </Container>
   );
 };

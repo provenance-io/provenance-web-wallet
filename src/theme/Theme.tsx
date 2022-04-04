@@ -28,6 +28,7 @@ export const GlobalStyles = createGlobalStyle<{
   html {
     font-size: 62.5%; // 1rem = 10px
     box-sizing: border-box;
+    height: 100%;
   }
 
   *, *:before, *:after {
@@ -39,6 +40,15 @@ export const GlobalStyles = createGlobalStyle<{
     ${FONTS.PRIMARY_FONT};
     font-weight: 400;
     font-size: 1.6rem;
+    height: 100%;
+  }
+
+  button, div, a, p {
+    letter-spacing: 0.04rem;
+  }
+
+  #root {
+    height: 100%;
   }
 `;
 

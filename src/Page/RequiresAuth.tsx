@@ -1,9 +1,13 @@
 import React from 'react';
+import { Outlet } from 'react-router-dom';
 
-interface Props {
-  children: React.ReactNode;
+interface PageProps {
+  children?: React.ReactNode;
 }
 
-export const RequiresAuth = ({ children }: Props) => {
-  return <>{children}</>;
-};
+export const RequiresAuth = ({ children = null }: PageProps) => (
+  <>
+    <Outlet />
+    {children}
+  </>
+);

@@ -209,9 +209,9 @@ const Thead = styled.thead.attrs<StyledProps>({
   display: block;
   ${StyledCss}
 `;
-const Title = styled.title<StyledProps>`
-  ${StyledCss}
-`;
+// const Title = styled.title<StyledProps>`
+//   ${StyledCss}
+// `;
 const Tr = styled.tr.attrs<StyledProps>({
   role: 'row',
 })`
@@ -284,7 +284,7 @@ export {
   Textarea,
   Th,
   Thead,
-  Title,
+  // Title,
   Tr,
   U,
   Ul,

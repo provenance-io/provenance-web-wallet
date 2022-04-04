@@ -39,6 +39,7 @@ export const Sprite = ({
   secondaryColor = COLORS.WHITE,
   ...svgIcons
 }: SpriteProps) => {
+
   return (
     <Svg
       {...svgIcons}

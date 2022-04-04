@@ -16,24 +16,24 @@ const OptionGroup = styled.optgroup`
 
 interface Props {
   options: string[],
-  selected: string | number,
+  value: string | number,
   onChange: (e: any) => void,
   className?: string,
 }
 
 export const Select:React.FC<Props> = ({
   options,
-  selected,
+  value,
   onChange,
   className,
 }) => {
 
   const renderOptions = () => options.map((option) => (
-    <option key={option} value={option} selected={selected === option}>{option}</option>
+    <option key={option} value={option}>{option}</option>
   ));
 
   return (
-    <SelectStyled onChange={onChange} className={className}>
+    <SelectStyled onChange={({ target }) => {onChange(target.value)}} className={className} value={value}>
       <OptionGroup>
         {renderOptions()}
       </OptionGroup>

@@ -79,9 +79,6 @@ export const DashboardMenu:React.FC = () => {
   const [ activeWallet, setActiveWallet ] = useState<WalletType>(wallets[0]); 
   const [ walletMenuTarget, setWalletMenuTarget ] = useState('');
 
-
-
-
   const renderWallets = () => wallets.map(({ address, name, assetCount }, index) => (
     <WalletItem key={address} active={address === activeWallet.address} onClick={() => { setWalletMenuTarget(address)} }>
       <WalletText>

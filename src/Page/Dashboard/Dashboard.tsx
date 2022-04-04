@@ -1,4 +1,5 @@
 import { Button, FooterNav, Asset } from 'Components';
+import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import { DashboardHeader } from './DashboardHeader';
 
@@ -44,6 +45,7 @@ const AssetsContainer = styled.div`
 `;
 
 export const Dashboard = () => {
+  const navigate = useNavigate();
 
   return (
     <>
@@ -51,7 +53,7 @@ export const Dashboard = () => {
       <PortfolioTitle>Portfolio Value</PortfolioTitle>
       <Value>$2,539.23</Value>
       <ButtonGroup>
-        <Button variant='primary'>Send</Button>
+        <Button variant='primary' onClick={() => navigate('./send')}>Send</Button>
         <Button variant='primary'>Receive</Button>
       </ButtonGroup>
       <AssetsTitle>My Assets</AssetsTitle>

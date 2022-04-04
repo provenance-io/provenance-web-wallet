@@ -39,8 +39,8 @@ export const Transactions = () => {
   return (
     <Container>
       <Title>Transaction Details</Title>
-      <Select onChange={setSelectedAsset} options={assetOptions} selected={selectedAsset} />
-      <Select onChange={setSelectedTxType} options={transactionOptions} selected={selectedTxType} />
+      <Select onChange={setSelectedAsset} options={assetOptions} value={selectedAsset} />
+      <Select onChange={setSelectedTxType} options={transactionOptions} value={selectedTxType} />
       <AssetsContainer>
         <Asset img="hash" name="hash" amount={{ value: 500, change: 13.63 }} />
         <Asset img="usdf" name="usdf" />

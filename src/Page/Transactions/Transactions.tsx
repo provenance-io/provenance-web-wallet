@@ -29,7 +29,6 @@ const AssetsContainer = styled.div`
   }
 `;
 
-
 export const Transactions = () => {
   const [selectedAsset, setSelectedAsset] = useState('');
   const [selectedTxType, setSelectedTxType] = useState('');

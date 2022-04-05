@@ -6,6 +6,7 @@
     "@provenanceio/walletconnect-js": "0.2.15",
     "@reduxjs/toolkit": "^1.7.2",
     "@walletconnect/client": "1.7.1",
+    "axios": "0.26.1",
     "bip39": "3.0.4",
     "qrcode": "1.5.0",
     "react": "^17.0.2",

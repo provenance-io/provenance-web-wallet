@@ -4,10 +4,12 @@ import { COLORS } from 'theme/colors';
 interface InputProps {
   id: string;
   label?: string;
+  disabled?: boolean,
   type?: string;
   placeholder?: string;
   value?: string | number,
   error?: string,
+  children?: React.ReactNode;
   onChange?: (e: any) => void
 }
 
@@ -16,6 +18,7 @@ const InputGroup = styled.div`
   flex-direction: column;
   gap: 10px;
   font-family: 'Gothic A1', sans-serif;
+  position: relative;
 `;
 
 const Label = styled.label`
@@ -52,7 +55,9 @@ export const Input = ({
   type = 'text',
   value,
   error,
+  disabled,
   onChange,
+  children,
   ...rest
 }: InputProps) => (
   <InputGroup>
@@ -64,7 +69,9 @@ export const Input = ({
       value={value}
       onChange={onChange}
       error={error}
+      disabled={disabled}
       {...rest}
     />
+    {children}
   </InputGroup>
 );

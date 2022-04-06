@@ -6,7 +6,7 @@ import {
   statisticsActions as actionsList,
 } from '../features/statistics/statisticsSlice';
 
-export const useAccounts = () => {
+export const useStatistics = () => {
   const dispatch = useAppDispatch();
   const state = useAppSelector(selector);
   const actions = useMemo(

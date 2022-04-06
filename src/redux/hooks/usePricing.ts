@@ -6,7 +6,7 @@ import {
   pricingActions as actionsList,
 } from '../features/pricing/pricingSlice';
 
-export const useAccounts = () => {
+export const usePricing = () => {
   const dispatch = useAppDispatch();
   const state = useAppSelector(selector);
   const actions = useMemo(

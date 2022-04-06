@@ -6,7 +6,7 @@ import {
   addressActions as actionsList,
 } from '../features/address/addressSlice';
 
-export const useAccounts = () => {
+export const useAddress = () => {
   const dispatch = useAppDispatch();
   const state = useAppSelector(selector);
   const actions = useMemo(

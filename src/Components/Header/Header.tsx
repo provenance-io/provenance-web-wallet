@@ -74,7 +74,7 @@ const BackButton = ({ children }: { children: React.ReactNode }) => {
 interface HeaderProps {
   iconLeft?: string;
   progress?: number;
-  title: string;
+  title?: string | React.ReactNode;
 }
 
 export const Header = ({ iconLeft = ICON_NAMES.ARROW, progress, title }: HeaderProps) => (
@@ -83,7 +83,7 @@ export const Header = ({ iconLeft = ICON_NAMES.ARROW, progress, title }: HeaderP
       <BackButton>
         <Sprite size="1.4rem" icon={iconLeft} />
       </BackButton>
-      <Title>{title}</Title>
+      {title && <Title>{title}</Title>}
     </Content>
     {progress !== undefined && <ProgressBar progress={progress} />}
   </Wrapper>

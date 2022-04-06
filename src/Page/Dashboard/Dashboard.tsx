@@ -58,10 +58,10 @@ export const Dashboard = () => {
       </ButtonGroup>
       <AssetsTitle>My Assets</AssetsTitle>
       <AssetsContainer>
-        <Asset img="hash" name="hash" amount={{ value: 500, change: 13.63 }} />
-        <Asset img="usdf" name="usdf" />
-        <Asset img="etf" name="etf" />
-        <Asset img="inu" name="inu" />
+        <Asset onClick={() => navigate('/asset/hash')} img="hash" name="hash" amount={{ value: 500, change: 13.63 }} />
+        <Asset onClick={() => navigate('/asset/usdf')} img="usdf" name="usdf" />
+        <Asset onClick={() => navigate('/asset/etf')} img="etf" name="etf" />
+        <Asset onClick={() => navigate('/asset/inu')} img="inu" name="inu" />
       </AssetsContainer>
       <FooterNav />
     </>

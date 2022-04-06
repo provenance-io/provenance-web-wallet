@@ -15,12 +15,14 @@ import {
   VerifyPassphrase,
   Transactions,
   Profile,
+  DashboardSend,
 } from 'Page';
 
 export const APP_URL = '/';
 // DASHBOARD
 export const DASHBOARD_URL = '/dashboard';
 export const DASHBOARD_MENU_URL = '/dashboard/menu';
+export const DASHBOARD_SEND_URL = '/dashboard/send';
 // PROFILE
 export const PROFILE_URL = '/profile';
 // TRANSACTIONS
@@ -53,6 +55,7 @@ export const routes = [
         children: [
           { index: true, element: <Dashboard /> },
           { path: DASHBOARD_MENU_URL, element: <DashboardMenu /> },
+          { path: DASHBOARD_SEND_URL, element: <DashboardSend /> },
         ]
       },
       // TRANSACTIONS

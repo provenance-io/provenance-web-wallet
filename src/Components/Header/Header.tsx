@@ -10,6 +10,7 @@ const Wrapper = styled.header`
   flex-direction: column;
   gap: 18px;
   margin-bottom: 32px;
+  width: 100%;
 `;
 
 const Content = styled.div`
@@ -29,7 +30,7 @@ const Title = styled.span`
 `;
 
 const ProgressBar = styled.div<{
-  progress: number;
+  progress?: number;
 }>`
   position: relative;
   height: 3px;
@@ -72,7 +73,7 @@ const BackButton = ({ children }: { children: React.ReactNode }) => {
 
 interface HeaderProps {
   iconLeft?: string;
-  progress: number;
+  progress?: number;
   title: string;
 }
 
@@ -84,6 +85,6 @@ export const Header = ({ iconLeft = ICON_NAMES.ARROW, progress, title }: HeaderP
       </BackButton>
       <Title>{title}</Title>
     </Content>
-    <ProgressBar progress={progress} />
+    {progress !== undefined && <ProgressBar progress={progress} />}
   </Wrapper>
 );

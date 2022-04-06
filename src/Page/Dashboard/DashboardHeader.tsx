@@ -1,6 +1,7 @@
 import styled from 'styled-components';
 import { ICON_NAMES } from 'consts';
 import { Sprite } from 'Components';
+import { useNavigate } from 'react-router-dom';
 
 const HeaderRow = styled.div`
   display: flex;
@@ -27,9 +28,11 @@ const WalletConnect = styled.div`
 `;
 
 export const DashboardHeader:React.FC = () => {
+  const navigate = useNavigate();
+
   return (
     <HeaderRow>
-      <Menu>
+      <Menu onClick={() => navigate('./menu')}>
         <Sprite icon={ICON_NAMES.MENU} size="2rem" />
       </Menu>
       <WalletInfo>

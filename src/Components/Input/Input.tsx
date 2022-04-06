@@ -3,7 +3,7 @@ import { COLORS } from 'theme/colors';
 
 interface InputProps {
   id: string;
-  label: string;
+  label?: string;
   type?: string;
   placeholder?: string;
   value?: string | number,
@@ -56,7 +56,7 @@ export const Input = ({
   ...rest
 }: InputProps) => (
   <InputGroup>
-    <Label htmlFor={id}>{label}</Label>
+    {label && <Label htmlFor={id}>{label}</Label>}
     {error && <Error>{error}</Error>}
     <InputEl
       id={id}

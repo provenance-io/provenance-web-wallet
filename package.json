@@ -8,6 +8,7 @@
     "@walletconnect/client": "1.7.1",
     "axios": "0.26.1",
     "bip39": "3.0.4",
+    "env-cmd": "10.1.0",
     "qrcode": "1.5.0",
     "query-string": "7.1.1",
     "react": "^17.0.2",
@@ -47,9 +48,9 @@
     "util": "0.12.4"
   },
   "scripts": {
-    "start": "craco start",
-    "build": "craco build",
-    "test": "craco test",
+    "start": "env-cmd -e default craco start",
+    "build": "env-cmd -e production craco build",
+    "test": "env-cmd -e e2e craco test",
     "eject": "react-scripts eject"
   },
   "eslintConfig": {

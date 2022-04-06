@@ -28,6 +28,11 @@ export const SpriteSheet = () => (
         <path fill="currentColor" d="M10 0 5 5 0 0h10Z"/>
       </svg>
     </g>
+    <g id={ICON_NAMES.CHECK}>
+      <svg viewBox="0 0 24 24" fill="currentColor" stroke="currentColor">
+        <path d="M9 16.17 4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"></path>
+      </svg>
+    </g>
     <g id={ICON_NAMES.CHEVRON}>
       <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 6 11">
         <path stroke="currentColor" strokeLinecap="square" d="m1 2 4 4-4 4"/>
@@ -36,6 +41,13 @@ export const SpriteSheet = () => (
     <g id={ICON_NAMES.CLOSE}>
     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 16 16">
       <path stroke="currentColor" d="m1 1 14 14m0-14L1 15"/>
+    </svg>
+    </g>
+    <g id={ICON_NAMES.COPY}>
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 13 16">
+      <path stroke="currentColor" d="M4 3H1v12h8v-3"/>
+      <path stroke="currentColor" d="M4 1h4.5L12 4.5V12H4V1Z"/>
+      <path stroke="currentColor" d="M8 1v4h4"/>
     </svg>
     </g>
     <g id={ICON_NAMES.DASHBOARD}>

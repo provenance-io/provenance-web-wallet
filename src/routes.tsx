@@ -4,6 +4,8 @@ import {
   CreateStart,
   Dashboard,
   DashboardMenu,
+  DashboardReceive,
+  DashboardSend,
   EnterSeed,
   Landing,
   Page,
@@ -15,7 +17,6 @@ import {
   VerifyPassphrase,
   Transactions,
   Profile,
-  DashboardSend,
 } from 'Page';
 
 export const APP_URL = '/';
@@ -23,6 +24,7 @@ export const APP_URL = '/';
 export const DASHBOARD_URL = '/dashboard';
 export const DASHBOARD_MENU_URL = '/dashboard/menu';
 export const DASHBOARD_SEND_URL = '/dashboard/send';
+export const DASHBOARD_RECEIVE_URL = '/dashboard/receive';
 // PROFILE
 export const PROFILE_URL = '/profile';
 // TRANSACTIONS
@@ -56,6 +58,7 @@ export const routes = [
           { index: true, element: <Dashboard /> },
           { path: DASHBOARD_MENU_URL, element: <DashboardMenu /> },
           { path: DASHBOARD_SEND_URL, element: <DashboardSend /> },
+          { path: DASHBOARD_RECEIVE_URL, element: <DashboardReceive /> },
         ]
       },
       // TRANSACTIONS

@@ -54,7 +54,7 @@ export const Dashboard = () => {
       <Value>$2,539.23</Value>
       <ButtonGroup>
         <Button variant='primary' onClick={() => navigate('./send')}>Send</Button>
-        <Button variant='primary'>Receive</Button>
+        <Button variant='primary' onClick={() => navigate('./receive')}>Receive</Button>
       </ButtonGroup>
       <AssetsTitle>My Assets</AssetsTitle>
       <AssetsContainer>

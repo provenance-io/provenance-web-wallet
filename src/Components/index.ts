@@ -1,5 +1,6 @@
 export * from './Styled';
 export * from './Button';
+export * from './Chart';
 export * from './Checkbox';
 export * from './AssetDropdown';
 export * from './Header';

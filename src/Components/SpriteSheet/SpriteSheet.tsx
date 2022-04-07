@@ -23,6 +23,11 @@ export const SpriteSheet = () => (
         />
       </svg>
     </g>
+    <g id={ICON_NAMES.ARROW_TALL}>
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 7 14">
+        <path fill="currentColor" d="m.96 4.58 2.55-4 2.53 4-.63.31-1.47-1.56v9.7h-.85v-9.7L1.61 4.9l-.65-.31Z"/>
+      </svg>
+    </g>
     <g id={ICON_NAMES.CARET}>
       <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 5">
         <path fill="currentColor" d="M10 0 5 5 0 0h10Z"/>

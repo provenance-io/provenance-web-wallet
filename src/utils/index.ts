@@ -4,3 +4,4 @@ export * from './isMnumonic';
 export * from './currencyFormat';
 export * from './trimString';
 export * from './hashFormat';
+export * from './chart';

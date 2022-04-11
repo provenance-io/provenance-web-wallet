@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { FooterNav, Select, Asset } from 'Components';
+import { FooterNav, Select, AssetRow } from 'Components';
 import styled from 'styled-components';
 
 const Container = styled.div`
@@ -42,10 +42,10 @@ export const Transactions = () => {
       <Select onChange={setSelectedAsset} options={assetOptions} value={selectedAsset} />
       <Select onChange={setSelectedTxType} options={transactionOptions} value={selectedTxType} />
       <AssetsContainer>
-        <Asset img="hash" name="hash" amount={{ value: 500, change: 13.63 }} />
-        <Asset img="usdf" name="usdf" />
-        <Asset img="etf" name="etf" />
-        <Asset img="inu" name="inu" />
+        <AssetRow img="hash" name="hash" amount={{ value: 500, change: 13.63 }} />
+        <AssetRow img="usdf" name="usdf" />
+        <AssetRow img="etf" name="etf" />
+        <AssetRow img="inu" name="inu" />
       </AssetsContainer>
       <FooterNav />
     </Container>

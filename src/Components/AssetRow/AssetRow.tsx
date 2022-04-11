@@ -6,11 +6,15 @@ import { currencyFormat } from 'utils';
 const AssetItem = styled.div`
   padding: 20px 16px;
   width: 100%;
+  text-align: left;
   border-bottom: 1px solid #3D4151;
   display: flex;
   align-items: center;
   font-family: 'Gothic A1';
   cursor: pointer;
+  &:first-of-type {
+    border-top: 1px solid #3D4151;
+  }
 `;
 const AssetImg = styled.img`
   margin-right: 16px;
@@ -43,7 +47,7 @@ interface Props {
   },
 }
 
-export const Asset:React.FC<Props> = ({ img, name, amount, onClick }) => {
+export const AssetRow:React.FC<Props> = ({ img, name, amount, onClick }) => {
 
   const renderAmount = () => {
     if (!amount) return 'Buy • Mar 31';

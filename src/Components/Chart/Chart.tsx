@@ -1,13 +1,14 @@
 import { useRef, useEffect } from 'react';
 import styled from 'styled-components';
-import { ChartType } from 'chart.js';
-import ChartJS from 'chart.js/auto';
+import ChartJS, { ChartType } from 'chart.js/auto';
 
-const ChartContainer = styled.div``;
+const ChartContainer = styled.div`
+  width: 100%;
+`;
 const ChartCanvas = styled.canvas``;
 
 interface Props {
-  data: string[],
+  data: number[],
   labels: string[],
   options?: {},
 }
@@ -18,41 +19,60 @@ export const Chart:React.FC<Props> = ({
   options,
 }) => {
   const chartElement = useRef(null);
-  // const [existingChartJS, setExistingChartJS] = useState<ChartJS>();
-  
+
   useEffect(() => {
-    // Initial load, if our element exists and chart hasn't loaded yet
+    // Initial load, if our element exists and we have data
     if (chartElement.current !== null && chartData.length) {
-      // Destroy previous chart
-      // if (existingChartJS) existingChartJS.destroy();
-      // const hourLabels = [
-      //   '12AM','1AM','2AM','3AM','4AM','5AM','6AM','7AM','8AM','9AM','10AM','11AM',
-      //   '12PM','1PM','2PM','3PM','4PM','5PM','6PM','7PM','8PM','9PM','10PM','11PM',
-      // ];
-      // const dayLabels = [];
-      // const weekLabels = [];
-      // const yearLabels = [];
+      // Put together chart data
       const data = {
         labels,
         datasets: [{
           data: chartData,
-          borderColor: '#243250',
+          borderColor: '#04F1ED',
+          pointHoverBackgroundColor: '#A5F2FE',
+          pointHitRadius: 2,
+          radius: 6,
         }]
       };
+      const customPlugins = [{
+        id: 'customPlugins',
+        afterDraw: (chart: ChartJS) => {
+          const activeElements = chart.tooltip?.getActiveElements();
+          if (activeElements && activeElements.length) {
+            const target = activeElements[0];
+            let x = target.element.x;
+            let yAxis = chart.scales.y;
+            let ctx = chart.ctx;
+            ctx.save();
+            ctx.beginPath();
+            ctx.moveTo(x, yAxis.top);
+            ctx.lineTo(x, yAxis.bottom);
+            ctx.lineWidth = 2;
+            ctx.strokeStyle = '#27497D';
+            ctx.stroke();
+            ctx.restore();
+          }
+        }
+      }];
+      // Options to use if none are passed in
       const defaultOptions = {
+        interaction: {
+          mode: 'index',
+          intersect: false,
+        },
         responsive: true,
-        plugins: {
+        plugins:{
           legend: { display: false },
+          tooltip: { displayColors: false, padding: 10 },
         },
       };
-
-      const config = { type: 'line' as ChartType, data, options: options || defaultOptions };
+      // Use passed or default options
+      const finalOptions = options || defaultOptions;
+      // Full config object to use (TODO: Move more of these options to args)
+      const config = { type: 'line' as ChartType, data, options: finalOptions, plugins: customPlugins };
       // Build the chart
-      // const chartJS = new ChartJS(chartElement.current!, config);
       new ChartJS(chartElement.current!, config);
-      // setExistingChartJS(chartJS);
     }
-  // }, [chartData, labels, options, existingChartJS]);
   }, [chartData, labels, options]);
 
   return (

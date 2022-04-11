@@ -12,3 +12,4 @@ export * from './SpriteSheet';
 export * from './Typography';
 export * from './FooterNav';
 export * from './Asset';
+export * from './Loading';

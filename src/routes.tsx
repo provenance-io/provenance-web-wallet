@@ -17,6 +17,7 @@ import {
   VerifyPassphrase,
   Transactions,
   Profile,
+  ResetWallets,
 } from 'Page';
 
 export const APP_URL = '/';
@@ -27,6 +28,7 @@ export const DASHBOARD_SEND_URL = '/dashboard/send';
 export const DASHBOARD_RECEIVE_URL = '/dashboard/receive';
 // PROFILE
 export const PROFILE_URL = '/profile';
+export const RESET_WALLETS_URL = '/profile/reset-wallets';
 // TRANSACTIONS
 export const TRANSACTIONS_URL = '/transactions';
 // RECOVER URLS
@@ -75,6 +77,14 @@ export const routes = [
         element: <Page />,
         children: [
           { index: true, element: <Profile /> },
+        ],
+      },
+      // RESET WALLETS
+      {
+        path: RESET_WALLETS_URL,
+        element: <Page />,
+        children: [
+          { index: true, element: <ResetWallets /> },
         ],
       },
       // RECOVER

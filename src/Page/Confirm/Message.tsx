@@ -38,7 +38,7 @@ const CancelButton = styled(Button)`
   color: ${COLORS.PRIMARY_550};
   background: none;
   border: none;
-  margin-top: 30px;
+  margin-top: 10px;
 `;
 
 interface MsgProps {

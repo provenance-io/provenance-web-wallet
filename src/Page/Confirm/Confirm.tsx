@@ -25,6 +25,11 @@ export const Confirm = () => {
   //  <Message message={message} onClick={handleApprove} />
   //)
 
+  // TO DO: Currently "Confirm" is designed to house
+  // connection requests (/connect) and message confirmation (/confirm).
+  // Need to ensure we are sending the user to the correct url
+  // for rendering purposes.
+
   return (
     <Connect 
       requestor={"Figure Equity Solutions"}

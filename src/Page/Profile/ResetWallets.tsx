@@ -23,9 +23,11 @@ const SectionOption = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
+  text-align: center;
 `;
 const ButtonGroup = styled.div`
   margin-top: auto;
+  margin-bottom: 20px;
 `;
 const CancelButton = styled(Button)`
   color: ${COLORS.PRIMARY_550};

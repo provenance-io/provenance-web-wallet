@@ -42,6 +42,7 @@ export const RECOVER_NOTE_URL = '/recover/note';
 export const RECOVER_SEED_URL = '/recover/seed';
 // CONFIRMATION
 export const CONFIRM_URL = '/confirm';
+export const CONNECT_URL = '/connect';
 // CREATE URLS
 export const CREATE_URL = '/create';
 export const CREATE_PASSPHRASE_INTRO_URL = '/create/passphrase-intro';
@@ -86,7 +87,7 @@ export const routes = [
       },
       {
         path: TRANSACTION_COMPLETE_URL,
-        element: <Page />,
+        element: <Page bgImage/>,
         children: [
           { index: true, element: <TransactionComplete /> },
         ],
@@ -107,10 +108,17 @@ export const routes = [
           { index: true, element: <ResetWallets /> },
         ],
       },
-      // CONFIRM
+      // CONFIRMATION
       {
         path: CONFIRM_URL,
         element: <Page />,
+        children: [
+          { index: true, element: <Confirm /> },
+        ],
+      },
+      {
+        path: CONNECT_URL,
+        element: <Page bgImage/>,
         children: [
           { index: true, element: <Confirm /> },
         ],

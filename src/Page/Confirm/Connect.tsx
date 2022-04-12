@@ -2,7 +2,6 @@ import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import { Button as BaseButton, Sprite } from 'Components';
 import { COLORS } from 'theme';
-import background from 'theme/bg.png';
 import { ICON_NAMES } from 'consts';
 
 const Container = styled.div`
@@ -12,30 +11,32 @@ const Container = styled.div`
   display: flex;
   flex-direction: column;
   height: 100%;
-  background-image: url(${background});
-  background-repeat: no-repeat;
-  background-position: center;
-  background-size: cover;
 `;
 const TitleContainer = styled.div`
   position: fixed;
-  top: 40%;
+  top: 30%;
   left: 50%;
   transform: translate(-50%, -50%);
 `;
 const Title = styled.div`
-  font-weight: 700;
-  margin-bottom: 25px;
-  font-size: 2rem;
+  font-weight: 600;
+  font-family: 'Montserrat', sans-serif;
+  letter-spacing: 0.32em;
+  line-height: 20px;
+  font-size: 16px;
   text-align: center;
+  margin-bottom: 20px;
 `;
 const SubTitle = styled(Title)`
   font-weight: 400;
-  font-size: 1.5rem;
+  font-family: 'Gothic A1', sans-serif;
+  letter-spacing: 0.04em;
+  font-size: 14px;
+  line-height: 160%;
 `;
 const ImageContainer = styled.div`
   position: fixed;
-  top: 200%;
+  top: 150%;
   left: 50%;
   transform: translate(-50%, -50%);
 `;
@@ -46,9 +47,9 @@ const BlockImageContainer = styled.div<{ color?: string }>`
   align-items: center;
   justify-content: center;
   border-radius: 100%;
-  background: ${COLORS.NEUTRAL_700};
-  height: 150px;
-  width: 150px;
+  background: linear-gradient(134.17deg, ${COLORS.NEUTRAL_800} 4.98%, ${COLORS.NEUTRAL_700} 94.88%);
+  height: 100px;
+  width: 100px;
   overflow: hidden;
   border: ${({ color }) => color && `1px solid ${color}`};
 `;
@@ -68,7 +69,7 @@ const ButtonGroup = styled.div`
   align-self: center;
 `;
 const Button = styled(BaseButton)`
-  margin-bottom: 30px;
+  margin-bottom: 10px;
 `;
 const CancelButton = styled(BaseButton)`
   color: ${COLORS.PRIMARY_550};

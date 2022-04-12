@@ -18,6 +18,7 @@ import {
   Transactions,
   Profile,
   ResetWallets,
+  Confirm,
 } from 'Page';
 
 export const APP_URL = '/';
@@ -35,7 +36,8 @@ export const TRANSACTIONS_URL = '/transactions';
 export const RECOVER_URL = '/recover';
 export const RECOVER_NOTE_URL = '/recover/note';
 export const RECOVER_SEED_URL = '/recover/seed';
-
+// CONFIRMATION
+export const CONFIRM_URL = '/confirm';
 // CREATE URLS
 export const CREATE_URL = '/create';
 export const CREATE_PASSPHRASE_INTRO_URL = '/create/passphrase-intro';
@@ -85,6 +87,14 @@ export const routes = [
         element: <Page />,
         children: [
           { index: true, element: <ResetWallets /> },
+        ],
+      },
+      // CONFIRM
+      {
+        path: CONFIRM_URL,
+        element: <Page />,
+        children: [
+          { index: true, element: <Confirm /> },
         ],
       },
       // RECOVER

@@ -1,6 +1,8 @@
+import { useNavigate } from 'react-router-dom';
 import { Message, Connect } from '.';
 
 export const Confirm = () => {
+  const navigate = useNavigate();
 
   // TO DO: Replace this with actual messages
   const message = {
@@ -14,10 +16,19 @@ export const Confirm = () => {
     amount: '100.0101',
   }
 
+  const handleApprove = () => {
+    // TO DO: Add additional functionality
+    navigate('/transactions');
+  }
+
+  //return (
+  //  <Message message={message} onClick={handleApprove} />
+  //)
+
   return (
     <Connect 
       requestor={"Figure Equity Solutions"}
-      onClick={() => console.log('Clicked!')}
+      onClick={handleApprove}
     />
   );
 };

@@ -1,8 +1,7 @@
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
-import { Button } from 'Components';
+import { Button, List } from 'Components';
 import { COLORS } from 'theme';
-import { capitalize } from 'utils';
 
 const Container = styled.div`
   width: 100%;
@@ -30,20 +29,7 @@ const Data = styled.div`
   flex: 0 1 auto;
   margin-left: auto;
   padding-right: 20px;
-`;
-const Section = styled.div`
-  border-bottom: 1px solid #3d4151;
-  padding: 20px 20px;
-  font-weight: 400;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-`;
-const SectionTitle = styled.div`
-  font-weight: 100;
-`;
-const SectionContent = styled.div`
-  font-weight: 100;
+  cursor: pointer;
 `;
 const ButtonGroup = styled.div`
   margin-top: auto;
@@ -59,11 +45,15 @@ interface MsgProps {
   message: {
     [key: string]: string;
   };
+  title?: string;
   onClick: () => void;
+  showData?: boolean;
 }
 
 export const Message = ({
   message,
+  title = 'Transaction',
+  showData = true,
   onClick,
 }: MsgProps) => {
   const navigate = useNavigate();
@@ -72,17 +62,9 @@ export const Message = ({
     // TODO: Do we want a modal with the JSON here?
   }
 
-  const createList = Object.keys(message).map(item => (
-    <Section key={item}>
-      <SectionTitle>{capitalize(item)}</SectionTitle>
-      <SectionContent>{message[item]}</SectionContent>
-    </Section>
-  ));
-
   const handleApprove = () => {
     // TODO: Add approve actions
     onClick();
-    navigate('/transactions');
   }
 
   const handleDecline = () => {
@@ -93,10 +75,10 @@ export const Message = ({
   return (
     <Container>
       <TitleBar>
-        <Title>Transaction</Title>
-        <Data onClick={handleData}>Data</Data>
+        <Title>{title}</Title>
+        {showData && <Data onClick={handleData}>Data</Data>}
       </TitleBar>
-      {createList}
+      <List message={message} />
       <ButtonGroup>
         <Button variant={'primary'} onClick={handleApprove}>Approve</Button>
         <CancelButton variant={'default'} onClick={handleDecline}>

@@ -19,6 +19,8 @@ import {
   Profile,
   ResetWallets,
   Confirm,
+  TradeDetails,
+  TransactionComplete,
 } from 'Page';
 
 export const APP_URL = '/';
@@ -32,6 +34,8 @@ export const PROFILE_URL = '/profile';
 export const RESET_WALLETS_URL = '/profile/reset-wallets';
 // TRANSACTIONS
 export const TRANSACTIONS_URL = '/transactions';
+export const TRADE_DETAILS_URL = '/trade-details';
+export const TRANSACTION_COMPLETE_URL = '/transaction-complete';
 // RECOVER URLS
 export const RECOVER_URL = '/recover';
 export const RECOVER_NOTE_URL = '/recover/note';
@@ -71,6 +75,20 @@ export const routes = [
         element: <Page />,
         children: [
           { index: true, element: <Transactions /> },
+        ],
+      },
+      {
+        path: TRADE_DETAILS_URL,
+        element: <Page />,
+        children: [
+          { index: true, element: <TradeDetails /> },
+        ],
+      },
+      {
+        path: TRANSACTION_COMPLETE_URL,
+        element: <Page />,
+        children: [
+          { index: true, element: <TransactionComplete /> },
         ],
       },
       // PROFILE

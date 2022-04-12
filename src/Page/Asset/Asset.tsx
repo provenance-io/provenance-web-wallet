@@ -1,4 +1,5 @@
 import { useParams } from 'react-router-dom';
+import { useState } from 'react';
 import styled from 'styled-components';
 import { FooterNav, Header, Sprite, AssetRow } from 'Components';
 import { ICON_NAMES } from 'consts';
@@ -33,16 +34,17 @@ const HeaderIcon = styled.img`
   margin-bottom: 10px;
 `;
 const Price = styled.div`
-  font-size: 6.4rem;
+  font-size: 4.4rem;
   font-weight: 300;
   font-family: 'Montserrat', sans-serif;
   margin-bottom: 10px;
 `;
 const PriceChange = styled.div`
   font-size: 1.4rem;
-  font-weight: 400;
+  font-weight: 700;
   margin-bottom: 10px;
-  color: white;
+  font-family: 'Gothic A1', sans-serif;
+  color: #04F1ED;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -56,6 +58,9 @@ const SectionTitle = styled.div`
 
 export const Asset:React.FC = () => {
   const { assetName } = useParams();
+  const [currentAssetValue, setCurrentAssetValue] = useState(0);
+  const [currentPriceChange, setCurrentPriceChange] = useState(0.008)
+  const [currentPriceChangePercent, setCurrentPriceChangePercent] = useState(.10);
 
   return (
     assetName ? 
@@ -68,12 +73,12 @@ export const Asset:React.FC = () => {
           </HeaderTitleGroup>
         }
       />
-      <Price>$0.118</Price>
+      <Price>{currentAssetValue ? `$${currentAssetValue}` : 'Loading'}</Price>
       <PriceChange>
         <Sprite icon={ICON_NAMES.ARROW_TALL} size="1.5rem" />
-        $0.008(0.10%)
+        ${currentPriceChange}({currentPriceChangePercent.toFixed(2)}%)
       </PriceChange>
-      <AssetChart />
+      <AssetChart changePrice={setCurrentAssetValue} />
       <AssetStats />
       <SectionTitle>Recent Transactions</SectionTitle>
       <div>

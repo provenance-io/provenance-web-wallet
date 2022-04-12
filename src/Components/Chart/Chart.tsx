@@ -4,6 +4,7 @@ import ChartJS, { ChartType } from 'chart.js/auto';
 
 const ChartContainer = styled.div`
   width: 100%;
+  cursor: grabbing;
 `;
 const ChartCanvas = styled.canvas``;
 
@@ -11,12 +12,14 @@ interface Props {
   data: number[],
   labels: string[],
   options?: {},
+  changePrice?: (e: any) => void,
 }
 
 export const Chart:React.FC<Props> = ({
   data: chartData,
   labels,
   options,
+  changePrice,
 }) => {
   const chartElement = useRef(null);
 
@@ -29,41 +32,68 @@ export const Chart:React.FC<Props> = ({
         datasets: [{
           data: chartData,
           borderColor: '#04F1ED',
-          pointHoverBackgroundColor: '#A5F2FE',
           pointHitRadius: 2,
-          radius: 6,
+          radius: 0,
         }]
       };
-      const customPlugins = [{
-        id: 'customPlugins',
-        afterDraw: (chart: ChartJS) => {
-          const activeElements = chart.tooltip?.getActiveElements();
-          if (activeElements && activeElements.length) {
-            const target = activeElements[0];
-            let x = target.element.x;
-            let yAxis = chart.scales.y;
-            let ctx = chart.ctx;
-            ctx.save();
-            ctx.beginPath();
-            ctx.moveTo(x, yAxis.top);
-            ctx.lineTo(x, yAxis.bottom);
-            ctx.lineWidth = 2;
-            ctx.strokeStyle = '#27497D';
-            ctx.stroke();
-            ctx.restore();
+      const customPlugins = [
+        {
+          id: 'drawLineAndDarken',
+          afterDraw: (chart: ChartJS) => {
+            const activeElements = chart.tooltip?.getActiveElements() || [];
+            if (activeElements && activeElements.length) {
+              const target = activeElements[0];
+              let x = target.element.x;
+              let yAxis = chart.scales.y;
+              let ctx = chart.ctx;
+              ctx.save();
+              ctx.beginPath();
+              ctx.moveTo(x, yAxis.top);
+              ctx.lineTo(x, yAxis.bottom);
+              ctx.lineWidth = 1;
+              ctx.strokeStyle = '#FFFFFF';
+              ctx.stroke();
+              // Create shadow to darken rest of chart
+              ctx.globalCompositeOperation='source-atop';
+              ctx.fillStyle = 'rgba(0, 0, 0, 0.70)';
+              ctx.fillRect(x, yAxis.top - 10, 900, yAxis.bottom);
+              ctx.restore();
+            }
+          },
+        },
+        {
+          id: 'mouseOutResetValue',
+          beforeEvent(chart: any, args: any, pluginOptions: any) {
+            const event = args.event;
+            if (event.type === 'mouseout') {
+              const lastDataValue = chartData[chartData.length - 1];
+              if (changePrice) changePrice(lastDataValue);
+            }
           }
-        }
-      }];
+        },
+      ];
       // Options to use if none are passed in
       const defaultOptions = {
         interaction: {
           mode: 'index',
           intersect: false,
         },
+        scales: {
+          y: { ticks: { display: false } },
+          x: { ticks: { display: false } },
+        },
         responsive: true,
         plugins:{
           legend: { display: false },
-          tooltip: { displayColors: false, padding: 10 },
+          tooltip: {
+            enabled: true,
+            backgroundColor: 'transparent',
+            callbacks: {
+              label: (data: {formattedValue: number}) => {
+                if (changePrice) changePrice(data.formattedValue);
+              }
+            },
+          },
         },
       };
       // Use passed or default options
@@ -73,11 +103,11 @@ export const Chart:React.FC<Props> = ({
       // Build the chart
       new ChartJS(chartElement.current!, config);
     }
-  }, [chartData, labels, options]);
+  }, [chartData, labels, options]); // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
     <ChartContainer>
-      <ChartCanvas ref={chartElement} width="400" height="400" />
+      <ChartCanvas ref={chartElement} width="311" height="311" />
     </ChartContainer>
   );
 };

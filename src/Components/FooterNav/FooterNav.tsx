@@ -10,10 +10,10 @@ const Footer = styled.footer`
   bottom: 0;
   left: 0;
   background: black;
-  height: 103px;
+  height: 80px;
   width: 100%;
   max-width: 100%;
-  padding: 20px 43px 40px 43px;
+  padding: 20px 43px;
   z-index: 100;
   box-sizing: border-box;
   justify-content: space-between;

@@ -4,6 +4,7 @@ import styled from 'styled-components';
 import { Chart, Loading } from 'Components';
 import { MARKER_URL } from 'consts';
 import { hashFormat, generateLabels, generateStartDate } from 'utils';
+import { FetchMarkerType, LabelType, TimePeriodType } from 'types';
 
 const ChartArea = styled.div`
   min-height: 350px;
@@ -18,7 +19,6 @@ const ChartOptions = styled.div`
   align-items: center;
   justify-content: space-between;
   width: 100%;
-  margin-top: 24px;
 `;
 const ChartMessage = styled.div`
   display: flex;
@@ -39,17 +39,11 @@ const ChartOption = styled.div<{disabled: boolean, active: boolean}>`
   justify-content: center;
 `;
 
-interface FetchMarkerType {
-  timestamp: string,
-  price: number,
+interface Props {
+  changePrice: (e: any) => void;
 }
 
-type LabelType = string[];
-
-const timePeriodOptions = ['HOURLY', 'DAILY', 'WEEKLY', 'MONTHLY', 'YEARLY', 'ALL'] as const;
-type TimePeriodType  = typeof timePeriodOptions[number];
-
-export const AssetChart:React.FC = () => {
+export const AssetChart:React.FC<Props> = ({ changePrice }) => {
   const dateNow = new Date().toISOString();
   const { assetName } = useParams();
   const [markerData, setMarkerData] = useState([]);
@@ -71,16 +65,18 @@ export const AssetChart:React.FC = () => {
         .then(data => data);
       const newChartLabels = newMarkerData.reverse().map(({ timestamp }: FetchMarkerType) => timestamp);
       setChartLabels(generateLabels(timePeriod, newChartLabels));
-      const markerDataPrice = newMarkerData.map(({ price }: FetchMarkerType) => isHash ? hashFormat('nhash', price) : price
+      const markerDataPrice = newMarkerData.map(({ price }: FetchMarkerType) => isHash ? hashFormat('nhash', price) : Number(price.toFixed(3))
       );
       setMarkerData(markerDataPrice);
       setLoading(false);
+      // Update the price to be the latest value
+      changePrice(markerDataPrice[markerDataPrice.length-1])
     }
     if (fetchData) {
       setFetchDate(false);
       fetchMarkerData();
     };
-  }, [markerData, assetName, timePeriod, startDate, endDate, fetchData]);
+  }, [markerData, assetName, timePeriod, startDate, endDate, fetchData, changePrice]);
 
   const changeTimePeriod = (value: TimePeriodType) => {
     if (value !== timePeriod) {
@@ -95,15 +91,15 @@ export const AssetChart:React.FC = () => {
     <ChartArea>
       {loading ? <Loading /> : (
         markerData && !!markerData.length ?
-        <Chart data={markerData} labels={chartLabels} /> :
+        <Chart data={markerData} labels={chartLabels} changePrice={changePrice} /> :
         <ChartMessage>No Data Available</ChartMessage>
       )}
       <ChartOptions>
-        <ChartOption disabled={loading} active={timePeriod === 'HOURLY'} onClick={() => changeTimePeriod('HOURLY')}>H</ChartOption>
-        <ChartOption disabled={loading} active={timePeriod === 'DAILY'} onClick={() => changeTimePeriod('DAILY')}>D</ChartOption>
-        <ChartOption disabled={loading} active={timePeriod === 'WEEKLY'} onClick={() => changeTimePeriod('WEEKLY')}>W</ChartOption>
-        <ChartOption disabled={loading} active={timePeriod === 'MONTHLY'} onClick={() => changeTimePeriod('MONTHLY')}>M</ChartOption>
-        <ChartOption disabled={loading} active={timePeriod === 'YEARLY'} onClick={() => changeTimePeriod('YEARLY')}>Y</ChartOption>
+        <ChartOption disabled={loading} active={timePeriod === 'MIN'} onClick={() => changeTimePeriod('MIN')}>1H</ChartOption>
+        <ChartOption disabled={loading} active={timePeriod === 'HOURLY'} onClick={() => changeTimePeriod('HOURLY')}>1D</ChartOption>
+        <ChartOption disabled={loading} active={timePeriod === 'DAILY'} onClick={() => changeTimePeriod('DAILY')}>1W</ChartOption>
+        <ChartOption disabled={loading} active={timePeriod === 'WEEKLY'} onClick={() => changeTimePeriod('WEEKLY')}>1M</ChartOption>
+        <ChartOption disabled={loading} active={timePeriod === 'MONTHLY'} onClick={() => changeTimePeriod('MONTHLY')}>1Y</ChartOption>
         <ChartOption disabled={loading} active={timePeriod === 'ALL'} onClick={() => changeTimePeriod('ALL')}>A</ChartOption>
       </ChartOptions>
     </ChartArea>

@@ -1,7 +1,4 @@
-type LabelType = string[];
-
-const timePeriodOptions = ['HOURLY', 'DAILY', 'WEEKLY', 'MONTHLY', 'YEARLY', 'ALL'] as const;
-type TimePeriodType  = typeof timePeriodOptions[number];
+import { LabelType, TimePeriodType } from 'types';
 
 export const generateLabels = (newTimePeriod: TimePeriodType, labels: LabelType) => {  
   switch (newTimePeriod) {
@@ -16,6 +13,7 @@ export const generateLabels = (newTimePeriod: TimePeriodType, labels: LabelType)
     case 'WEEKLY': return labels.map((date: string) => `${new Date(date).getMonth()}/${new Date(date).getDate()}`);
     case 'MONTHLY': return labels.map((date: string) => `${new Date(date).getMonth()}`);
     case 'YEARLY': return labels.map((date: string) => `${new Date(date).getFullYear()}`);
+    case 'ALL': return labels.map((date: string) => `${new Date(date).getMonth()}/${new Date(date).getFullYear()}`);
     default: return [''];
   }
 };

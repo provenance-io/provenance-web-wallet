@@ -1,3 +1,4 @@
+export * from './Confirm';
 export * from './Create';
 export * from './Dashboard';
 export * from './Login';

@@ -1,9 +1,10 @@
 import styled from 'styled-components';
 import { capitalize } from 'utils';
+import { COLORS } from 'theme';
 
 const Section = styled.div`
-  border-bottom: 1px solid #3d4151;
-  padding: 20px 20px;
+  border-bottom: 1px solid ${COLORS.NEUTRAL_600};
+  padding: 15px 10px;
   font-weight: 400;
   display: flex;
   justify-content: space-between;

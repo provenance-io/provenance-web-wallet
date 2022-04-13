@@ -1,7 +1,8 @@
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
-import { Button, List } from 'Components';
+import { Button, List, Header } from 'Components';
 import { COLORS } from 'theme';
+import { ICON_NAMES } from 'consts';
 
 const Container = styled.div`
   width: 100%;
@@ -31,6 +32,9 @@ const Data = styled.div`
   padding-right: 20px;
   cursor: pointer;
 `;
+const AddItems = styled.div`
+  margin-top: 40px;
+`;
 const ButtonGroup = styled.div`
   margin-top: auto;
 `;
@@ -48,13 +52,21 @@ interface MsgProps {
   title?: string;
   onClick: () => void;
   showData?: boolean;
+  headerTitle?: string;
+  buttonTitle?: string;
+  cancelButton?: boolean;
+  addItems?: JSX.Element[];
 }
 
 export const Message = ({
   message,
   title = 'Transaction',
   showData = true,
+  headerTitle = '',
+  buttonTitle = 'Approve',
+  cancelButton = true,
   onClick,
+  addItems,
 }: MsgProps) => {
   const navigate = useNavigate();
 
@@ -74,16 +86,23 @@ export const Message = ({
 
   return (
     <Container>
+      {headerTitle ? (
+      <Header title={headerTitle} iconLeft={ICON_NAMES.CLOSE} />
+      ) : (
       <TitleBar>
         <Title>{title}</Title>
         {showData && <Data onClick={handleData}>Data</Data>}
       </TitleBar>
+      )}
       <List message={message} />
+      <AddItems>{addItems}</AddItems>
       <ButtonGroup>
-        <Button variant={'primary'} onClick={handleApprove}>Approve</Button>
-        <CancelButton variant={'default'} onClick={handleDecline}>
-          Decline
-        </CancelButton>
+        <Button variant={'primary'} onClick={handleApprove}>{buttonTitle}</Button>
+        {cancelButton && 
+          <CancelButton variant={'default'} onClick={handleDecline}>
+            Decline
+          </CancelButton>
+        }
       </ButtonGroup>
     </Container>
   );

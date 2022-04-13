@@ -21,11 +21,13 @@ export const TradeDetails = () => {
   }
 
   return (
+    <>
     <Message
       message={message}
-      title='Trade Details'
+      headerTitle='Trade Details'
       onClick={handleApprove}
       showData={false}
     />
+    </>
   );
 };

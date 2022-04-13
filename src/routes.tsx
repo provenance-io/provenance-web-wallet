@@ -1,5 +1,7 @@
 // import { Navigate } from 'react-router-dom';
 import {
+  ConnectionDetails,
+  ConnectionSuccess,
   CreateComplete,
   CreateStart,
   Dashboard,
@@ -42,7 +44,10 @@ export const RECOVER_NOTE_URL = '/recover/note';
 export const RECOVER_SEED_URL = '/recover/seed';
 // CONFIRMATION
 export const CONFIRM_URL = '/confirm';
-export const CONNECT_URL = '/connect';
+export const CONNECT_REQUEST_URL = '/connect';
+// CONNECTION
+export const CONNECT_SUCCESS_URL = '/connect-success';
+export const CONNECT_DETAILS_URL = '/connect-details';
 // CREATE URLS
 export const CREATE_URL = '/create';
 export const CREATE_PASSPHRASE_INTRO_URL = '/create/passphrase-intro';
@@ -117,10 +122,25 @@ export const routes = [
         ],
       },
       {
-        path: CONNECT_URL,
+        path: CONNECT_REQUEST_URL,
         element: <Page bgImage/>,
         children: [
           { index: true, element: <Confirm /> },
+        ],
+      },
+      // CONNECTION
+      {
+        path: CONNECT_SUCCESS_URL,
+        element: <Page bgImage/>,
+        children: [
+          { index: true, element: <ConnectionSuccess /> },
+        ],
+      },
+      {
+        path: CONNECT_DETAILS_URL,
+        element: <Page />,
+        children: [
+          { index: true, element: <ConnectionDetails /> },
         ],
       },
       // RECOVER

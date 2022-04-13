@@ -5,3 +5,4 @@ export * from './currencyFormat';
 export * from './trimString';
 export * from './hashFormat';
 export * from './chart';
+export * from './percentChange';

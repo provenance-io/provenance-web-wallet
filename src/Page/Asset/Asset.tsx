@@ -5,6 +5,8 @@ import { FooterNav, Header, Sprite, AssetRow } from 'Components';
 import { ICON_NAMES } from 'consts';
 import { AssetChart } from './AssetChart';
 import { AssetStats } from './AssetStats';
+import { ChangeValueArgs } from 'types';
+import { format } from 'date-fns';
 
 const Wrapper = styled.div`
   width: 100%;
@@ -39,15 +41,21 @@ const Price = styled.div`
   font-family: 'Montserrat', sans-serif;
   margin-bottom: 10px;
 `;
-const PriceChange = styled.div`
+const PriceChange = styled.div<{polarity: string}>`
   font-size: 1.4rem;
   font-weight: 700;
   margin-bottom: 10px;
   font-family: 'Gothic A1', sans-serif;
-  color: #04F1ED;
+  color: ${({ polarity }) => polarity === 'positive' ? '#04F19C' : polarity === 'negative' ? '#F16F04' : '#A6A6A6' };
   display: flex;
   align-items: center;
   justify-content: center;
+`;
+const CurrentDate = styled.div`
+  font-size: 1.4rem;
+  font-family: 'Gothic A1', sans-serif;
+  font-weight: 400;
+  margin-top: 40px;
 `;
 const SectionTitle = styled.div`
   font-size: 1.9rem;
@@ -59,8 +67,18 @@ const SectionTitle = styled.div`
 export const Asset:React.FC = () => {
   const { assetName } = useParams();
   const [currentAssetValue, setCurrentAssetValue] = useState(0);
-  const [currentPriceChange, setCurrentPriceChange] = useState(0.008)
-  const [currentPriceChangePercent, setCurrentPriceChangePercent] = useState(.10);
+  const [currentPriceChange, setCurrentPriceChange] = useState(0)
+  const [currentPriceChangePercent, setCurrentPriceChangePercent] = useState('');
+  const [currentDate, setCurrentDate] = useState('');
+
+  const onValueChange = ({value = 0, diff = 0, diffPercent = '', date = ''}: ChangeValueArgs) => {
+    setCurrentAssetValue(value);
+    setCurrentPriceChange(diff);
+    setCurrentPriceChangePercent(diffPercent);
+    setCurrentDate(date);
+  };
+
+  const PriceChangePolarity = currentPriceChange === 0 ? 'neutral' : currentPriceChange > 0 ? 'positive' : 'negative';
 
   return (
     assetName ? 
@@ -73,12 +91,13 @@ export const Asset:React.FC = () => {
           </HeaderTitleGroup>
         }
       />
-      <Price>{currentAssetValue ? `$${currentAssetValue}` : 'Loading'}</Price>
-      <PriceChange>
-        <Sprite icon={ICON_NAMES.ARROW_TALL} size="1.5rem" />
-        ${currentPriceChange}({currentPriceChangePercent.toFixed(2)}%)
+      <Price>{currentAssetValue ? `$${currentAssetValue.toFixed(3)}` : 'Loading'}</Price>
+      <PriceChange polarity={PriceChangePolarity}>
+        {PriceChangePolarity !== 'neutral' && <Sprite icon={ICON_NAMES.ARROW_TALL} size="1.5rem" spin={PriceChangePolarity === 'positive' ? '0' : '180'} />}
+        ${currentPriceChange.toFixed(2)}{PriceChangePolarity !== 'neutral' && ` (${currentPriceChangePercent})`}
       </PriceChange>
-      <AssetChart changePrice={setCurrentAssetValue} />
+      {currentDate && <CurrentDate>{format(new Date(currentDate), 'h:MM bb, MMM dd, yyyy')}</CurrentDate>}
+      <AssetChart onValueChange={onValueChange} />
       <AssetStats />
       <SectionTitle>Recent Transactions</SectionTitle>
       <div>

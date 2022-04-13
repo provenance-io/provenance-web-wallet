@@ -3,8 +3,16 @@ import { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { Chart, Loading } from 'Components';
 import { MARKER_URL } from 'consts';
-import { hashFormat, generateLabels, generateStartDate } from 'utils';
-import { FetchMarkerType, LabelType, TimePeriodType } from 'types';
+import { hashFormat, generateStartDate, percentChange } from 'utils';
+import {
+  FetchMarkerType,
+  ChartLabelsType,
+  ChartValuesType,
+  ChartValueDiffsType,
+  TimePeriodType,
+  ChangeValueType,
+  ChartValueDiffPercentsType,
+} from 'types';
 
 const ChartArea = styled.div`
   min-height: 350px;
@@ -40,21 +48,27 @@ const ChartOption = styled.div<{disabled: boolean, active: boolean}>`
 `;
 
 interface Props {
-  changePrice: (e: any) => void;
+  onValueChange: ChangeValueType;
 }
 
-export const AssetChart:React.FC<Props> = ({ changePrice }) => {
+export const AssetChart:React.FC<Props> = ({ onValueChange }) => {
   const dateNow = new Date().toISOString();
+  // Page Asset
   const { assetName } = useParams();
-  const [markerData, setMarkerData] = useState([]);
-  const [fetchData, setFetchDate] = useState(true);
+  // Api Fetch
+  const [fetchData, setFetchData] = useState(true);
   const [loading, setLoading] = useState(true);
   const [timePeriod, setTimePeriod] = useState<TimePeriodType>('HOURLY');
   const [startDate, setStartDate] = useState(generateStartDate(timePeriod));
   const [endDate] = useState(dateNow);
-  const [chartLabels, setChartLabels] = useState<LabelType>(['']);
+  // Chart data
+  const [chartValues, setChartValues] = useState<ChartValuesType>([]);
+  const [chartValueDiffs, setChartValueDiffs] = useState<ChartValueDiffsType>([]);
+  const [chartValueDiffPercents, setChartValueDiffPercents] = useState<ChartValueDiffPercentsType>([]);
+  const [chartLabels, setChartLabels] = useState<ChartLabelsType>(['']);
 
   useEffect(() => {
+    // Get marker data based on page and time period selected
     async function fetchMarkerData() {
       const isHash = assetName === 'hash';
       const fetchName = isHash ? 'nhash' : assetName;
@@ -63,35 +77,63 @@ export const AssetChart:React.FC<Props> = ({ changePrice }) => {
       const newMarkerData = await fetch(fetchUrl)
         .then(response => response.json())
         .then(data => data);
-      const newChartLabels = newMarkerData.reverse().map(({ timestamp }: FetchMarkerType) => timestamp);
-      setChartLabels(generateLabels(timePeriod, newChartLabels));
-      const markerDataPrice = newMarkerData.map(({ price }: FetchMarkerType) => isHash ? hashFormat('nhash', price) : Number(price.toFixed(3))
-      );
-      setMarkerData(markerDataPrice);
+      // API Returns data decending.  Reverse to change to ascending
+      const sortedMarkerData = newMarkerData.reverse();
+      // Updated chart data
+      const newLabels:ChartLabelsType = []
+      const newValues:ChartValuesType = []
+      const newValueDiffs:ChartValueDiffsType = [];
+      const newValueDiffPercents:ChartValueDiffPercentsType = [];
+      // Loop through each api value and split into chart data arrays
+      sortedMarkerData.forEach(({ timestamp, price }: FetchMarkerType, index: number) => {
+        // Convert nhash to hash if needed
+        const finalPrice = isHash ? hashFormat('nhash', price) : price;
+        // Calculate price change from first price
+        const diff = price - sortedMarkerData[0].price;
+        // Calculate percent change
+        const finalValueDiffPercents = percentChange(sortedMarkerData[0].price, price);
+        const finalValueDiffs = isHash ? hashFormat('nhash', diff) : diff;
+        // Add data to appropriate array
+        newValueDiffPercents.push(finalValueDiffPercents);
+        newLabels.push(timestamp);
+        newValues.push(finalPrice);
+        newValueDiffs.push(finalValueDiffs);
+      });
+      setChartLabels(newLabels);
+      setChartValues(newValues);
+      setChartValueDiffs(newValueDiffs);
+      setChartValueDiffPercents(newValueDiffPercents);
+
       setLoading(false);
       // Update the price to be the latest value
-      changePrice(markerDataPrice[markerDataPrice.length-1])
+      onValueChange({ value: newValues[newValues.length-1], date: newLabels[newLabels.length -1] })
     }
     if (fetchData) {
-      setFetchDate(false);
+      setFetchData(false);
       fetchMarkerData();
     };
-  }, [markerData, assetName, timePeriod, startDate, endDate, fetchData, changePrice]);
+  }, [assetName, timePeriod, startDate, endDate, fetchData, onValueChange, chartLabels, chartValues]);
 
   const changeTimePeriod = (value: TimePeriodType) => {
     if (value !== timePeriod) {
       setTimePeriod(value);
       const newStartDate = generateStartDate(value);
       setStartDate(newStartDate);
-      setFetchDate(true);
+      setFetchData(true);
     };
   };
 
   return (
     <ChartArea>
       {loading ? <Loading /> : (
-        markerData && !!markerData.length ?
-        <Chart data={markerData} labels={chartLabels} changePrice={changePrice} /> :
+        chartValues && !!chartValues.length ?
+        <Chart
+          values={chartValues}
+          labels={chartLabels}
+          diffs={chartValueDiffs}
+          diffPercents={chartValueDiffPercents}
+          onValueChange={onValueChange}
+        /> :
         <ChartMessage>No Data Available</ChartMessage>
       )}
       <ChartOptions>

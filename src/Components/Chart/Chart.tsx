@@ -1,6 +1,14 @@
 import { useRef, useEffect } from 'react';
 import styled from 'styled-components';
-import ChartJS, { ChartType } from 'chart.js/auto';
+import ChartJS, { ChartType, ChartOptions } from 'chart.js/auto';
+import 'chartjs-adapter-date-fns';
+import {
+  ChartValueDiffsType,
+  ChartValuesType,
+  ChartLabelsType,
+  ChangeValueType,
+  ChartValueDiffPercentsType,
+} from 'types';
 
 const ChartContainer = styled.div`
   width: 100%;
@@ -9,28 +17,33 @@ const ChartContainer = styled.div`
 const ChartCanvas = styled.canvas``;
 
 interface Props {
-  data: number[],
-  labels: string[],
-  options?: {},
-  changePrice?: (e: any) => void,
+  values: ChartValuesType,
+  labels: ChartLabelsType,
+  diffs: ChartValueDiffsType,
+  diffPercents: ChartValueDiffPercentsType,
+  options?: ChartOptions,
+  type?: string,
+  onValueChange?: ChangeValueType,
 }
 
 export const Chart:React.FC<Props> = ({
-  data: chartData,
-  labels,
-  options,
-  changePrice,
+  values: chartValues,
+  labels: chartLabels,
+  diffs: chartValueDiffs,
+  diffPercents: chartValueDiffPercents,
+  options: chartOptions = {},
+  type: chartType = 'line',
+  onValueChange,
 }) => {
   const chartElement = useRef(null);
-
   useEffect(() => {
     // Initial load, if our element exists and we have data
-    if (chartElement.current !== null && chartData.length) {
+    if (chartElement.current !== null && chartValues.length) {
       // Put together chart data
       const data = {
-        labels,
+        labels: chartLabels,
         datasets: [{
-          data: chartData,
+          data: chartValues,
           borderColor: '#04F1ED',
           pointHitRadius: 2,
           radius: 0,
@@ -63,47 +76,51 @@ export const Chart:React.FC<Props> = ({
         },
         {
           id: 'mouseOutResetValue',
-          beforeEvent(chart: any, args: any, pluginOptions: any) {
+          beforeEvent(chart: any, args: any) {
             const event = args.event;
             if (event.type === 'mouseout') {
-              const lastDataValue = chartData[chartData.length - 1];
-              if (changePrice) changePrice(lastDataValue);
+              const lastDataValue = chartValues[chartValues.length - 1];
+              const latestDate = chartLabels[chartLabels.length - 1];
+              if (onValueChange) onValueChange({ value: lastDataValue, date: latestDate});
             }
           }
         },
       ];
-      // Options to use if none are passed in
-      const defaultOptions = {
+      const options = {
         interaction: {
           mode: 'index',
           intersect: false,
         },
         scales: {
-          y: { ticks: { display: false } },
-          x: { ticks: { display: false } },
+          y: { ticks: { display: false }, grid: { display: false } },
+          x: { type: 'time', ticks: { display: false, }, grid: { display: false } },
         },
         responsive: true,
         plugins:{
           legend: { display: false },
           tooltip: {
-            enabled: true,
-            backgroundColor: 'transparent',
+            enabled: false,
+            external: function() {},
             callbacks: {
-              label: (data: {formattedValue: number}) => {
-                if (changePrice) changePrice(data.formattedValue);
+              label: (data: {raw: number, dataIndex: number}) => {
+                if (onValueChange) onValueChange({
+                  value: data.raw,
+                  diff: chartValueDiffs[data.dataIndex],
+                  diffPercent: chartValueDiffPercents[data.dataIndex],
+                  date: chartLabels[data.dataIndex],
+                });
               }
             },
           },
         },
+        ...chartOptions,
       };
-      // Use passed or default options
-      const finalOptions = options || defaultOptions;
-      // Full config object to use (TODO: Move more of these options to args)
-      const config = { type: 'line' as ChartType, data, options: finalOptions, plugins: customPlugins };
+      // Full config object to use
+      const config = { type: chartType as ChartType, data, options: options as ChartOptions, plugins: customPlugins };
       // Build the chart
       new ChartJS(chartElement.current!, config);
     }
-  }, [chartData, labels, options]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [chartValues]); // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
     <ChartContainer>

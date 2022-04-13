@@ -1,6 +1,6 @@
-import { LabelType, TimePeriodType } from 'types';
+import { ChartLabelsType, TimePeriodType } from 'types';
 
-export const generateLabels = (newTimePeriod: TimePeriodType, labels: LabelType) => {  
+export const generateLabels = (newTimePeriod: TimePeriodType, labels: ChartLabelsType) => {  
   switch (newTimePeriod) {
     case 'HOURLY': return labels.map((date: string) => {
       let hours = new Date(date).getHours();

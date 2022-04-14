@@ -23,6 +23,11 @@ export const SpriteSheet = () => (
         />
       </svg>
     </g>
+    <g id={ICON_NAMES.ARROW_TALL}>
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 7 14">
+        <path fill="currentColor" d="m.96 4.58 2.55-4 2.53 4-.63.31-1.47-1.56v9.7h-.85v-9.7L1.61 4.9l-.65-.31Z"/>
+      </svg>
+    </g>
     <g id={ICON_NAMES.CARET}>
       <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 5">
         <path fill="currentColor" d="M10 0 5 5 0 0h10Z"/>
@@ -53,6 +58,14 @@ export const SpriteSheet = () => (
     <g id={ICON_NAMES.DASHBOARD}>
       <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 17 16">
         <path fill="currentColor" fillRule="evenodd" d="M.5 1.1V4h16V1.1C16.5 0 15.4 0 15.4 0H1.6S.5 0 .5 1.1Zm6 4.9h-6v8.9C.5 16 1.6 16 1.6 16h4.9V6Zm2 10h6.9c1.1 0 1.1-1.1 1.1-1.1V6h-8v10Z" clipRule="evenodd"/>
+      </svg>
+    </g>
+    <g id={ICON_NAMES.IN_PROGRESS}>
+      <svg viewBox="0 0 18 18" fill="none">
+        <path
+          d="M9 0.5C10.6811 0.5 12.3245 0.998516 13.7223 1.93251C15.1202 2.8665 16.2096 4.19402 16.853 5.74719C17.4963 7.30036 17.6646 9.00943 17.3367 10.6583C17.0087 12.3071 16.1992 13.8217 15.0104 15.0104C13.8217 16.1992 12.3071 17.0087 10.6583 17.3367C9.00943 17.6646 7.30036 17.4963 5.74719 16.853C4.19402 16.2096 2.8665 15.1202 1.93251 13.7223C0.998516 12.3245 0.5 10.6811 0.5 9"
+          stroke="currentColor"
+        />
       </svg>
     </g>
     <g id={ICON_NAMES.MENU}>

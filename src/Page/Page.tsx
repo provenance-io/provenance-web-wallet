@@ -19,8 +19,9 @@ const PageStyled = styled.div<Props>`
   display: flex;
   flex-direction: column;
   font-family: 'Montserrat', 'sans-serif';
-  height: 100vh;
   justify-content: ${({ justify }) => justify};
+  height: 100%;
+  max-height: 100%;
   min-height: 100%;
   overflow: auto;
   padding: 42px 32px;

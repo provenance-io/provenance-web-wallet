@@ -19,22 +19,23 @@ import {
   VerifyPassphrase,
   Transactions,
   Profile,
+  Asset,
   ResetWallets,
   Confirm,
   TradeDetails,
   TransactionComplete,
 } from 'Page';
-
+// MAIN URLS
 export const APP_URL = '/';
-// DASHBOARD
+// DASHBOARD URLS
 export const DASHBOARD_URL = '/dashboard';
 export const DASHBOARD_MENU_URL = '/dashboard/menu';
 export const DASHBOARD_SEND_URL = '/dashboard/send';
 export const DASHBOARD_RECEIVE_URL = '/dashboard/receive';
-// PROFILE
+// PROFILE URLS
 export const PROFILE_URL = '/profile';
 export const RESET_WALLETS_URL = '/profile/reset-wallets';
-// TRANSACTIONS
+// TRANSACTION URLS
 export const TRANSACTIONS_URL = '/transactions';
 export const TRADE_DETAILS_URL = '/trade-details';
 export const TRANSACTION_COMPLETE_URL = '/transaction-complete';
@@ -42,6 +43,8 @@ export const TRANSACTION_COMPLETE_URL = '/transaction-complete';
 export const RECOVER_URL = '/recover';
 export const RECOVER_NOTE_URL = '/recover/note';
 export const RECOVER_SEED_URL = '/recover/seed';
+// ASSET URLS
+export const ASSET_URL = '/asset/:assetName';
 // CONFIRMATION
 export const CONFIRM_URL = '/confirm';
 export const CONNECT_REQUEST_URL = '/connect';
@@ -74,6 +77,14 @@ export const routes = [
           { path: DASHBOARD_SEND_URL, element: <DashboardSend /> },
           { path: DASHBOARD_RECEIVE_URL, element: <DashboardReceive /> },
         ]
+      },
+      // ASSET
+      {
+        path: ASSET_URL,
+        element: <Page bgImage />,
+        children: [
+          { index: true, element: <Asset /> },
+        ],
       },
       // TRANSACTIONS
       {

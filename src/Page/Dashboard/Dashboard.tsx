@@ -1,4 +1,4 @@
-import { Button, FooterNav, Asset } from 'Components';
+import { Button, FooterNav, AssetRow } from 'Components';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import { DashboardHeader } from './DashboardHeader';
@@ -30,7 +30,6 @@ const AssetsTitle = styled.div`
   font-family: 'Gothic A1';
   font-weight: 700;
   width: 100%;
-  border-bottom: 1px solid #3D4151;
 `;
 const AssetsContainer = styled.div`
   width: 100%;
@@ -58,10 +57,10 @@ export const Dashboard = () => {
       </ButtonGroup>
       <AssetsTitle>My Assets</AssetsTitle>
       <AssetsContainer>
-        <Asset img="hash" name="hash" amount={{ value: 500, change: 13.63 }} />
-        <Asset img="usdf" name="usdf" />
-        <Asset img="etf" name="etf" />
-        <Asset img="inu" name="inu" />
+        <AssetRow onClick={() => navigate('/asset/hash')} img="hash" name="hash" amount={{ value: 500, change: 13.63 }} />
+        <AssetRow onClick={() => navigate('/asset/usdf')} img="usdf" name="usdf" />
+        <AssetRow onClick={() => navigate('/asset/etf')} img="etf" name="etf" />
+        <AssetRow onClick={() => navigate('/asset/inu')} img="inu" name="inu" />
       </AssetsContainer>
       <FooterNav />
     </>

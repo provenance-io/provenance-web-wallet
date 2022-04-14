@@ -5,11 +5,11 @@ import { COLORS, FONTS } from 'theme';
 import { ICON_NAMES } from 'consts';
 import React from 'react';
 
-const Wrapper = styled.header`
+const Wrapper = styled.header<{marginBottom: string}>`
   display: flex;
   flex-direction: column;
   gap: 18px;
-  margin-bottom: 32px;
+  margin-bottom: ${({ marginBottom }) => marginBottom };
   width: 100%;
 `;
 
@@ -74,16 +74,17 @@ const BackButton = ({ children }: { children: React.ReactNode }) => {
 interface HeaderProps {
   iconLeft?: string;
   progress?: number;
-  title: string;
+  title?: string | React.ReactNode;
+  marginBottom?: string;
 }
 
-export const Header = ({ iconLeft = ICON_NAMES.ARROW, progress, title }: HeaderProps) => (
-  <Wrapper>
+export const Header = ({ iconLeft = ICON_NAMES.ARROW, progress, title, marginBottom = '32px' }: HeaderProps) => (
+  <Wrapper marginBottom={marginBottom}>
     <Content>
       <BackButton>
         <Sprite size="1.4rem" icon={iconLeft} />
       </BackButton>
-      <Title>{title}</Title>
+      {title && <Title>{title}</Title>}
     </Content>
     {progress !== undefined && <ProgressBar progress={progress} />}
   </Wrapper>

@@ -9,3 +9,4 @@ export * from './Landing';
 export * from './Recover';
 export * from './Profile';
 export * from './Transactions';
+export * from './Asset';

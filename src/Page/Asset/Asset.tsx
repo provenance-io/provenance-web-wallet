@@ -69,9 +69,11 @@ const SectionTitle = styled.div`
 export const Asset:React.FC = () => {
   const { assetName } = useParams();
   const [currentAssetValue, setCurrentAssetValue] = useState(0);
-  const [currentPriceChange, setCurrentPriceChange] = useState(0)
+  const [currentPriceChange, setCurrentPriceChange] = useState(0);
+  const [loading, setLoading] = useState(true);
   const [currentPriceChangePercent, setCurrentPriceChangePercent] = useState('');
   const [currentDate, setCurrentDate] = useState('');
+  const [error, setError] = useState<string | boolean>(false);
 
   const onValueChange = ({value = 0, diff = 0, diffPercent = '', date = ''}: ChangeValueArgs) => {
     setCurrentAssetValue(value);
@@ -92,13 +94,13 @@ export const Asset:React.FC = () => {
         />
         <HeaderTitle>{assetName}</HeaderTitle>
       </HeaderTitleGroup>
-      <Price>{currentAssetValue ? <><span>$</span>{currentAssetValue.toFixed(3)}</> : 'Loading'}</Price>
+      <Price>{error? 'N/A' : loading ? 'Loading' : currentAssetValue ? <><span>$</span>{currentAssetValue.toFixed(3)}</> : 'N/A'}</Price>
       <PriceChange polarity={PriceChangePolarity}>
         {PriceChangePolarity !== 'neutral' && <Sprite icon={ICON_NAMES.ARROW_TALL} size="1.5rem" spin={PriceChangePolarity === 'positive' ? '0' : '180'} />}
         ${currentPriceChange.toFixed(2)}{PriceChangePolarity !== 'neutral' && ` (${currentPriceChangePercent})`}
       </PriceChange>
       {currentDate && <CurrentDate>{format(new Date(currentDate), 'h:MM bb, MMM dd, yyyy')}</CurrentDate>}
-      <AssetChart onValueChange={onValueChange} />
+      <AssetChart onValueChange={onValueChange} setError={setError} loading={loading} setLoading={setLoading} />
       <AssetStats />
       <SectionTitle>Recent Transactions</SectionTitle>
       <div>

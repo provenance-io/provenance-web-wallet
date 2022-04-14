@@ -49,15 +49,17 @@ const ChartOption = styled.div<{disabled: boolean, active: boolean}>`
 
 interface Props {
   onValueChange: ChangeValueType;
+  setError: (e: string | boolean) => void
+  setLoading: (e: boolean) => void
+  loading: boolean
 }
 
-export const AssetChart:React.FC<Props> = ({ onValueChange }) => {
+export const AssetChart:React.FC<Props> = ({ onValueChange, setError, loading, setLoading }) => {
   const dateNow = new Date().toISOString();
   // Page Asset
   const { assetName } = useParams();
   // Api Fetch
   const [fetchData, setFetchData] = useState(true);
-  const [loading, setLoading] = useState(true);
   const [timePeriod, setTimePeriod] = useState<TimePeriodType>('HOURLY');
   const [startDate, setStartDate] = useState(generateStartDate(timePeriod));
   const [endDate] = useState(dateNow);
@@ -74,45 +76,60 @@ export const AssetChart:React.FC<Props> = ({ onValueChange }) => {
       const fetchName = isHash ? 'nhash' : assetName;
       const fetchUrl = `${MARKER_URL}/${fetchName}?period=${timePeriod}&startDate=${startDate}&endDate=${endDate}`;
       setLoading(true);
+      setError(false);
       const newMarkerData = await fetch(fetchUrl)
         .then(response => response.json())
-        .then(data => data);
-      // API Returns data decending.  Reverse to change to ascending
-      const sortedMarkerData = newMarkerData.reverse();
-      // Updated chart data
-      const newLabels:ChartLabelsType = []
-      const newValues:ChartValuesType = []
-      const newValueDiffs:ChartValueDiffsType = [];
-      const newValueDiffPercents:ChartValueDiffPercentsType = [];
-      // Loop through each api value and split into chart data arrays
-      sortedMarkerData.forEach(({ timestamp, price }: FetchMarkerType, index: number) => {
-        // Convert nhash to hash if needed
-        const finalPrice = isHash ? hashFormat('nhash', price) : price;
-        // Calculate price change from first price
-        const diff = price - sortedMarkerData[0].price;
-        // Calculate percent change
-        const finalValueDiffPercents = percentChange(sortedMarkerData[0].price, price);
-        const finalValueDiffs = isHash ? hashFormat('nhash', diff) : diff;
-        // Add data to appropriate array
-        newValueDiffPercents.push(finalValueDiffPercents);
-        newLabels.push(timestamp);
-        newValues.push(finalPrice);
-        newValueDiffs.push(finalValueDiffs);
-      });
-      setChartLabels(newLabels);
-      setChartValues(newValues);
-      setChartValueDiffs(newValueDiffs);
-      setChartValueDiffPercents(newValueDiffPercents);
+        .then(data => data)
+      const apiError = newMarkerData.error !== undefined || '';
+      if (!apiError) {
+        // API Returns data decending.  Reverse to change to ascending
+        const sortedMarkerData = newMarkerData.reverse();
+        // Updated chart data
+        const newLabels:ChartLabelsType = []
+        const newValues:ChartValuesType = []
+        const newValueDiffs:ChartValueDiffsType = [];
+        const newValueDiffPercents:ChartValueDiffPercentsType = [];
+        // Loop through each api value and split into chart data arrays
+        sortedMarkerData.forEach(({ timestamp, price }: FetchMarkerType, index: number) => {
+          // Convert nhash to hash if needed
+          const finalPrice = isHash ? hashFormat('nhash', price) : price;
+          // Calculate price change from first price
+          const diff = price - sortedMarkerData[0].price;
+          // Calculate percent change
+          const finalValueDiffPercents = percentChange(sortedMarkerData[0].price, price);
+          const finalValueDiffs = isHash ? hashFormat('nhash', diff) : diff;
+          // Add data to appropriate array
+          newValueDiffPercents.push(finalValueDiffPercents);
+          newLabels.push(timestamp);
+          newValues.push(finalPrice);
+          newValueDiffs.push(finalValueDiffs);   
+        });
+        setChartLabels(newLabels);
+        setChartValues(newValues);
+        setChartValueDiffs(newValueDiffs);
+        setChartValueDiffPercents(newValueDiffPercents);
 
+        // Update the price to be the latest value
+        onValueChange({ value: newValues[newValues.length-1], date: newLabels[newLabels.length -1] })
+      } else { setError(apiError) }
       setLoading(false);
-      // Update the price to be the latest value
-      onValueChange({ value: newValues[newValues.length-1], date: newLabels[newLabels.length -1] })
     }
     if (fetchData) {
       setFetchData(false);
       fetchMarkerData();
     };
-  }, [assetName, timePeriod, startDate, endDate, fetchData, onValueChange, chartLabels, chartValues]);
+  }, [
+    assetName,
+    timePeriod,
+    startDate,
+    endDate,
+    fetchData,
+    onValueChange,
+    chartLabels,
+    chartValues,
+    setError,
+    setLoading,
+  ]);
 
   const changeTimePeriod = (value: TimePeriodType) => {
     if (value !== timePeriod) {

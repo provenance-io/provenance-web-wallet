@@ -25,6 +25,7 @@ const HeaderTitleGroup = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
+  margin-bottom: 4px;
 `;
 const HeaderTitle = styled.div`
   font-size: 1.4rem;
@@ -33,13 +34,14 @@ const HeaderTitle = styled.div`
 `
 const HeaderIcon = styled.img`
   width:30px;
-  margin-bottom: 10px;
 `;
 const Price = styled.div`
   font-size: 4.4rem;
   font-weight: 300;
   font-family: 'Montserrat', sans-serif;
-  margin-bottom: 10px;
+  span {
+   font-size: 3.4rem; 
+  }
 `;
 const PriceChange = styled.div<{polarity: string}>`
   font-size: 1.4rem;
@@ -55,7 +57,7 @@ const CurrentDate = styled.div`
   font-size: 1.4rem;
   font-family: 'Gothic A1', sans-serif;
   font-weight: 400;
-  margin-top: 40px;
+  margin-top: 30px;
 `;
 const SectionTitle = styled.div`
   font-size: 1.9rem;
@@ -83,15 +85,14 @@ export const Asset:React.FC = () => {
   return (
     assetName ? 
     <Wrapper>
-      <Header
-        title={
-          <HeaderTitleGroup>
-            <HeaderIcon src={`/images/assets/${assetName}.svg`} alt={`${assetName} icon`} />
-            <HeaderTitle>{assetName}</HeaderTitle>
-          </HeaderTitleGroup>
-        }
-      />
-      <Price>{currentAssetValue ? `$${currentAssetValue.toFixed(3)}` : 'Loading'}</Price>
+      <HeaderTitleGroup>
+        <Header
+          title={<HeaderIcon src={`/images/assets/${assetName}.svg`} alt={`${assetName} icon`} />}
+          marginBottom="10px"
+        />
+        <HeaderTitle>{assetName}</HeaderTitle>
+      </HeaderTitleGroup>
+      <Price>{currentAssetValue ? <><span>$</span>{currentAssetValue.toFixed(3)}</> : 'Loading'}</Price>
       <PriceChange polarity={PriceChangePolarity}>
         {PriceChangePolarity !== 'neutral' && <Sprite icon={ICON_NAMES.ARROW_TALL} size="1.5rem" spin={PriceChangePolarity === 'positive' ? '0' : '180'} />}
         ${currentPriceChange.toFixed(2)}{PriceChangePolarity !== 'neutral' && ` (${currentPriceChangePercent})`}

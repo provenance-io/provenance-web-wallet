@@ -31,6 +31,7 @@ type SpriteProps = {
   height?: string;
   icon: string;
   width?: string;
+  onClick?: () => void;
 } & SvgProps;
 
 export const Sprite = ({
@@ -39,6 +40,7 @@ export const Sprite = ({
   color = COLORS.PRIMARY_500,
   icon,
   secondaryColor = COLORS.WHITE,
+  onClick,
   ...svgIcons
 }: SpriteProps) => {
 
@@ -49,6 +51,7 @@ export const Sprite = ({
       animate={animate}
       color={color}
       secondaryColor={secondaryColor}
+      onClick={onClick}
     >
       <use href={`#${icon}`} />
     </Svg>

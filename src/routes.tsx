@@ -1,5 +1,7 @@
 // import { Navigate } from 'react-router-dom';
 import {
+  ConnectionDetails,
+  ConnectionSuccess,
   CreateComplete,
   CreateStart,
   Dashboard,
@@ -17,7 +19,14 @@ import {
   VerifyPassphrase,
   Transactions,
   Profile,
+<<<<<<< HEAD
   Asset,
+=======
+  ResetWallets,
+  Confirm,
+  TradeDetails,
+  TransactionComplete,
+>>>>>>> 86ece9857145ecd5a476472461acb85af7e1acce
 } from 'Page';
 // MAIN URLS
 export const APP_URL = '/';
@@ -28,14 +37,27 @@ export const DASHBOARD_SEND_URL = '/dashboard/send';
 export const DASHBOARD_RECEIVE_URL = '/dashboard/receive';
 // PROFILE URLS
 export const PROFILE_URL = '/profile';
+<<<<<<< HEAD
 // TRANSACTION URLS
+=======
+export const RESET_WALLETS_URL = '/profile/reset-wallets';
+// TRANSACTIONS
+>>>>>>> 86ece9857145ecd5a476472461acb85af7e1acce
 export const TRANSACTIONS_URL = '/transactions';
+export const TRADE_DETAILS_URL = '/trade-details';
+export const TRANSACTION_COMPLETE_URL = '/transaction-complete';
 // RECOVER URLS
 export const RECOVER_URL = '/recover';
 export const RECOVER_NOTE_URL = '/recover/note';
 export const RECOVER_SEED_URL = '/recover/seed';
 // ASSET URLS
 export const ASSET_URL = '/asset/:assetName';
+// CONFIRMATION
+export const CONFIRM_URL = '/confirm';
+export const CONNECT_REQUEST_URL = '/connect';
+// CONNECTION
+export const CONNECT_SUCCESS_URL = '/connect-success';
+export const CONNECT_DETAILS_URL = '/connect-details';
 // CREATE URLS
 export const CREATE_URL = '/create';
 export const CREATE_PASSPHRASE_INTRO_URL = '/create/passphrase-intro';
@@ -79,12 +101,64 @@ export const routes = [
           { index: true, element: <Transactions /> },
         ],
       },
+      {
+        path: TRADE_DETAILS_URL,
+        element: <Page />,
+        children: [
+          { index: true, element: <TradeDetails /> },
+        ],
+      },
+      {
+        path: TRANSACTION_COMPLETE_URL,
+        element: <Page bgImage/>,
+        children: [
+          { index: true, element: <TransactionComplete /> },
+        ],
+      },
       // PROFILE
       {
         path: PROFILE_URL,
         element: <Page />,
         children: [
           { index: true, element: <Profile /> },
+        ],
+      },
+      // RESET WALLETS
+      {
+        path: RESET_WALLETS_URL,
+        element: <Page />,
+        children: [
+          { index: true, element: <ResetWallets /> },
+        ],
+      },
+      // CONFIRMATION
+      {
+        path: CONFIRM_URL,
+        element: <Page />,
+        children: [
+          { index: true, element: <Confirm /> },
+        ],
+      },
+      {
+        path: CONNECT_REQUEST_URL,
+        element: <Page bgImage/>,
+        children: [
+          { index: true, element: <Confirm /> },
+        ],
+      },
+      // CONNECTION
+      {
+        path: CONNECT_SUCCESS_URL,
+        element: <Page bgImage/>,
+        children: [
+          { index: true, element: <ConnectionSuccess /> },
+        ],
+      },
+      {
+        path: CONNECT_DETAILS_URL,
+        element: <Page />,
+        children: [
+          { index: true, element: <ConnectionDetails /> },
         ],
       },
       // RECOVER

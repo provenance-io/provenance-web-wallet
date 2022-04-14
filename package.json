@@ -6,11 +6,13 @@
     "@provenanceio/walletconnect-js": "0.2.15",
     "@reduxjs/toolkit": "^1.7.2",
     "@walletconnect/client": "1.7.1",
+    "axios": "0.26.1",
     "bip39": "3.0.4",
     "chart.js": "3.7.1",
     "chartjs-adapter-date-fns": "2.0.0",
     "date-fns": "2.28.0",
     "qrcode": "1.5.0",
+    "query-string": "7.1.1",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
     "react-helmet-async": "1.2.2",
@@ -39,6 +41,7 @@
     "@types/styled-components": "^5.1.22",
     "buffer": "6.0.3",
     "crypto-browserify": "3.12.0",
+    "env-cmd": "10.1.0",
     "eslint-config-prettier": "8.3.0",
     "file-loader": "6.2.0",
     "prettier": "2.5.1",
@@ -49,9 +52,9 @@
     "util": "0.12.4"
   },
   "scripts": {
-    "start": "craco start",
-    "build": "craco build",
-    "test": "craco test",
+    "start": "env-cmd -e default craco start",
+    "build": "env-cmd -e production craco build",
+    "test": "env-cmd -e e2e craco test",
     "eject": "react-scripts eject"
   },
   "eslintConfig": {

@@ -19,14 +19,11 @@ import {
   VerifyPassphrase,
   Transactions,
   Profile,
-<<<<<<< HEAD
   Asset,
-=======
   ResetWallets,
   Confirm,
   TradeDetails,
   TransactionComplete,
->>>>>>> 86ece9857145ecd5a476472461acb85af7e1acce
 } from 'Page';
 // MAIN URLS
 export const APP_URL = '/';
@@ -37,12 +34,8 @@ export const DASHBOARD_SEND_URL = '/dashboard/send';
 export const DASHBOARD_RECEIVE_URL = '/dashboard/receive';
 // PROFILE URLS
 export const PROFILE_URL = '/profile';
-<<<<<<< HEAD
-// TRANSACTION URLS
-=======
 export const RESET_WALLETS_URL = '/profile/reset-wallets';
-// TRANSACTIONS
->>>>>>> 86ece9857145ecd5a476472461acb85af7e1acce
+// TRANSACTION URLS
 export const TRANSACTIONS_URL = '/transactions';
 export const TRADE_DETAILS_URL = '/trade-details';
 export const TRANSACTION_COMPLETE_URL = '/transaction-complete';

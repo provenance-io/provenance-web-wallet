@@ -89,8 +89,7 @@ export const EnterSeed:React.FC = () => {
   const createSeedInputs = (total: number) => {
     const allInputsElements = [];
 
-    const onInputChange = (i: number, e: any) => {
-      const value = e?.target?.value;
+    const onInputChange = (i: number, value: any) => {
       // Check first input to see if the value entered is an entire pasted mnumonic
       if (i === 0) {
         const wholeMnumonic = isMnumonic(value, totalSeeds);
@@ -112,7 +111,7 @@ export const EnterSeed:React.FC = () => {
           label={`Passphrase ${displayNum}`}
           key={`Passphrase ${displayNum}`}
           value={value}
-          onChange={(e: any) => onInputChange(i, e)}
+          onChange={(value: any) => onInputChange(i, value)}
           error={error}
         />
       );

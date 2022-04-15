@@ -1,9 +1,16 @@
 import { useEffect, useState } from 'react';
-import { Button, Sprite } from 'Components';
+import { Button, Input, Sprite } from 'Components';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import customizationCarousel from 'images/customization-carousel.svg';
-import { numberFormat } from 'utils';
+import {
+  numberFormat,
+  encrypt,
+  decrypt,
+  getFromLocalStorage,
+  addToLocalStorage,
+  clearLocalStorage,
+} from 'utils';
 import { Title, InfoText } from 'Components';
 import { useStatistics } from 'redux/hooks';
 
@@ -55,12 +62,33 @@ const StatValue = styled.div`
 const StatValueSmall = styled.span`
   font-size: 2.4rem;
 `;
+const LocalAccountTest = styled.div`
+  margin-top: 50px;
+  background: #3c63a38c;
+  padding: 40px;
+  border-radius: 4px;
+  button {
+    margin: 10px 0;
+  }
+`;
 
 export const Landing: React.FC = () => {
   const [currentSlide, setCurrentSlide] = useState(1);
+  const [localAccount, setLocalAccount] = useState('');
+  const [loginSuccess, setLoginSuccess] = useState(false);
+  const [wrongPassword, setWrongPassword] = useState(false);
+  const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
+  const [accountName, setAccountName] = useState('');
   const navigate = useNavigate();
   const { getStatistics, statistics } = useStatistics();
   const { marketCap, validators, transactions, averageBlockTime } = statistics;
+
+  // On load, check to see if the user has an account in localStorage
+  useEffect(() => {
+    const account = getFromLocalStorage('provenance-web-wallet', 'account') || '';
+    setLocalAccount(account);
+  }, []);
 
   useEffect(() => {
     getStatistics();
@@ -148,6 +176,48 @@ export const Landing: React.FC = () => {
         return null;
     }
   };
+
+  const createLocalAccount = () => {
+    setError('');
+    if (password.length >= 5) {
+      const newPrivateKey = 'abcdefghijklmnop12345678910';
+      const encrypted = encrypt(newPrivateKey, password);
+      const data = { account: accountName, data: encrypted };
+      addToLocalStorage('provenance-web-wallet', data);
+      setLoginSuccess(true);
+    } else {
+      setError('Minimum password length 5');
+    }
+  };
+
+  const removeLocalAccount = () => {
+    clearLocalStorage('provenance-web-wallet');
+    setAccountName('');
+    setPassword('');
+    setError('');
+    setLoginSuccess(false);
+    setWrongPassword(false);
+    setLocalAccount('');
+  };
+
+  const loginLocalAccount = () => {
+    setError('');
+    setWrongPassword(false);
+    setLoginSuccess(false);
+    const data = getFromLocalStorage('provenance-web-wallet', 'data');
+    if (data) {
+      if (password.length >= 5) {
+        const decrypted = decrypt(data, password);
+        if (decrypted) {
+          setLoginSuccess(true);
+          console.log('decrypted privateKey: ', decrypted);
+        }
+        else { setWrongPassword(true) }
+      }
+      else { setWrongPassword(true) }
+    }
+  };
+
   return (
     <>
       {renderCarouselContent()}
@@ -160,6 +230,26 @@ export const Landing: React.FC = () => {
         Create Wallet
       </Button>
       <TextButton onClick={() => changePage('recover')}>Recover Wallet</TextButton>
+      <LocalAccountTest>
+        {loginSuccess ? <InfoText>Successfully logged-in/created {localAccount || accountName}!</InfoText> :
+          localAccount ? (
+            <>
+              <InfoText>Account Found ({localAccount})</InfoText>
+              <Button variant="primary" onClick={loginLocalAccount}>Login</Button>
+              <Button onClick={removeLocalAccount}>Remove Account</Button>
+              {wrongPassword && <InfoText>Wrong Password!</InfoText>}
+              <Input id="password" onChange={setPassword} placeholder="Enter Password" />
+            </>
+          ) : (
+            <>
+              <Input id="accountName" onChange={setAccountName} placeholder="Account Name" />
+              {error && <div>{error}</div>}
+              <Input id="password" onChange={setPassword} placeholder="Enter Password" />
+              <Button variant="primary" onClick={createLocalAccount}>Create local account</Button>
+            </>
+          )
+        }
+      </LocalAccountTest>
     </>
   );
 };

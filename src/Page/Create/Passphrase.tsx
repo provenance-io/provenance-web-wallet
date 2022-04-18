@@ -1,9 +1,11 @@
 import { useNavigate } from 'react-router-dom';
 import styled, { css } from 'styled-components';
-import { useGeneric } from 'redux/hooks';
 import { BodyContent, CtaButton, Header } from 'Components';
+import { RootState } from 'redux/store';
 import { COLORS } from 'theme';
-import { useEffect } from 'react';
+import { walletActions } from 'redux/features/wallet/walletSlice';
+import { createMnemonic } from 'utils';
+import { useDispatch, useSelector } from 'react-redux';
 
 const MnuemonicList = styled.div`
   display: flex;
@@ -31,14 +33,18 @@ interface Props {
 
 export const Passphrase = ({ nextUrl }: Props) => {
   const navigate = useNavigate();
-  const { mnemonic, generateMnemonic } = useGeneric();
+  const mnemonic = createMnemonic();
+  const { activeWalletIndex } = useSelector((state: RootState) => state.wallet);
+  const { updateWallet } = walletActions;
+  const dispatch = useDispatch();
 
-  useEffect(() => {
-    // if the mnemonic doesn't exist we need to generate it
-    if (!mnemonic) {
-      generateMnemonic();
+  const handleContinue = () => {
+    if (mnemonic) {
+      // Save this mnuemonic into current wallet
+      dispatch(updateWallet({ walletIndex: activeWalletIndex, mnemonic }))
+      navigate(nextUrl);
     }
-  }, [mnemonic, generateMnemonic]);
+  };
 
   return (
     <>
@@ -63,7 +69,7 @@ export const Passphrase = ({ nextUrl }: Props) => {
         ))}
       </MnuemonicList>
 
-      <CtaButton onClick={() => navigate(nextUrl)}>Continue</CtaButton>
+      <CtaButton onClick={handleContinue}>Continue</CtaButton>
     </>
   );
 };

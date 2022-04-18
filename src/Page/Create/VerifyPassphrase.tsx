@@ -1,10 +1,12 @@
 import { useEffect, useState } from 'react';
 import { BodyContent, Checkbox, CtaButton, Header } from 'Components';
-import { useNavigate } from 'react-router-dom';
-import { useAppSelector } from 'redux/hooks';
 import { css } from 'styled-components';
 import { VerifyButtonGroup } from './VerifyButtonGroup';
+import { walletActions } from 'redux/features/wallet/walletSlice';
 import { COLORS } from 'theme';
+import { RootState } from 'redux/store';
+import { bytesToBase64, createMasterKeyFromMnemonic, createWalletFromMasterKey } from 'utils';
+import { useDispatch, useSelector } from 'react-redux';
 
 interface Props {
   nextUrl: string;
@@ -37,11 +39,16 @@ const groupArrays = (arr: string[] = [], size: number = 3) =>
   }, []);
 
 export const VerifyPassphrase = ({ nextUrl }: Props) => {
-  const navigate = useNavigate();
   const [correct, setCorrect] = useState<boolean[]>([]);
   const [errorMsg, setErrorMsg] = useState('');
   const [verifyWords, setVerifyWords] = useState<string[][] | null>(null);
-  const mnemonic = useAppSelector((state) => state.generic.mnemonic)?.split(' ');
+  // Redux Store
+  const { activeWalletIndex, wallets } = useSelector((state: RootState) => state.wallet);
+  const { updateWallet } = walletActions;
+  const dispatch = useDispatch();
+  const targetWallet = wallets[activeWalletIndex];
+  const { mnemonic } = targetWallet;
+  const mnemonicArray = mnemonic?.split(' ');
 
   const handleCorrect = (ind: number, correct: boolean) => {
     setCorrect((arr) => {
@@ -51,28 +58,27 @@ export const VerifyPassphrase = ({ nextUrl }: Props) => {
   };
 
   useEffect(() => {
-    // if the mnemonic doesn't exist need to go back a page to generate a new one
-    if (!mnemonic) {
-      navigate(-1);
+    if (!verifyWords && mnemonic && mnemonicArray) {
+      setVerifyWords(groupArrays(getRandomSubarray(mnemonicArray, mnemonicArray.length / 2)));
     }
-  }, [mnemonic, navigate]);
-
-  useEffect(() => {
-    if (!verifyWords && mnemonic) {
-      setVerifyWords(groupArrays(getRandomSubarray(mnemonic, mnemonic.length / 2)));
-    }
-  }, [mnemonic, verifyWords]);
+  }, [mnemonicArray, verifyWords, mnemonic]);
 
   const handleContinue = () => {
     if (correct.some((c) => !c)) {
       setErrorMsg('You selected incorrect choices. Please try again');
-      // } else if () {
     } else {
       setErrorMsg('');
+      if (mnemonic !== undefined) {
+        const masterKey = createMasterKeyFromMnemonic(mnemonic);
+        const { address, publicKey, privateKey } = createWalletFromMasterKey(masterKey);
+        const b64PublicKey = bytesToBase64(publicKey);
+        const b64PrivateKey = bytesToBase64(privateKey);
+        dispatch(updateWallet({ address, b64PrivateKey, b64PublicKey, walletIndex: activeWalletIndex }))
+      }
     }
   };
 
-  return mnemonic ? (
+  return (
     <>
       <Header progress={66} title="Verify Passphrase" />
 
@@ -87,10 +93,10 @@ export const VerifyPassphrase = ({ nextUrl }: Props) => {
         </BodyContent>
       )}
 
-      {verifyWords?.map((wordArr, ind) => (
+      {mnemonic && mnemonicArray?.length && verifyWords?.map((wordArr, ind) => (
         <VerifyButtonGroup
           key={wordArr.join('')}
-          mnemonic={mnemonic}
+          mnemonic={mnemonicArray}
           setCorrect={(correct) => handleCorrect(ind, correct)}
           wordArr={wordArr}
         />
@@ -106,5 +112,5 @@ export const VerifyPassphrase = ({ nextUrl }: Props) => {
 
       <CtaButton onClick={handleContinue}>Continue</CtaButton>
     </>
-  ) : null;
+  );
 };

@@ -57,6 +57,7 @@ export const VerifyPassphrase = ({ nextUrl }: Props) => {
   };
 
   useEffect(() => {
+    console.log('VerifyPassphrase useEffect');
     if (!verifyWords && mnemonic && mnemonicArray) {
       setVerifyWords(groupArrays(getRandomSubarray(mnemonicArray, mnemonicArray.length / 2)));
     }
@@ -82,15 +83,15 @@ export const VerifyPassphrase = ({ nextUrl }: Props) => {
 
   const createButtonGroups = () => {
     if (!mnemonic || !mnemonicArray?.length) return null;
-    console.log('verifyWords: ', verifyWords);
-    return verifyWords?.map((wordArr, index) => (
-      <VerifyButtonGroup
-        key={wordArr.join('')}
-        mnemonicArray={mnemonicArray}
-        setCorrect={(correct) => handleCorrect(index, correct)}
-        wordArr={wordArr}
-      />
-    ))
+    return verifyWords?.map((wordArr, index) => {
+      return (
+        <VerifyButtonGroup
+          key={wordArr.join('')}
+          mnemonicArray={mnemonicArray}
+          setCorrect={(correct) => handleCorrect(index, correct)}
+          wordArr={wordArr}
+        />
+      )})
   };
 
   return (

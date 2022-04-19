@@ -10,11 +10,10 @@ interface Props {
 
 export const VerifyButtonGroup = ({ mnemonicArray, setCorrect, wordArr }: Props) => {
   const [selected, setSelected] = useState('');
-  const [answer, setAnswer] = useState({ word: '', ind: 0 });
-
+  const [answer, setAnswer] = useState({ word: '', index: 0 });
   useEffect(() => {
     const word = wordArr[Math.floor(Math.random() * 3)];
-    setAnswer({ word, ind: mnemonicArray.indexOf(word) + 1 });
+    setAnswer({ word, index: mnemonicArray.indexOf(word) + 1 });
   }, [mnemonicArray, wordArr]);
 
   useEffect(() => {
@@ -29,7 +28,7 @@ export const VerifyButtonGroup = ({ mnemonicArray, setCorrect, wordArr }: Props)
           text-align: center;
         `}
       >
-        select word #{answer.ind}
+        select word #{answer.index}
       </BodyContent>
       <Div
         $css={css`
@@ -38,13 +37,13 @@ export const VerifyButtonGroup = ({ mnemonicArray, setCorrect, wordArr }: Props)
           gap: 8px;
         `}
       >
-        {wordArr?.map((w) => (
+        {wordArr?.map((word) => (
           <Button
-            key={w}
-            variant={selected === w ? 'secondary' : 'default'}
-            onClick={() => setSelected(w)}
+            key={word}
+            variant={selected === word ? 'secondary' : 'default'}
+            onClick={() => setSelected(word)}
           >
-            {w}
+            {word}
           </Button>
         ))}
       </Div>

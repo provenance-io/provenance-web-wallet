@@ -178,7 +178,8 @@ export const routes = [
       },
       {
         path: CREATE_SEEDPHRASE_URL,
-        element: <Seedphrase nextUrl={CREATE_VERIFY_SEEDPHRASE_URL} />,
+        // element: <Seedphrase nextUrl={CREATE_VERIFY_SEEDPHRASE_URL} />, // TEMP: Skip to password
+        element: <Seedphrase nextUrl={CREATE_PASSWORD_URL} />,
       },
       {
         path: CREATE_VERIFY_SEEDPHRASE_URL,

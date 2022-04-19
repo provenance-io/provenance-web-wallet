@@ -1,5 +1,5 @@
 export * from './CreateComplete';
 export * from './CreateStart';
-export * from './Passphrase';
+export * from './Seedphrase';
 export * from './PassphraseIntro';
 export * from './VerifyPassphrase';

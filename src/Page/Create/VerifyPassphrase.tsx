@@ -5,6 +5,7 @@ import { VerifyButtonGroup } from './VerifyButtonGroup';
 import { COLORS } from 'theme';
 import { bytesToBase64, createMasterKeyFromMnemonic, createWalletFromMasterKey } from 'utils';
 import { useWallet } from 'redux/hooks';
+import { useNavigate } from 'react-router-dom';
 
 interface Props {
   nextUrl: string;
@@ -42,7 +43,7 @@ export const VerifyPassphrase = ({ nextUrl }: Props) => {
   const [termsAgree, setTermsAgree] = useState(false);
   const [verifyWords, setVerifyWords] = useState<string[][] | null>(null);
   // Navigate
-  // const navigate = useNavigate();
+  const navigate = useNavigate();
   // Redux Store
   const { activeWalletIndex, wallets, updateWallet } = useWallet();
   const targetWallet = wallets[activeWalletIndex];
@@ -57,7 +58,6 @@ export const VerifyPassphrase = ({ nextUrl }: Props) => {
   };
 
   useEffect(() => {
-    console.log('VerifyPassphrase useEffect');
     if (!verifyWords && mnemonic && mnemonicArray) {
       setVerifyWords(groupArrays(getRandomSubarray(mnemonicArray, mnemonicArray.length / 2)));
     }
@@ -77,6 +77,7 @@ export const VerifyPassphrase = ({ nextUrl }: Props) => {
         const b64PublicKey = bytesToBase64(publicKey);
         const b64PrivateKey = bytesToBase64(privateKey);
         updateWallet({ address, b64PrivateKey, b64PublicKey, walletIndex: activeWalletIndex });
+        navigate(nextUrl);
       }
     }
   };

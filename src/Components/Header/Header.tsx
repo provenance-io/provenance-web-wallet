@@ -13,9 +13,9 @@ const Wrapper = styled.header<{marginBottom: string}>`
   width: 100%;
 `;
 
-const Content = styled.div`
+const Content = styled.div<{excludeBackButton: boolean}>`
   display: grid;
-  grid-template-columns: 1.4rem 1fr 1.4rem;
+  grid-template-columns: ${({ excludeBackButton }) => excludeBackButton ? '1fe' : '1.4rem 1fr 1.4rem' };
   align-items: center;
 `;
 
@@ -79,14 +79,20 @@ interface HeaderProps {
   backLocation?: string;
 }
 
-export const Header = ({ iconLeft = ICON_NAMES.ARROW, progress, title, marginBottom = '32px', backLocation }: HeaderProps) => (
-  <Wrapper marginBottom={marginBottom}>
-    <Content>
-      <BackButton backLocation={backLocation}>
-        <Sprite size="1.4rem" icon={iconLeft} />
-      </BackButton>
-      {title && <Title>{title}</Title>}
-    </Content>
-    {progress !== undefined && <ProgressBar progress={progress} />}
-  </Wrapper>
-);
+export const Header = ({ iconLeft = ICON_NAMES.ARROW, progress, title, marginBottom = '32px', backLocation }: HeaderProps) => {
+  const excludeBackButton = iconLeft === 'false' || iconLeft === 'none' || iconLeft === 'off';
+
+  return (
+    <Wrapper marginBottom={marginBottom}>
+      <Content excludeBackButton={excludeBackButton}>
+        {!excludeBackButton && (
+          <BackButton backLocation={backLocation}>
+            <Sprite size="1.4rem" icon={iconLeft} />
+          </BackButton>
+        )}
+        {title && <Title>{title}</Title>}
+      </Content>
+      {progress !== undefined && <ProgressBar progress={progress} />}
+    </Wrapper>
+  );
+};

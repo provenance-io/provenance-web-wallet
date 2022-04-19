@@ -182,7 +182,7 @@ export const routes = [
         path: CREATE_VERIFY_PASSPHRASE_URL,
         element: <VerifyPassphrase nextUrl={CREATE_COMPLETE_URL} />,
       },
-      { path: CREATE_COMPLETE_URL, element: <CreateComplete nextUrl={APP_URL} /> },
+      { path: CREATE_COMPLETE_URL, element: <CreateComplete nextUrl={DASHBOARD_URL} /> },
     ],
   },
   // { path: FOUR_OH_FOUR_URL, element: <NotFound /> },

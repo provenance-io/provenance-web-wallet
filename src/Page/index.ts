@@ -10,3 +10,4 @@ export * from './Recover';
 export * from './Profile';
 export * from './Transactions';
 export * from './Asset';
+export * from './CreateFlow';

@@ -3,19 +3,19 @@ import { css } from 'styled-components';
 import { BodyContent, Button, Div } from 'Components';
 
 interface Props {
-  mnemonic: string[];
+  mnemonicArray: string[];
   setCorrect: (arg: boolean) => void;
   wordArr: string[];
 }
 
-export const VerifyButtonGroup = ({ mnemonic, setCorrect, wordArr }: Props) => {
+export const VerifyButtonGroup = ({ mnemonicArray, setCorrect, wordArr }: Props) => {
   const [selected, setSelected] = useState('');
   const [answer, setAnswer] = useState({ word: '', ind: 0 });
 
   useEffect(() => {
     const word = wordArr[Math.floor(Math.random() * 3)];
-    setAnswer({ word, ind: mnemonic.indexOf(word) + 1 });
-  }, [mnemonic, wordArr]);
+    setAnswer({ word, ind: mnemonicArray.indexOf(word) + 1 });
+  }, [mnemonicArray, wordArr]);
 
   useEffect(() => {
     setCorrect(selected === answer.word);

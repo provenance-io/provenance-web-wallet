@@ -1,8 +1,8 @@
-// import { Navigate } from 'react-router-dom';
 import {
   ConnectionDetails,
   ConnectionSuccess,
   CreateComplete,
+  CreateFlow,
   CreateStart,
   Dashboard,
   DashboardMenu,
@@ -25,38 +25,31 @@ import {
   TradeDetails,
   TransactionComplete,
 } from 'Page';
-// MAIN URLS
-export const APP_URL = '/';
-// DASHBOARD URLS
-export const DASHBOARD_URL = '/dashboard';
-export const DASHBOARD_MENU_URL = '/dashboard/menu';
-export const DASHBOARD_SEND_URL = '/dashboard/send';
-export const DASHBOARD_RECEIVE_URL = '/dashboard/receive';
-// PROFILE URLS
-export const PROFILE_URL = '/profile';
-export const RESET_WALLETS_URL = '/profile/reset-wallets';
-// TRANSACTION URLS
-export const TRANSACTIONS_URL = '/transactions';
-export const TRADE_DETAILS_URL = '/trade-details';
-export const TRANSACTION_COMPLETE_URL = '/transaction-complete';
-// RECOVER URLS
-export const RECOVER_URL = '/recover';
-export const RECOVER_NOTE_URL = '/recover/note';
-export const RECOVER_SEED_URL = '/recover/seed';
-// ASSET URLS
-export const ASSET_URL = '/asset/:assetName';
-// CONFIRMATION
-export const CONFIRM_URL = '/confirm';
-export const CONNECT_REQUEST_URL = '/connect';
-// CONNECTION
-export const CONNECT_SUCCESS_URL = '/connect-success';
-export const CONNECT_DETAILS_URL = '/connect-details';
-// CREATE URLS
-export const CREATE_URL = '/create';
-export const CREATE_PASSPHRASE_INTRO_URL = '/create/passphrase-intro';
-export const CREATE_PASSPHRASE_URL = '/create/passphrase';
-export const CREATE_VERIFY_PASSPHRASE_URL = '/create/verify-passphrase';
-export const CREATE_COMPLETE_URL = '/create/complete';
+import {
+  APP_URL,
+  DASHBOARD_URL,
+  DASHBOARD_MENU_URL,
+  DASHBOARD_SEND_URL,
+  DASHBOARD_RECEIVE_URL,
+  ASSET_URL,
+  TRANSACTIONS_URL,
+  TRADE_DETAILS_URL,
+  TRANSACTION_COMPLETE_URL,
+  PROFILE_URL,
+  RESET_WALLETS_URL,
+  CONFIRM_URL,
+  CONNECT_REQUEST_URL,
+  CONNECT_SUCCESS_URL,
+  CONNECT_DETAILS_URL,
+  RECOVER_URL,
+  RECOVER_SEED_URL,
+  RECOVER_NOTE_URL,
+  CREATE_URL,
+  CREATE_PASSPHRASE_INTRO_URL,
+  CREATE_PASSPHRASE_URL,
+  CREATE_VERIFY_PASSPHRASE_URL,
+  CREATE_COMPLETE_URL,
+} from 'consts';
 
 export const routes = [
   {
@@ -174,7 +167,7 @@ export const routes = [
   },
   {
     path: CREATE_URL,
-    element: <Page />,
+    element: <CreateFlow />,
     children: [
       { index: true, element: <CreateStart nextUrl={CREATE_PASSPHRASE_INTRO_URL} /> },
       {

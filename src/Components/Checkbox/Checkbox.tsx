@@ -1,64 +1,50 @@
-import { useRef } from 'react';
+import { Sprite } from 'Components';
+import { ICON_NAMES } from 'consts';
 import styled from 'styled-components';
 import { COLORS } from 'theme/colors';
 
-interface InputProps {
-  checked?: boolean;
-  id: string;
-  label: string;
-  onChange: () => void;
-  type?: string;
-}
-
-const InputGroup = styled.div`
+const CheckboxContainer = styled.div`
+  margin: 20px 0;
   display: flex;
-  flex-direction: column;
-  gap: 10px;
+  align-items: flex-start;
 `;
-
+const StyledCheckbox = styled.div`
+  height: 20px;
+  width: 20px;
+  border: 1px solid #498AFD;
+  border-radius: 2px;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 10px;
+  flex-shrink: 0;
+  svg {
+    position: absolute;
+  }
+`;
 const Label = styled.label`
   color: ${COLORS.WHITE};
   font-size: 1.4rem;
   font-weight: 500;
   line-height: 2.24rem;
+  flex-basis: 100%;
+  margin-left: 20px;
 `;
 
-const InputEl = styled.input`
-  display: none;
-`;
+interface Props {
+  checked: boolean,
+  onChange: (e: any) => void,
+  label?: string,
+}
 
-const CheckboxEl = styled.div<{
-  checked?: boolean;
-}>`
-  height: 20px;
-  width: 20px;
-  background: transparent;
-  border: 1px solid ${COLORS.PRIMARY_500};
-  border-radius: 2px;
-  cursor: pointer;
-
-  &:hover,
-  &:active {
-    border-color: ${COLORS.WHITE};
-    border-size: ${({ checked }) => (checked ? 2 : 1)}px;
-    box-shadow: ${({ checked }) => !checked && `0 0 4px 5px ${COLORS.NEUTRAL_550}`};
-  }
-`;
-
-export const Checkbox = ({ id, label, onChange, ...rest }: InputProps) => {
-  const handleChange = ({ target: { value } }: { target: { value: string } }) => {
-    if (onChange) {
-      onChange();
-    }
-
-    console.log(value);
-  };
-
+export const Checkbox:React.FC<Props> = ({ checked = false, onChange, label }) => {
   return (
-    <InputGroup>
-      <InputEl id={id} type="checkbox" onChange={handleChange} {...rest} />
-      <CheckboxEl {...rest} onClick={() => {}} />
-      <Label htmlFor={id}>{label}</Label>
-    </InputGroup>
-  );
+    <CheckboxContainer>
+      <StyledCheckbox onClick={() => onChange(!checked)}>
+        {checked && <Sprite icon={ICON_NAMES.CHECK} size="1.2rem" color="#498AFD" />}
+      </StyledCheckbox>
+      {label && <Label>{label}</Label>}
+    </CheckboxContainer>
+  )
 };

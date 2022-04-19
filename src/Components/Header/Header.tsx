@@ -66,9 +66,9 @@ const LinkOrButton = styled.button`
   ${combineCss()}
 `;
 
-const BackButton = ({ children }: { children: React.ReactNode }) => {
+const BackButton = ({ children, backLocation }: { children: React.ReactNode, backLocation?: string }) => {
   const navigate = useNavigate();
-  return <LinkOrButton onClick={() => navigate(-1)}>{children}</LinkOrButton>;
+  return <LinkOrButton onClick={() => backLocation ? navigate(backLocation) : navigate(-1)}>{children}</LinkOrButton>;
 };
 
 interface HeaderProps {
@@ -76,12 +76,13 @@ interface HeaderProps {
   progress?: number;
   title?: string | React.ReactNode;
   marginBottom?: string;
+  backLocation?: string;
 }
 
-export const Header = ({ iconLeft = ICON_NAMES.ARROW, progress, title, marginBottom = '32px' }: HeaderProps) => (
+export const Header = ({ iconLeft = ICON_NAMES.ARROW, progress, title, marginBottom = '32px', backLocation }: HeaderProps) => (
   <Wrapper marginBottom={marginBottom}>
     <Content>
-      <BackButton>
+      <BackButton backLocation={backLocation}>
         <Sprite size="1.4rem" icon={iconLeft} />
       </BackButton>
       {title && <Title>{title}</Title>}

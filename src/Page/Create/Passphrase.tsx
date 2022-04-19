@@ -1,11 +1,9 @@
 import { useNavigate } from 'react-router-dom';
 import styled, { css } from 'styled-components';
 import { BodyContent, CtaButton, Header } from 'Components';
-import { RootState } from 'redux/store';
 import { COLORS } from 'theme';
-import { walletActions } from 'redux/features/wallet/walletSlice';
 import { createMnemonic } from 'utils';
-import { useDispatch, useSelector } from 'react-redux';
+import { useWallet } from 'redux/hooks';
 
 const MnuemonicList = styled.div`
   display: flex;
@@ -34,14 +32,12 @@ interface Props {
 export const Passphrase = ({ nextUrl }: Props) => {
   const navigate = useNavigate();
   const mnemonic = createMnemonic();
-  const { activeWalletIndex } = useSelector((state: RootState) => state.wallet);
-  const { updateWallet } = walletActions;
-  const dispatch = useDispatch();
+  const { activeWalletIndex, updateWallet } = useWallet();
 
   const handleContinue = () => {
     if (mnemonic) {
       // Save this mnuemonic into current wallet
-      dispatch(updateWallet({ walletIndex: activeWalletIndex, mnemonic }))
+      updateWallet({ walletIndex: activeWalletIndex, mnemonic });
       navigate(nextUrl);
     }
   };

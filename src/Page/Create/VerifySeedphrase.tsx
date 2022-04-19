@@ -106,12 +106,13 @@ export const VerifySeedphrase = ({ nextUrl }: Props) => {
   };
 
   const createButtonGroups = () => {
-    if (!verifyWords?.length) return null;
+    if (!mnemonicArray?.length) return null;
 
     return verifyWords?.map((wordArr, index) => {
       return (
         <VerifyButtonGroup
           key={wordArr.data.join('')}
+          mnemonicArray={mnemonicArray}
           setCorrect={(correct) => handleCorrect(index, correct)}
           wordArr={wordArr}
         />

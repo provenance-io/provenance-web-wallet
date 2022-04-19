@@ -3,6 +3,7 @@ import { css } from 'styled-components';
 import { BodyContent, Button, Div } from 'Components';
 
 interface Props {
+  mnemonicArray: string[];
   setCorrect: (arg: boolean) => void;
   wordArr: {
     data: string[];
@@ -10,11 +11,11 @@ interface Props {
   };
 }
 
-export const VerifyButtonGroup = ({ setCorrect, wordArr }: Props) => {
+export const VerifyButtonGroup = ({ mnemonicArray, setCorrect, wordArr }: Props) => {
   const [selected, setSelected] = useState('');
   const [answer] = useState({
     word: wordArr.data[wordArr.index],
-    index: wordArr.index + 1,
+    index: mnemonicArray.indexOf(wordArr.data[wordArr.index]) + 1,
   });
 
   useEffect(() => {
@@ -36,6 +37,7 @@ export const VerifyButtonGroup = ({ setCorrect, wordArr }: Props) => {
           display: grid;
           grid-template-columns: 1fr 1fr 1fr;
           gap: 8px;
+          width: 100%;
         `}
       >
         {wordArr?.data.map((word) => (

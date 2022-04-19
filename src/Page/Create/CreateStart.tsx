@@ -4,6 +4,7 @@ import { ICON_NAMES } from 'consts';
 import { useNavigate } from 'react-router-dom';
 import styled, { css } from 'styled-components';
 import { useWallet } from 'redux/hooks';
+import { createMnemonic } from 'utils';
 
 const Wrapper = styled.div`
   padding: 42px 16px;
@@ -15,22 +16,13 @@ interface Props {
 
 export const CreateStart = ({ nextUrl }: Props) => {
   const navigate = useNavigate();
-  const { wallets, updateWallet, createWallet, setActiveWalletIndex } = useWallet();
-  const totalWallets = wallets.length;
+  const { updateTempWallet } = useWallet();
   const [walletName, setWalletName] = useState('');
+  const mnemonic = createMnemonic();
 
   const handleContinue = () => {
     if (walletName) {
-      if (totalWallets) {
-        // Additional wallet
-        const newWallet = { walletName, walletIndex: totalWallets };
-        updateWallet(newWallet);
-      } else {
-        // No existing wallets
-        createWallet({ walletName });
-      }
-      // Set active wallet to this new created wallet
-      setActiveWalletIndex(totalWallets);
+      updateTempWallet({ walletName, mnemonic });
       // Move to next step
       navigate(nextUrl);
     }

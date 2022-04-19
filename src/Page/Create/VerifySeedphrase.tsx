@@ -52,9 +52,8 @@ export const VerifySeedphrase = ({ nextUrl }: Props) => {
   // Navigate
   const navigate = useNavigate();
   // Redux Store
-  const { activeWalletIndex, wallets, updateWallet } = useWallet();
-  const targetWallet = wallets[activeWalletIndex];
-  const { mnemonic } = targetWallet;
+  const { updateTempWallet, tempWallet } = useWallet();
+  const mnemonic = (tempWallet && tempWallet?.mnemonic) || '';
   const mnemonicArray = mnemonic?.split(' ');
 
   const handleCorrect = (ind: number, correct: boolean) => {
@@ -94,11 +93,10 @@ export const VerifySeedphrase = ({ nextUrl }: Props) => {
           createWalletFromMasterKey(masterKey);
         const b64PublicKey = bytesToBase64(publicKey);
         const b64PrivateKey = bytesToBase64(privateKey);
-        updateWallet({
+        updateTempWallet({
           address,
           b64PrivateKey,
           b64PublicKey,
-          walletIndex: activeWalletIndex,
         });
         navigate(nextUrl);
       }

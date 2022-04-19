@@ -2,7 +2,6 @@ import { useNavigate } from 'react-router-dom';
 import styled, { css } from 'styled-components';
 import { BodyContent, CtaButton, Header } from 'Components';
 import { COLORS } from 'theme';
-import { createMnemonic } from 'utils';
 import { useWallet } from 'redux/hooks';
 
 const MnuemonicList = styled.div`
@@ -32,15 +31,10 @@ interface Props {
 
 export const Seedphrase = ({ nextUrl }: Props) => {
   const navigate = useNavigate();
-  const mnemonic = createMnemonic();
-  const { activeWalletIndex, updateWallet } = useWallet();
-
+  const { tempWallet } = useWallet();
+  const mnemonic = tempWallet?.mnemonic || '';
   const handleContinue = () => {
-    if (mnemonic) {
-      // Save this mnuemonic into current wallet
-      updateWallet({ walletIndex: activeWalletIndex, mnemonic });
-      navigate(nextUrl);
-    }
+    navigate(nextUrl);
   };
 
   return (

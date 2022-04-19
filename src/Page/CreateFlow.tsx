@@ -32,16 +32,15 @@ export const CreateFlow = ({ children = null }: Props) => {
   const navigate = useNavigate();
   const location = useLocation();
   const isCreateLandingPage = location.pathname === '/create';
-  const { activeWalletIndex, wallets } = useWallet();
-  const walletExists = !!wallets.length && wallets[activeWalletIndex] !== undefined;
+  const { tempWallet } = useWallet();
   useEffect(() => {
-    if (!walletExists) {
+    if (!tempWallet) {
       navigate(CREATE_URL);
     }
-  }, [walletExists, navigate]);
+  }, [tempWallet, navigate]);
 
   return (
-    !!walletExists || isCreateLandingPage ? (
+    !!tempWallet || isCreateLandingPage ? (
     <PageStyled>
       <Outlet />
       {children}

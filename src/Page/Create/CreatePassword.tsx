@@ -24,9 +24,7 @@ interface Props {
 
 export const CreatePassword = ({ nextUrl }: Props) => {
   const navigate = useNavigate();
-  const { wallets, activeWalletIndex } = useWallet();
-  const targetWallet = wallets[activeWalletIndex];
-  const { privateKey, accountName } = targetWallet;
+  const { tempWallet } = useWallet();
   const [walletPassword, setWalletPassword] = useState('');
   const [walletPasswordRepeat, setWalletPasswordRepeat] = useState('');
   const [error, setError] = useState('');
@@ -37,9 +35,9 @@ export const CreatePassword = ({ nextUrl }: Props) => {
     if (!walletPassword || !walletPasswordRepeat) latestError = 'Please confirm your password.';
     if (walletPassword.length < 5) latestError = 'Password must be a minimum of 5 characters.';
     if (!latestError) {
-      if (privateKey) {    
-        const encrypted = encrypt(privateKey, walletPassword);
-        const data = { accountName, key: encrypted };
+      if (tempWallet?.b64PrivateKey) {    
+        const encrypted = encrypt(tempWallet.b64PrivateKey, walletPassword);
+        const data = { accountName: tempWallet.accountName, key: encrypted };
         addToLocalStorage('provenance-web-wallet', data);
         navigate(nextUrl);
       } else {

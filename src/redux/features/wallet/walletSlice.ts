@@ -4,14 +4,18 @@ import { RootState } from 'redux/store';
 /**
  * TYPES
  */
+interface Wallet {
+  mnemonic?: string,
+  accountName?: string,
+  publicKey?: string,
+  b64PrivateKey?: string,
+  b64PublicKey?: string,
+  privateKey?: string,
+}
 interface State {
   activeWalletIndex: number,
-  wallets: {
-    mnemonic?: string,
-    accountName?: string,
-    publicKey?: string,
-    privateKey?: string,
-  }[];
+  wallets: Wallet[];
+  tempWallet?: Wallet;
 }
 
 /**
@@ -20,6 +24,7 @@ interface State {
 const initialState: State = {
   activeWalletIndex: -1,
   wallets: [],
+  tempWallet: undefined,
 };
 
 /**
@@ -30,9 +35,9 @@ const walletSlice = createSlice({
   initialState,
   reducers: {
     createWallet: (state, action) => {
-      const { mnemonic, walletName, publicKey, privateKey } = action.payload;
-      const finalWallet = { mnemonic, walletName, publicKey, privateKey };
-      state.wallets.push(finalWallet);
+      state.wallets.push(action.payload);
+      const totalWallets = state.wallets.length;
+      state.activeWalletIndex = totalWallets;
     },
     updateWallet: (state, action) => {
       const { walletIndex, ...rest } = action.payload;
@@ -42,6 +47,12 @@ const walletSlice = createSlice({
     },
     setActiveWalletIndex: (state, action) => {
       state.activeWalletIndex = action.payload;
+    },
+    updateTempWallet: (state, action) => {
+      state.tempWallet = {...action.payload, ...state.tempWallet};
+    },
+    clearTempWallet: (state) => {
+      state.tempWallet = undefined;
     },
   },
 });

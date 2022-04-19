@@ -3,7 +3,11 @@ import { BodyContent, Checkbox, Button, Header } from 'Components';
 import { css } from 'styled-components';
 import { VerifyButtonGroup } from './VerifyButtonGroup';
 import { COLORS } from 'theme';
-import { bytesToBase64, createMasterKeyFromMnemonic, createWalletFromMasterKey } from 'utils';
+import {
+  bytesToBase64,
+  createMasterKeyFromMnemonic,
+  createWalletFromMasterKey,
+} from 'utils';
 import { useWallet } from 'redux/hooks';
 import { useNavigate } from 'react-router-dom';
 
@@ -41,7 +45,10 @@ export const VerifyPassphrase = ({ nextUrl }: Props) => {
   const [correct, setCorrect] = useState<boolean[]>([]);
   const [errorMsg, setErrorMsg] = useState('');
   const [termsAgree, setTermsAgree] = useState(false);
-  const [verifyWords, setVerifyWords] = useState<string[][] | null>(null);
+  const [verifyWords, setVerifyWords] = useState<Array<{
+    data: string[];
+    index: number;
+  }> | null>(null);
   // Navigate
   const navigate = useNavigate();
   // Redux Store
@@ -59,40 +66,57 @@ export const VerifyPassphrase = ({ nextUrl }: Props) => {
 
   useEffect(() => {
     if (!verifyWords && mnemonic && mnemonicArray) {
-      setVerifyWords(groupArrays(getRandomSubarray(mnemonicArray, mnemonicArray.length / 2)));
+      const subArraySize = mnemonicArray.length / 2;
+      const groupedArraySize = 3;
+      const groupedArrays = groupArrays(
+        getRandomSubarray(mnemonicArray, subArraySize),
+        groupedArraySize
+      );
+      setVerifyWords(
+        groupedArrays.map((arr) => ({
+          data: arr,
+          index: Math.floor(Math.random() * groupedArraySize),
+        }))
+      );
     }
   }, [mnemonicArray, verifyWords, mnemonic]);
 
   const handleContinue = () => {
     if (!termsAgree) {
       setErrorMsg('You must agree to the terms of your account passphrase.');
-    }
-    else if (correct.some((c) => !c)) {
+    } else if (correct.some((c) => !c)) {
       setErrorMsg('You selected incorrect choices. Please try again');
     } else {
       setErrorMsg('');
       if (mnemonic !== undefined) {
         const masterKey = createMasterKeyFromMnemonic(mnemonic);
-        const { address, publicKey, privateKey } = createWalletFromMasterKey(masterKey);
+        const { address, publicKey, privateKey } =
+          createWalletFromMasterKey(masterKey);
         const b64PublicKey = bytesToBase64(publicKey);
         const b64PrivateKey = bytesToBase64(privateKey);
-        updateWallet({ address, b64PrivateKey, b64PublicKey, walletIndex: activeWalletIndex });
+        updateWallet({
+          address,
+          b64PrivateKey,
+          b64PublicKey,
+          walletIndex: activeWalletIndex,
+        });
         navigate(nextUrl);
       }
     }
   };
 
   const createButtonGroups = () => {
-    if (!mnemonic || !mnemonicArray?.length) return null;
+    if (!verifyWords?.length) return null;
+
     return verifyWords?.map((wordArr, index) => {
       return (
         <VerifyButtonGroup
-          key={wordArr.join('')}
-          mnemonicArray={mnemonicArray}
+          key={wordArr.data.join('')}
           setCorrect={(correct) => handleCorrect(index, correct)}
           wordArr={wordArr}
         />
-      )})
+      );
+    });
   };
 
   return (
@@ -113,10 +137,14 @@ export const VerifyPassphrase = ({ nextUrl }: Props) => {
       {createButtonGroups()}
       <Checkbox
         checked={termsAgree}
-        onChange={(isChecked: boolean) => {setTermsAgree(isChecked)}}
+        onChange={(isChecked: boolean) => {
+          setTermsAgree(isChecked);
+        }}
         label="I agree that I'm solely responsible for my wallet, and cannot recover my account the passphrase is lost."
       />
-      <Button onClick={handleContinue} variant="primary">Continue</Button>
+      <Button onClick={handleContinue} variant="primary">
+        Continue
+      </Button>
     </>
   );
 };

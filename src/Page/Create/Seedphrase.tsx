@@ -11,6 +11,7 @@ const MnuemonicList = styled.div`
   flex-wrap: wrap;
   gap: 12px 8px;
   height: 428px;
+  width: 100%;
   padding: 16px 32px;
   border-radius: 4px;
   background: ${COLORS.NEUTRAL_700};

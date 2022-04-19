@@ -41,7 +41,7 @@ const groupArrays = (arr: string[] = [], size: number = 3) =>
     }
   }, []);
 
-export const VerifyPassphrase = ({ nextUrl }: Props) => {
+export const VerifySeedphrase = ({ nextUrl }: Props) => {
   const [correct, setCorrect] = useState<boolean[]>([]);
   const [errorMsg, setErrorMsg] = useState('');
   const [termsAgree, setTermsAgree] = useState(false);

@@ -33,7 +33,8 @@ export const CONNECT_SUCCESS_URL = '/connect-success';
 export const CONNECT_DETAILS_URL = '/connect-details';
 // -- CREATE URLS
 export const CREATE_URL = '/create';
-export const CREATE_PASSPHRASE_INTRO_URL = '/create/passphrase-intro';
-export const CREATE_PASSPHRASE_URL = '/create/passphrase';
-export const CREATE_VERIFY_PASSPHRASE_URL = '/create/verify-passphrase';
+export const CREATE_SEEDPHRASE_INTRO_URL = '/create/seedphrase-intro';
+export const CREATE_SEEDPHRASE_URL = '/create/seedphrase';
+export const CREATE_VERIFY_SEEDPHRASE_URL = '/create/verify-seedphrase';
 export const CREATE_COMPLETE_URL = '/create/complete';
+export const CREATE_PASSWORD_URL = '/create/password';

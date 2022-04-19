@@ -38,7 +38,7 @@ export const CreateStart = ({ nextUrl }: Props) => {
 
   return (
     <Wrapper>
-      <Header iconLeft={ICON_NAMES.CLOSE} progress={33} title="Name You Account" backLocation='/' />
+      <Header iconLeft={ICON_NAMES.CLOSE} progress={33} title="Name Your Account" backLocation='/' />
       <BodyContent
         $css={css`
           text-align: center;

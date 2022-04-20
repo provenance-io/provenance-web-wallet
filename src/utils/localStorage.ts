@@ -7,7 +7,7 @@ export const getFromLocalStorage = (name: string, key?: string) => {
   return key ? data[key] : data;
 };
 
-// Ability to add single or array of items into current localStorage
+// Ability to add single, array, or object of items into current localStorage
 export const addToLocalStorage = (name: string, newData: any) => { // eslint-disable-line @typescript-eslint/no-explicit-any
   // Pull from localStorage
   const rawData = window.localStorage.getItem(name) || '{}';

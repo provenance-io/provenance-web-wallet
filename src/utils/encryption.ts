@@ -3,7 +3,7 @@ import AES from 'crypto-js/aes';
 
 type Password = string
 
-export const encrypt = (privateValue: string, password: Password) => {
+export const encrypt = (privateValue: any, password: Password) => {
   const encrypted = AES.encrypt(privateValue, password);
   const encryptedString = encrypted.toString();
   return encryptedString;

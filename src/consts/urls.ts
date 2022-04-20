@@ -23,6 +23,7 @@ export const TRANSACTION_COMPLETE_URL = '/transaction-complete';
 export const RECOVER_URL = '/recover';
 export const RECOVER_NOTE_URL = '/recover/note';
 export const RECOVER_SEED_URL = '/recover/seed';
+export const RECOVER_PASSWORD_URL ='/recover/password';
 // -- ASSET URLS
 export const ASSET_URL = '/asset/:assetName';
 // -- CONFIRMATION
@@ -38,3 +39,5 @@ export const CREATE_SEEDPHRASE_URL = '/create/seedphrase';
 export const CREATE_VERIFY_SEEDPHRASE_URL = '/create/verify-seedphrase';
 export const CREATE_COMPLETE_URL = '/create/complete';
 export const CREATE_PASSWORD_URL = '/create/password';
+// -- UNLOCK URLS
+export const UNLOCK_URL = '/unlock';

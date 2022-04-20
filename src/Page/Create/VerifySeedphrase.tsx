@@ -3,11 +3,6 @@ import { BodyContent, Checkbox, Button, Header } from 'Components';
 import { css } from 'styled-components';
 import { VerifyButtonGroup } from './VerifyButtonGroup';
 import { COLORS } from 'theme';
-import {
-  bytesToBase64,
-  createMasterKeyFromMnemonic,
-  createWalletFromMasterKey,
-} from 'utils';
 import { useWallet } from 'redux/hooks';
 import { useNavigate } from 'react-router-dom';
 
@@ -52,7 +47,7 @@ export const VerifySeedphrase = ({ nextUrl }: Props) => {
   // Navigate
   const navigate = useNavigate();
   // Redux Store
-  const { updateTempWallet, tempWallet } = useWallet();
+  const { tempWallet } = useWallet();
   const mnemonic = (tempWallet && tempWallet?.mnemonic) || '';
   const mnemonicArray = mnemonic?.split(' ');
 
@@ -88,16 +83,6 @@ export const VerifySeedphrase = ({ nextUrl }: Props) => {
     } else {
       setErrorMsg('');
       if (mnemonic !== undefined) {
-        const masterKey = createMasterKeyFromMnemonic(mnemonic);
-        const { address, publicKey, privateKey } =
-          createWalletFromMasterKey(masterKey);
-        const b64PublicKey = bytesToBase64(publicKey);
-        const b64PrivateKey = bytesToBase64(privateKey);
-        updateTempWallet({
-          address,
-          b64PrivateKey,
-          b64PublicKey,
-        });
         navigate(nextUrl);
       }
     }

@@ -6,11 +6,10 @@ import { RootState } from 'redux/store';
  */
 interface Wallet {
   mnemonic?: string,
-  accountName?: string,
+  walletName?: string,
   publicKey?: string,
-  b64PrivateKey?: string,
-  b64PublicKey?: string,
   privateKey?: string,
+  address?: string,
 }
 interface State {
   activeWalletIndex: number,
@@ -37,7 +36,8 @@ const walletSlice = createSlice({
     createWallet: (state, action) => {
       state.wallets.push(action.payload);
       const totalWallets = state.wallets.length;
-      state.activeWalletIndex = totalWallets;
+      // Check if first wallet created
+      state.activeWalletIndex = totalWallets - 1;
     },
     updateWallet: (state, action) => {
       const { walletIndex, ...rest } = action.payload;

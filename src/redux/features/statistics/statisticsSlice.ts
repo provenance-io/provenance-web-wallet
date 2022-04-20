@@ -2,6 +2,7 @@ import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { STATISTICS_URL } from 'consts';
 import { RootState } from 'redux/store';
 import { api } from '../api';
+import { Statistics } from 'types';
 
 /**
  * INITIAL STATE
@@ -10,12 +11,7 @@ import { api } from '../api';
 interface InitialState {
   statisticsError: any;
   statisticsLoading: boolean;
-  statistics: {
-    averageBlockTime: number;
-    marketCap: number;
-    transactions: number;
-    validators: number;
-  };
+  statistics: Statistics;
 }
 
 const initialState: InitialState = {

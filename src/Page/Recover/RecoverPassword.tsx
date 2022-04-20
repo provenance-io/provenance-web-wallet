@@ -28,9 +28,9 @@ interface Props {
   nextUrl: string;
 }
 
-export const CreatePassword = ({ nextUrl }: Props) => {
+export const RecoverPassword = ({ nextUrl }: Props) => {
   const navigate = useNavigate();
-  const { tempWallet, createWallet } = useWallet();
+  const { tempWallet, createWallet, clearTempWallet } = useWallet();
   const [walletPassword, setWalletPassword] = useState('');
   const [walletPasswordRepeat, setWalletPasswordRepeat] = useState('');
   const [error, setError] = useState('');
@@ -59,6 +59,8 @@ export const CreatePassword = ({ nextUrl }: Props) => {
         const data = { walletName: tempWallet.walletName, key: encrypted };
         // Add data to localStorage
         addToLocalStorage('provenance-web-wallet', data);
+        // Remove tempWallet data
+        clearTempWallet();
         navigate(nextUrl);
       } else {
         latestError = 'Unable to locally save wallet, please try again later'

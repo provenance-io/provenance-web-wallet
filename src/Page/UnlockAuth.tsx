@@ -2,9 +2,9 @@ import React, { useEffect } from 'react';
 import styled from 'styled-components';
 import { Outlet } from 'react-router-dom';
 import { COLORS } from 'theme';
-import { CREATE_URL } from 'consts';
-import { useWallet } from 'redux/hooks';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { APP_URL } from 'consts';
+import { getFromLocalStorage } from 'utils';
+import { useNavigate } from 'react-router-dom';
 
 interface Props {
   children?: React.ReactNode,
@@ -28,23 +28,20 @@ const PageStyled = styled.div<Props>`
   z-index: 10;
 `;
 
-export const CreateFlow = ({ children = null }: Props) => {
+export const UnlockAuth = ({ children = null }: Props) => {
   const navigate = useNavigate();
-  const location = useLocation();
-  const isCreateLandingPage = location.pathname === '/create';
-  const { tempWallet } = useWallet();
+  const localAccountData = getFromLocalStorage('provenance-web-wallet');
+  const localAccountValid = localAccountData?.walletName && localAccountData?.key;
   useEffect(() => {
-    if (!tempWallet) {
-      navigate(CREATE_URL);
+    if (!localAccountValid) {
+      navigate(APP_URL);
     }
-  }, [tempWallet, navigate]);
+  }, [localAccountValid, navigate]);
 
   return (
-    !!tempWallet || isCreateLandingPage ? (
     <PageStyled>
       <Outlet />
       {children}
     </PageStyled>
-    ) : null
   );
 };

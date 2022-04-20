@@ -1,9 +1,8 @@
 import { useNavigate } from 'react-router-dom';
 import styled, { css } from 'styled-components';
-import { useGeneric } from 'redux/hooks';
 import { BodyContent, CtaButton, Header } from 'Components';
 import { COLORS } from 'theme';
-import { useEffect } from 'react';
+import { useWallet } from 'redux/hooks';
 
 const MnuemonicList = styled.div`
   display: flex;
@@ -11,6 +10,7 @@ const MnuemonicList = styled.div`
   flex-wrap: wrap;
   gap: 12px 8px;
   height: 428px;
+  width: 100%;
   padding: 16px 32px;
   border-radius: 4px;
   background: ${COLORS.NEUTRAL_700};
@@ -29,16 +29,13 @@ interface Props {
   nextUrl: string;
 }
 
-export const Passphrase = ({ nextUrl }: Props) => {
+export const Seedphrase = ({ nextUrl }: Props) => {
   const navigate = useNavigate();
-  const { mnemonic, generateMnemonic } = useGeneric();
-
-  useEffect(() => {
-    // if the mnemonic doesn't exist we need to generate it
-    if (!mnemonic) {
-      generateMnemonic();
-    }
-  }, [mnemonic, generateMnemonic]);
+  const { tempWallet } = useWallet();
+  const mnemonic = tempWallet?.mnemonic || '';
+  const handleContinue = () => {
+    navigate(nextUrl);
+  };
 
   return (
     <>
@@ -63,7 +60,7 @@ export const Passphrase = ({ nextUrl }: Props) => {
         ))}
       </MnuemonicList>
 
-      <CtaButton onClick={() => navigate(nextUrl)}>Continue</CtaButton>
+      <CtaButton onClick={handleContinue}>Continue</CtaButton>
     </>
   );
 };

@@ -1,8 +1,11 @@
-// import { Navigate } from 'react-router-dom';
 import {
+  Asset,
+  Confirm,
   ConnectionDetails,
   ConnectionSuccess,
+  CreateAuth,
   CreateComplete,
+  CreatePassword,
   CreateStart,
   Dashboard,
   DashboardMenu,
@@ -11,52 +14,49 @@ import {
   EnterSeed,
   Landing,
   Page,
-  Passphrase,
-  PassphraseIntro,
-  RecoverNote,
-  RecoverAccountName,
-  RequiresAuth,
-  VerifyPassphrase,
-  Transactions,
   Profile,
-  Asset,
+  RecoverAccountName,
+  RecoverNote,
+  RecoverPassword,
+  RequiresAuth,
   ResetWallets,
-  Confirm,
+  Seedphrase,
+  SeedphraseIntro,
   TradeDetails,
   TransactionComplete,
+  Transactions,
+  Unlock,
+  UnlockAuth,
+  VerifySeedphrase,
 } from 'Page';
-// MAIN URLS
-export const APP_URL = '/';
-// DASHBOARD URLS
-export const DASHBOARD_URL = '/dashboard';
-export const DASHBOARD_MENU_URL = '/dashboard/menu';
-export const DASHBOARD_SEND_URL = '/dashboard/send';
-export const DASHBOARD_RECEIVE_URL = '/dashboard/receive';
-// PROFILE URLS
-export const PROFILE_URL = '/profile';
-export const RESET_WALLETS_URL = '/profile/reset-wallets';
-// TRANSACTION URLS
-export const TRANSACTIONS_URL = '/transactions';
-export const TRADE_DETAILS_URL = '/trade-details';
-export const TRANSACTION_COMPLETE_URL = '/transaction-complete';
-// RECOVER URLS
-export const RECOVER_URL = '/recover';
-export const RECOVER_NOTE_URL = '/recover/note';
-export const RECOVER_SEED_URL = '/recover/seed';
-// ASSET URLS
-export const ASSET_URL = '/asset/:assetName';
-// CONFIRMATION
-export const CONFIRM_URL = '/confirm';
-export const CONNECT_REQUEST_URL = '/connect';
-// CONNECTION
-export const CONNECT_SUCCESS_URL = '/connect-success';
-export const CONNECT_DETAILS_URL = '/connect-details';
-// CREATE URLS
-export const CREATE_URL = '/create';
-export const CREATE_PASSPHRASE_INTRO_URL = '/create/passphrase-intro';
-export const CREATE_PASSPHRASE_URL = '/create/passphrase';
-export const CREATE_VERIFY_PASSPHRASE_URL = '/create/verify-passphrase';
-export const CREATE_COMPLETE_URL = '/create/complete';
+import {
+  APP_URL,
+  ASSET_URL,
+  CONFIRM_URL,
+  CONNECT_DETAILS_URL,
+  CONNECT_REQUEST_URL,
+  CONNECT_SUCCESS_URL,
+  CREATE_COMPLETE_URL,
+  CREATE_PASSWORD_URL,
+  CREATE_SEEDPHRASE_INTRO_URL,
+  CREATE_SEEDPHRASE_URL,
+  CREATE_URL,
+  CREATE_VERIFY_SEEDPHRASE_URL,
+  DASHBOARD_MENU_URL,
+  DASHBOARD_RECEIVE_URL,
+  DASHBOARD_SEND_URL,
+  DASHBOARD_URL,
+  PROFILE_URL,
+  RECOVER_NOTE_URL,
+  RECOVER_PASSWORD_URL,
+  RECOVER_SEED_URL,
+  RECOVER_URL,
+  RESET_WALLETS_URL,
+  TRADE_DETAILS_URL,
+  TRANSACTION_COMPLETE_URL,
+  TRANSACTIONS_URL,
+  UNLOCK_URL,
+} from 'consts';
 
 export const routes = [
   {
@@ -154,43 +154,59 @@ export const routes = [
           { index: true, element: <ConnectionDetails /> },
         ],
       },
-      // RECOVER
+    ],
+  },
+  // RECOVER WALLET
+  {
+    path: RECOVER_URL,
+    element: <Page align='center'/>,
+    children: [
+      { index: true, element: <RecoverAccountName nextUrl={RECOVER_NOTE_URL} /> },
       {
-        path: RECOVER_URL,
-        element: <Page align='center'/>,
-        children: [
-          { index: true, element: <RecoverAccountName /> },
-          {
-            path: RECOVER_SEED_URL,
-            element: <EnterSeed />,
-          },
-          {
-            path: RECOVER_NOTE_URL,
-            element: <RecoverNote />,
-          },
-        ]
+        path: RECOVER_NOTE_URL,
+        element: <RecoverNote nextUrl={RECOVER_SEED_URL} />,
       },
+      {
+        path: RECOVER_SEED_URL,
+        element: <EnterSeed nextUrl={RECOVER_PASSWORD_URL} />,
+      },
+      {
+        path: RECOVER_PASSWORD_URL,
+        element: <RecoverPassword nextUrl={DASHBOARD_URL} />,
+      },
+    ]
+  },
+  // CREATE WALLET
+  {
+    path: CREATE_URL,
+    element: <CreateAuth />,
+    children: [
+      { index: true, element: <CreateStart nextUrl={CREATE_SEEDPHRASE_INTRO_URL} /> },
+      {
+        path: CREATE_SEEDPHRASE_INTRO_URL,
+        element: <SeedphraseIntro nextUrl={CREATE_SEEDPHRASE_URL} />,
+      },
+      {
+        path: CREATE_SEEDPHRASE_URL,
+        element: <Seedphrase nextUrl={CREATE_VERIFY_SEEDPHRASE_URL} />,
+      },
+      {
+        path: CREATE_VERIFY_SEEDPHRASE_URL,
+        element: <VerifySeedphrase nextUrl={CREATE_PASSWORD_URL} />,
+      },
+      {
+        path: CREATE_PASSWORD_URL,
+        element: <CreatePassword nextUrl={CREATE_COMPLETE_URL} />,
+      },
+      { path: CREATE_COMPLETE_URL, element: <CreateComplete nextUrl={DASHBOARD_URL} /> },
     ],
   },
   {
-    path: CREATE_URL,
-    element: <Page />,
+    path: UNLOCK_URL,
+    element: <UnlockAuth />,
     children: [
-      { index: true, element: <CreateStart nextUrl={CREATE_PASSPHRASE_INTRO_URL} /> },
-      {
-        path: CREATE_PASSPHRASE_INTRO_URL,
-        element: <PassphraseIntro nextUrl={CREATE_PASSPHRASE_URL} />,
-      },
-      {
-        path: CREATE_PASSPHRASE_URL,
-        element: <Passphrase nextUrl={CREATE_VERIFY_PASSPHRASE_URL} />,
-      },
-      {
-        path: CREATE_VERIFY_PASSPHRASE_URL,
-        element: <VerifyPassphrase nextUrl={CREATE_COMPLETE_URL} />,
-      },
-      { path: CREATE_COMPLETE_URL, element: <CreateComplete nextUrl={APP_URL} /> },
-    ],
+      { index: true, element: <Unlock nextUrl={DASHBOARD_URL} /> },
+    ]
   },
   // { path: FOUR_OH_FOUR_URL, element: <NotFound /> },
   // { path: '*', element: <Navigate to={FOUR_OH_FOUR_URL} /> },

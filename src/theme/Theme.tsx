@@ -18,6 +18,12 @@ export const GlobalStyles = createGlobalStyle<{
 }>`
   ${normalize}
 
+  // React local causes iframe when error process is not defined shows up.
+  // https://github.com/facebook/create-react-app/issues/11773
+  iframe {
+    pointer-events: none;
+  }
+
   :root {
     ${baseColors};
     ${baseFonts};

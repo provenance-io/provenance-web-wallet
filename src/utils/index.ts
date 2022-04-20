@@ -7,3 +7,7 @@ export * from './hashFormat';
 export * from './chart';
 export * from './percentChange';
 export * from './capitalize';
+export * from './encryption';
+export * from './localStorage';
+export * from './derivationPath';
+export * from './chain';

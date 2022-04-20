@@ -81,7 +81,14 @@ export const Chart:React.FC<Props> = ({
             if (event.type === 'mouseout') {
               const lastDataValue = chartValues[chartValues.length - 1];
               const latestDate = chartLabels[chartLabels.length - 1];
-              if (onValueChange) onValueChange({ value: lastDataValue, date: latestDate});
+              const latestDiff = chartValueDiffs[chartValueDiffs.length - 1];
+              const latestDiffPercent = chartValueDiffPercents[chartValueDiffPercents.length - 1];
+              if (onValueChange) onValueChange({
+                value: lastDataValue,
+                date: latestDate,
+                diff: latestDiff,
+                diffPercent: latestDiffPercent,
+              });
             }
           }
         },

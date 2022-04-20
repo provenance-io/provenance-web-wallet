@@ -110,7 +110,12 @@ export const AssetChart:React.FC<Props> = ({ onValueChange, setError, loading, s
         setChartValueDiffPercents(newValueDiffPercents);
 
         // Update the price to be the latest value
-        onValueChange({ value: newValues[newValues.length-1], date: newLabels[newLabels.length -1] })
+        onValueChange({
+          value: newValues[newValues.length-1],
+          date: newLabels[newLabels.length -1],
+          diff: newValueDiffs[newValueDiffs.length - 1],
+          diffPercent: newValueDiffPercents[newValueDiffPercents.length - 1],
+        })
       } else { setError(apiError) }
       setLoading(false);
     }

@@ -1,12 +1,13 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { generateMnemonic as bip39gm } from 'bip39';
 import { RootState } from 'redux/store';
+import { createMnemonic } from 'utils';
 
 /**
  * TYPES
  */
 export interface GenericState {
-  mnemonic: string | undefined;
+  mnemonic?: string;
+  accountName?: string
 }
 
 /**
@@ -14,6 +15,7 @@ export interface GenericState {
  */
 const initialState: GenericState = {
   mnemonic: undefined,
+  accountName: undefined,
 };
 
 /**
@@ -24,8 +26,11 @@ const genericSlice = createSlice({
   initialState,
   reducers: {
     generateMnemonic: (state) => {
-      state.mnemonic = bip39gm(256);
+      state.mnemonic = createMnemonic();
     },
+    setAccountName: (state, action) => {
+      state.accountName = action.payload;
+    }
   },
 });
 

@@ -67,7 +67,7 @@ export const Input = ({
       id={id}
       type={type}
       value={value}
-      onChange={onChange}
+      onChange={(event) => (event?.target && onChange) && onChange(event.target.value)}
       error={error}
       disabled={disabled}
       {...rest}

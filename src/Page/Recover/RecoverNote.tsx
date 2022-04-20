@@ -11,7 +11,11 @@ const Image = styled.img`
   width: 160px;
 `;
 
-export const RecoverNote = () => {
+interface Props {
+  nextUrl: string,
+}
+
+export const RecoverNote:React.FC<Props> = ({ nextUrl }) => {
   const navigate = useNavigate();
 
   return (
@@ -22,7 +26,7 @@ export const RecoverNote = () => {
         <InfoText margin="16px auto 0 auto">In the following steps, you'll enter your 24-word recovery passphrase to recover your account</InfoText>
         <Image src={recoverIntro} />
       </Group>
-      <Button variant='primary' onClick={() => navigate('../seed')}>Continue</Button>
+      <Button variant='primary' onClick={() => navigate(nextUrl)}>Continue</Button>
     </>
   );
 };

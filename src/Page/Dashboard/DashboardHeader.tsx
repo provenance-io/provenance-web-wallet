@@ -3,6 +3,8 @@ import { ICON_NAMES } from 'consts';
 import { Sprite } from 'Components';
 import { useNavigate } from 'react-router-dom';
 import { COLORS } from 'theme';
+import { useWallet } from 'redux/hooks';
+import { trimString } from 'utils';
 
 const HeaderRow = styled.div`
   display: flex;
@@ -44,16 +46,19 @@ const Notify = styled.span`
 
 export const DashboardHeader:React.FC = () => {
   const navigate = useNavigate();
+  const { activeWalletIndex, wallets } = useWallet();
+  const activeWallet = wallets[activeWalletIndex];
+  const { walletName, address = '' } = activeWallet;
 
-  // TO DO: Add check for wallet connected here
+  // TODO: Add check for wallet connected here
   const connected = true;
-  // TO DO: Add check for pending notifications here
+  // TODO: Add check for pending notifications here
   const notify = true;
-  // TO DO: Add check for number of notifications here
+  // TODO: Add check for number of notifications here
   const notifications = 3;
-  // TO DO: Need to navigate to the correct connection details
+  // TODO: Need to navigate to the correct connection details
   const handleConnect = () => navigate('/connect-details');
-  // TO DO: Add onClick for QR Code click
+  // TODO: Add onClick for QR Code click
 
   return (
     <HeaderRow>
@@ -61,8 +66,8 @@ export const DashboardHeader:React.FC = () => {
         <Sprite icon={ICON_NAMES.MENU} size="2rem" />
       </Menu>
       <WalletInfo>
-        <WalletName>My Wallet</WalletName>
-        <WalletAddress>(tp1...abcdefg123vzx)</WalletAddress>
+        <WalletName>{walletName}</WalletName>
+        <WalletAddress>({trimString(address, 11, 4)})</WalletAddress>
       </WalletInfo>
       <WalletConnect>
         {connected ? (

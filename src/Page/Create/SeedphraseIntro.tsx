@@ -8,7 +8,7 @@ interface Props {
   nextUrl: string;
 }
 
-export const PassphraseIntro = ({ nextUrl }: Props) => {
+export const SeedphraseIntro = ({ nextUrl }: Props) => {
   const navigate = useNavigate();
   return (
     <>

@@ -104,10 +104,10 @@ export const Asset:React.FC = () => {
       <AssetStats />
       <SectionTitle>Recent Transactions</SectionTitle>
       <div>
-        <AssetRow img="hash" name="hash" amount={{ value: 500, change: 13.63 }} />
-        <AssetRow img="hash" name="hash" amount={{ value: 500, change: 13.63 }} />
-        <AssetRow img="hash" name="hash" amount={{ value: 500, change: 13.63 }} />
-        <AssetRow img="hash" name="hash" amount={{ value: 500, change: 13.63 }} />
+        <AssetRow img="hash" name="hash" amount={{ count: '500', change: 13.63 }} />
+        <AssetRow img="hash" name="hash" amount={{ count: '500', change: 13.63 }} />
+        <AssetRow img="hash" name="hash" amount={{ count: '500', change: 13.63 }} />
+        <AssetRow img="hash" name="hash" amount={{ count: '500', change: 13.63 }} />
       </div>
       <FooterNav />
     </Wrapper>

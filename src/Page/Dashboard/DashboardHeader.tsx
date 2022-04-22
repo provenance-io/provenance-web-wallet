@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 import { ICON_NAMES } from 'consts';
-import { Sprite } from 'Components';
+import { Sprite, CopyValue } from 'Components';
 import { useNavigate } from 'react-router-dom';
 import { COLORS } from 'theme';
 import { useWallet } from 'redux/hooks';
@@ -65,10 +65,12 @@ export const DashboardHeader:React.FC = () => {
       <Menu onClick={() => navigate('./menu')}>
         <Sprite icon={ICON_NAMES.MENU} size="2rem" />
       </Menu>
-      <WalletInfo>
-        <WalletName>{walletName}</WalletName>
-        <WalletAddress>({trimString(address, 11, 4)})</WalletAddress>
-      </WalletInfo>
+      <CopyValue value={address} title="Copy wallet address">
+        <WalletInfo>
+          <WalletName>{walletName}</WalletName>
+          <WalletAddress>({trimString(address, 11, 4)})</WalletAddress>
+        </WalletInfo>
+      </CopyValue>
       <WalletConnect>
         {connected ? (
           <>

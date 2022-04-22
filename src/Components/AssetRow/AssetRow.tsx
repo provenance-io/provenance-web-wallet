@@ -1,7 +1,7 @@
 import { Sprite } from 'Components/Sprite';
 import { ICON_NAMES } from 'consts';
 import styled from 'styled-components';
-import { currencyFormat } from 'utils';
+// import { currencyFormat } from 'utils';
 
 const AssetItem = styled.div`
   padding: 20px 16px;
@@ -42,8 +42,9 @@ interface Props {
   name: string,
   onClick?: () => void,
   amount?: {
-    value: number,
-    change: number,
+    count: string,
+    value?: string,
+    change?: number,
   },
 }
 
@@ -51,8 +52,8 @@ export const AssetRow:React.FC<Props> = ({ img, name, amount, onClick }) => {
 
   const renderAmount = () => {
     if (!amount) return 'Buy • Mar 31';
-    const changeSymbol = amount.change ? '+' : '-';
-    return `${currencyFormat(amount.value)} (${changeSymbol}${amount.change})`;
+    // const changeSymbol = amount.change ? '+' : '-';
+    return amount.count;
   };
 
   return (

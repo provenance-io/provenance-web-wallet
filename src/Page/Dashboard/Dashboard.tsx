@@ -1,5 +1,7 @@
 import { Button, FooterNav, AssetRow } from 'Components';
+import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useAddress, useWallet } from 'redux/hooks';
 import styled from 'styled-components';
 import { DashboardHeader } from './DashboardHeader';
 
@@ -45,22 +47,45 @@ const AssetsContainer = styled.div`
 
 export const Dashboard = () => {
   const navigate = useNavigate();
+  const { getAddressAssets, assets } = useAddress();
+  const { activeWalletIndex, wallets } = useWallet();
+  const activeWallet = wallets[activeWalletIndex];
+  const { address } = activeWallet;
+
+  // Onload get account assets
+  useEffect(() => {
+    if (address) getAddressAssets(address);
+  }, [address, getAddressAssets]);
+
+  const calculatePortfolioValue = () => {
+    let totalValue = 0;
+    const assetValues = assets.map(({ usdPrice, amount }) => usdPrice * Number(amount));
+    assetValues.forEach((value) => { totalValue += value });
+    return totalValue;
+  };
+
+  const renderAssets = () => assets.map(({ display, displayAmount }) => (
+    <AssetRow
+      onClick={() => navigate(`/asset/${display}`)}
+      img={display}
+      name={display}
+      amount={{ count: displayAmount }}
+      key={display}
+    />
+  ));
 
   return (
     <>
       <DashboardHeader />
       <PortfolioTitle>Portfolio Value</PortfolioTitle>
-      <Value>$2,539.23</Value>
+      <Value>${calculatePortfolioValue().toFixed(2)}</Value>
       <ButtonGroup>
         <Button variant='primary' onClick={() => navigate('./send')}>Send</Button>
         <Button variant='primary' onClick={() => navigate('./receive')}>Receive</Button>
       </ButtonGroup>
       <AssetsTitle>My Assets</AssetsTitle>
       <AssetsContainer>
-        <AssetRow onClick={() => navigate('/asset/hash')} img="hash" name="hash" amount={{ value: 500, change: 13.63 }} />
-        <AssetRow onClick={() => navigate('/asset/usdf')} img="usdf" name="usdf" />
-        <AssetRow onClick={() => navigate('/asset/etf')} img="etf" name="etf" />
-        <AssetRow onClick={() => navigate('/asset/inu')} img="inu" name="inu" />
+        {renderAssets()}
       </AssetsContainer>
       <FooterNav />
     </>

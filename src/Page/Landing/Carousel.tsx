@@ -60,6 +60,9 @@ export const Carousel:React.FC = () => {
     }, (latestCurrentSlide === slideCount) ? -1 : slideTransition); // If we are looping, instantly go back to slide 1;
     // Save timer to state
     setSlideTimeout(newSlideTimeout);
+
+    // Kill any existing timers when changing page (no mem-leaks)
+    return () => { clearTimeout(slideTimeout); }
   }, [currentSlideRef, slideTimeout]);
 
   // Start auto-change slide timer
@@ -76,6 +79,7 @@ export const Carousel:React.FC = () => {
   }, [changeSlide, slideTimeout]);
   // Pull stats from API
   useEffect(() => {
+    // TODO: This needs to be cancelable to prevent memory leak when leaving landing page before load complete
     getStatistics();
   }, [getStatistics]);
 

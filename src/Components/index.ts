@@ -2,6 +2,7 @@ export * from './Styled';
 export * from './Button';
 export * from './Chart';
 export * from './Checkbox';
+export * from './CopyValue';
 export * from './AssetDropdown';
 export * from './Header';
 export * from './ImageContainer';

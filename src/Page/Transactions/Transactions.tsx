@@ -42,7 +42,7 @@ export const Transactions = () => {
       <Select onChange={setSelectedAsset} options={assetOptions} value={selectedAsset} />
       <Select onChange={setSelectedTxType} options={transactionOptions} value={selectedTxType} />
       <AssetsContainer>
-        <AssetRow img="hash" name="hash" amount={{ value: 500, change: 13.63 }} />
+        <AssetRow img="hash" name="hash" amount={{ count: '500', change: 13.63 }} />
         <AssetRow img="usdf" name="usdf" />
         <AssetRow img="etf" name="etf" />
         <AssetRow img="inu" name="inu" />

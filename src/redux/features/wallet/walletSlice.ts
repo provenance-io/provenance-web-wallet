@@ -1,29 +1,34 @@
 import { createSlice } from '@reduxjs/toolkit';
 import { RootState } from 'redux/store';
+import { getSavedData, addSavedData, clearSavedData, encrypt } from 'utils';
 
 /**
  * TYPES
  */
 interface Wallet {
-  mnemonic?: string,
   walletName?: string,
   publicKey?: string,
   privateKey?: string,
   address?: string,
 }
+interface TempWallet extends Wallet {
+  mnemonic: string
+}
 interface State {
-  activeWalletIndex: number,
+  activeWalletIndex: number;
   wallets: Wallet[];
-  tempWallet?: Wallet;
+  tempWallet?: TempWallet;
+  password?: string;
 }
 
 /**
  * STATE
  */
 const initialState: State = {
-  activeWalletIndex: -1,
-  wallets: [],
+  activeWalletIndex: getSavedData('activeWalletIndex') !== undefined ? getSavedData('activeWalletIndex') : -1,
+  wallets: getSavedData('wallets') || [],
   tempWallet: undefined,
+  password: '',
 };
 
 /**
@@ -33,23 +38,51 @@ const walletSlice = createSlice({
   name: 'wallet',
   initialState,
   reducers: {
-    createWallet: (state, action) => {
-      state.wallets.push(action.payload);
+    setAccountPassword: (state, { payload }) => {
+      // Take user password, encode it, and save it to create new accounts
+      const password = encrypt(payload, process.env.REACT_APP_LOCAL_PASS!);
+      state.password = password;
+    },
+    signOut: (state) => {
+      // Clear out sessionStorage
+      clearSavedData();
+      // Reset redux store state
+      state = initialState;
+    },
+    createWallet: (state, { payload }) => {
+      state.wallets.push(payload);
       const totalWallets = state.wallets.length;
       // Check if first wallet created
       state.activeWalletIndex = totalWallets - 1;
+      // Save wallet data into savedStorage
+      addSavedData({
+        connected: true,
+        connectedIat: new Date().getTime(),
+        wallets: state.wallets,
+        activeWalletIndex: state.activeWalletIndex,
+      })
     },
-    updateWallet: (state, action) => {
-      const { walletIndex, ...rest } = action.payload;
+    updateWallet: (state, { payload }) => {
+      const { walletIndex, ...rest } = payload;
       const targetWallet = state.wallets[walletIndex];
       const updatedWallet = { ...targetWallet, ...rest };
       state.wallets[walletIndex] = updatedWallet;
+      // Save wallet data into savedStorage
+      addSavedData({
+        connected: true,
+        connectedIat: new Date().getTime(),
+        wallets: state.wallets,
+      })
     },
-    setActiveWalletIndex: (state, action) => {
-      state.activeWalletIndex = action.payload;
+    setActiveWalletIndex: (state, { payload }) => {
+      state.activeWalletIndex = payload;
+      // Save wallet data into savedStorage
+      addSavedData({
+        activeWalletIndex: state.activeWalletIndex,
+      })
     },
-    updateTempWallet: (state, action) => {
-      state.tempWallet = {...action.payload, ...state.tempWallet};
+    updateTempWallet: (state, { payload }) => {
+      state.tempWallet = {...payload, ...state.tempWallet};
     },
     clearTempWallet: (state) => {
       state.tempWallet = undefined;

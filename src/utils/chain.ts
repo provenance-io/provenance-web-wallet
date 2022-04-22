@@ -3,7 +3,7 @@ import {
   mnemonicToSeedSync as bip39mts,
   validateMnemonic as bip39vm,
 } from 'bip39';
-import { fromSeed as bip32FromSeed, BIP32Interface } from 'bip32';
+import { fromSeed as bip32FromSeed, BIP32Interface, fromBase58 as bip32FromB58 } from 'bip32';
 import { toWords as bech32ToWords, encode as bech32Encode } from 'bech32';
 import { publicKeyCreate as secp256k1PublicKeyCreate } from 'secp256k1';
 import type { Bech32String, Bytes } from '@tendermint/types';
@@ -64,8 +64,14 @@ const createKeyPairFromMasterKey = (masterKey: BIP32Interface, path: string): Ke
   };
 }
 
-export const createWalletFromMasterKey = (masterKey: BIP32Interface, prefix: string = walletPrefix, path: string = defaultDerivationPath): Wallet => {
-  const { privateKey, publicKey } = createKeyPairFromMasterKey(masterKey, path);
+export const createWalletFromMasterKey = (
+  masterKey: BIP32Interface | string,
+  prefix: string = walletPrefix,
+  path: string = defaultDerivationPath
+): Wallet => {
+  let finalMasterKey = masterKey;
+  if (typeof masterKey === 'string') finalMasterKey = bip32FromB58(masterKey);
+  const { privateKey, publicKey } = createKeyPairFromMasterKey(finalMasterKey as BIP32Interface, path);
   const address = createAddress(publicKey, prefix);
 
   return {

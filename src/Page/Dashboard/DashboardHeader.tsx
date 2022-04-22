@@ -17,14 +17,15 @@ const Menu = styled.div`
 `;
 const WalletInfo = styled.div`
   font-size: 1.4rem;
-  line-height: 3px;
   text-align: left;
 `;
 const WalletName = styled.p`
   font-weight: 700;
+  margin: 0;
 `;
 const WalletAddress = styled.p`
   font-weight: 400;
+  margin: 0;
 `;
 const WalletConnect = styled.div`
   cursor: pointer;
@@ -65,12 +66,12 @@ export const DashboardHeader:React.FC = () => {
       <Menu onClick={() => navigate('./menu')}>
         <Sprite icon={ICON_NAMES.MENU} size="2rem" />
       </Menu>
-      <CopyValue value={address} title="Copy wallet address">
         <WalletInfo>
-          <WalletName>{walletName}</WalletName>
-          <WalletAddress>({trimString(address, 11, 4)})</WalletAddress>
+          <CopyValue value={address} title="Copy wallet address">
+            <WalletName>{walletName}</WalletName>
+            <WalletAddress>({trimString(address, 11, 4)})</WalletAddress>
+          </CopyValue>
         </WalletInfo>
-      </CopyValue>
       <WalletConnect>
         {connected ? (
           <>

@@ -1,7 +1,8 @@
 import styled from 'styled-components';
 import { useState } from 'react';
-import { Header, Sprite } from 'Components';
+import { CopyValue, Header, Sprite } from 'Components';
 import { ICON_NAMES } from 'consts';
+import { useWallet } from 'redux/hooks';
 
 const WalletItem = styled.div<{active?: boolean}>`
   display: flex;
@@ -24,10 +25,6 @@ const WalletText = styled.div`
 const WalletName = styled.div`
   font-size: 1.4rem;
   font-weight: 700;
-`;
-const WalletAssets = styled.div`
-  font-size: 1.2rem;
-  font-weight: 400;
 `;
 const WalletActionsPopup = styled.div`
   position: fixed;
@@ -61,29 +58,14 @@ const WalletAction = styled.div`
   }
 `;
 
-interface WalletType {
-  address: string,
-  name: string,
-  assetCount: number,
-}
-
 export const DashboardMenu:React.FC = () => {
-  // TODO: This should be from storage
-  const wallets: WalletType[] = [
-    { address: 'tp123', name: 'My Wallet', assetCount: 2 },
-    { address: 'tp456', name: 'Backup Wallet', assetCount: 1 },
-    { address: 'tp789', name: 'Test Wallet 01', assetCount: 0 },
-    { address: 'tp012', name: 'Test Wallet 02', assetCount: 6 },
-  ];
-  // TODO: Active wallet should come from redux store
-  const [ activeWallet, setActiveWallet ] = useState<WalletType>(wallets[0]); 
-  const [ walletMenuTarget, setWalletMenuTarget ] = useState('');
+  const { activeWalletIndex, wallets, setActiveWalletIndex } = useWallet();
+  const [ walletMenuTarget, setWalletMenuTarget ] = useState(-1);
 
-  const renderWallets = () => wallets.map(({ address, name, assetCount }, index) => (
-    <WalletItem key={address} active={address === activeWallet.address} onClick={() => { setWalletMenuTarget(address)} }>
+  const renderWallets = () => wallets.map(({ address, walletName }, index) => (
+    <WalletItem key={address} active={index === activeWalletIndex} onClick={() => { setWalletMenuTarget(activeWalletIndex)} }>
       <WalletText>
-        <WalletName>{name}</WalletName>
-        <WalletAssets>{assetCount} Asset{assetCount === 1 ? '' : 's'}</WalletAssets>
+        <WalletName>{walletName}</WalletName>
       </WalletText>
       <Sprite icon={ICON_NAMES.MENU} size="2.2rem" />
     </WalletItem>
@@ -93,23 +75,19 @@ export const DashboardMenu:React.FC = () => {
     <>
       <Header title='Wallets' iconLeft={ICON_NAMES.CLOSE} />
       {renderWallets()}
-      {walletMenuTarget && (
-        <WalletActionsPopup onClick={() => setWalletMenuTarget('')}>
-          {activeWallet.address !== walletMenuTarget && (
-            <WalletAction
-              onClick={() => {
-                const newActiveWallet = wallets.find((wallet:WalletType) => wallet.address === walletMenuTarget);
-                if (newActiveWallet) setActiveWallet(newActiveWallet);
-              }}
-            >
+      {walletMenuTarget > -1 && (
+        <WalletActionsPopup onClick={() => setWalletMenuTarget(-1)}>
+          {activeWalletIndex !== walletMenuTarget && (
+            <WalletAction onClick={() => setActiveWalletIndex(walletMenuTarget)}>
               Select Wallet
             </WalletAction>
           )}
-          <WalletAction>Copy Wallet Address</WalletAction>
-          <WalletAction>Recover Wallet</WalletAction>
+          <WalletAction>
+            <CopyValue value={wallets[walletMenuTarget]?.address} successText="Address Copied!" noPopup>Copy Wallet Address</CopyValue>
+          </WalletAction>
           <WalletAction>Rename</WalletAction>
           <WalletAction>Remove</WalletAction>
-          <WalletAction onClick={() => setWalletMenuTarget('')}>Close</WalletAction>
+          <WalletAction onClick={() => setWalletMenuTarget(-1)}>Close</WalletAction>
         </WalletActionsPopup>
       )}
     </>

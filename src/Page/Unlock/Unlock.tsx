@@ -4,9 +4,9 @@ import { ICON_NAMES } from 'consts';
 import { useNavigate } from 'react-router-dom';
 import styled, { css } from 'styled-components';
 import {
-  getFromLocalStorage,
+  getKey,
   decrypt,
-  createWallet,
+  createWalletFromMasterKey,
   bytesToBase64,
 } from 'utils';
 import { useWallet } from 'redux/hooks';
@@ -23,9 +23,8 @@ export const Unlock = ({ nextUrl }: Props) => {
   const navigate = useNavigate();
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
-  const { createWallet: createStoreWallet } = useWallet();
-  const localAccountData = getFromLocalStorage('provenance-web-wallet');
-  const { walletName, key } = localAccountData;
+  const { createWallet: createStoreWallet, setAccountPassword } = useWallet();
+  const localKey = getKey();
 
   const passwordMinLength = 5;
 
@@ -39,18 +38,22 @@ export const Unlock = ({ nextUrl }: Props) => {
     // No error so far
     if (!newError) {
       // Attempt to decrypt the key with the provided password
-      const b64PrivateKey = decrypt(key, password);
-      if (!b64PrivateKey) newError = 'Invalid password';
+      const masterKey = decrypt(localKey, password);
+      if (!masterKey) newError = 'Invalid password';
       else {
         // Password was correct, build the wallet
-        const { address, publicKey } = createWallet(b64PrivateKey);
+        const { address, publicKey, privateKey } = createWalletFromMasterKey(masterKey);
         const b64PublicKey = bytesToBase64(publicKey);
-        createStoreWallet({
+        const b64PrivateKey = bytesToBase64(privateKey);
+        const newWalletData = {
           address,
           publicKey: b64PublicKey,
           privateKey: b64PrivateKey,
-          walletName,
-        });
+          walletName: 'unknown',
+        };
+        createStoreWallet(newWalletData);
+        // Save password for creating additional accounts (all same password)
+        setAccountPassword(password);
         // Redirect to dashboard
         navigate(nextUrl);
       }
@@ -68,7 +71,7 @@ export const Unlock = ({ nextUrl }: Props) => {
           margin-bottom: 32px;
         `}
       >
-        Enter your password for wallet "{walletName}"
+        Enter your password
       </BodyContent>
 
       <Input

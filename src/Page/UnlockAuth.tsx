@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { Outlet } from 'react-router-dom';
 import { COLORS } from 'theme';
 import { APP_URL } from 'consts';
-import { getFromLocalStorage } from 'utils';
+import { getKey } from 'utils';
 import { useNavigate } from 'react-router-dom';
 
 interface Props {
@@ -30,13 +30,12 @@ const PageStyled = styled.div<Props>`
 
 export const UnlockAuth = ({ children = null }: Props) => {
   const navigate = useNavigate();
-  const localAccountData = getFromLocalStorage('provenance-web-wallet');
-  const localAccountValid = localAccountData?.walletName && localAccountData?.key;
   useEffect(() => {
-    if (!localAccountValid) {
+    const savedKey = getKey();
+    if (!savedKey) {
       navigate(APP_URL);
     }
-  }, [localAccountValid, navigate]);
+  }, [navigate]);
 
   return (
     <PageStyled>

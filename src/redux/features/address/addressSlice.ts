@@ -87,7 +87,7 @@ const GET_ADDRESS_TX_ALL = 'GET_ADDRESS_TX_ALL';
  */
 export const getAddressAssets = createAsyncThunk(
   GET_ADDRESS_ASSETS,
-  ({ addr }: { addr: string }) =>
+  (addr: string) =>
     api({
       url: `${ADDRESS_URL}/${addr}/assets`,
     })
@@ -95,7 +95,7 @@ export const getAddressAssets = createAsyncThunk(
 
 export const getAddressTx = createAsyncThunk(
   GET_ADDRESS_TX,
-  ({ addr }: { addr: string }) =>
+  (addr: string) =>
     api({
       url: `${ADDRESS_URL}/${addr}/transactions`,
     })
@@ -103,7 +103,7 @@ export const getAddressTx = createAsyncThunk(
 
 export const getAddressTxAll = createAsyncThunk(
   GET_ADDRESS_TX_ALL,
-  ({ addr }: { addr: string }) =>
+  (addr: string) =>
     api({
       url: `${ADDRESS_URL}/${addr}/transactions/all`,
     })

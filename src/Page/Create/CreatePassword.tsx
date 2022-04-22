@@ -6,10 +6,10 @@ import styled, { css } from 'styled-components';
 import { useWallet } from 'redux/hooks';
 import {
   encrypt,
-  addToLocalStorage,
   createMasterKeyFromMnemonic,
   bytesToBase64,
   createWalletFromMasterKey,
+  saveKey,
 } from 'utils';
 
 const Wrapper = styled.div`
@@ -30,7 +30,7 @@ interface Props {
 
 export const CreatePassword = ({ nextUrl }: Props) => {
   const navigate = useNavigate();
-  const { tempWallet, createWallet } = useWallet();
+  const { tempWallet, createWallet: createStoreWallet, setAccountPassword } = useWallet();
   const [walletPassword, setWalletPassword] = useState('');
   const [walletPasswordRepeat, setWalletPasswordRepeat] = useState('');
   const [error, setError] = useState('');
@@ -47,18 +47,21 @@ export const CreatePassword = ({ nextUrl }: Props) => {
         const { address, publicKey, privateKey } = createWalletFromMasterKey(masterKey);
         const b64PublicKey = bytesToBase64(publicKey);
         const b64PrivateKey = bytesToBase64(privateKey);
+        console.log('masterKey: ', masterKey);
         // Save data to redux store and clear out tempWallet data
-        createWallet({
+        const newWalletData = {
           address,
-          walletName: tempWallet.walletName,
-          privateKey: b64PrivateKey,
           publicKey: b64PublicKey,
-        });
+          privateKey: b64PrivateKey,
+          walletName: tempWallet.walletName,
+        };
+        createStoreWallet(newWalletData);
         // Encrypt data with provided password
-        const encrypted = encrypt(b64PrivateKey, walletPassword);
-        const data = { walletName: tempWallet.walletName, key: encrypted };
+        const encrypted = encrypt(masterKey.toBase58(), walletPassword);
         // Add data to localStorage
-        addToLocalStorage('provenance-web-wallet', data);
+        saveKey(encrypted);
+        // Save password for creating additional accounts (all same password)
+        setAccountPassword(btoa(walletPassword));
         navigate(nextUrl);
       } else {
         latestError = 'Unable to locally save wallet, please try again later'

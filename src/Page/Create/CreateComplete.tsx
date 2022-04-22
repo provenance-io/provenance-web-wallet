@@ -12,6 +12,7 @@ export const CreateComplete = ({ nextUrl }: Props) => {
   const finishCreation = () => {
     // Remove temp data
     clearTempWallet();
+    // Go to /dashboard
     navigate(nextUrl);
   };
   return (

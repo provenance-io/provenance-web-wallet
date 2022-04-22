@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import { Outlet } from 'react-router-dom';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useWallet } from 'redux/hooks';
-import { APP_URL } from 'consts';
+import { APP_URL, DASHBOARD_URL } from 'consts';
 
 interface PageProps {
   children?: React.ReactNode;
@@ -19,7 +19,10 @@ export const RequiresAuth = ({ children = null }: PageProps) => {
     if (!userAllowed) {
       navigate(APP_URL);
     }
-  }, [navigate, userAllowed]);
+    if (walletExists && isLandingPage) {
+      navigate(DASHBOARD_URL);
+    }
+  }, [navigate, userAllowed, walletExists, isLandingPage]);
 
   return (
     userAllowed ? (

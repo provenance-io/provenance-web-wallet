@@ -1,7 +1,8 @@
 import styled from 'styled-components';
 import { useState } from 'react';
-import { CopyValue, Header, Sprite } from 'Components';
-import { ICON_NAMES } from 'consts';
+import { CopyValue, CtaButton, Header, Sprite } from 'Components';
+import { useNavigate } from 'react-router-dom';
+import { DASHBOARD_URL, ICON_NAMES } from 'consts';
 import { useWallet } from 'redux/hooks';
 
 const WalletItem = styled.div<{active?: boolean}>`
@@ -59,11 +60,12 @@ const WalletAction = styled.div`
 `;
 
 export const DashboardMenu:React.FC = () => {
+  const navigate = useNavigate();
   const { activeWalletIndex, wallets, setActiveWalletIndex } = useWallet();
   const [ walletMenuTarget, setWalletMenuTarget ] = useState(-1);
 
   const renderWallets = () => wallets.map(({ address, walletName }, index) => (
-    <WalletItem key={address} active={index === activeWalletIndex} onClick={() => { setWalletMenuTarget(activeWalletIndex)} }>
+    <WalletItem key={address} active={index === activeWalletIndex} onClick={() => { setWalletMenuTarget(index)} }>
       <WalletText>
         <WalletName>{walletName}</WalletName>
       </WalletText>
@@ -73,7 +75,7 @@ export const DashboardMenu:React.FC = () => {
 
   return (
     <>
-      <Header title='Wallets' iconLeft={ICON_NAMES.CLOSE} />
+      <Header title='Wallets' iconLeft={ICON_NAMES.CLOSE} backLocation={DASHBOARD_URL} />
       {renderWallets()}
       {walletMenuTarget > -1 && (
         <WalletActionsPopup onClick={() => setWalletMenuTarget(-1)}>
@@ -82,6 +84,7 @@ export const DashboardMenu:React.FC = () => {
               Select Wallet
             </WalletAction>
           )}
+          {/* TODO: User must click on text to copy, instead have user click on entire button row */}
           <WalletAction>
             <CopyValue value={wallets[walletMenuTarget]?.address} successText="Address Copied!" noPopup>Copy Wallet Address</CopyValue>
           </WalletAction>
@@ -90,6 +93,7 @@ export const DashboardMenu:React.FC = () => {
           <WalletAction onClick={() => setWalletMenuTarget(-1)}>Close</WalletAction>
         </WalletActionsPopup>
       )}
+      <CtaButton onClick={() => navigate('../create')}>Create Account</CtaButton>
     </>
   );
 };

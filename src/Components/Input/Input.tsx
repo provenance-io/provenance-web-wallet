@@ -70,6 +70,7 @@ export const Input = ({
       onChange={(event) => (event?.target && onChange) && onChange(event.target.value)}
       error={error}
       disabled={disabled}
+      autoComplete="off"
       {...rest}
     />
     {children}

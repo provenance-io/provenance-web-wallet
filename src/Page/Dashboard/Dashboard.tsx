@@ -85,7 +85,7 @@ export const Dashboard = () => {
       </ButtonGroup>
       <AssetsTitle>My Assets</AssetsTitle>
       <AssetsContainer>
-        {renderAssets()}
+        {assets.length ? renderAssets(): 'Address has no assets...'}
       </AssetsContainer>
       <FooterNav />
     </>

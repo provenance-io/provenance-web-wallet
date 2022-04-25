@@ -5,11 +5,12 @@ import { useNavigate } from 'react-router-dom';
 import styled, { css } from 'styled-components';
 import { useWallet } from 'redux/hooks';
 import {
-  encrypt,
+  encryptKey,
   createMasterKeyFromMnemonic,
   bytesToBase64,
   createWalletFromMasterKey,
   saveKey,
+  saveName,
   derivationPath,
 } from 'utils';
 
@@ -73,7 +74,6 @@ export const RecoverPassword = ({ nextUrl }: Props) => {
     tempWallet,
     createWallet: createStoreWallet,
     clearTempWallet,
-    setAccountPassword,
   } = useWallet();
   const [walletPassword, setWalletPassword] = useState('');
   const [showAdvanced, setShowAdvanced] = useState(false);
@@ -82,6 +82,7 @@ export const RecoverPassword = ({ nextUrl }: Props) => {
   const [error, setError] = useState('');
   const defaultCoinType = process.env.REACT_APP_PROVENANCE_WALLET_COIN_TYPE;
   const { account, change, addressIndex } = customDerivationPath;
+  const passwordMinLength = Number(process.env.REACT_APP_PASSWORD_MIN_LENGTH)!;
 
   const handleContinue = () => {
     let latestError = '';
@@ -89,7 +90,7 @@ export const RecoverPassword = ({ nextUrl }: Props) => {
     if (showAdvanced && derivationMissing) latestError = 'Missing derivation path value(s).'
     if (walletPassword !== walletPasswordRepeat) latestError = 'Passwords must match';
     if (!walletPassword || !walletPasswordRepeat) latestError = 'Please confirm your password.';
-    if (walletPassword.length < 5) latestError = 'Password must be a minimum of 5 characters.';
+    if (walletPassword.length < passwordMinLength) latestError = `Password must be a minimum of ${passwordMinLength} characters.`;
     if (!latestError) {
       if (tempWallet?.mnemonic) {
         // Generate master keyt and get data about wallet
@@ -107,13 +108,13 @@ export const RecoverPassword = ({ nextUrl }: Props) => {
         };
         createStoreWallet(newWalletData);
         // Encrypt data with provided password
-        const encrypted = encrypt(b64PrivateKey, walletPassword);
+        const encrypted = encryptKey(masterKey, walletPassword);
         // Add data to localStorage
         saveKey(encrypted);
+        // This is the first wallet in the list, index will be 0
+        saveName(0, tempWallet.walletName);
         // Remove tempWallet data
         clearTempWallet();
-        // Save password for creating additional accounts (all same password)
-        setAccountPassword(walletPassword);
         navigate(nextUrl);
       } else {
         latestError = 'Unable to locally save wallet, please try again later'

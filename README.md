@@ -1,3 +1,13 @@
+# TODO:
+- Create activeWalletIndex and activeAccountIndex.
+- Allow importing new seed phrases
+- Account Name => Wallet name
+- Split out all accounts in dashboard by wallet name
+- Save different encrypted keys for each seed attached
+- When adding new accounts, user selects a "wallet" to add that account into and needs to know that password
+- When unlocking device, always default to the original / main seed phrase?  Passwords would be different
+
+
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app), using the [Redux](https://redux.js.org/) and [Redux Toolkit](https://redux-toolkit.js.org/) template.
 
 ## Available Scripts

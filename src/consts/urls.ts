@@ -10,6 +10,7 @@ export const APP_URL = '/';
 // -- DASHBOARD URLS
 export const DASHBOARD_URL = '/dashboard';
 export const DASHBOARD_MENU_URL = '/dashboard/menu';
+export const DASHBOARD_ACCOUNT_CREATE_URL = '/dashboard/create';
 export const DASHBOARD_SEND_URL = '/dashboard/send';
 export const DASHBOARD_RECEIVE_URL = '/dashboard/receive';
 // -- PROFILE URLS

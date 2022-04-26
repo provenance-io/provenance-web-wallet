@@ -8,6 +8,7 @@ import {
   CreatePassword,
   CreateStart,
   Dashboard,
+  DashboardAccountCreate,
   DashboardMenu,
   DashboardReceive,
   DashboardSend,
@@ -42,6 +43,7 @@ import {
   CREATE_SEEDPHRASE_URL,
   CREATE_URL,
   CREATE_VERIFY_SEEDPHRASE_URL,
+  DASHBOARD_ACCOUNT_CREATE_URL,
   DASHBOARD_MENU_URL,
   DASHBOARD_RECEIVE_URL,
   DASHBOARD_SEND_URL,
@@ -73,9 +75,10 @@ export const routes = [
         element: <Page />,
         children: [
           { index: true, element: <Dashboard /> },
-          { path: DASHBOARD_MENU_URL, element: <DashboardMenu /> },
           { path: DASHBOARD_SEND_URL, element: <DashboardSend /> },
           { path: DASHBOARD_RECEIVE_URL, element: <DashboardReceive /> },
+          { path: DASHBOARD_MENU_URL, element: <DashboardMenu /> },
+          { path: DASHBOARD_ACCOUNT_CREATE_URL, element: <DashboardAccountCreate  nextUrl={DASHBOARD_MENU_URL} /> },
         ]
       },
       // ASSET

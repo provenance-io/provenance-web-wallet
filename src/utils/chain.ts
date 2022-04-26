@@ -98,6 +98,6 @@ export const createWallet = (privateKeyString: string): Wallet => {
       address,
     };
   } catch (e) {
-    throw new Error('Failed to create wallet from private key');
+    throw new Error('Failed to create account from private key');
   }
 }

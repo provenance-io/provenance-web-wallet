@@ -1,14 +1,15 @@
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import styled from 'styled-components';
 import { COLORS } from 'theme';
 
 const CopyArea = styled.div`
   cursor: pointer;
-  display: flex;
-  align-items: center;
   position: relative;
+  text-align: inherit;
+  height: 100%;
+  width: 100%;
 `;
-const CopiedNotice = styled.div`
+const CopiedNotice = styled.div<{child: React.ReactNode}>`
   background: ${COLORS.SECONDARY_650};
   color: white;
   position: absolute;
@@ -19,8 +20,8 @@ const CopiedNotice = styled.div`
   border-radius: 5px;
   font-size: 1.2rem;
   font-weight: bold;
-  bottom: -30px;
-  left: -8px;
+  top: 150%;
+  left: 40%;
   width: 60px;
   box-sizing: content-box;
   &:before {
@@ -37,22 +38,32 @@ const CopiedNotice = styled.div`
 `;
 
 interface Props {
-  value: string,
+  value?: string,
   title?: string,
+  successText?: string,
   children?: React.ReactNode,
+  noPopup?: boolean,
 }
 
 
-export const CopyValue:React.FC<Props> = ({ value, title = 'Copy Text', children }) => {
+export const CopyValue:React.FC<Props> = ({
+  value = '',
+  title = 'Copy Text',
+  children,
+  successText = 'Copied!',
+  noPopup = false,
+}) => {
   const [justCopied, setJustCopied] = useState(false);
   const [timeoutInstance, setTimeoutInstance] = useState(0);
+  const childRef = useRef(null);
 
   // Kill any times when unmounted (prevent memory leaks w/running timers)
   useEffect(() => () => { if (timeoutInstance) { clearTimeout(timeoutInstance); } },
     [timeoutInstance]
   );
 
-  const handleCopyClick = () => {
+  const handleCopyClick = (event: React.MouseEvent) => {
+    event.stopPropagation();
     setJustCopied(false);
     clearTimeout(timeoutInstance);
     navigator.clipboard.writeText(value).then(() => {
@@ -67,8 +78,8 @@ export const CopyValue:React.FC<Props> = ({ value, title = 'Copy Text', children
 
   return (
     <CopyArea title={title} onClick={handleCopyClick}>
-      {children}
-      {justCopied && <CopiedNotice>Copied!</CopiedNotice>}
+      {(justCopied && noPopup) ? successText : children}
+      {(justCopied && !noPopup) && <CopiedNotice child={childRef.current}>{successText}</CopiedNotice>}
     </CopyArea>
   );
 };

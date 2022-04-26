@@ -5,11 +5,12 @@ import { useNavigate } from 'react-router-dom';
 import styled, { css } from 'styled-components';
 import { useWallet } from 'redux/hooks';
 import {
-  encrypt,
+  encryptKey,
   createMasterKeyFromMnemonic,
   bytesToBase64,
   createWalletFromMasterKey,
   saveKey,
+  saveName,
 } from 'utils';
 
 const Wrapper = styled.div`
@@ -30,16 +31,17 @@ interface Props {
 
 export const CreatePassword = ({ nextUrl }: Props) => {
   const navigate = useNavigate();
-  const { tempWallet, createWallet: createStoreWallet, setAccountPassword } = useWallet();
+  const { tempWallet, createWallet: createStoreWallet } = useWallet();
   const [walletPassword, setWalletPassword] = useState('');
   const [walletPasswordRepeat, setWalletPasswordRepeat] = useState('');
   const [error, setError] = useState('');
+  const passwordMinLength = Number(process.env.REACT_APP_PASSWORD_MIN_LENGTH)!;
 
   const handleContinue = () => {
     let latestError = '';
     if (walletPassword !== walletPasswordRepeat) latestError = 'Passwords must match';
     if (!walletPassword || !walletPasswordRepeat) latestError = 'Please confirm your password.';
-    if (walletPassword.length < 5) latestError = 'Password must be a minimum of 5 characters.';
+    if (walletPassword.length < passwordMinLength) latestError = `Password must be a minimum of ${passwordMinLength} characters.`;
     if (!latestError) {
       if (tempWallet?.mnemonic) {
         // Generate master keyt and get data about wallet
@@ -47,7 +49,6 @@ export const CreatePassword = ({ nextUrl }: Props) => {
         const { address, publicKey, privateKey } = createWalletFromMasterKey(masterKey);
         const b64PublicKey = bytesToBase64(publicKey);
         const b64PrivateKey = bytesToBase64(privateKey);
-        console.log('masterKey: ', masterKey);
         // Save data to redux store and clear out tempWallet data
         const newWalletData = {
           address,
@@ -57,14 +58,14 @@ export const CreatePassword = ({ nextUrl }: Props) => {
         };
         createStoreWallet(newWalletData);
         // Encrypt data with provided password
-        const encrypted = encrypt(masterKey.toBase58(), walletPassword);
+        const encrypted = encryptKey(masterKey, walletPassword);
         // Add data to localStorage
         saveKey(encrypted);
-        // Save password for creating additional accounts (all same password)
-        setAccountPassword(btoa(walletPassword));
+        // This is the first account in the list, index will be 0
+        saveName(0, tempWallet.walletName);
         navigate(nextUrl);
       } else {
-        latestError = 'Unable to locally save wallet, please try again later'
+        latestError = 'Unable to locally save account, please try again later'
       }
     }
     setError(latestError);

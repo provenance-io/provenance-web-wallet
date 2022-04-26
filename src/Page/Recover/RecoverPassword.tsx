@@ -88,45 +88,33 @@ export const RecoverPassword = ({ nextUrl }: Props) => {
   const passwordMinLength = Number(process.env.REACT_APP_PASSWORD_MIN_LENGTH)!;
   const defaultAccountName = process.env.REACT_APP_DEFAULT_ACCOUNT_NAME!;
 
-  const recoverAccountLoop = async (masterKey: BIP32Interface, addressIndex: number = 0, defaultWalletName?: string): Promise<string> => {
-    const path = derivationPath({ address_index: addressIndex });
-    const { address, publicKey, privateKey } = createWalletFromMasterKey(masterKey, undefined, path);
-    const b64PublicKey = bytesToBase64(publicKey);
-    const b64PrivateKey = bytesToBase64(privateKey);
-    const walletName = defaultWalletName || `${defaultAccountName}${addressIndex + 1}`;
-    // Save data to redux store and clear out tempWallet data
-    const newWalletData = {
-      address,
-      publicKey: b64PublicKey,
-      privateKey: b64PrivateKey,
-      walletName,
-    };
-    // Loop up to see if account holds any hash, if it does, add it, if it doesn't stop this loop.
-    const hasAssetsRequest = await getAddressAssetsRaw(address);
-    const hasAssets = await hasAssetsRequest?.data?.payload?.data?.length;
-    if (addressIndex === 0 || hasAssets) {
-      createStoreWallet(newWalletData);
-      // Add wallet and name to names list
-      saveName(addressIndex, walletName);
-      // Loop function, bump address index up by one
-      return recoverAccountLoop(masterKey, addressIndex + 1);
-    } else {
-      return 'completed';
-    }
-    // return getAddressAssetsRaw(address).then((payload) => {
-    //   const hasHash = payload?.data.length;
-    //   // Must be initial address or have hash to create account
-    //   if (addressIndex === 0 || hasHash) {
-    //     createStoreWallet(newWalletData);
-    //     // Add wallet and name to names list
-    //     saveName(addressIndex, walletName);
-    //     // Loop function, bump address index up by one
-    //     recoverAccountLoop(masterKey, addressIndex + 1);
-    //   } else {
-    //     return resolve('resolved');
-    //   }
-    // }).catch((e) => reject(e) );
-  };
+  const recoverAccountLoop = async (masterKey: BIP32Interface, addressIndex: number = 0, defaultWalletName?: string): Promise<string> =>
+    new Promise (async (resolve) => {
+      const path = derivationPath({ address_index: addressIndex });
+      const { address, publicKey, privateKey } = createWalletFromMasterKey(masterKey, undefined, path);
+      const b64PublicKey = bytesToBase64(publicKey);
+      const b64PrivateKey = bytesToBase64(privateKey);
+      const walletName = defaultWalletName || `${defaultAccountName}${addressIndex + 1}`;
+      // Save data to redux store and clear out tempWallet data
+      const newWalletData = {
+        address,
+        publicKey: b64PublicKey,
+        privateKey: b64PrivateKey,
+        walletName,
+      };
+      // Loop up to see if account holds any hash, if it does, add it, if it doesn't stop this loop.
+      const hasAssetsRequest = await getAddressAssetsRaw(address);
+      const hasAssets = await hasAssetsRequest?.data?.payload?.data?.length;
+      if (addressIndex === 0 || hasAssets) {
+        createStoreWallet(newWalletData);
+        // Add wallet and name to names list
+        saveName(addressIndex, walletName);
+        // Loop function, bump address index up by one
+        return recoverAccountLoop(masterKey, addressIndex + 1);
+      } else {
+        return resolve('complete');
+      }
+    });
 
   const handleContinue = async () => {
     let latestError = '';

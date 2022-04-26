@@ -104,7 +104,7 @@ export const RecoverPassword = ({ nextUrl }: Props) => {
       };
       // Loop up to see if account holds any hash, if it does, add it, if it doesn't stop this loop.
       const hasAssetsRequest = await getAddressAssetsRaw(address);
-      const hasAssets = await hasAssetsRequest?.data?.payload?.data?.length;
+      const hasAssets = await hasAssetsRequest?.data?.length;
       if (addressIndex === 0 || hasAssets) {
         createStoreWallet(newWalletData);
         // Add wallet and name to names list

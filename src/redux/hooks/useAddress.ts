@@ -4,6 +4,7 @@ import { useAppDispatch, useAppSelector } from './useStore';
 import {
   selectAddress as selector,
   addressActions as actionsList,
+  noDispatchActions,
 } from '../features/address/addressSlice';
 
 export const useAddress = () => {
@@ -14,5 +15,5 @@ export const useAddress = () => {
     [dispatch]
   );
 
-  return { ...state, ...actions };
+  return { ...state, ...actions, ...noDispatchActions };
 };

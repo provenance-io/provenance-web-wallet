@@ -91,15 +91,13 @@ export const EnterSeed:React.FC<Props> = ({ nextUrl }) => {
     const allInputsElements = [];
 
     const onInputChange = (i: number, value: any) => {
-      // Check first input to see if the value entered is an entire pasted mnumonic
-      if (i === 0) {
-        const wholeMnumonic = isMnumonic(value, totalSeeds);
-        if (wholeMnumonic) {
-          // Loop through each input and change the value to match the pasted mnumonic
-          wholeMnumonic.forEach((word, index) => {
-            updateInput(index, 'value', word);
-          });
-        } else updateInput(i, 'value', value);
+      // Check to see if the value entered is an entire pasted mnumonic
+      const wholeMnumonic = isMnumonic(value, totalSeeds);
+      if (wholeMnumonic) {
+        // Loop through each input and change the value to match the pasted mnumonic
+        wholeMnumonic.forEach((word, index) => {
+          updateInput(index, 'value', word);
+        });
       } else updateInput(i, 'value', value);
     }
 

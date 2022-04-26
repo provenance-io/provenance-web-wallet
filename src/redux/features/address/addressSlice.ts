@@ -83,6 +83,14 @@ const GET_ADDRESS_TX = 'GET_ADDRESS_TX';
 const GET_ADDRESS_TX_ALL = 'GET_ADDRESS_TX_ALL';
 
 /**
+ * SPECIAL ASYNC ACTIONS
+ */
+const getAddressAssetsRaw = (addr: string) =>
+  api({
+    url: `${ADDRESS_URL}/${addr}/assets`,
+  });
+
+/**
  * ASYNC ACTIONS
  */
 export const getAddressAssets = createAsyncThunk(
@@ -110,6 +118,10 @@ export const getAddressTxAll = createAsyncThunk(
 );
 
 export const addressActions = { getAddressAssets, getAddressTx, getAddressTxAll };
+
+export const noDispatchActions = {
+  getAddressAssetsRaw,
+};
 
 /**
  * SLICE

@@ -61,11 +61,11 @@ export const CreatePassword = ({ nextUrl }: Props) => {
         const encrypted = encryptKey(masterKey, walletPassword);
         // Add data to localStorage
         saveKey(encrypted);
-        // This is the first wallet in the list, index will be 0
+        // This is the first account in the list, index will be 0
         saveName(0, tempWallet.walletName);
         navigate(nextUrl);
       } else {
-        latestError = 'Unable to locally save wallet, please try again later'
+        latestError = 'Unable to locally save account, please try again later'
       }
     }
     setError(latestError);

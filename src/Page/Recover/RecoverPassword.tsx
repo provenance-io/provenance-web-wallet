@@ -143,7 +143,7 @@ export const RecoverPassword = ({ nextUrl }: Props) => {
         clearTempWallet();
         setSuccess(true);
       } else {
-        latestError = 'Unable to locally save wallet, please try again later'
+        latestError = 'Unable to locally save account, please try again later'
       }
     }
     setError(latestError);

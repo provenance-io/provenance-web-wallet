@@ -82,7 +82,7 @@ export const DashboardReceive:React.FC = () => {
   return (
     <Wrapper>
       <Header title="Receive" />
-      <Text>Show this QR code or share wallet address to receive assets</Text>
+      <Text>Show this QR code or share account address to receive assets</Text>
       {qrcode && <QRImage src={qrcode} alt="Address QR Code" />}
       <Input placeholder={trimString(address, 20, 10)} label="Wallet Address" disabled id="address">
         <CopyButton onClick={copyAddress} justCopied={justCopied}>

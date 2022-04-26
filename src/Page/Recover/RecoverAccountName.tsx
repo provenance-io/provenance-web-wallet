@@ -38,16 +38,16 @@ export const RecoverAccountName:React.FC<Props> = ({ nextUrl }) => {
   return (
     <>
       <Group>
-        <Header title="Name Your Wallet" progress={33} iconLeft={ICON_NAMES.CLOSE} />
+        <Header title="Name Your Account" progress={33} iconLeft={ICON_NAMES.CLOSE} />
         <InfoText margin="16px auto 0 auto" font="PRIMARY">
-          Name your wallet to easily identify it while using Provenance Wallet.
+          Name your account to easily identify it while using Provenance Wallet.
         </InfoText>
         <InfoText margin="16px auto 32px auto" font="PRIMARY">
           These names are stored locally, and can only be seen by you.
         </InfoText>
         <InputGroup>
           <Input
-            label="Wallet Name"
+            label="Account Name"
             id="wallet-name"
             placeholder='Enter name'
             value={walletName}

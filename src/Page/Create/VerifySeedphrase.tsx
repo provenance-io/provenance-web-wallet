@@ -124,7 +124,7 @@ export const VerifySeedphrase = ({ nextUrl }: Props) => {
         onChange={(isChecked: boolean) => {
           setTermsAgree(isChecked);
         }}
-        label="I agree that I'm solely responsible for my wallet, and cannot recover my account the passphrase is lost."
+        label="I agree that I'm solely responsible for my wallet and cannot recover the passphrase if lost."
       />
       <Button onClick={handleContinue} variant="primary">
         Continue

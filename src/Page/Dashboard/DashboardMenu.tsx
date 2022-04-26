@@ -81,12 +81,12 @@ export const DashboardMenu:React.FC = () => {
         <WalletActionsPopup onClick={() => setWalletMenuTarget(-1)}>
           {activeWalletIndex !== walletMenuTarget && (
             <WalletAction onClick={() => setActiveWalletIndex(walletMenuTarget)}>
-              Select Wallet
+              Select Account
             </WalletAction>
           )}
           {/* TODO: User must click on text to copy, instead have user click on entire button row */}
           <WalletAction>
-            <CopyValue value={wallets[walletMenuTarget]?.address} successText="Address Copied!" noPopup>Copy Wallet Address</CopyValue>
+            <CopyValue value={wallets[walletMenuTarget]?.address} successText="Address Copied!" noPopup>Copy Account Address</CopyValue>
           </WalletAction>
           <WalletAction>Rename</WalletAction>
           <WalletAction>Remove</WalletAction>

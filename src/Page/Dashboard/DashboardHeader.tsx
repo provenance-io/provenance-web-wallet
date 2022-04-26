@@ -67,7 +67,7 @@ export const DashboardHeader:React.FC = () => {
         <Sprite icon={ICON_NAMES.MENU} size="2rem" />
       </Menu>
         <WalletInfo>
-          <CopyValue value={address} title="Copy wallet address">
+          <CopyValue value={address} title="Copy account address">
             <WalletName>{walletName}</WalletName>
             <WalletAddress>({trimString(address, 11, 4)})</WalletAddress>
           </CopyValue>

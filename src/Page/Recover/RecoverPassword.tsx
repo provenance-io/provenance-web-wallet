@@ -76,10 +76,12 @@ export const RecoverPassword = ({ nextUrl }: Props) => {
     tempWallet,
     createWallet: createStoreWallet,
     clearTempWallet,
+    setActiveWalletIndex
   } = useWallet();
   const [walletPassword, setWalletPassword] = useState('');
   const [showAdvanced, setShowAdvanced] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [success, setSuccess] = useState(false);
   const [customDerivationPath, setCustomDerivationPath] = useState<CustomDerivationPathObject>({});
   const [walletPasswordRepeat, setWalletPasswordRepeat] = useState('');
   const [error, setError] = useState('');
@@ -111,6 +113,8 @@ export const RecoverPassword = ({ nextUrl }: Props) => {
       // Loop function, bump address index up by one
       return recoverAccountLoop(masterKey, addressIndex + 1);
     } else {
+      // Set first wallet to be active
+      setActiveWalletIndex(0);
       return 'complete';
     }
   };
@@ -137,7 +141,7 @@ export const RecoverPassword = ({ nextUrl }: Props) => {
         saveKey(encrypted);
         // Remove tempWallet data
         clearTempWallet();
-        navigate(nextUrl);
+        setSuccess(true);
       } else {
         latestError = 'Unable to locally save wallet, please try again later'
       }
@@ -160,44 +164,59 @@ export const RecoverPassword = ({ nextUrl }: Props) => {
   };
 
   return (
-    <Wrapper>
-      <Header iconLeft={ICON_NAMES.CLOSE} progress={33} title="Account Password" backLocation='/' />
-      <BodyContent
-        $css={css`
-          text-align: center;
-          margin-bottom: 32px;
-        `}
-      >
-        Enter an account password.  This password will be used to connect to this wallet, it is only stored locally to decrypt the created wallet.
-      </BodyContent>
+    success ? (
+      <Wrapper>
+        <Header progress={100} title="Account(s) Recovered" />
+        <BodyContent
+          $css={css`
+            text-align: center;
+            margin-bottom: 32px;
+          `}
+        >
+          Your accounts were successfully recovered!
+        </BodyContent>
+        <CtaButton onClick={() => navigate(nextUrl)}>Continue</CtaButton>
+      </Wrapper>
+    ) : (
+      <Wrapper>
+        <Header iconLeft={ICON_NAMES.CLOSE} progress={66} title="Account Password" backLocation='/' />
+        <BodyContent
+          $css={css`
+            text-align: center;
+            margin-bottom: 32px;
+          `}
+        >
+          Enter an account password.  This password will be used to connect to this wallet, it is only stored locally to decrypt the created wallet.
+        </BodyContent>
 
-      <Input
-        id="account-password"
-        label="Account Password"
-        type="password"
-        placeholder="Account Password"
-        value={walletPassword}
-        onChange={setWalletPassword}
-      />
-      <Input
-        id="account-password-repeat"
-        label="Confirm Account Password"
-        type="password"
-        placeholder="Confirm Account Password"
-        value={walletPasswordRepeat}
-        onChange={setWalletPasswordRepeat}
-      />
-      {error && <Error>{error}</Error>}
-      <AdvancedTextButton onClick={toggleShowAdvanced}>Advanced Settings ({showAdvanced ? 'Enabled' : 'Disabled'})</AdvancedTextButton>
-      {showAdvanced && (
-        <AdvancedSection>
-          <AdvancedTitle>HD Derivation Path</AdvancedTitle>
-          <AdvancedInputArea>
-            m/44'/{defaultCoinType}'/<Input type="number" id="account" value={account !== undefined ? account : ''} onChange={(value) => changeCustomDerivationPath('account', value) } />'/<Input type="number" id="change" value={change !== undefined ? change : ''} onChange={(value) => changeCustomDerivationPath('change', value) } />/<Input type="number" id="addressIndex" value={addressIndex !== undefined ? addressIndex : ''} onChange={(value) => changeCustomDerivationPath('addressIndex', value) } />
-          </AdvancedInputArea>
-        </AdvancedSection>
-      )}
-      {loading ? <div>Please Wait..</div> : <CtaButton onClick={handleContinue}>Continue</CtaButton>}
-    </Wrapper>
+        <Input
+          id="account-password"
+          label="Account Password"
+          type="password"
+          placeholder="Account Password"
+          value={walletPassword}
+          onChange={setWalletPassword}
+        />
+        <Input
+          id="account-password-repeat"
+          label="Confirm Account Password"
+          type="password"
+          placeholder="Confirm Account Password"
+          value={walletPasswordRepeat}
+          onChange={setWalletPasswordRepeat}
+        />
+        {error && <Error>{error}</Error>}
+        <AdvancedTextButton onClick={toggleShowAdvanced}>Advanced Settings ({showAdvanced ? 'Enabled' : 'Disabled'})</AdvancedTextButton>
+        {showAdvanced && (
+          <AdvancedSection>
+            <AdvancedTitle>HD Derivation Path</AdvancedTitle>
+            <AdvancedInputArea>
+              m/44'/{defaultCoinType}'/<Input type="number" id="account" value={account !== undefined ? account : ''} onChange={(value) => changeCustomDerivationPath('account', value) } />'/<Input type="number" id="change" value={change !== undefined ? change : ''} onChange={(value) => changeCustomDerivationPath('change', value) } />/<Input type="number" id="addressIndex" value={addressIndex !== undefined ? addressIndex : ''} onChange={(value) => changeCustomDerivationPath('addressIndex', value) } />
+            </AdvancedInputArea>
+          </AdvancedSection>
+        )}
+        {loading ? <div>Please Wait..</div> : <CtaButton onClick={handleContinue}>Continue</CtaButton>}
+      </Wrapper>
+    )
   );
 };

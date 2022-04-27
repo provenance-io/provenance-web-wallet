@@ -1,22 +1,17 @@
 import { useEffect, useState } from 'react';
-import WC from "@walletconnect/client";
+import WalletConnectClient from "@walletconnect/client";
 import { Button } from 'Components';
 
 export const WalletConnect:React.FC = () => {
-  const [connector, setConnector] = useState<WC | null>(null);
+  const [connector, setConnector] = useState<WalletConnectClient | null>(null);
   // Initial load
   useEffect(() => {
     // These values need to come from the URL/QRCode/dAPP
+    // NOTE: Manually select 'COPY TO CLIPBOARD' from the QR popup and replace the below
     const WCOptions = {
-      clientMeta: {
-        description: "TEST | WalletConnect Developer App",
-        url: "https://walletconnect.org",
-        icons: ["https://walletconnect.org/walletconnect-logo.png"],
-        name: "TEST | WalletConnect",
-      },
-      uri: 'wc:325be01b-3b95-49b1-b95b-bb238180f149@1?bridge=wss%3A%2F%2Ftest.figure.tech%2Fservice-wallet-connect-bridge%2Fws%2Fexternal&key=45bd3efd1d9fcf62a7ba3318ab9741bba7965b6c96b217808b0e5096c55e9dee',
+      uri: 'wc:f42d4415-6b9a-464a-a0c1-ef266a8a8faf@1?bridge=wss%3A%2F%2Ftest.figure.tech%2Fservice-wallet-connect-bridge%2Fws%2Fexternal&key=9aaed945bc71c50fafea87e1c0c4ef4237f573bcf1354ee66622e08f0b94e7df',
     }
-    const newConnector = new WC(WCOptions);
+    const newConnector = new WalletConnectClient(WCOptions);
     console.log('connector: ', newConnector);
     // Create events
     newConnector.on("wc_sessionRequest", (error, payload) => {
@@ -58,6 +53,7 @@ export const WalletConnect:React.FC = () => {
 
     if (!newConnector.connected) {
       console.log('new connector not connected, creating a new session');
+      // Not working :(
       newConnector.createSession();
       // newConnector.approveSession({
       //   chainId: 1,

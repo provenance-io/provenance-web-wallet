@@ -18,52 +18,51 @@ export const WalletConnect:React.FC = () => {
     }
     const newConnector = new WC(WCOptions);
     console.log('connector: ', newConnector);
+    // Create events
+    newConnector.on("wc_sessionRequest", (error, payload) => {
+      console.log('wc_sessionRequest EVENT: ', payload, error);
+    });
+    newConnector.on("wc_sessionUpdate", (error, payload) => {
+      console.log('wc_sessionUpdate EVENT: ', payload, error);
+    });
+    newConnector.on("connect", (error, payload) => {
+      console.log('CONNECT EVENT: ', payload, error);
+    });
+    newConnector.on("exchange_key", (error, payload) => {
+      console.log('exchange_key EVENT: ', payload, error);
+    });
+    newConnector.on("disconnect", (error, payload) => {
+      console.log('disconnect EVENT: ', payload, error);
+    });
+    newConnector.on("display_uri", (error, payload) => {
+      console.log('display_uri EVENT: ', payload, error);
+    });
+    newConnector.on("modal_closed", (error, payload) => {
+      console.log('modal_closed EVENT: ', payload, error);
+    });
+    newConnector.on("transport_open", (error, payload) => {
+      console.log('transport_open EVENT: ', payload, error);
+    });
+    newConnector.on("transport_close", (error, payload) => {
+      console.log('transport_close EVENT: ', payload, error);
+    });
+    newConnector.on("transport_error", (error, payload) => {
+      console.log('transport_error EVENT: ', payload, error);
+    });
+    newConnector.on("session_request", (error, payload) => {
+      console.log('SESSION_REQUEST EVENT: ', payload, error);
+    });
+    newConnector.on("session_update", (error, payload) => {
+      console.log('session_update EVENT: ', payload, error);
+    });
+
     if (!newConnector.connected) {
       console.log('new connector not connected, creating a new session');
-      // Create events
-      newConnector.on("wc_sessionRequest", (error, payload) => {
-        console.log('wc_sessionRequest EVENT: ', payload, error);
-      });
-      newConnector.on("wc_sessionUpdate", (error, payload) => {
-        console.log('wc_sessionUpdate EVENT: ', payload, error);
-      });
-      newConnector.on("connect", (error, payload) => {
-        console.log('CONNECT EVENT: ', payload, error);
-      });
-      newConnector.on("exchange_key", (error, payload) => {
-        console.log('exchange_key EVENT: ', payload, error);
-      });
-      newConnector.on("disconnect", (error, payload) => {
-        console.log('disconnect EVENT: ', payload, error);
-      });
-      newConnector.on("display_uri", (error, payload) => {
-        console.log('display_uri EVENT: ', payload, error);
-      });
-      newConnector.on("modal_closed", (error, payload) => {
-        console.log('modal_closed EVENT: ', payload, error);
-      });
-      newConnector.on("transport_open", (error, payload) => {
-        console.log('transport_open EVENT: ', payload, error);
-      });
-      newConnector.on("transport_close", (error, payload) => {
-        console.log('transport_close EVENT: ', payload, error);
-      });
-      newConnector.on("transport_error", (error, payload) => {
-        console.log('transport_error EVENT: ', payload, error);
-      });
-      newConnector.on("session_request", (error, payload) => {
-        console.log('SESSION_REQUEST EVENT: ', payload, error);
-      });
-      newConnector.on("session_update", (error, payload) => {
-        console.log('session_update EVENT: ', payload, error);
-      });
-
-
+      newConnector.createSession();
       // newConnector.approveSession({
       //   chainId: 1,
       //   accounts: ['tp1em54692jvxfkzcww9p06u0t098cl547lwjv6nw'],
       // });
-      newConnector.createSession();
       // Approve Call Request
       // newConnector.approveRequest({
       //   id: 1,

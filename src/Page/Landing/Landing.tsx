@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import { getKey } from 'utils';
 import { Carousel } from './Carousel';
+import { WalletConnect } from 'Components';
 
 const TextButton = styled.a`
   color: white;
@@ -17,6 +18,7 @@ export const Landing: React.FC = () => {
   const savedKey = getKey();
   return (
     <>
+      <WalletConnect />
       <Carousel />
       {savedKey ? (
         <Button variant="primary" onClick={() => navigate('/unlock')}>

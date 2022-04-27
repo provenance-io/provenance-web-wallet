@@ -1,4 +1,4 @@
-import { Button, FooterNav, AssetRow, WalletConnect } from 'Components';
+import { Button, FooterNav, AssetRow } from 'Components';
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAddress, useWallet } from 'redux/hooks';
@@ -87,7 +87,6 @@ export const Dashboard = () => {
       <AssetsContainer>
         {assets.length ? renderAssets(): 'Address has no assets...'}
       </AssetsContainer>
-      <WalletConnect />
       <FooterNav />
     </>
   );

@@ -1,5 +1,6 @@
 // Determine storage type for app
-const useChromeStorage = !!window?.chrome?.storage;
+// const useChromeStorage = !!window?.chrome?.storage;
+const useChromeStorage = false;
 const localSaveName = process.env.REACT_APP_LOCAL_SAVE_NAME || 'provenance-web-wallet';
 const defaultAccountName = process.env.REACT_APP_DEFAULT_ACCOUNT_NAME;
 

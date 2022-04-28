@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "license": "Apache-2.0",
+  "homepage": "/",
   "dependencies": {
     "@provenanceio/walletconnect-js": "0.2.15",
     "@reduxjs/toolkit": "^1.7.2",

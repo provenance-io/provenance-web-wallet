@@ -1,9 +1,9 @@
-import { useNavigate, useSearchParams } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import styled from 'styled-components';
 import { Button, Sprite } from 'Components';
-import { DASHBOARD_URL, ICON_NAMES } from 'consts';
-import { useWalletConnect } from 'services';
+import { DASHBOARD_URL, ICON_NAMES, CHAINID_TESTNET } from 'consts';
 import { useEffect } from 'react';
+import { useWalletConnect, useWallet } from 'redux/hooks';
 
 const Container = styled.div`
   width: 100%;
@@ -34,34 +34,52 @@ const SubTitle = styled.div`
   line-height: 160%;
 `;
 
-// VIG RETURN HERE: FOR SOME REASON THE URL IS GETTING CHANGED AFTER LOADING.
-// URL SHOULD LOAD, DATA PULLED, URL SEARCH PARAMS CLEARED, AND CONNECTION CREATED
+interface LocationState {
+  payload: any
+}
 
 export const Connect:React.FC = () => {
   const navigate = useNavigate();
-  const [searchParams, setSearchParams] = useSearchParams();
-  const { walletConnectService, walletConnectState } = useWalletConnect();
-  const { connected } = walletConnectState;
-  const walletConnectUriEncoded = searchParams.get('wc');
-  if (!walletConnectUriEncoded) navigate(DASHBOARD_URL);
-  const walletConnectUri = decodeURIComponent(walletConnectUriEncoded!);
-  console.log('walletConnectUri: ', {walletConnectUri});
+  const { state } = useLocation();
+  const { payload } = state as LocationState;
+  const { connector } = useWalletConnect();
+  const { wallets, activeWalletIndex } = useWallet();
+  const activeWallet = wallets[activeWalletIndex];
+
   useEffect(() => {
-    if (!connected && walletConnectUri) {
-      walletConnectService.createConnection(walletConnectUri);
-      // Clear out the search params
-      setSearchParams('');
-    } else {
+    if (!connector) {
+      console.log('Connect | No URI | Navigating to Dashboard');
+      navigate(DASHBOARD_URL);
     }
-  }, [walletConnectUri, walletConnectService, connected, setSearchParams]);
+  }, [
+    connector,
+    navigate,
+  ]);
 
   const handleApprove = () => {
-    // TODO: Add approve actions
-    // onClick();
+    if (connector) {
+      const data = {
+        chainId: CHAINID_TESTNET,
+        accounts: [{
+          publicKey: activeWallet.publicKey,
+          address: activeWallet.address,
+          jwt: `${btoa('123')}.${btoa('456')}.${btoa('789')}`,
+          walletInfo: {
+            id: 'id',
+            name: activeWallet.walletName,
+            coin: 'coin'
+          }
+        }],
+      };
+      connector.approveSession(data as any);
+    }
   }
 
   const handleDecline = () => {
-    navigate('/dashboard');
+    if (connector && payload) {
+      connector.rejectSession(payload);
+    }
+    navigate(DASHBOARD_URL);
   }
 
   return (

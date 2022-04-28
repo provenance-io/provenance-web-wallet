@@ -7,18 +7,20 @@ import WalletConnectClient from "@walletconnect/client";
  */
 
 interface State {
-  uri: string,
   connected: boolean,
   connector: WalletConnectClient | null,
+  activeEvent?: string,
+  connectionDetails: {} | null,
 }
 
 /**
  * STATE
  */
 const initialState: State = {
-  uri: '',
   connected: false,
   connector: null,
+  activeEvent: '',
+  connectionDetails: null,
 };
 
 /**
@@ -28,18 +30,19 @@ const walletConnectSlice = createSlice({
   name: 'walletConnect',
   initialState,
   reducers: {
-    setUri: (state, { payload }) => {
-      state.uri = payload;
-    },
-    clearUri: (state) => {
-      state.uri = '';
-    },
     setConnector: (state, { payload }) => {
       state.connector = payload;
     },
     setConnected: (state, { payload }) => {
       state.connected = payload;
     },
+    setConnectionDetails: (state, { payload }) => {
+      state.connectionDetails = payload;
+    },
+    createConnector: (state, { payload: uri }) => {
+      const connector = new WalletConnectClient({ uri });
+      state.connector = connector;
+    }
   },
 });
 

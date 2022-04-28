@@ -15,6 +15,13 @@ export const store = configureStore({
     wallet: walletReducer,
     walletConnect: walletConnectReducer,
   },
+  middleware: (getDefaultMiddleware) => getDefaultMiddleware({
+    serializableCheck: false,
+    // serializableCheck: {
+    //   // Ignore these action types
+    //   ignoredActions: ['walletConnect/createConnector'],
+    // }
+  })
 });
 
 export type AppDispatch = typeof store.dispatch;

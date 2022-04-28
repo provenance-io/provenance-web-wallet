@@ -15,4 +15,3 @@ export * from './FooterNav';
 export * from './AssetRow';
 export * from './Loading';
 export * from './List';
-export * from './WalletConnect';

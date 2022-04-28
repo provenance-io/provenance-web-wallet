@@ -9,6 +9,24 @@ export type IClientMeta = {
   name: string;
 }
 
+export type ConnectionEventPayload = {
+  publicKey: string,
+  address: string,
+  jwt: string,
+  walletInfo: {
+    id: string,
+    name: string,
+    coin: string,
+  }
+}[];
+
+export interface ISessionStatus {
+  chainId: number | string;
+  accounts: ConnectionEventPayload;
+  networkId?: number;
+  rpcUrl?: string;
+}
+
 export interface State {
   connected: boolean,
   connectionTimeout: number,
@@ -16,6 +34,7 @@ export interface State {
   connectionEat: number | null,
   connector: WalletConnectClient | null,
   peer: IClientMeta | null,
+  uri: string | null,
 }
 
 export type SetState = (state: Partial<State>) => void;

@@ -44,6 +44,7 @@
     "@types/react": "^16.14.23",
     "@types/react-dom": "^16.9.14",
     "@types/react-redux": "^7.1.22",
+    "@types/react-router": "2.0.61",
     "@types/secp256k1": "4.0.1",
     "@types/styled-components": "^5.1.22",
     "@tendermint/types": "0.1.2",

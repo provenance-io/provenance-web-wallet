@@ -1,12 +1,6 @@
 import { WalletConnectClient } from 'types';
 
 export const createEventListeners = (connector: WalletConnectClient) => {
-  connector.on("wc_sessionRequest", (error, payload) => {
-    console.log('wc_sessionRequest EVENT: ', payload, error);
-  });
-  connector.on("wc_sessionUpdate", (error, payload) => {
-    console.log('wc_sessionUpdate EVENT: ', payload, error);
-  });
   connector.on("connect", (error, payload) => {
     console.log('CONNECT EVENT: ', payload, error);
   });

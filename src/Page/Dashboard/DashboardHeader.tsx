@@ -3,7 +3,7 @@ import { ICON_NAMES } from 'consts';
 import { Sprite, CopyValue } from 'Components';
 import { useNavigate } from 'react-router-dom';
 import { COLORS } from 'theme';
-import { useWallet } from 'redux/hooks';
+import { useWallet, useWalletConnect } from 'redux/hooks';
 import { trimString } from 'utils';
 
 const HeaderRow = styled.div`
@@ -48,18 +48,16 @@ const Notify = styled.span`
 export const DashboardHeader:React.FC = () => {
   const navigate = useNavigate();
   const { activeWalletIndex, wallets } = useWallet();
+  const { connected } = useWalletConnect();
   const activeWallet = wallets[activeWalletIndex];
   const { walletName, address = '' } = activeWallet;
 
-  // TODO: Add check for wallet connected here
-  const connected = true;
   // TODO: Add check for pending notifications here
-  const notify = true;
+  const notify = false;
   // TODO: Add check for number of notifications here
   const notifications = 3;
   // TODO: Need to navigate to the correct connection details
-  const handleConnect = () => navigate('/connect-details');
-  // TODO: Add onClick for QR Code click
+  const viewNotifications = () => navigate('/connect-details');
 
   return (
     <HeaderRow>
@@ -73,13 +71,11 @@ export const DashboardHeader:React.FC = () => {
           </CopyValue>
         </WalletInfo>
       <WalletConnect>
-        {connected ? (
+        {connected && (
           <>
-            <Sprite onClick={handleConnect} icon={ICON_NAMES.CHAIN} size="4.8rem" spin="90"/>
+            <Sprite onClick={viewNotifications} icon={ICON_NAMES.CHAIN} size="4.8rem" spin="90"/>
             {notify && <Notify>{notifications}</Notify>}
           </>
-        ) : (
-          <Sprite icon={ICON_NAMES.QRCODE} size="4.8rem"/>
         )}
       </WalletConnect>
     </HeaderRow>

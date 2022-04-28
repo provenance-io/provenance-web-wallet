@@ -9,6 +9,7 @@ interface Props {
   bgImage?: boolean,
   align?: string,
   justify?: string,
+  noOutlet?: boolean,
 }
 
 const PageStyled = styled.div<Props>`
@@ -34,13 +35,14 @@ export const Page = ({
   bgImage,
   align = 'flex-start',
   justify = 'flex-start',
+  noOutlet = false,
 }: Props) => (
   <PageStyled
     bgImage={bgImage}
     align={align}
     justify={justify}
   >
-    <Outlet />
+    {!noOutlet ? <Outlet />: null}
     {children}
   </PageStyled>
 );

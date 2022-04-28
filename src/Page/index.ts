@@ -1,5 +1,5 @@
 export * from './Confirm';
-export * from './Connection';
+export * from './Connect';
 export * from './Create';
 export * from './Dashboard';
 export * from './Page';

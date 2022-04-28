@@ -9,7 +9,7 @@ export const WalletConnect:React.FC = () => {
     // These values need to come from the URL/QRCode/dAPP
     // NOTE: Manually select 'COPY TO CLIPBOARD' from the QR popup and replace the below
     const WCOptions = {
-      uri: 'wc:f42d4415-6b9a-464a-a0c1-ef266a8a8faf@1?bridge=wss%3A%2F%2Ftest.figure.tech%2Fservice-wallet-connect-bridge%2Fws%2Fexternal&key=9aaed945bc71c50fafea87e1c0c4ef4237f573bcf1354ee66622e08f0b94e7df',
+      uri: 'wc:8dc186b0-5135-4ce3-9c49-703befb00928@1?bridge=wss%3A%2F%2Ftest.figure.tech%2Fservice-wallet-connect-bridge%2Fws%2Fexternal&key=e7d00f9849044b66b8ff97ad090d60f45a0a71a31bd667d23e732ba83b360dc8',
     }
     const newConnector = new WalletConnectClient(WCOptions);
     console.log('connector: ', newConnector);
@@ -45,6 +45,7 @@ export const WalletConnect:React.FC = () => {
       console.log('transport_error EVENT: ', payload, error);
     });
     newConnector.on("session_request", (error, payload) => {
+      newConnector.approveSession(payload);
       console.log('SESSION_REQUEST EVENT: ', payload, error);
     });
     newConnector.on("session_update", (error, payload) => {
@@ -54,7 +55,7 @@ export const WalletConnect:React.FC = () => {
     if (!newConnector.connected) {
       console.log('new connector not connected, creating a new session');
       // Not working :(
-      newConnector.createSession();
+      // newConnector.createSession();
       // newConnector.approveSession({
       //   chainId: 1,
       //   accounts: ['tp1em54692jvxfkzcww9p06u0t098cl547lwjv6nw'],

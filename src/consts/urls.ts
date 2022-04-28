@@ -29,10 +29,8 @@ export const RECOVER_PASSWORD_URL ='/recover/password';
 export const ASSET_URL = '/asset/:assetName';
 // -- CONFIRMATION
 export const CONFIRM_URL = '/confirm';
-export const CONNECT_REQUEST_URL = '/connect';
 // -- CONNECTION
-export const CONNECT_SUCCESS_URL = '/connect-success';
-export const CONNECT_DETAILS_URL = '/connect-details';
+export const CONNECT_URL = '/connect';
 // -- CREATE URLS
 export const CREATE_URL = '/create';
 export const CREATE_SEEDPHRASE_INTRO_URL = '/create/seedphrase-intro';

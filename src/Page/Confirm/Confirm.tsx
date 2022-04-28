@@ -1,5 +1,5 @@
 import { useNavigate } from 'react-router-dom';
-import { Message, Connect } from '.';
+import { Message } from '.';
 
 export const Confirm = () => {
   const navigate = useNavigate();

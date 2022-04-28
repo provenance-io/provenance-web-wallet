@@ -4,6 +4,7 @@ import genericReducer from './features/generic/genericSlice';
 import pricingReducer from './features/pricing/pricingSlice';
 import statisticsReducer from './features/statistics/statisticsSlice';
 import walletReducer from './features/wallet/walletSlice';
+import walletConnectReducer from './features/walletConnect/walletConnectSlice';
 
 export const store = configureStore({
   reducer: {
@@ -12,7 +13,15 @@ export const store = configureStore({
     pricing: pricingReducer,
     statistics: statisticsReducer,
     wallet: walletReducer,
+    walletConnect: walletConnectReducer,
   },
+  middleware: (getDefaultMiddleware) => getDefaultMiddleware({
+    serializableCheck: false,
+    // serializableCheck: {
+    //   // Ignore these action types
+    //   ignoredActions: ['walletConnect/createConnector'],
+    // }
+  })
 });
 
 export type AppDispatch = typeof store.dispatch;

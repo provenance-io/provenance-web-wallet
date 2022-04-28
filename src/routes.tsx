@@ -1,8 +1,7 @@
 import {
   Asset,
   Confirm,
-  ConnectionDetails,
-  ConnectionSuccess,
+  Connect,
   CreateAuth,
   CreateComplete,
   CreatePassword,
@@ -34,9 +33,7 @@ import {
   APP_URL,
   ASSET_URL,
   CONFIRM_URL,
-  CONNECT_DETAILS_URL,
-  CONNECT_REQUEST_URL,
-  CONNECT_SUCCESS_URL,
+  CONNECT_URL,
   CREATE_COMPLETE_URL,
   CREATE_PASSWORD_URL,
   CREATE_SEEDPHRASE_INTRO_URL,
@@ -135,26 +132,12 @@ export const routes = [
           { index: true, element: <Confirm /> },
         ],
       },
+      // WALLETCONNECT CONNECTION
       {
-        path: CONNECT_REQUEST_URL,
+        path: CONNECT_URL,
         element: <Page bgImage/>,
         children: [
-          { index: true, element: <Confirm /> },
-        ],
-      },
-      // CONNECTION
-      {
-        path: CONNECT_SUCCESS_URL,
-        element: <Page bgImage/>,
-        children: [
-          { index: true, element: <ConnectionSuccess /> },
-        ],
-      },
-      {
-        path: CONNECT_DETAILS_URL,
-        element: <Page />,
-        children: [
-          { index: true, element: <ConnectionDetails /> },
+          { index: true, element: <Connect /> },
         ],
       },
     ],

@@ -1,6 +1,5 @@
 import { useNavigate } from 'react-router-dom';
-import { COLORS } from 'theme';
-import { Connect } from '../Confirm';
+import { Message } from '../Confirm';
 
 export const TransactionComplete = () => {
   const navigate = useNavigate();
@@ -11,13 +10,13 @@ export const TransactionComplete = () => {
   }
 
   return (
-    <Connect
+    <Message
       title='transaction complete'
-      info='Congrats, your money is on its way!'
+      message={{note: 'Congrats, your money is on its way!'}}
       onClick={handleApprove}
       buttonTitle='Back to Wallet'
       cancelButton={false}
-      color={COLORS.POSITIVE_400}
+      // color={COLORS.POSITIVE_400}
     />
   );
 };

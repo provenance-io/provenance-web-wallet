@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { BodyContent, Button, Header, Input } from 'Components';
+import { BodyContent, Button, Header, Input, Select } from 'Components';
 import { ICON_NAMES } from 'consts';
 import { useNavigate } from 'react-router-dom';
 import styled, { css } from 'styled-components';
@@ -11,7 +11,6 @@ import {
   bytesToBase64,
   createWalletFromMasterKey,
   saveKey,
-  saveName,
   derivationPath,
 } from 'utils';
 import backupComplete from 'images/backup-complete.svg';
@@ -89,6 +88,8 @@ export const RecoverPassword = ({ nextUrl }: Props) => {
   const [success, setSuccess] = useState(false);
   const [customDerivationPath, setCustomDerivationPath] = useState<CustomDerivationPathObject>({});
   const [walletPasswordRepeat, setWalletPasswordRepeat] = useState('');
+  const defaultNetwork = 'mainnet';
+  const [network, setNetwork] = useState(defaultNetwork);
   const [error, setError] = useState('');
   const defaultCoinType = process.env.REACT_APP_PROVENANCE_WALLET_COIN_TYPE;
   const { account, change, addressIndex } = customDerivationPath;
@@ -107,14 +108,14 @@ export const RecoverPassword = ({ nextUrl }: Props) => {
       publicKey: b64PublicKey,
       privateKey: b64PrivateKey,
       walletName,
+      network,
+      id: addressIndex,
     };
     // Loop up to see if account holds any hash, if it does, add it, if it doesn't stop this loop.
     const hasAssetsRequest = await getAddressAssetsRaw(address);
     const hasAssets = hasAssetsRequest?.data?.length;
     if (addressIndex === 0 || hasAssets) {
       createStoreWallet(newWalletData);
-      // Add wallet and name to names list
-      saveName(addressIndex, walletName);
       // Loop function, bump address index up by one
       return recoverAccountLoop(masterKey, addressIndex + 1);
     } else {
@@ -158,6 +159,7 @@ export const RecoverPassword = ({ nextUrl }: Props) => {
     if (showAdvanced) {
       setCustomDerivationPath({});
       setShowAdvanced(false);
+      setNetwork(defaultNetwork);
     }
     else setShowAdvanced(true);
   }
@@ -218,6 +220,7 @@ export const RecoverPassword = ({ nextUrl }: Props) => {
             <AdvancedInputArea>
               m/44'/{defaultCoinType}'/<Input type="number" id="account" value={account !== undefined ? account : ''} onChange={(value) => changeCustomDerivationPath('account', value) } />'/<Input type="number" id="change" value={change !== undefined ? change : ''} onChange={(value) => changeCustomDerivationPath('change', value) } />/<Input type="number" id="addressIndex" value={addressIndex !== undefined ? addressIndex : ''} onChange={(value) => changeCustomDerivationPath('addressIndex', value) } />
             </AdvancedInputArea>
+            <Select label="Network" options={['mainnet', 'testnet']} value={network} onChange={setNetwork} />
           </AdvancedSection>
         )}
         {loading ? <div>Please Wait..</div> : <Button  onClick={handleContinue}>Continue</Button>}

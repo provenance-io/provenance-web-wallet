@@ -7,7 +7,7 @@ import {
   createWalletFromMasterKey,
   bytesToBase64,
   derivationPath,
-  saveName,
+  saveAccount,
 } from 'utils';
 
 /**
@@ -19,6 +19,7 @@ interface Wallet {
   privateKey?: string,
   address?: string,
   network?: string,
+  id?: number,
 }
 interface TempWallet extends Wallet {
   mnemonic: string
@@ -52,6 +53,7 @@ const walletSlice = createSlice({
       state = initialState;
     },
     createWallet: (state, { payload }) => {
+      const { walletName: name, network, id } = payload;
       state.wallets.push(payload);
       const totalWallets = state.wallets.length;
       const activeWalletIndex = totalWallets - 1;
@@ -65,23 +67,33 @@ const walletSlice = createSlice({
       });
       // Save active wallet into localStorage
       addSavedData({ activeWalletIndex }, 'localStorage');
+      saveAccount({ name, network, id });
     },
     // Create multiple accounts from a single masterKey
     createHDWallet: (state, { payload }) => {
-      const { masterKey, localAccountNames } = payload;
-      // Loop though each accountName to create that wallet
-      const accountIndexes = Object.keys(localAccountNames);
-      accountIndexes.forEach(index => {
-        // Build wallet (TODO: Allow testnet vs mainnet accounts)
-        const path = derivationPath({ address_index: Number(index) });
-        const { address, publicKey, privateKey } = createWalletFromMasterKey(masterKey, undefined, path);
+      interface AccountType {
+        id: number,
+        name: string,
+        network: string,
+      }
+      const { masterKey, localAccounts } = payload;
+      // Loop though each account to create that wallet account
+      localAccounts.forEach((account: AccountType) => {
+        const {id, name, network} = account;
+        const path = derivationPath({ address_index: Number(id) });
+        const prefix = network === 'mainnet' ?
+          process.env.REACT_APP_PROVENANCE_WALLET_PREFIX_MAINNET :
+          process.env.REACT_APP_PROVENANCE_WALLET_PREFIX_TESTNET;
+        const { address, publicKey, privateKey } = createWalletFromMasterKey(masterKey, prefix, path);
         const b64PublicKey = bytesToBase64(publicKey);
         const b64PrivateKey = bytesToBase64(privateKey);
         const newAccountData = {
           address,
           publicKey: b64PublicKey,
           privateKey: b64PrivateKey,
-          walletName: localAccountNames[index],
+          walletName: name,
+          network,
+          id,
         };
         state.wallets.push(newAccountData);
       });
@@ -94,12 +106,19 @@ const walletSlice = createSlice({
     },
     // Add a single new wallet to the masterKey
     addToHDWallet: (state, { payload }) => {
-      const { masterKey, name } = payload;
+      const { masterKey, name, network } = payload;
       const totalWallets = state.wallets.length;
       const activeWalletIndex = totalWallets;
-      // Build wallet (TODO: Allow testnet vs mainnet accounts)
+      // Loop through all wallets, get the highest ID, increment, and use that as the wallet index
+      const sortedWallets = state.wallets.sort((a, b) => a.id! < b.id! ? 1 : -1);
+      const highestId = sortedWallets[0].id || 0;
+      const id = highestId + 1;
+      
+      const prefix = network === 'mainnet' ?
+          process.env.REACT_APP_PROVENANCE_WALLET_PREFIX_MAINNET :
+          process.env.REACT_APP_PROVENANCE_WALLET_PREFIX_TESTNET;
       const path = derivationPath({ address_index: Number(activeWalletIndex) });
-      const { address, publicKey, privateKey } = createWalletFromMasterKey(masterKey, undefined, path);
+      const { address, publicKey, privateKey } = createWalletFromMasterKey(masterKey, prefix, path);
       const b64PublicKey = bytesToBase64(publicKey);
       const b64PrivateKey = bytesToBase64(privateKey);
       const newAccountData = {
@@ -107,6 +126,7 @@ const walletSlice = createSlice({
         publicKey: b64PublicKey,
         privateKey: b64PrivateKey,
         walletName: name,
+        id,
       };
       // Update Redux Store
       state.wallets.push(newAccountData);
@@ -117,7 +137,7 @@ const walletSlice = createSlice({
         connectedIat: new Date().getTime(),
         wallets: state.wallets,
       })
-      saveName(activeWalletIndex, name);
+      saveAccount({ id, name, network });
       addSavedData({ activeWalletIndex }, 'localStorage');
     },
     updateWallet: (state, { payload }) => {

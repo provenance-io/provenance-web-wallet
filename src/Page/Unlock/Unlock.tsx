@@ -10,7 +10,7 @@ import { ICON_NAMES } from 'consts';
 import { useNavigate } from 'react-router-dom';
 import {
   getKey,
-  getNames,
+  getAccounts,
   decryptKey,
 } from 'utils';
 import { useWallet } from 'redux/hooks';
@@ -42,8 +42,8 @@ export const Unlock = ({ nextUrl }: Props) => {
       if (!masterKey) newError = 'Invalid password';
       else {
         // Password was correct, build the wallets
-        const localAccountNames = getNames();
-        createStoreHDWallet({ masterKey, localAccountNames });
+        const localAccounts = getAccounts();
+        createStoreHDWallet({ masterKey, localAccounts });
         // Redirect to dashboard
         navigate(nextUrl);
       }

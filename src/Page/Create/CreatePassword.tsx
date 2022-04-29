@@ -10,7 +10,6 @@ import {
   bytesToBase64,
   createWalletFromMasterKey,
   saveKey,
-  saveName,
 } from 'utils';
 
 const Error = styled.div`
@@ -56,6 +55,7 @@ export const CreatePassword = ({ nextUrl }: Props) => {
           privateKey: b64PrivateKey,
           walletName: tempWallet.walletName,
           network: tempWallet.network,
+          id: 0,
         };
         createStoreWallet(newWalletData);
         // Encrypt data with provided password
@@ -63,7 +63,6 @@ export const CreatePassword = ({ nextUrl }: Props) => {
         // Add data to localStorage
         saveKey(encrypted);
         // This is the first account in the list, index will be 0
-        saveName(0, tempWallet.walletName);
         navigate(nextUrl);
       } else {
         latestError = 'Unable to locally save account, please try again later'

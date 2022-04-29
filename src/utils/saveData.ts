@@ -109,28 +109,38 @@ export const clearKey = () => {
 // ----------------------------
 // Account Name map storage
 // ----------------------------
-type AccountName = string;
+type Account = {
+  name?: string,
+  id: number,
+  network: string,
+}
 type AccountIndex = number;
-export const saveName = (accountIndex: AccountIndex, accountName: AccountName = `${defaultAccountName}${accountIndex}`) => {
+
+export const saveAccount = ({
+  id,
+  name = `${defaultAccountName}${id}`,
+  network,
+}:Account
+) => {
   // Check if existing name obj exists, if not, make a new obj
-  const existingNames = getSavedData('names', 'localStorage') || {};
+  const existingAccounts = getSavedData('accounts', 'localStorage') || [];
   // Add this accountName/accountIndex to object
-  existingNames[accountIndex] = accountName;
+  existingAccounts[id] = { id, name, network };
   // Save the map back to local storage
-  addSavedData({names: existingNames}, 'localStorage');
+  addSavedData({accounts: existingAccounts}, 'localStorage');
 };
-export const getNames = () => {
-  return getSavedData('names', 'localStorage');
+export const getAccounts = () => {
+  return getSavedData('accounts', 'localStorage');
 };
-export const removeName = (accountIndex: AccountIndex) => {
+export const removeAccount = (id: AccountIndex) => {
   // Check if existing name obj exists, if not, make a new obj
-  const existingNames = getSavedData('names', 'localStorage') || {};
-  delete existingNames[accountIndex];
+  const existingAccounts = getSavedData('accounts', 'localStorage') || [];
+  delete existingAccounts[id];
   // Convert back to JSON string for storage
-  const existingNamesString = JSON.stringify({names: existingNames});
+  const existingAccountsString = JSON.stringify({accounts: existingAccounts});
   // Save the map back to local storage
-  addSavedData(existingNamesString, 'localStorage');
+  addSavedData(existingAccountsString, 'localStorage');
 };
-export const clearNames = () => {
-  removeSavedData('names', 'localStorage');
+export const clearAccounts = () => {
+  removeSavedData('accounts', 'localStorage');
 };

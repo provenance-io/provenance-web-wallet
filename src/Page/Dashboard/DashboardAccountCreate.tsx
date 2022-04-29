@@ -40,8 +40,10 @@ export const DashboardAccountCreate:React.FC<Props> = ({ nextUrl }) => {
       const masterKey = decryptKey(localKey, walletPassword);
       if (!masterKey) newError[1] = 'Invalid password';
       else {
+        // TODO: Indicate if you want this account to be mainnet or testnet
+        const network = 'testnet';
         // Password was correct, add the account
-        addToHDWallet({ masterKey: masterKey, name: accountName })
+        addToHDWallet({ masterKey: masterKey, name: accountName, network })
         // Redirect back to dashboard menu
         navigate(nextUrl);
       }

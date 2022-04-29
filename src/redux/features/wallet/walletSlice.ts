@@ -18,6 +18,7 @@ interface Wallet {
   publicKey?: string,
   privateKey?: string,
   address?: string,
+  network?: string,
 }
 interface TempWallet extends Wallet {
   mnemonic: string

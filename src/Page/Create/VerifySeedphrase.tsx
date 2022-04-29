@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { BodyContent, Checkbox, Button, Header } from 'Components';
+import { BodyContent, Checkbox, Button, Header, Content } from 'Components';
 import { css } from 'styled-components';
 import { VerifyButtonGroup } from './VerifyButtonGroup';
 import { COLORS } from 'theme';
@@ -104,7 +104,7 @@ export const VerifySeedphrase = ({ nextUrl }: Props) => {
   };
 
   return (
-    <>
+    <Content padBottom='80px'>
       <Header progress={66} title="Verify Passphrase" />
 
       {errorMsg && (
@@ -129,6 +129,6 @@ export const VerifySeedphrase = ({ nextUrl }: Props) => {
       <Button onClick={handleContinue} variant="primary">
         Continue
       </Button>
-    </>
+    </Content>
   );
 };

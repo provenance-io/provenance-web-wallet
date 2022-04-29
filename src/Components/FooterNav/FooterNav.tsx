@@ -1,6 +1,6 @@
 import { ICON_NAMES } from 'consts';
 import { Sprite } from 'Components';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import styled from 'styled-components';
 
 const Footer = styled.footer`
@@ -33,27 +33,27 @@ const NavItem = styled.div<{ active?: boolean }>`
 `;
 
 export const FooterNav: React.FC = () => {
-  const location = window?.location?.pathname;
+  const location = useLocation();
   const navigate = useNavigate();
 
   return (
     <Footer>
       <NavItem
-        active={location.includes('dashboard')}
+        active={location?.pathname?.includes('dashboard')}
         onClick={() => navigate('/dashboard')}
       >
         <Sprite icon={ICON_NAMES.DASHBOARD} size="1.6rem" />
         Dashboard
       </NavItem>
       <NavItem
-        active={location.includes('transactions')}
+        active={location?.pathname?.includes('transactions')}
         onClick={() => navigate('/transactions')}
       >
         <Sprite icon={ICON_NAMES.TRANSACTIONS} size="1.6rem" />
         Transactions
       </NavItem>
       <NavItem
-        active={location.includes('profile')}
+        active={location?.pathname?.includes('profile')}
         onClick={() => navigate('/profile')}
       >
         <Sprite icon={ICON_NAMES.PROFILE} size="1.6rem" />

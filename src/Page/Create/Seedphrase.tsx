@@ -1,6 +1,11 @@
 import { useNavigate } from 'react-router-dom';
 import styled, { css } from 'styled-components';
-import { BodyContent, Button, Header } from 'Components';
+import {
+  BodyContent,
+  Button,
+  Header,
+  Content,
+} from 'Components';
 import { COLORS } from 'theme';
 import { useWallet } from 'redux/hooks';
 
@@ -8,21 +13,24 @@ const MnuemonicList = styled.div`
   display: flex;
   flex-direction: column;
   flex-wrap: wrap;
-  gap: 12px 8px;
-  height: 428px;
+  align-items: flex-start;
   width: 100%;
-  padding: 16px 32px;
+  padding: 20px 30px;
+  height: 580px;
   border-radius: 4px;
+  font-size: 1.4rem;
   background: ${COLORS.NEUTRAL_700};
 `;
-
-const ListItemNumber = styled(BodyContent)`
+const ListItemNumber = styled.p`
   color: ${COLORS.NEUTRAL_250};
   display: inline-block;
-  width: 2em;
+  width: 1.4em;
   margin-right: 0.5em;
-  text-align: right;
-  direction: rtl;
+  text-align: left;
+`;
+const MnuemonicItem = styled.p`
+  display: flex;
+  justify-content: flex-start;
 `;
 
 interface Props {
@@ -38,29 +46,25 @@ export const Seedphrase = ({ nextUrl }: Props) => {
   };
 
   return (
-    <>
+    <Content>
       <Header progress={66} title="Recovery Passphrase" />
-
       <BodyContent
         $css={css`
-          margin-bottom: 24px;
-          padding-top: 8px;
+          margin-top: 8px 0 24px 0;
           text-align: center;
         `}
       >
         Make sure to record these words in the correct order, using the corresponding
         numbers.
       </BodyContent>
-
       <MnuemonicList>
-        {mnemonic?.split(' ').map((w, i) => (
-          <BodyContent key={i}>
-            <ListItemNumber as="span">{i + 1}</ListItemNumber> {w}
-          </BodyContent>
+        {mnemonic?.split(' ').map((word, index) => (
+          <MnuemonicItem key={index}>
+            <ListItemNumber as="span">{index + 1}</ListItemNumber> {word}
+          </MnuemonicItem>
         ))}
       </MnuemonicList>
-
       <Button onClick={handleContinue} >Continue</Button>
-    </>
+    </Content>
   );
 };

@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { BodyContent, Button, Header, Input } from 'Components';
+import { BodyContent, Button, Header, Input as InputBase, Content } from 'Components';
 import { ICON_NAMES } from 'consts';
 import { useNavigate } from 'react-router-dom';
 import styled, { css } from 'styled-components';
@@ -13,16 +13,13 @@ import {
   saveName,
 } from 'utils';
 
-const Wrapper = styled.div`
-  padding: 42px 16px;
-  input {
-    margin-bottom: 10px;
-  }
-`;
 const Error = styled.div`
   color: #ED6E74;
   margin-top: 20px;
   font-size: 1.3rem;
+`;
+const Input = styled(InputBase)`
+  margin-bottom: 30px;
 `;
 
 interface Props {
@@ -46,7 +43,10 @@ export const CreatePassword = ({ nextUrl }: Props) => {
       if (tempWallet?.mnemonic) {
         // Generate master keyt and get data about wallet
         const masterKey = createMasterKeyFromMnemonic(tempWallet.mnemonic);
-        const { address, publicKey, privateKey } = createWalletFromMasterKey(masterKey);
+        const prefix = tempWallet.network === 'mainnet' ?
+          process.env.REACT_APP_PROVENANCE_WALLET_PREFIX_MAINNET :
+          process.env.REACT_APP_PROVENANCE_WALLET_PREFIX_TESTNET;
+        const { address, publicKey, privateKey } = createWalletFromMasterKey(masterKey, prefix);
         const b64PublicKey = bytesToBase64(publicKey);
         const b64PrivateKey = bytesToBase64(privateKey);
         // Save data to redux store and clear out tempWallet data
@@ -55,6 +55,7 @@ export const CreatePassword = ({ nextUrl }: Props) => {
           publicKey: b64PublicKey,
           privateKey: b64PrivateKey,
           walletName: tempWallet.walletName,
+          network: tempWallet.network,
         };
         createStoreWallet(newWalletData);
         // Encrypt data with provided password
@@ -72,7 +73,7 @@ export const CreatePassword = ({ nextUrl }: Props) => {
   };
 
   return (
-    <Wrapper>
+    <Content>
       <Header iconLeft={ICON_NAMES.CLOSE} progress={33} title="Account Password" backLocation='/' />
       <BodyContent
         $css={css`
@@ -101,6 +102,6 @@ export const CreatePassword = ({ nextUrl }: Props) => {
       />
       {error && <Error>{error}</Error>}
       <Button onClick={handleContinue} >Continue</Button>
-    </Wrapper>
+    </Content>
   );
 };

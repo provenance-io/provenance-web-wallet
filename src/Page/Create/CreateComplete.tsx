@@ -1,10 +1,18 @@
-import { Button, Header } from 'Components';
+import styled from 'styled-components';
+import { Button, Header, BodyContent, Content } from 'Components';
 import { useNavigate } from 'react-router-dom';
 import { useWallet } from 'redux/hooks';
+import backupComplete from 'images/backup-complete.svg';
 
 interface Props {
   nextUrl: string;
 }
+
+const Image = styled.img`
+  width: 160px;
+  display: flex;
+  margin: 50px auto;
+`;
 
 export const CreateComplete = ({ nextUrl }: Props) => {
   const navigate = useNavigate();
@@ -16,10 +24,13 @@ export const CreateComplete = ({ nextUrl }: Props) => {
     navigate(nextUrl);
   };
   return (
-    <>
+    <Content>
       <Header progress={100} title="Wallet Created" iconLeft='none' />
-      <div>Wallet has been successfully created.  Click continue to proceed to the dashboard.</div>
+      <Image src={backupComplete} />
+      <BodyContent>
+        Wallet has been successfully created.  Click continue to proceed to the dashboard.
+      </BodyContent>
       <Button onClick={finishCreation}>Continue</Button>
-    </>
+    </Content>
   );
 };

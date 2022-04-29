@@ -1,8 +1,7 @@
 import { FooterNav } from 'Components';
-import { Button } from 'Components';
+import { Button, ButtonGroup } from 'Components';
 import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
-import { COLORS } from 'theme';
 
 const Container = styled.div`
   width: 100%;
@@ -25,16 +24,6 @@ const SectionOption = styled.div`
   align-items: center;
   text-align: center;
 `;
-const ButtonGroup = styled.div`
-  margin-top: auto;
-  margin-bottom: 20px;
-`;
-const CancelButton = styled(Button)`
-  color: ${COLORS.PRIMARY_550};
-  background: none;
-  border: none;
-  margin-top: 10px;
-`;
 
 export const ResetWallets = () => {
 
@@ -50,8 +39,8 @@ export const ResetWallets = () => {
       <Title>Reset Wallets</Title>
       <SectionOption>Are you sure you wish to reset all wallets?</SectionOption>
       <ButtonGroup>
-        <Button variant={'primary'} onClick={handleReset}>Reset Wallets</Button>
-        <CancelButton variant={'default'} onClick={() => navigate('/profile')}>Cancel</CancelButton>
+        <Button layout="default" onClick={handleReset}>Reset Wallets</Button>
+        <Button layout="default" variant="transparent" onClick={() => navigate('/profile')}>Cancel</Button>
       </ButtonGroup>
       <FooterNav />
     </Container>

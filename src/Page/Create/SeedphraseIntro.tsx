@@ -1,6 +1,6 @@
 import { css } from 'styled-components';
 import { useNavigate } from 'react-router-dom';
-import { BodyContent, CtaButton, H2, Header, ImageContainer } from 'Components';
+import { BodyContent, Button, H2, Header, ImageContainer } from 'Components';
 import { COLORS, FONTS } from 'theme';
 import passphraseImg from 'images/passphrase-intro.png';
 
@@ -54,7 +54,7 @@ export const SeedphraseIntro = ({ nextUrl }: Props) => {
         Do not share this passphrase with anyone, as it grants full access to your account.
       </BodyContent>
 
-      <CtaButton onClick={() => navigate(nextUrl)}>Continue</CtaButton>
+      <Button onClick={() => navigate(nextUrl)} >Continue</Button>
     </>
   );
 };

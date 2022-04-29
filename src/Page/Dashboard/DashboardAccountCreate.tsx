@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import { CtaButton, Header, Input } from 'Components';
+import { Button, Header, Input } from 'Components';
 import { ICON_NAMES } from 'consts';
 import { useState } from 'react';
 import { getKey, decryptKey } from 'utils';
@@ -70,7 +70,7 @@ export const DashboardAccountCreate:React.FC<Props> = ({ nextUrl }) => {
         error={error[1]}
         type="password"
       />
-      <CtaButton onClick={handleCreateAccount}>Create</CtaButton>
+      <Button onClick={handleCreateAccount} >Create</Button>
     </Wrapper>
   );
 };

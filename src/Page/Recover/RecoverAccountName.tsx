@@ -56,7 +56,7 @@ export const RecoverAccountName:React.FC<Props> = ({ nextUrl }) => {
             />
         </InputGroup>
       </Group>
-      <Button variant='primary' onClick={handleContinue}>Continue</Button>
+      <Button onClick={handleContinue}>Continue</Button>
     </>
   );
 };

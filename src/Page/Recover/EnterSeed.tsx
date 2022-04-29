@@ -142,6 +142,9 @@ export const EnterSeed:React.FC<Props> = ({ nextUrl }) => {
     else setSubmitError('Please fix input issues above');
   };
 
+  const filledOutInputs = inputValues.filter(({ value }) => !!value).length;
+  const allFilledOut = filledOutInputs === totalSeeds;
+
   return (
     <Wrapper>
       <Header title="Enter Recovery Passphrase" progress={100} />
@@ -149,7 +152,7 @@ export const EnterSeed:React.FC<Props> = ({ nextUrl }) => {
         {createSeedInputs(totalSeeds)}
       </InputSection>
       {submitError && <ErrorMessage>{submitError}</ErrorMessage>}
-      <Button variant='primary' onClick={handleContinue}>Continue</Button>
+      <Button onClick={handleContinue} disabled={!allFilledOut}>Continue</Button>
     </Wrapper>
   );
 };

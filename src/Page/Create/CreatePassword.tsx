@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { BodyContent, CtaButton, Header, Input } from 'Components';
+import { BodyContent, Button, Header, Input } from 'Components';
 import { ICON_NAMES } from 'consts';
 import { useNavigate } from 'react-router-dom';
 import styled, { css } from 'styled-components';
@@ -100,7 +100,7 @@ export const CreatePassword = ({ nextUrl }: Props) => {
         onChange={setWalletPasswordRepeat}
       />
       {error && <Error>{error}</Error>}
-      <CtaButton onClick={handleContinue}>Continue</CtaButton>
+      <Button onClick={handleContinue} >Continue</Button>
     </Wrapper>
   );
 };

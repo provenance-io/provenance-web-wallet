@@ -32,6 +32,7 @@ type SpriteProps = {
   icon: string;
   width?: string;
   onClick?: () => void;
+  viewBox?: string;
 } & SvgProps;
 
 export const Sprite = ({
@@ -41,6 +42,7 @@ export const Sprite = ({
   icon,
   secondaryColor = COLORS.WHITE,
   onClick,
+  viewBox,
   ...svgIcons
 }: SpriteProps) => {
 
@@ -52,6 +54,7 @@ export const Sprite = ({
       color={color}
       secondaryColor={secondaryColor}
       onClick={onClick}
+      {...(viewBox ? { viewBox } : {})}
     >
       <use href={`#${icon}`} />
     </Svg>

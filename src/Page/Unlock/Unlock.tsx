@@ -1,18 +1,19 @@
 import { useState } from 'react';
-import { BodyContent, CtaButton, Header, Input } from 'Components';
+import {
+  Button,
+  Header,
+  Input,
+  Content,
+  BodyContent,
+} from 'Components';
 import { ICON_NAMES } from 'consts';
 import { useNavigate } from 'react-router-dom';
-import styled, { css } from 'styled-components';
 import {
   getKey,
   getNames,
   decryptKey,
 } from 'utils';
 import { useWallet } from 'redux/hooks';
-
-const Wrapper = styled.div`
-  padding: 42px 16px;
-`;
 
 interface Props {
   nextUrl: string;
@@ -52,17 +53,9 @@ export const Unlock = ({ nextUrl }: Props) => {
   };
 
   return (
-    <Wrapper>
+    <Content>
       <Header iconLeft={ICON_NAMES.CLOSE} progress={100} title="Unlock Wallet" backLocation='/' />
-      <BodyContent
-        $css={css`
-          text-align: center;
-          margin-bottom: 32px;
-        `}
-      >
-        Enter your password
-      </BodyContent>
-
+      <BodyContent>Enter your password</BodyContent>
       <Input
         id="wallet-password"
         label="Password"
@@ -72,7 +65,7 @@ export const Unlock = ({ nextUrl }: Props) => {
         onChange={setPassword}
         error={error}
       />
-      <CtaButton onClick={handleSubmit}>Continue</CtaButton>
-    </Wrapper>
+      <Button onClick={handleSubmit} >Continue</Button>
+    </Content>
   );
 };

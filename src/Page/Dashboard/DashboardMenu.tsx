@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 import { useState } from 'react';
-import { CopyValue, CtaButton, Header, Sprite } from 'Components';
+import { CopyValue, Button, Header, Sprite } from 'Components';
 import { useNavigate } from 'react-router-dom';
 import { DASHBOARD_URL, ICON_NAMES } from 'consts';
 import { useWallet } from 'redux/hooks';
@@ -93,7 +93,7 @@ export const DashboardMenu:React.FC = () => {
           <WalletAction onClick={() => setWalletMenuTarget(-1)}>Close</WalletAction>
         </WalletActionsPopup>
       )}
-      <CtaButton onClick={() => navigate('../create')}>Create Account</CtaButton>
+      <Button onClick={() => navigate('../create')} >Create Account</Button>
     </>
   );
 };

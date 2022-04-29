@@ -65,7 +65,7 @@ export const routes = [
     ),
     children: [
       // LANDING PAGE
-      { index: true, element: <Page bgImage align="center" justify='flex-end'><Landing /></Page> },
+      { index: true, element: <Page bgImage align="center"><Landing /></Page> },
       // DASHBOARD
       {
         path: DASHBOARD_URL,

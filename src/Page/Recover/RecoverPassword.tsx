@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { BodyContent, CtaButton, Header, Input } from 'Components';
+import { BodyContent, Button, Header, Input } from 'Components';
 import { ICON_NAMES } from 'consts';
 import { useNavigate } from 'react-router-dom';
 import styled, { css } from 'styled-components';
@@ -14,6 +14,7 @@ import {
   saveName,
   derivationPath,
 } from 'utils';
+import backupComplete from 'images/backup-complete.svg';
 
 const Wrapper = styled.div`
   padding: 42px 16px;
@@ -57,11 +58,15 @@ const AdvancedInputArea = styled.div`
     margin: 0;
   }
 `;
+const Image = styled.img`
+  width: 160px;
+  display: flex;
+  margin: 50px auto;
+`;
 
 interface Props {
   nextUrl: string;
 }
-
 
 interface CustomDerivationPathObject {
   account?: number,
@@ -167,6 +172,7 @@ export const RecoverPassword = ({ nextUrl }: Props) => {
     success ? (
       <Wrapper>
         <Header progress={100} title="Account(s) Recovered" />
+        <Image src={backupComplete} />
         <BodyContent
           $css={css`
             text-align: center;
@@ -175,7 +181,7 @@ export const RecoverPassword = ({ nextUrl }: Props) => {
         >
           Your accounts were successfully recovered!
         </BodyContent>
-        <CtaButton onClick={() => navigate(nextUrl)}>Continue</CtaButton>
+        <Button onClick={() => navigate(nextUrl)} >Continue</Button>
       </Wrapper>
     ) : (
       <Wrapper>
@@ -183,7 +189,6 @@ export const RecoverPassword = ({ nextUrl }: Props) => {
         <BodyContent
           $css={css`
             text-align: center;
-            margin-bottom: 32px;
           `}
         >
           Enter an account password.  This password will be used to connect to this wallet, it is only stored locally to decrypt the created wallet.
@@ -215,7 +220,7 @@ export const RecoverPassword = ({ nextUrl }: Props) => {
             </AdvancedInputArea>
           </AdvancedSection>
         )}
-        {loading ? <div>Please Wait..</div> : <CtaButton onClick={handleContinue}>Continue</CtaButton>}
+        {loading ? <div>Please Wait..</div> : <Button  onClick={handleContinue}>Continue</Button>}
       </Wrapper>
     )
   );

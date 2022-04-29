@@ -1,4 +1,4 @@
-import { Button, FooterNav, AssetRow } from 'Components';
+import { Button, ButtonGroup, FooterNav, AssetRow, Content, Denom } from 'Components';
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAddress, useWallet } from 'redux/hooks';
@@ -16,14 +16,7 @@ const Value = styled.div`
   font-weight: 300;
   line-height: 54px;
   letter-spacing: 0.02rem;
-`;
-const ButtonGroup = styled.div`
-  display: flex;
-  margin-top: 24px;
-  width: 100%;
-  button:first-of-type {
-    margin-right: 8px;
-  }
+  margin-bottom: 20px;
 `;
 const AssetsTitle = styled.div`
   margin-top: 32px;
@@ -75,19 +68,19 @@ export const Dashboard = () => {
   ));
 
   return (
-    <>
+    <Content>
       <DashboardHeader />
       <PortfolioTitle>Portfolio Value</PortfolioTitle>
-      <Value>${calculatePortfolioValue().toFixed(2)}</Value>
-      <ButtonGroup>
-        <Button variant='primary' onClick={() => navigate('./send')}>Send</Button>
-        <Button variant='primary' onClick={() => navigate('./receive')}>Receive</Button>
+      <Value><Denom>$</Denom>{calculatePortfolioValue().toFixed(2)}</Value>
+      <ButtonGroup layout="inline" direction="row">
+        <Button layout="default" onClick={() => navigate('./send')}>Send</Button>
+        <Button layout="default" onClick={() => navigate('./receive')}>Receive</Button>
       </ButtonGroup>
       <AssetsTitle>My Assets</AssetsTitle>
       <AssetsContainer>
         {assets.length ? renderAssets(): 'Address has no assets...'}
       </AssetsContainer>
       <FooterNav />
-    </>
+    </Content>
   );
 };

@@ -7,6 +7,9 @@ import { baseColors, COLORS } from './colors';
 import { ThemeProvider } from 'styled-components';
 import { SpriteSheet } from 'Components';
 
+const MAX_HEIGHT = process.env.REACT_APP_MAX_HEIGHT;
+const MAX_WIDTH = process.env.REACT_APP_MAX_WIDTH;
+
 export const baseTheme: DefaultTheme = {
   colors: { ...COLORS },
   fonts: { ...FONTS },
@@ -34,10 +37,10 @@ export const GlobalStyles = createGlobalStyle<{
   html {
     font-size: 62.5%; // 1rem = 10px
     box-sizing: border-box;
-    max-width: 375px;
-    max-height: 675px;
-    height: 675px;
-    width: 375px;
+    max-width: ${MAX_WIDTH};
+    max-height: ${MAX_HEIGHT};
+    height: ${MAX_HEIGHT};
+    width: ${MAX_WIDTH};
   }
 
   *, *:before, *:after {
@@ -49,10 +52,10 @@ export const GlobalStyles = createGlobalStyle<{
     ${FONTS.PRIMARY_FONT};
     font-weight: 400;
     font-size: 1.6rem;
-    max-width: 375px;
-    max-height: 675px;
-    height: 675px;
-    width: 375px;
+    max-width: ${MAX_WIDTH};
+    max-height: ${MAX_HEIGHT};
+    height: ${MAX_HEIGHT};
+    width: ${MAX_WIDTH};
   }
 
   button, div, a, p {

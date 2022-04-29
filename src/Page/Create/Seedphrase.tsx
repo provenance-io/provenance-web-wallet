@@ -1,6 +1,6 @@
 import { useNavigate } from 'react-router-dom';
 import styled, { css } from 'styled-components';
-import { BodyContent, CtaButton, Header } from 'Components';
+import { BodyContent, Button, Header } from 'Components';
 import { COLORS } from 'theme';
 import { useWallet } from 'redux/hooks';
 
@@ -60,7 +60,7 @@ export const Seedphrase = ({ nextUrl }: Props) => {
         ))}
       </MnuemonicList>
 
-      <CtaButton onClick={handleContinue}>Continue</CtaButton>
+      <Button onClick={handleContinue} >Continue</Button>
     </>
   );
 };

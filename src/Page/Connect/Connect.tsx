@@ -89,7 +89,7 @@ export const Connect:React.FC = () => {
         Allow connection to localhost:3000?
       </SubTitle>
       <Sprite icon={ICON_NAMES.CHECK} />
-        <Button variant='primary' onClick={handleApprove}>Approve</Button>
+        <Button onClick={handleApprove}>Approve</Button>
         <Button variant='transparent' onClick={handleDecline}>Reject</Button>
     </Container>
   );

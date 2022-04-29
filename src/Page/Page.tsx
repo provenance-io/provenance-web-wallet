@@ -21,13 +21,17 @@ const PageStyled = styled.div<Props>`
   flex-direction: column;
   font-family: 'Montserrat', 'sans-serif';
   justify-content: ${({ justify }) => justify};
-  height: 100%;
-  max-height: 100%;
-  min-height: 100%;
-  overflow: auto;
-  padding: 42px 32px;
+  height: 100vh;
+  width: 100vw;
+  padding: 32px 16px 20px 16px;
   text-align: ${({ align }) => align === 'flex-start' ? 'left' : 'center'};
   z-index: 10;
+  overflow-y: scroll;
+  -ms-overflow-style: none;
+  &::-webkit-scrollbar {
+    width: 0;
+    height: 0;
+  }
 `;
 
 export const Page = ({

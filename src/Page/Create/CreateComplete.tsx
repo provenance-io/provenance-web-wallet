@@ -1,4 +1,4 @@
-import { CtaButton, Header } from 'Components';
+import { Button, Header } from 'Components';
 import { useNavigate } from 'react-router-dom';
 import { useWallet } from 'redux/hooks';
 
@@ -19,7 +19,7 @@ export const CreateComplete = ({ nextUrl }: Props) => {
     <>
       <Header progress={100} title="Wallet Created" iconLeft='none' />
       <div>Wallet has been successfully created.  Click continue to proceed to the dashboard.</div>
-      <CtaButton onClick={finishCreation}>Continue</CtaButton>
+      <Button onClick={finishCreation}>Continue</Button>
     </>
   );
 };

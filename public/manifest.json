@@ -16,9 +16,17 @@
   "permissions": [
     "storage",
     "tabs",
-    "activeTab"
+    "activeTab",
+    "notifications"
   ],
   "host_permissions": [
-    "*://*.figure.tech/*"
-  ]
+    "*://*.figure.tech/*",
+    "http://localhost:3000/"
+  ],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "externally_connectable": {
+    "matches": ["https://*.figure.tech/*", "http://localhost:3000/"]
+  }
 }

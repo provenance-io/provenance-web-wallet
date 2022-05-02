@@ -1,5 +1,6 @@
 // Determine storage type for app
 const useChromeStorage = !!window?.chrome?.storage;
+console.log('Using chrome.storage: ', useChromeStorage);
 const localSaveName = process.env.REACT_APP_LOCAL_SAVE_NAME || 'provenance-web-wallet';
 const defaultAccountName = process.env.REACT_APP_DEFAULT_ACCOUNT_NAME;
 
@@ -52,12 +53,7 @@ const clearStorageData = (type: StorageType = 'sessionStorage') => {
 // ----------------------
 // Chrome Storage
 // ----------------------
-const getChromeStorage = async (key?: StorageKey) => {
-  if (key) {
-    return chrome.storage.local.get(key, result => result);
-  }
-  return chrome.storage.local.get(null, result => result);
-};
+const getChromeStorage = async (key?: StorageKey) => await chrome.storage.local.get(key);
 const addChromeStorage = (newData: StorageData) => {
   chrome.storage.local.set(newData);
 };

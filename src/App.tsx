@@ -13,8 +13,6 @@ function App() {
       const asyncStorageGet = async () => {
         const accounts = await getSavedData('accounts');
         const activeAccountIndex = await getSavedData('activeAccountIndex');
-        console.log('accounts :', accounts);
-        console.log('activeAccountIndex :', activeAccountIndex);
         setInitialValues({ accounts, activeAccountIndex });
       }
       asyncStorageGet();

@@ -30,7 +30,6 @@ export const Notification:React.FC = () => {
   const { accounts, activeAccountIndex } = useAccount();
   const activeAccount = accounts[activeAccountIndex];
   const walletConnectUriParam = searchParams.get('wc');
-  console.log('walletConnectUriParam :', walletConnectUriParam);
 
   // On load, create the walletConnect event listeners
   useEffect(() => {

@@ -48,7 +48,6 @@ export const Connect:React.FC = () => {
 
   useEffect(() => {
     if (!connector) {
-      console.log('Connect | No URI | Navigating to Dashboard');
       navigate(DASHBOARD_URL);
     }
   }, [

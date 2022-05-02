@@ -13,6 +13,7 @@ import {
   DashboardSend,
   EnterSeed,
   Landing,
+  Notification,
   Page,
   Profile,
   RecoverAccountName,
@@ -45,6 +46,7 @@ import {
   DASHBOARD_RECEIVE_URL,
   DASHBOARD_SEND_URL,
   DASHBOARD_URL,
+  NOTIFICATION_URL,
   PROFILE_URL,
   RECOVER_NOTE_URL,
   RECOVER_PASSWORD_URL,
@@ -194,6 +196,13 @@ export const routes = [
       { index: true, element: <Unlock nextUrl={DASHBOARD_URL} /> },
     ]
   },
+  {
+    path: NOTIFICATION_URL,
+    element: <Page bgImage/>,
+    children: [
+      { index: true, element: <Notification /> },
+    ],
+  }
   // { path: FOUR_OH_FOUR_URL, element: <NotFound /> },
   // { path: '*', element: <Navigate to={FOUR_OH_FOUR_URL} /> },
 ];

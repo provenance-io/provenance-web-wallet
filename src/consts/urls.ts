@@ -40,3 +40,5 @@ export const CREATE_COMPLETE_URL = '/create/complete';
 export const CREATE_PASSWORD_URL = '/create/password';
 // -- UNLOCK URLS
 export const UNLOCK_URL = '/unlock';
+// -- NOTIFICATIONS
+export const NOTIFICATION_URL = '/notification';

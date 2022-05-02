@@ -1,6 +1,5 @@
 // Determine storage type for app
-// const useChromeStorage = !!window?.chrome?.storage;
-const useChromeStorage = false;
+const useChromeStorage = !!window?.chrome?.storage;
 const localSaveName = process.env.REACT_APP_LOCAL_SAVE_NAME || 'provenance-web-wallet';
 const defaultAccountName = process.env.REACT_APP_DEFAULT_ACCOUNT_NAME;
 
@@ -53,21 +52,24 @@ const clearStorageData = (type: StorageType = 'sessionStorage') => {
 // ----------------------
 // Chrome Storage
 // ----------------------
-const getChromeStorage = () => {
-  console.log('TODO: getChromeStorage');
-  // // Speficic value
-  // if (key) return chrome.storage.local.get(key, (result) => { return result })
-  // // All values
-  // return chrome.storage.local.get(null, (result) => { return result })
+const getChromeStorage = (key?: StorageKey) => {
+  if (key) {
+    return chrome.storage.local.get(key, result => result);
+  }
+  return chrome.storage.local.get(null, result => result);
 };
-const addChromeStorage = () => {
-  console.log('TODO: addChromeStorage');
+const addChromeStorage = (newData: StorageData) => {
+  // Pull existing data and add in newData, then save
+  chrome.storage.local.get(null, result => {
+    const finalData = {...result, ...newData};
+    chrome.storage.local.set(finalData);
+  });
 };
-const removeChromeStorage = () => {
-  console.log('TODO: removeChromeStorage');
+const removeChromeStorage = (key: StorageKey) => {
+  chrome.storage.local.remove(key);
 }
 const clearChromeStorage = () => {
-  console.log('TODO: clearChromeStorage');
+  chrome.storage.local.clear();
 };
 
 // ----------------------
@@ -76,17 +78,17 @@ const clearChromeStorage = () => {
 // ----------------------
 // Get one or more values from storage
 export const getSavedData = (key?: StorageKey, type: StorageType = 'sessionStorage') => {
-  if (useChromeStorage) return getChromeStorage();
+  if (useChromeStorage) return getChromeStorage(key);
   return getStorageData(key, type);
 };
 // Add to storage
 export const addSavedData = (newData: StorageData, type: StorageType = 'sessionStorage') => {
-  if (useChromeStorage) addChromeStorage();
+  if (useChromeStorage) addChromeStorage(newData);
   else addStorageData(newData, type);
 };
 // Clear out single value
 export const removeSavedData = (key: StorageKey, type: StorageType = 'sessionStorage') => {
-  if (useChromeStorage) removeChromeStorage();
+  if (useChromeStorage) removeChromeStorage(key);
   else removeStorageData(key, type);
 }
 // Clear out entire storage

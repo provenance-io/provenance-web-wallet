@@ -1,3 +1,5 @@
+// global window.provenanceWallet
+
 import React from "react";
 import ReactDOM from "react-dom";
 import { Provider } from "react-redux";
@@ -11,9 +13,9 @@ const isChromeExtension = !!chrome?.extension;
 const isNotificationPage = window?.location?.pathname === NOTIFICATION_URL;
 // Chrome extension should be using memoryRouter unless it's on the notification page
 const Router = (isChromeExtension && !isNotificationPage) ? MemoryRouter : BrowserRouter;
-console.log('isChromeExtension :', isChromeExtension);
-console.log('isNotificationPage :', isNotificationPage);
-console.log('window?.location: ', window.location);
+// Create new window functions for dApp/walletConnect-js to use
+const provenanceWallet = { version: '1.0.0' };
+window.provenanceWallet = window?.provenanceWallet || provenanceWallet;
 
 ReactDOM.render(
   <React.StrictMode>

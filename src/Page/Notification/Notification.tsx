@@ -72,7 +72,11 @@ export const Notification:React.FC = () => {
   }, [connector, walletConnectUriParam, createConnector, setSearchParams]);
 
   const handleApprove = () => {
+    console.log('handleApprove()');
     if (connector) {
+      console.log('activeWallet :', activeWallet);
+      console.log('wallets :', wallets);
+      console.log('activeWalletIndex :', activeWalletIndex);
       const data = {
         chainId: CHAINID_TESTNET,
         accounts: [{
@@ -93,6 +97,10 @@ export const Notification:React.FC = () => {
   const handleDecline = () => {
     if (connector) {
       connector.rejectSession({ message: 'Connection rejected by user' });
+      // Wait 1 second then close this Notification popup
+      setTimeout(() => {
+        window.close();
+      }, 1000);
     }
     navigate(DASHBOARD_URL);
   }

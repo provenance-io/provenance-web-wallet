@@ -3,7 +3,7 @@ import { ICON_NAMES } from 'consts';
 import { Sprite, CopyValue } from 'Components';
 import { useNavigate } from 'react-router-dom';
 import { COLORS } from 'theme';
-import { useWallet, useWalletConnect } from 'redux/hooks';
+import { useAccount, useWalletConnect } from 'redux/hooks';
 import { trimString } from 'utils';
 
 const HeaderRow = styled.div`
@@ -19,7 +19,7 @@ const WalletInfo = styled.div`
   font-size: 1.4rem;
   text-align: left;
 `;
-const WalletName = styled.p`
+const AccountName = styled.p`
   font-weight: 700;
   margin: 0;
 `;
@@ -47,10 +47,10 @@ const Notify = styled.span`
 
 export const DashboardHeader:React.FC = () => {
   const navigate = useNavigate();
-  const { activeWalletIndex, wallets } = useWallet();
+  const { activeAccountIndex, accounts } = useAccount();
   const { connected } = useWalletConnect();
-  const activeWallet = wallets[activeWalletIndex];
-  const { walletName, address = '' } = activeWallet;
+  const activeAccount = accounts[activeAccountIndex];
+  const { accountName, address = '' } = activeAccount;
 
   // TODO: Add check for pending notifications here
   const notify = false;
@@ -66,7 +66,7 @@ export const DashboardHeader:React.FC = () => {
       </Menu>
         <WalletInfo>
           <CopyValue value={address} title="Copy account address">
-            <WalletName>{walletName}</WalletName>
+            <AccountName>{accountName}</AccountName>
             <WalletAddress>({trimString(address, 11, 4)})</WalletAddress>
           </CopyValue>
         </WalletInfo>

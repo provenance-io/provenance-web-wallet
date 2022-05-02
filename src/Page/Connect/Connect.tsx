@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { Button, Sprite } from 'Components';
 import { DASHBOARD_URL, ICON_NAMES, CHAINID_TESTNET } from 'consts';
 import { useEffect } from 'react';
-import { useWalletConnect, useWallet } from 'redux/hooks';
+import { useWalletConnect, useAccount } from 'redux/hooks';
 
 const Container = styled.div`
   width: 100%;
@@ -43,8 +43,8 @@ export const Connect:React.FC = () => {
   const { state } = useLocation();
   const { payload } = state as LocationState;
   const { connector } = useWalletConnect();
-  const { wallets, activeWalletIndex } = useWallet();
-  const activeWallet = wallets[activeWalletIndex];
+  const { accounts, activeAccountIndex } = useAccount();
+  const activeAccount = accounts[activeAccountIndex];
 
   useEffect(() => {
     if (!connector) {
@@ -61,12 +61,12 @@ export const Connect:React.FC = () => {
       const data = {
         chainId: CHAINID_TESTNET,
         accounts: [{
-          publicKey: activeWallet.publicKey,
-          address: activeWallet.address,
+          publicKey: activeAccount.publicKey,
+          address: activeAccount.address,
           jwt: `${btoa('123')}.${btoa('456')}.${btoa('789')}`,
           walletInfo: {
             id: 'id',
-            name: activeWallet.walletName,
+            name: activeAccount.accountName,
             coin: 'coin'
           }
         }],

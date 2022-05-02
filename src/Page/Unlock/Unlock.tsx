@@ -13,7 +13,7 @@ import {
   getAccounts,
   decryptKey,
 } from 'utils';
-import { useWallet } from 'redux/hooks';
+import { useAccount } from 'redux/hooks';
 
 interface Props {
   nextUrl: string;
@@ -23,12 +23,10 @@ export const Unlock = ({ nextUrl }: Props) => {
   const navigate = useNavigate();
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
-  const { createHDWallet: createStoreHDWallet } = useWallet();
-  const localKey = getKey();
-
+  const { createHDWallet: createStoreHDWallet } = useAccount();
   const passwordMinLength = Number(process.env.REACT_APP_PASSWORD_MIN_LENGTH)!;
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     // Clear out any previous error
     setError('');
     let newError = '';
@@ -37,6 +35,7 @@ export const Unlock = ({ nextUrl }: Props) => {
     if (!password) newError = 'Enter a password';
     // No error so far
     if (!newError) {
+      const localKey = await getKey();
       // Attempt to decrypt the key with the provided password
       const masterKey = decryptKey(localKey, password);
       if (!masterKey) newError = 'Invalid password';

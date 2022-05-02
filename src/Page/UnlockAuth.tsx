@@ -11,10 +11,13 @@ interface Props {
 export const UnlockAuth = ({ children = null }: Props) => {
   const navigate = useNavigate();
   useEffect(() => {
-    const savedKey = getKey();
-    if (!savedKey) {
-      navigate(APP_URL);
-    }
+    const getKeyAsync = async () => {
+      const savedKey = await getKey();
+      if (!savedKey) {
+        navigate(APP_URL);
+      }
+    };
+    getKeyAsync();
   }, [navigate]);
 
   return (

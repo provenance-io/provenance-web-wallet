@@ -3,7 +3,7 @@ import { BodyContent, Button, Header, Input as InputBase, Content } from 'Compon
 import { ICON_NAMES } from 'consts';
 import { useNavigate } from 'react-router-dom';
 import styled, { css } from 'styled-components';
-import { useWallet } from 'redux/hooks';
+import { useAccount } from 'redux/hooks';
 import {
   encryptKey,
   createMasterKeyFromMnemonic,
@@ -27,13 +27,13 @@ interface Props {
 
 export const CreatePassword = ({ nextUrl }: Props) => {
   const navigate = useNavigate();
-  const { tempWallet, createWallet: createStoreWallet } = useWallet();
+  const { tempWallet, createWallet: createStoreWallet } = useAccount();
   const [walletPassword, setWalletPassword] = useState('');
   const [walletPasswordRepeat, setWalletPasswordRepeat] = useState('');
   const [error, setError] = useState('');
   const passwordMinLength = Number(process.env.REACT_APP_PASSWORD_MIN_LENGTH)!;
 
-  const handleContinue = () => {
+  const handleContinue = async () => {
     let latestError = '';
     if (walletPassword !== walletPasswordRepeat) latestError = 'Passwords must match';
     if (!walletPassword || !walletPasswordRepeat) latestError = 'Please confirm your password.';
@@ -53,7 +53,7 @@ export const CreatePassword = ({ nextUrl }: Props) => {
           address,
           publicKey: b64PublicKey,
           privateKey: b64PrivateKey,
-          walletName: tempWallet.walletName,
+          accountName: tempWallet.accountName,
           network: tempWallet.network,
           id: 0,
         };
@@ -61,7 +61,7 @@ export const CreatePassword = ({ nextUrl }: Props) => {
         // Encrypt data with provided password
         const encrypted = encryptKey(masterKey, walletPassword);
         // Add data to localStorage
-        saveKey(encrypted);
+        await saveKey(encrypted);
         // This is the first account in the list, index will be 0
         navigate(nextUrl);
       } else {

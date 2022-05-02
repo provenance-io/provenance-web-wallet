@@ -10,7 +10,7 @@ import {
 import { ICON_NAMES } from 'consts';
 import { useNavigate } from 'react-router-dom';
 import styled, { css } from 'styled-components';
-import { useWallet } from 'redux/hooks';
+import { useAccount } from 'redux/hooks';
 import { createMnemonic } from 'utils';
 
 const Select = styled(SelectBase)`
@@ -32,15 +32,15 @@ interface Props {
 export const CreateStart = ({ nextUrl }: Props) => {
   const defaultNetwork = 'mainnet';
   const navigate = useNavigate();
-  const { updateTempWallet } = useWallet();
-  const [walletName, setWalletName] = useState('');
+  const { updateTempWallet } = useAccount();
+  const [accountName, setaccountName] = useState('');
   const [network, setNetwork] = useState(defaultNetwork);
   const [showAdvanced, setShowAdvanced] = useState(false);
   const mnemonic = createMnemonic();
 
   const handleContinue = () => {
-    if (walletName) {
-      updateTempWallet({ walletName, mnemonic, network });
+    if (accountName) {
+      updateTempWallet({ accountName, mnemonic, network });
       // Move to next step
       navigate(nextUrl);
     }
@@ -63,7 +63,7 @@ export const CreateStart = ({ nextUrl }: Props) => {
         Name your acount to easily identify it while using the Figure Tech Wallet. These names are
         stored locally, and can only be seen by you.
       </BodyContent>
-      <Input id="account-name" label="Account Name" type="text" placeholder="Account Name" value={walletName} onChange={setWalletName} />
+      <Input id="account-name" label="Account Name" type="text" placeholder="Account Name" value={accountName} onChange={setaccountName} />
       <AdvancedMessage
         active={showAdvanced}
         onClick={toggleAdvancedSettings}

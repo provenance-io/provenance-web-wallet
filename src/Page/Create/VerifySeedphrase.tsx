@@ -3,7 +3,7 @@ import { BodyContent, Checkbox, Button, Header, Content } from 'Components';
 import { css } from 'styled-components';
 import { VerifyButtonGroup } from './VerifyButtonGroup';
 import { COLORS } from 'theme';
-import { useWallet } from 'redux/hooks';
+import { useAccount } from 'redux/hooks';
 import { useNavigate } from 'react-router-dom';
 
 interface Props {
@@ -47,7 +47,7 @@ export const VerifySeedphrase = ({ nextUrl }: Props) => {
   // Navigate
   const navigate = useNavigate();
   // Redux Store
-  const { tempWallet } = useWallet();
+  const { tempWallet } = useAccount();
   const mnemonic = (tempWallet && tempWallet?.mnemonic) || '';
   const mnemonicArray = mnemonic?.split(' ');
 

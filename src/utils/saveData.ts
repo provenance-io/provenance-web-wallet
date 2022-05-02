@@ -52,18 +52,14 @@ const clearStorageData = (type: StorageType = 'sessionStorage') => {
 // ----------------------
 // Chrome Storage
 // ----------------------
-const getChromeStorage = (key?: StorageKey) => {
+const getChromeStorage = async (key?: StorageKey) => {
   if (key) {
     return chrome.storage.local.get(key, result => result);
   }
   return chrome.storage.local.get(null, result => result);
 };
 const addChromeStorage = (newData: StorageData) => {
-  // Pull existing data and add in newData, then save
-  chrome.storage.local.get(null, result => {
-    const finalData = {...result, ...newData};
-    chrome.storage.local.set(finalData);
-  });
+  chrome.storage.local.set(newData);
 };
 const removeChromeStorage = (key: StorageKey) => {
   chrome.storage.local.remove(key);
@@ -77,9 +73,11 @@ const clearChromeStorage = () => {
 // (Will automatically use browser default or chrome storage)
 // ----------------------
 // Get one or more values from storage
-export const getSavedData = (key?: StorageKey, type: StorageType = 'sessionStorage') => {
-  if (useChromeStorage) return getChromeStorage(key);
-  return getStorageData(key, type);
+export const getSavedData = async (key?: StorageKey, type: StorageType = 'sessionStorage') => {
+  if (useChromeStorage) return await getChromeStorage(key);
+  else {
+    return getStorageData(key, type);
+  }
 };
 // Add to storage
 export const addSavedData = (newData: StorageData, type: StorageType = 'sessionStorage') => {
@@ -118,14 +116,14 @@ type Account = {
 }
 type AccountIndex = number;
 
-export const saveAccount = ({
+export const saveAccount = async ({
   id,
   name = `${defaultAccountName}${id}`,
   network,
 }:Account
 ) => {
   // Check if existing name obj exists, if not, make a new obj
-  const existingAccounts = getSavedData('accounts', 'localStorage') || [];
+  const existingAccounts = await getSavedData('accounts', 'localStorage') || [];
   // Add this accountName/accountIndex to object
   existingAccounts[id] = { id, name, network };
   // Save the map back to local storage
@@ -134,9 +132,9 @@ export const saveAccount = ({
 export const getAccounts = () => {
   return getSavedData('accounts', 'localStorage');
 };
-export const removeAccount = (id: AccountIndex) => {
+export const removeAccount = async (id: AccountIndex) => {
   // Check if existing name obj exists, if not, make a new obj
-  const existingAccounts = getSavedData('accounts', 'localStorage') || [];
+  const existingAccounts = await getSavedData('accounts', 'localStorage') || [];
   delete existingAccounts[id];
   // Convert back to JSON string for storage
   const existingAccountsString = JSON.stringify({accounts: existingAccounts});

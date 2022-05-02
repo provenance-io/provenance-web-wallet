@@ -7,7 +7,7 @@ import {
   Content,
 } from 'Components';
 import { COLORS } from 'theme';
-import { useWallet } from 'redux/hooks';
+import { useAccount } from 'redux/hooks';
 
 const MnuemonicList = styled.div`
   display: flex;
@@ -39,7 +39,7 @@ interface Props {
 
 export const Seedphrase = ({ nextUrl }: Props) => {
   const navigate = useNavigate();
-  const { tempWallet } = useWallet();
+  const { tempWallet } = useAccount();
   const mnemonic = tempWallet?.mnemonic || '';
   const handleContinue = () => {
     navigate(nextUrl);

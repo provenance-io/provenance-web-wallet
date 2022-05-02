@@ -4,7 +4,7 @@ import { ICON_NAMES } from 'consts';
 import { useState } from 'react';
 import { getKey, decryptKey } from 'utils';
 import { useNavigate } from 'react-router-dom';
-import { useWallet } from 'redux/hooks';
+import { useAccount } from 'redux/hooks';
 
 const Wrapper = styled.div`
   width: 100%;
@@ -21,13 +21,13 @@ export const DashboardAccountCreate:React.FC<Props> = ({ nextUrl }) => {
   const navigate = useNavigate();
   const [accountName, setAccountName] = useState('');
   const [walletPassword, setWalletPassword] = useState('');
-  const { addToHDWallet } = useWallet();
+  const { addToHDWallet } = useAccount();
   const [error, setError] = useState<string[]>([]); // [accountNameError, walletPasswordError]
   const passwordMinLength = Number(process.env.REACT_APP_PASSWORD_MIN_LENGTH)!;
   
-  const handleCreateAccount = () => {
+  const handleCreateAccount = async () => {
     let newError = [];
-    const localKey = getKey();
+    const localKey = await getKey();
     // Account name must exist
     if (!accountName) newError[0] = 'Account Name Required';
     // Wallet password must exist

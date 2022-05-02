@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useState } from 'react';
 import { Button, Header, Input } from 'Components';
 import { isMnumonic, validateMnemonic } from 'utils';
-import { useWallet } from 'redux/hooks';
+import { useAccount } from 'redux/hooks';
 
 const Wrapper = styled.div`
   width: 100%;
@@ -35,7 +35,7 @@ interface Props {
 export const EnterSeed:React.FC<Props> = ({ nextUrl }) => {
   const totalSeeds = 24;
   const navigate = useNavigate();
-  const { updateTempWallet } = useWallet();
+  const { updateTempWallet } = useAccount();
   const createInitialInputData = () => {
     // Clone all inputValues
     const newInputValues = [];

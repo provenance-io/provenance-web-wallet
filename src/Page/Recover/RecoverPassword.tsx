@@ -3,7 +3,7 @@ import { BodyContent, Button, Header, Input, Select } from 'Components';
 import { ICON_NAMES } from 'consts';
 import { useNavigate } from 'react-router-dom';
 import styled, { css } from 'styled-components';
-import { useWallet, useAddress } from 'redux/hooks';
+import { useAccount, useAddress } from 'redux/hooks';
 import { BIP32Interface } from 'bip32';
 import {
   encryptKey,
@@ -80,8 +80,8 @@ export const RecoverPassword = ({ nextUrl }: Props) => {
     tempWallet,
     createWallet: createStoreWallet,
     clearTempWallet,
-    setActiveWalletIndex
-  } = useWallet();
+    setActiveAccountIndex
+  } = useAccount();
   const [walletPassword, setWalletPassword] = useState('');
   const [showAdvanced, setShowAdvanced] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -96,18 +96,18 @@ export const RecoverPassword = ({ nextUrl }: Props) => {
   const passwordMinLength = Number(process.env.REACT_APP_PASSWORD_MIN_LENGTH)!;
   const defaultAccountName = process.env.REACT_APP_DEFAULT_ACCOUNT_NAME!;
 
-  const recoverAccountLoop = async (masterKey: BIP32Interface, addressIndex: number = 0, defaultWalletName?: string): Promise<string> => {
+  const recoverAccountLoop = async (masterKey: BIP32Interface, addressIndex: number = 0, defaultaccountName?: string): Promise<string> => {
     const path = derivationPath({ address_index: addressIndex });
     const { address, publicKey, privateKey } = createWalletFromMasterKey(masterKey, undefined, path);
     const b64PublicKey = bytesToBase64(publicKey);
     const b64PrivateKey = bytesToBase64(privateKey);
-    const walletName = defaultWalletName || `${defaultAccountName}${addressIndex + 1}`;
+    const accountName = defaultaccountName || `${defaultAccountName}${addressIndex + 1}`;
     // Save data to redux store and clear out tempWallet data
     const newWalletData = {
       address,
       publicKey: b64PublicKey,
       privateKey: b64PrivateKey,
-      walletName,
+      accountName,
       network,
       id: addressIndex,
     };
@@ -120,7 +120,7 @@ export const RecoverPassword = ({ nextUrl }: Props) => {
       return recoverAccountLoop(masterKey, addressIndex + 1);
     } else {
       // Set first wallet to be active
-      setActiveWalletIndex(0);
+      setActiveAccountIndex(0);
       return 'complete';
     }
   };
@@ -139,12 +139,12 @@ export const RecoverPassword = ({ nextUrl }: Props) => {
         // const finalDerivationPath = showAdvanced ? derivationPath({ account, change, address_index: addressIndex }) : undefined;
         setLoading(true);
         // Loop over the account to add sub-accounts if they exist
-        await recoverAccountLoop(masterKey, 0, tempWallet.walletName);
-        setLoading(false);
+        await recoverAccountLoop(masterKey, 0, tempWallet.accountName);
         // Encrypt data with provided password
         const encrypted = encryptKey(masterKey, walletPassword);
         // Add data to localStorage
-        saveKey(encrypted);
+        await saveKey(encrypted);
+        setLoading(false);
         // Remove tempWallet data
         clearTempWallet();
         setSuccess(true);

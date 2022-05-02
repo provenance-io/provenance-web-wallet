@@ -2,11 +2,11 @@ import { useMemo } from 'react';
 import { bindActionCreators } from 'redux';
 import { useAppDispatch, useAppSelector } from './useStore';
 import {
-  selectWallet as selector,
-  walletActions as actionsList,
-} from '../features/wallet/walletSlice';
+  selectAccount as selector,
+  accountActions as actionsList,
+} from '../features/account/accountSlice';
 
-export const useWallet = () => {
+export const useAccount = () => {
   const dispatch = useAppDispatch();
   const state = useAppSelector(selector);
   const actions = useMemo(

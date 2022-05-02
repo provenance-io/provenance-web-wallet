@@ -5,20 +5,25 @@ import { Carousel } from './Carousel';
 
 export const Landing: React.FC = () => {
   const navigate = useNavigate();
-  const savedKey = getKey();
+  
+  const renderLandingActions = async () => {
+    const savedKey = await getKey();
+    return savedKey ? (
+      <Button layout="default" onClick={() => navigate('/unlock')}>
+        Unlock
+      </Button>
+    ) : (
+      <Button layout="default" onClick={() => navigate('/create')}>
+        Create Wallet
+      </Button>
+    )
+  };
+
   return (
     <>
       <Carousel />
       <ButtonGroup>
-        {savedKey ? (
-          <Button layout="default" onClick={() => navigate('/unlock')}>
-            Unlock
-          </Button>
-        ) : (
-          <Button layout="default" onClick={() => navigate('/create')}>
-            Create Wallet
-          </Button>
-        )}
+        {renderLandingActions()}
         <Button layout="default" variant="transparent" onClick={() => navigate('/recover')}>Recover Wallet</Button>
       </ButtonGroup>
     </>

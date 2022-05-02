@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 import { Button, Header, BodyContent, Content } from 'Components';
 import { useNavigate } from 'react-router-dom';
-import { useWallet } from 'redux/hooks';
+import { useAccount } from 'redux/hooks';
 import backupComplete from 'images/backup-complete.svg';
 
 interface Props {
@@ -16,7 +16,7 @@ const Image = styled.img`
 
 export const CreateComplete = ({ nextUrl }: Props) => {
   const navigate = useNavigate();
-  const { clearTempWallet } = useWallet();
+  const { clearTempWallet } = useAccount();
   const finishCreation = () => {
     // Remove temp data
     clearTempWallet();

@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { Button, Sprite, Content, ButtonGroup } from 'Components';
 import { DASHBOARD_URL, ICON_NAMES, CHAINID_TESTNET } from 'consts';
 import { useEffect } from 'react';
-import { useWalletConnect, useWallet } from 'redux/hooks';
+import { useWalletConnect, useAccount } from 'redux/hooks';
 
 const Title = styled.div`
   font-weight: 600;
@@ -27,8 +27,8 @@ export const Notification:React.FC = () => {
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
   const { createConnector, connector, setConnected, setConnectionDetails } = useWalletConnect();
-  const { wallets, activeWalletIndex } = useWallet();
-  const activeWallet = wallets[activeWalletIndex];
+  const { accounts, activeAccountIndex } = useAccount();
+  const activeAccount = accounts[activeAccountIndex];
   const walletConnectUriParam = searchParams.get('wc');
   console.log('walletConnectUriParam :', walletConnectUriParam);
 
@@ -74,18 +74,18 @@ export const Notification:React.FC = () => {
   const handleApprove = () => {
     console.log('handleApprove()');
     if (connector) {
-      console.log('activeWallet :', activeWallet);
-      console.log('wallets :', wallets);
-      console.log('activeWalletIndex :', activeWalletIndex);
+      console.log('activeAccount :', activeAccount);
+      console.log('accounts :', accounts);
+      console.log('activeAccountIndex :', activeAccountIndex);
       const data = {
         chainId: CHAINID_TESTNET,
         accounts: [{
-          publicKey: activeWallet.publicKey,
-          address: activeWallet.address,
+          publicKey: activeAccount.publicKey,
+          address: activeAccount.address,
           jwt: `${btoa('123')}.${btoa('456')}.${btoa('789')}`,
           walletInfo: {
             id: 'id',
-            name: activeWallet.walletName,
+            name: activeAccount.accountName,
             coin: 'coin'
           }
         }],
@@ -97,10 +97,10 @@ export const Notification:React.FC = () => {
   const handleDecline = () => {
     if (connector) {
       connector.rejectSession({ message: 'Connection rejected by user' });
-      // Wait 1 second then close this Notification popup
+      // Wait 250ms then close this Notification popup
       setTimeout(() => {
         window.close();
-      }, 1000);
+      }, 250);
     }
     navigate(DASHBOARD_URL);
   }

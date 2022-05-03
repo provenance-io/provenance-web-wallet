@@ -2,6 +2,7 @@ import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { ADDRESS_URL } from 'consts';
 import { RootState } from 'redux/store';
 import { api } from '../api';
+import { getServiceMobileApi } from 'utils';
 
 /**
  * INITIAL STATE
@@ -87,7 +88,7 @@ const GET_ADDRESS_TX_ALL = 'GET_ADDRESS_TX_ALL';
  */
 const getAddressAssetsRaw = (addr: string) =>
   api({
-    url: `${ADDRESS_URL}/${addr}/assets`,
+    url: `${getServiceMobileApi(addr, ADDRESS_URL)}/${addr}/assets`,
   });
 
 /**
@@ -97,7 +98,7 @@ export const getAddressAssets = createAsyncThunk(
   GET_ADDRESS_ASSETS,
   (addr: string) =>
     api({
-      url: `${ADDRESS_URL}/${addr}/assets`,
+      url: `${getServiceMobileApi(addr, ADDRESS_URL)}/${addr}/assets`,
     })
 );
 
@@ -105,7 +106,7 @@ export const getAddressTx = createAsyncThunk(
   GET_ADDRESS_TX,
   (addr: string) =>
     api({
-      url: `${ADDRESS_URL}/${addr}/transactions`,
+      url: `${getServiceMobileApi(addr, ADDRESS_URL)}/${addr}/transactions`,
     })
 );
 
@@ -113,7 +114,7 @@ export const getAddressTxAll = createAsyncThunk(
   GET_ADDRESS_TX_ALL,
   (addr: string) =>
     api({
-      url: `${ADDRESS_URL}/${addr}/transactions/all`,
+      url: `${getServiceMobileApi(addr, ADDRESS_URL)}/${addr}/transactions/all`,
     })
 );
 

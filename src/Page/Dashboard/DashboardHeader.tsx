@@ -1,4 +1,3 @@
-import { useEffect } from 'react';
 import styled from 'styled-components';
 import { ICON_NAMES, DASHBOARD_CONNECTION_DETAILS_URL } from 'consts';
 import { Sprite, CopyValue } from 'Components';
@@ -54,11 +53,6 @@ export const DashboardHeader:React.FC = () => {
   const activeAccount = accounts[activeAccountIndex];
   const { name, address = '' } = activeAccount;
 
-  useEffect(() => {
-    console.log('DashboardHeader.tsx | useEffect() | connected: ', connected);
-    console.log('DashboardHeader.tsx | useEffect() | connector: ', connector);
-  }, [connected, connector]);
-
   // TODO: Add check for pending notifications here
   const notify = false;
   // TODO: Add check for number of notifications here
@@ -78,7 +72,7 @@ export const DashboardHeader:React.FC = () => {
           </CopyValue>
         </WalletInfo>
       <WalletConnect>
-        {connected && (
+        {!!connected && !!connector && (
           <>
             <Sprite onClick={viewNotifications} icon={ICON_NAMES.CHAIN} size="4.8rem" spin="90" color="#8BF551" />
             {notify && <Notify>{notifications}</Notify>}

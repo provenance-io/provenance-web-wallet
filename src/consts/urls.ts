@@ -2,8 +2,8 @@
 export const SERVICE_MOBILE_WALLET_TESTNET = process.env.REACT_APP_SERVICE_MOBILE_WALLET_TESTNET;
 export const SERVICE_MOBILE_WALLET_MAINNET = process.env.REACT_APP_SERVICE_MOBILE_WALLET_MAINNET;
 export const ADDRESS_URL = '/address';
-export const PRICING_URL = '/pricing';
-export const STATISTICS_URL = '/statistics';
+export const PRICING_URL = `${SERVICE_MOBILE_WALLET_MAINNET}/pricing`;
+export const STATISTICS_URL = `${SERVICE_MOBILE_WALLET_MAINNET}/statistics`;
 export const MARKER_URL = `${PRICING_URL}/marker`;
 // INNER-APP PATH URLS
 // -- MAIN URLS

@@ -96,18 +96,16 @@ export const RecoverPassword = ({ nextUrl }: Props) => {
   const passwordMinLength = Number(process.env.REACT_APP_PASSWORD_MIN_LENGTH)!;
   const defaultAccountName = process.env.REACT_APP_DEFAULT_ACCOUNT_NAME!;
 
-  const recoverAccountLoop = async (masterKey: BIP32Interface, addressIndex: number = 0, defaultaccountName?: string): Promise<string> => {
+  const recoverAccountLoop = async (masterKey: BIP32Interface, addressIndex: number = 0, accountName?: string): Promise<string> => {
     const path = derivationPath({ address_index: addressIndex });
-    const { address, publicKey, privateKey } = createWalletFromMasterKey(masterKey, undefined, path);
+    const { address, publicKey } = createWalletFromMasterKey(masterKey, undefined, path);
     const b64PublicKey = bytesToBase64(publicKey);
-    const b64PrivateKey = bytesToBase64(privateKey);
-    const accountName = defaultaccountName || `${defaultAccountName}${addressIndex + 1}`;
+    const name = accountName || `${defaultAccountName}${addressIndex + 1}`;
     // Save data to redux store and clear out tempAccount data
     const newWalletData = {
       address,
       publicKey: b64PublicKey,
-      privateKey: b64PrivateKey,
-      accountName,
+      name,
       network,
       id: addressIndex,
     };
@@ -139,7 +137,7 @@ export const RecoverPassword = ({ nextUrl }: Props) => {
         // const finalDerivationPath = showAdvanced ? derivationPath({ account, change, address_index: addressIndex }) : undefined;
         setLoading(true);
         // Loop over the account to add sub-accounts if they exist
-        await recoverAccountLoop(masterKey, 0, tempAccount.accountName);
+        await recoverAccountLoop(masterKey, 0, tempAccount.name);
         // Encrypt data with provided password
         const encrypted = encryptKey(masterKey, walletPassword);
         // Add data to localStorage

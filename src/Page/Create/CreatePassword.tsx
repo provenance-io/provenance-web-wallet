@@ -9,6 +9,7 @@ import {
   createMasterKeyFromMnemonic,
   createWalletFromMasterKey,
   saveKey,
+  bytesToBase64,
   addSavedData,
   saveAccount,
 } from 'utils';
@@ -46,12 +47,14 @@ export const CreatePassword = ({ nextUrl }: Props) => {
         const prefix = tempAccount.network === 'mainnet' ?
           process.env.REACT_APP_PROVENANCE_WALLET_PREFIX_MAINNET :
           process.env.REACT_APP_PROVENANCE_WALLET_PREFIX_TESTNET;
-        const { address } = createWalletFromMasterKey(masterKey, prefix);
+        const { address, publicKey } = createWalletFromMasterKey(masterKey, prefix);
+        const b64PublicKey = bytesToBase64(publicKey);
         // Save data to redux store and clear out tempAccount data
         const id = 0;
         const newAccountData = {
+          publicKey: b64PublicKey,
           address,
-          accountName: tempAccount.accountName,
+          name: tempAccount.name,
           network: tempAccount.network,
           id,
         };

@@ -9,10 +9,10 @@ const defaultAccountName = process.env.REACT_APP_DEFAULT_ACCOUNT_NAME;
 type StorageType = 'sessionStorage' | 'localStorage';
 type StorageData = {} | [];
 type StorageKey = string;
-const getStorageData = (key?: StorageKey, type: StorageType = 'sessionStorage') => {
+const getStorageData = (key?: StorageKey, type: StorageType = 'sessionStorage', savedName = localSaveName) => {
   const windowData = window[type];
   // Look for the item in the current localStorage, if found, add to results
-  const rawData = windowData.getItem(localSaveName) || '{}';
+  const rawData = windowData.getItem(savedName) || '{}';
   const data = JSON.parse(rawData);
   // If no specific key is passed, just return the entire object
   return key ? data[key] : data;
@@ -130,7 +130,6 @@ export const saveAccount = async ({
   // No existing accounts exist
   if (!existingAccounts) existingAccounts = [];
   // Add this accountName/accountIndex to object
-  console.log('existingAccounts :', existingAccounts);
   existingAccounts.push({ id, name, network, publicKey, address });
   // Save the map back to local storage
   addSavedData({accounts: existingAccounts}, 'localStorage');
@@ -147,3 +146,10 @@ export const removeAccount = async (id: AccountIndex) => {
 export const clearAccounts = () => {
   removeSavedData('accounts', 'localStorage');
 };
+
+// ----------------------------
+// WalletConnect Data
+// ----------------------------
+export const getWalletConnectStorage = () => {
+  return getStorageData(undefined, 'localStorage', 'walletconnect');
+}

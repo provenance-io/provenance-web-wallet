@@ -65,7 +65,7 @@ export const Connect:React.FC = () => {
           jwt: `${btoa('123')}.${btoa('456')}.${btoa('789')}`,
           walletInfo: {
             id: 'id',
-            name: activeAccount.accountName,
+            name: activeAccount.name,
             coin: 'coin'
           }
         }],

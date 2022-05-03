@@ -1,5 +1,6 @@
+import { useEffect } from 'react';
 import styled from 'styled-components';
-import { ICON_NAMES } from 'consts';
+import { ICON_NAMES, DASHBOARD_CONNECTION_DETAILS_URL } from 'consts';
 import { Sprite, CopyValue } from 'Components';
 import { useNavigate } from 'react-router-dom';
 import { COLORS } from 'theme';
@@ -48,16 +49,22 @@ const Notify = styled.span`
 export const DashboardHeader:React.FC = () => {
   const navigate = useNavigate();
   const { activeAccountIndex, accounts } = useAccount();
-  const { connected } = useWalletConnect();
+  const { session, connector } = useWalletConnect();
+  const { connected } = session;
   const activeAccount = accounts[activeAccountIndex];
-  const { accountName, address = '' } = activeAccount;
+  const { name, address = '' } = activeAccount;
+
+  useEffect(() => {
+    console.log('DashboardHeader.tsx | useEffect() | connected: ', connected);
+    console.log('DashboardHeader.tsx | useEffect() | connector: ', connector);
+  }, [connected, connector]);
 
   // TODO: Add check for pending notifications here
   const notify = false;
   // TODO: Add check for number of notifications here
   const notifications = 3;
   // TODO: Need to navigate to the correct connection details
-  const viewNotifications = () => navigate('/connect-details');
+  const viewNotifications = () => navigate(DASHBOARD_CONNECTION_DETAILS_URL);
 
   return (
     <HeaderRow>
@@ -66,14 +73,14 @@ export const DashboardHeader:React.FC = () => {
       </Menu>
         <WalletInfo>
           <CopyValue value={address} title="Copy account address">
-            <AccountName>{accountName}</AccountName>
+            <AccountName>{name}</AccountName>
             <WalletAddress>({trimString(address, 11, 4)})</WalletAddress>
           </CopyValue>
         </WalletInfo>
       <WalletConnect>
         {connected && (
           <>
-            <Sprite onClick={viewNotifications} icon={ICON_NAMES.CHAIN} size="4.8rem" spin="90"/>
+            <Sprite onClick={viewNotifications} icon={ICON_NAMES.CHAIN} size="4.8rem" spin="90" color="#8BF551" />
             {notify && <Notify>{notifications}</Notify>}
           </>
         )}

@@ -13,7 +13,7 @@ import {
  * TYPES
  */
 interface Account {
-  accountName?: string,
+  name?: string,
   publicKey?: string,
   privateKey?: string,
   address?: string,
@@ -50,7 +50,7 @@ const accountSlice = createSlice({
     setInitialValues: (state, { payload }) => {
       const { accounts, activeAccountIndex } = payload
       if (accounts) state.accounts = accounts;
-      if (activeAccountIndex) state.activeAccountIndex = activeAccountIndex;
+      if (activeAccountIndex !== undefined) state.activeAccountIndex = activeAccountIndex;
       state.initialLoad = false;
     },
     signOut: (state) => {
@@ -90,7 +90,7 @@ const accountSlice = createSlice({
           address,
           publicKey: b64PublicKey,
           privateKey: b64PrivateKey,
-          accountName: name,
+          name,
           network,
           id,
         };
@@ -124,7 +124,7 @@ const accountSlice = createSlice({
         address,
         publicKey: b64PublicKey,
         privateKey: b64PrivateKey,
-        accountName: name,
+        name,
         id,
       };
       // Update Redux Store

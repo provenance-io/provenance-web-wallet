@@ -24,6 +24,7 @@ const Svg = styled.svg<SvgProps>`
     spin = 0
   }) => `${flipX ? 'scaleX(-1)' : ''} ${flipY ? 'scaleY(-1)' : ''} ${Boolean(spin) ? `rotate(${spin}deg)` : ''}`};
   transition: ${({ animate = false }) => animate && 'transform 300ms linear'};
+  z-index: 1;
 `;
 
 type SpriteProps = {

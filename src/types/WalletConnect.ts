@@ -41,3 +41,17 @@ export type SetState = (state: Partial<State>) => void;
 export type SetFullState = (state:State) => void;
 
 export type URI = string;
+
+export interface IWalletConnectSession {
+  accounts?: ConnectionEventPayload;
+  bridge?: string;
+  chainId?: number | string;
+  clientId?: string;
+  clientMeta?: IClientMeta | null;
+  connected?: boolean;
+  handshakeId?: number;
+  handshakeTopic?: string;
+  key?: string;
+  peerId?: string;
+  peerMeta?: IClientMeta | null;
+}

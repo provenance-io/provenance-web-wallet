@@ -33,14 +33,14 @@ export const CreateStart = ({ nextUrl }: Props) => {
   const defaultNetwork = 'mainnet';
   const navigate = useNavigate();
   const { updatetempAccount } = useAccount();
-  const [accountName, setaccountName] = useState('');
+  const [name, setName] = useState('');
   const [network, setNetwork] = useState(defaultNetwork);
   const [showAdvanced, setShowAdvanced] = useState(false);
   const mnemonic = createMnemonic();
 
   const handleContinue = () => {
-    if (accountName) {
-      updatetempAccount({ accountName, mnemonic, network });
+    if (name) {
+      updatetempAccount({ name, mnemonic, network });
       // Move to next step
       navigate(nextUrl);
     }
@@ -63,7 +63,7 @@ export const CreateStart = ({ nextUrl }: Props) => {
         Name your acount to easily identify it while using the Figure Tech Wallet. These names are
         stored locally, and can only be seen by you.
       </BodyContent>
-      <Input id="account-name" label="Account Name" type="text" placeholder="Account Name" value={accountName} onChange={setaccountName} />
+      <Input id="account-name" label="Account Name" type="text" placeholder="Account Name" value={name} onChange={setName} />
       <AdvancedMessage
         active={showAdvanced}
         onClick={toggleAdvancedSettings}

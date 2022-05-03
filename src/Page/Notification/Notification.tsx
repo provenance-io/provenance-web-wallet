@@ -1,9 +1,11 @@
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import styled from 'styled-components';
 import { Button, Sprite, Content, ButtonGroup } from 'Components';
-import { DASHBOARD_URL, ICON_NAMES, CHAINID_TESTNET } from 'consts';
-import { useEffect } from 'react';
+import { ICON_NAMES, CHAINID_TESTNET } from 'consts';
+import { useEffect, useState } from 'react';
 import { useWalletConnect, useAccount } from 'redux/hooks';
+import circleIcon from 'images/circle-icon.svg';
+import { trimString } from 'utils';
 
 const Title = styled.div`
   font-weight: 600;
@@ -15,18 +17,71 @@ const Title = styled.div`
   text-align: center;
   margin-bottom: 20px;
 `;
+const DisplayTitle = styled.div`
+  font-family: "Courier New", Courier, monospace;
+  color: white;
+  font-weight: bold;
+  background: rgba(255,255,255,0.5);
+  box-shadow: 0px 0px 9px 0px rgb(255 255 255 / 70%) inset;
+  padding: 10px 20px;
+  border-radius: 50px;
+  font-size: 1.6rem;
+  margin: 30px;
+  white-space: nowrap;
+  overflow: scroll;
+  overflow-y: scroll;
+  -ms-overflow-style: none;
+  &::-webkit-scrollbar {
+    width: 0;
+    height: 0;
+  }
+`;
 const SubTitle = styled.div`
   font-weight: 400;
-  font-family: 'Gothic A1', sans-serif;
+  font-family: "Gothic A1", sans-serif;
   letter-spacing: 0.04em;
-  font-size: 1.4rem;
   line-height: 160%;
+  text-align: center;
+  font-size: 1.6rem;
+  margin: 32px;
+`;
+const Warning = styled.div`
+  font-size: 1.2rem;
+  color: #a85858;
+  font-style: italic;
+`;
+const ConnectIcon = styled.div`
+  max-width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  margin: 50px 0 80px 0;
+`;
+const ConnectPeerImg = styled.img`
+  z-index: 1;
+  height: 40px;
+  width: 40px;
+`;
+const ConnectBgImg = styled.img`
+  position: absolute;
+  height: 80px;
+  width: 80px;
 `;
 
+interface PeerMeta {
+  description?: string,
+  icons?: string[],
+  name?: string,
+  url?: string,
+}
+
 export const Notification:React.FC = () => {
+  const [peerData, setPeerData] = useState<PeerMeta>({});
+  const [useFallbackIcon, setUseFallbackIcon] = useState(false);
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
-  const { createConnector, connector, setConnected, setConnectionDetails } = useWalletConnect();
+  const { createConnector, connector } = useWalletConnect();
   const { accounts, activeAccountIndex } = useAccount();
   const activeAccount = accounts[activeAccountIndex];
   const walletConnectUriParam = searchParams.get('wc');
@@ -35,15 +90,15 @@ export const Notification:React.FC = () => {
   useEffect(() => {
     if (connector) {
       connector.on('session_request', (error, payload) => {
+        const { peerMeta = {} } = payload?.params[0];
+        setPeerData(peerMeta);
+        console.log('peerMeta: ', peerMeta);
         console.log('SESSION_REQUEST EVENT: ', payload, error);
       });
       connector.on('connect', (error, payload) => {
         console.log('CONNECT EVENT: ', payload, error);
-        setConnectionDetails(payload.params[0]);
-        setConnected(true);
       });
       connector.on('disconnect', (error, payload) => {
-        setConnected(false);
         console.log('DISCONNECT EVENT: ', payload, error);
       });
 
@@ -56,8 +111,6 @@ export const Notification:React.FC = () => {
   }, [
     connector,
     navigate,
-    setConnected,
-    setConnectionDetails,
   ]);
 
   // Listen for a new walletConnect URI.  When one is passed, create a new connector
@@ -70,12 +123,17 @@ export const Notification:React.FC = () => {
     }
   }, [connector, walletConnectUriParam, createConnector, setSearchParams]);
 
-  const handleApprove = () => {
-    console.log('handleApprove()');
+  const closeWindow = async () => {
+    const currentWindow = await chrome.windows.getCurrent();
+    if (currentWindow.id) {
+      chrome.windows.remove(currentWindow.id);
+    } else {
+      window.close();
+    }
+  };
+
+  const handleApprove = async () => {
     if (connector) {
-      console.log('activeAccount :', activeAccount);
-      console.log('accounts :', accounts);
-      console.log('activeAccountIndex :', activeAccountIndex);
       const data = {
         chainId: CHAINID_TESTNET,
         accounts: [{
@@ -84,33 +142,43 @@ export const Notification:React.FC = () => {
           jwt: `${btoa('123')}.${btoa('456')}.${btoa('789')}`,
           walletInfo: {
             id: 'id',
-            name: activeAccount.accountName,
+            name: activeAccount.name,
             coin: 'coin'
           }
         }],
       };
-      connector.approveSession(data as any);
+      await connector.approveSession(data as any);
+      // Close the popup
+      closeWindow();
     }
   }
 
-  const handleDecline = () => {
+  const handleDecline = async () => {
     if (connector) {
-      connector.rejectSession({ message: 'Connection rejected by user' });
-      // Wait 250ms then close this Notification popup
-      setTimeout(() => {
-        window.close();
-      }, 250);
+      await connector.rejectSession({ message: 'Connection rejected by user' });
+      // Close the popup
+      closeWindow();
     }
-    navigate(DASHBOARD_URL);
   }
 
   return (
     <Content>
       <Title>Connection Request</Title>
-      <SubTitle>
-        Allow connection to localhost:3000?
-      </SubTitle>
-      <Sprite icon={ICON_NAMES.CHECK} />
+      {peerData?.name && <DisplayTitle>{trimString(peerData.name, 20)}</DisplayTitle>}
+      {peerData?.url && (
+        <SubTitle>
+          Allow connection to {peerData.url}?
+        </SubTitle>
+      )}
+      <ConnectIcon>
+        {(peerData?.icons?.length && !useFallbackIcon) ? (
+          <ConnectPeerImg src={peerData.icons[0]} onError={() => setUseFallbackIcon(true)} alt="Peer Icon" />
+        ) : <Sprite icon={ICON_NAMES.CHAIN} size="6rem" />}
+        <ConnectBgImg src={circleIcon} />
+      </ConnectIcon>
+      <Warning>
+        Be careful about which Dapps you connect to, and what permissions you give them. Certain types of transaction require granting a Dapp permission to access your funds
+      </Warning>
       <ButtonGroup>
         <Button layout="default" onClick={handleApprove}>Approve</Button>
         <Button layout="default" variant='transparent' onClick={handleDecline}>Reject</Button>

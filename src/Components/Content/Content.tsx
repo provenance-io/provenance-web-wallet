@@ -2,7 +2,7 @@ import styled from 'styled-components';
 
 const ContentStyled = styled.div<{padBottom?: string}>`
   width: 100%;
-  padding: 10px 20px;
+  /* padding: 10px 20px; */
   ${({ padBottom }) => padBottom && `padding-bottom: ${padBottom};` }
 `;
 

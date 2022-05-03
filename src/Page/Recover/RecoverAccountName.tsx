@@ -18,18 +18,18 @@ interface Props {
 }
 
 export const RecoverAccountName:React.FC<Props> = ({ nextUrl }) => {
-  const [ accountName, setaccountName ] = useState('');
+  const [ name, setName ] = useState('');
   const [error, setError] = useState('');
   const navigate = useNavigate();
   const { updatetempAccount } = useAccount();
 
   const handleContinue = () => {
     let newError = '';
-    if (!accountName) newError = 'Wallet name is required';
-    if (!/^[-\w\s]+$/.test(accountName)) newError = 'Wallet name must be alphanumeric';
+    if (!name) newError = 'Wallet name is required';
+    if (!/^[-\w\s]+$/.test(name)) newError = 'Wallet name must be alphanumeric';
     if (!newError) {
       // Update the tempAccount to use this account name
-      updatetempAccount({ accountName });
+      updatetempAccount({ name });
       navigate(nextUrl)
     }
     setError(newError);
@@ -50,8 +50,8 @@ export const RecoverAccountName:React.FC<Props> = ({ nextUrl }) => {
             label="Account Name"
             id="wallet-name"
             placeholder='Enter name'
-            value={accountName}
-            onChange={setaccountName}
+            value={name}
+            onChange={setName}
             error={error}
             />
         </InputGroup>

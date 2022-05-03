@@ -64,10 +64,10 @@ export const DashboardMenu:React.FC = () => {
   const { activeAccountIndex, accounts, setActiveAccountIndex } = useAccount();
   const [ accountMenuTarget, setAccountMenuTarget ] = useState(-1);
 
-  const renderWallets = () => accounts.map(({ address, accountName }, index) => (
+  const renderWallets = () => accounts.map(({ address, name }, index) => (
     <WalletItem key={address} active={index === activeAccountIndex} onClick={() => { setAccountMenuTarget(index)} }>
       <WalletText>
-        <AccountName>{accountName}</AccountName>
+        <AccountName>{name}</AccountName>
       </WalletText>
       <Sprite icon={ICON_NAMES.MENU} size="2.2rem" />
     </WalletItem>

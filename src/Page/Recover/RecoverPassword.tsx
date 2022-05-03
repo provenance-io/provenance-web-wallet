@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { BodyContent, Button, Header, Input, Select } from 'Components';
-import { ICON_NAMES } from 'consts';
+import { ICON_NAMES, PASSWORD_MIN_LENGTH, DEFAULT_ACCOUNT_NAME, PROVENANCE_WALLET_COIN_TYPE } from 'consts';
 import { useNavigate } from 'react-router-dom';
 import styled, { css } from 'styled-components';
 import { useAccount, useAddress } from 'redux/hooks';
@@ -91,10 +91,10 @@ export const RecoverPassword = ({ nextUrl }: Props) => {
   const defaultNetwork = 'mainnet';
   const [network, setNetwork] = useState(defaultNetwork);
   const [error, setError] = useState('');
-  const defaultCoinType = process.env.REACT_APP_PROVENANCE_WALLET_COIN_TYPE;
+  const defaultCoinType = PROVENANCE_WALLET_COIN_TYPE;
   const { account, change, addressIndex } = customDerivationPath;
-  const passwordMinLength = Number(process.env.REACT_APP_PASSWORD_MIN_LENGTH)!;
-  const defaultAccountName = process.env.REACT_APP_DEFAULT_ACCOUNT_NAME!;
+  const passwordMinLength = Number(PASSWORD_MIN_LENGTH)!;
+  const defaultAccountName = DEFAULT_ACCOUNT_NAME!;
 
   const recoverAccountLoop = async (masterKey: BIP32Interface, addressIndex: number = 0, accountName?: string): Promise<string> => {
     const path = derivationPath({ address_index: addressIndex });

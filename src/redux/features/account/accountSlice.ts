@@ -8,6 +8,7 @@ import {
   derivationPath,
   saveAccount,
 } from 'utils';
+import { PROVENANCE_ADDRESS_PREFIX_MAINNET, PROVENANCE_ADDRESS_PREFIX_TESTNET } from 'consts';
 
 /**
  * TYPES
@@ -80,9 +81,7 @@ const accountSlice = createSlice({
       localAccounts.forEach((account: AccountType) => {
         const { id, name, network } = account;
         const path = derivationPath({ address_index: Number(id) });
-        const prefix = network === 'mainnet' ?
-          process.env.REACT_APP_PROVENANCE_WALLET_PREFIX_MAINNET :
-          process.env.REACT_APP_PROVENANCE_WALLET_PREFIX_TESTNET;
+        const prefix = network === 'mainnet' ? PROVENANCE_ADDRESS_PREFIX_MAINNET : PROVENANCE_ADDRESS_PREFIX_TESTNET;
         const { address, publicKey, privateKey } = createWalletFromMasterKey(masterKey, prefix, path);
         const b64PublicKey = bytesToBase64(publicKey);
         const b64PrivateKey = bytesToBase64(privateKey);
@@ -113,9 +112,7 @@ const accountSlice = createSlice({
       const highestId = sortedWallets[0].id || 0;
       const id = highestId + 1;
       
-      const prefix = network === 'mainnet' ?
-          process.env.REACT_APP_PROVENANCE_WALLET_PREFIX_MAINNET :
-          process.env.REACT_APP_PROVENANCE_WALLET_PREFIX_TESTNET;
+      const prefix = network === 'mainnet' ? PROVENANCE_ADDRESS_PREFIX_MAINNET : PROVENANCE_ADDRESS_PREFIX_TESTNET;
       const path = derivationPath({ address_index: Number(activeAccountIndex) });
       const { address, publicKey, privateKey } = createWalletFromMasterKey(masterKey, prefix, path);
       const b64PublicKey = bytesToBase64(publicKey);

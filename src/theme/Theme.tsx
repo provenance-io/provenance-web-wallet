@@ -6,9 +6,7 @@ import { baseFonts, BaseTypographyLoader, FONTS } from './fonts';
 import { baseColors, COLORS } from './colors';
 import { ThemeProvider } from 'styled-components';
 import { SpriteSheet } from 'Components';
-
-const MAX_HEIGHT = process.env.REACT_APP_MAX_HEIGHT;
-const MAX_WIDTH = process.env.REACT_APP_MAX_WIDTH;
+import { MAX_HEIGHT, MAX_WIDTH } from 'consts';
 
 export const baseTheme: DefaultTheme = {
   colors: { ...COLORS },

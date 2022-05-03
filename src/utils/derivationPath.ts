@@ -1,4 +1,4 @@
-const defaultCoinType = process.env.REACT_APP_PROVENANCE_WALLET_COIN_TYPE;
+import { PROVENANCE_WALLET_COIN_TYPE } from 'consts';
 
 type DerivationType = {
   purpose?: number
@@ -11,7 +11,7 @@ type DerivationType = {
 export const derivationPath = (data?: DerivationType) => {
   const {
     purpose = 44,
-    coin_type = defaultCoinType,
+    coin_type = PROVENANCE_WALLET_COIN_TYPE,
     account = 0,
     change = 0,
     address_index = 0,

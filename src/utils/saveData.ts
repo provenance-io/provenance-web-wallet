@@ -1,7 +1,8 @@
+import { LOCAL_SAVE_NAME, DEFAULT_ACCOUNT_NAME } from 'consts';
+
 // Determine storage type for app
 const useChromeStorage = !!window?.chrome?.storage;
-const localSaveName = process.env.REACT_APP_LOCAL_SAVE_NAME || 'provenance-web-wallet';
-const defaultAccountName = process.env.REACT_APP_DEFAULT_ACCOUNT_NAME;
+const localSaveName = LOCAL_SAVE_NAME || 'provenance-web-wallet';
 
 // ----------------------
 // Session/Local Storage
@@ -118,7 +119,7 @@ type AccountIndex = number;
 
 export const saveAccount = async ({
   id,
-  name = `${defaultAccountName}${id}`,
+  name = `${DEFAULT_ACCOUNT_NAME}${id}`,
   network,
   address,
   publicKey,

@@ -12,6 +12,9 @@ interface Props {
   noOutlet?: boolean,
 }
 
+const MAX_HEIGHT = process.env.REACT_APP_MAX_HEIGHT;
+const MAX_WIDTH = process.env.REACT_APP_MAX_WIDTH;
+
 const PageStyled = styled.div<Props>`
   align-items: ${({ align }) => align};
   background: ${({ bgImage }) => bgImage ? `${COLORS.BACKGROUND_1} url(${bg}) no-repeat` : COLORS.BACKGROUND_1};
@@ -21,13 +24,19 @@ const PageStyled = styled.div<Props>`
   flex-direction: column;
   font-family: 'Montserrat', 'sans-serif';
   justify-content: ${({ justify }) => justify};
-  height: 100%;
-  max-height: 100%;
-  min-height: 100%;
-  overflow: auto;
-  padding: 42px 32px;
+  height: ${MAX_HEIGHT};
+  max-height: ${MAX_HEIGHT};
+  width: ${MAX_WIDTH};
+  max-width: ${MAX_WIDTH};
+  padding: 32px 16px 20px 16px;
   text-align: ${({ align }) => align === 'flex-start' ? 'left' : 'center'};
   z-index: 10;
+  overflow-y: scroll;
+  -ms-overflow-style: none;
+  &::-webkit-scrollbar {
+    width: 0;
+    height: 0;
+  }
 `;
 
 export const Page = ({

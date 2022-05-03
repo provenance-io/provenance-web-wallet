@@ -5,6 +5,7 @@ export * from './Dashboard';
 export * from './Page';
 export * from './RequiresAuth';
 export * from './Landing';
+export * from './Notification';
 export * from './Recover';
 export * from './Profile';
 export * from './Transactions';

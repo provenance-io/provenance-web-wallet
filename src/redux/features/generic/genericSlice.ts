@@ -7,7 +7,7 @@ import { createMnemonic } from 'utils';
  */
 export interface GenericState {
   mnemonic?: string;
-  accountName?: string
+  name?: string
 }
 
 /**
@@ -15,7 +15,7 @@ export interface GenericState {
  */
 const initialState: GenericState = {
   mnemonic: undefined,
-  accountName: undefined,
+  name: undefined,
 };
 
 /**
@@ -29,7 +29,7 @@ const genericSlice = createSlice({
       state.mnemonic = createMnemonic();
     },
     setAccountName: (state, action) => {
-      state.accountName = action.payload;
+      state.name = action.payload;
     }
   },
 });

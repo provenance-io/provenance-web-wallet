@@ -1,18 +1,20 @@
 import { useState } from 'react';
-import { BodyContent, CtaButton, Header, Input } from 'Components';
+import {
+  Button,
+  Header,
+  Input,
+  Content,
+  BodyContent,
+} from 'Components';
 import { ICON_NAMES } from 'consts';
 import { useNavigate } from 'react-router-dom';
-import styled, { css } from 'styled-components';
 import {
   getKey,
-  getNames,
+  getAccounts,
   decryptKey,
+  getSavedData,
 } from 'utils';
-import { useWallet } from 'redux/hooks';
-
-const Wrapper = styled.div`
-  padding: 42px 16px;
-`;
+import { useAccount } from 'redux/hooks';
 
 interface Props {
   nextUrl: string;
@@ -22,12 +24,10 @@ export const Unlock = ({ nextUrl }: Props) => {
   const navigate = useNavigate();
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
-  const { createHDWallet: createStoreHDWallet } = useWallet();
-  const localKey = getKey();
-
+  const { addAccounts } = useAccount();
   const passwordMinLength = Number(process.env.REACT_APP_PASSWORD_MIN_LENGTH)!;
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     // Clear out any previous error
     setError('');
     let newError = '';
@@ -36,13 +36,15 @@ export const Unlock = ({ nextUrl }: Props) => {
     if (!password) newError = 'Enter a password';
     // No error so far
     if (!newError) {
+      const localKey = await getKey();
       // Attempt to decrypt the key with the provided password
       const masterKey = decryptKey(localKey, password);
       if (!masterKey) newError = 'Invalid password';
       else {
         // Password was correct, build the wallets
-        const localAccountNames = getNames();
-        createStoreHDWallet({ masterKey, localAccountNames });
+        const localAccounts = await getAccounts();
+        const activeAccountIndex = await getSavedData('activeAccountIndex');
+        addAccounts({ accounts: localAccounts, activeAccountIndex })
         // Redirect to dashboard
         navigate(nextUrl);
       }
@@ -52,17 +54,9 @@ export const Unlock = ({ nextUrl }: Props) => {
   };
 
   return (
-    <Wrapper>
+    <Content>
       <Header iconLeft={ICON_NAMES.CLOSE} progress={100} title="Unlock Wallet" backLocation='/' />
-      <BodyContent
-        $css={css`
-          text-align: center;
-          margin-bottom: 32px;
-        `}
-      >
-        Enter your password
-      </BodyContent>
-
+      <BodyContent>Enter your password</BodyContent>
       <Input
         id="wallet-password"
         label="Password"
@@ -72,7 +66,7 @@ export const Unlock = ({ nextUrl }: Props) => {
         onChange={setPassword}
         error={error}
       />
-      <CtaButton onClick={handleSubmit}>Continue</CtaButton>
-    </Wrapper>
+      <Button onClick={handleSubmit} >Continue</Button>
+    </Content>
   );
 };

@@ -21,13 +21,13 @@ export const RecoverNote:React.FC<Props> = ({ nextUrl }) => {
   return (
     <>
       <Group>
-        <Header title="Name Your Account" progress={66} />
+        <Header title="Recover Account" progress={66} />
         <Title size="1.6rem" weight={600}>Recover Account</Title>
         <InfoText margin="16px auto 0 auto">In the following steps, you'll enter your 24-word recovery passphrase to recover your account</InfoText>
         <InfoText margin="16px auto 0 auto">Provenance Blockchain Wallet will add accounts in order, starting from 0, and stop once an account has no assets</InfoText>
         <Image src={recoverIntro} />
       </Group>
-      <Button variant='primary' onClick={() => navigate(nextUrl)}>Continue</Button>
+      <Button onClick={() => navigate(nextUrl)}>Continue</Button>
     </>
   );
 };

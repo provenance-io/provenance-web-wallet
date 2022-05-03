@@ -5,11 +5,14 @@ import { numberFormat } from 'utils';
 import { Statistics } from 'types';
 
 const SlideContainer = styled.div`
-  min-width: 311px;
+  min-width: 340px;
+  margin-left: 10px;
 `;
-
+const LogoImg = styled.div`
+  margin-bottom: 40px;
+`;
 const CustomizationImg = styled.img`
-  margin-top: 45px;
+  margin-top: 16px;
   width: 210px;
 `;
 const StatsSection = styled.div`
@@ -19,7 +22,7 @@ const StatsSection = styled.div`
 `;
 const StatItem = styled.div`
   flex-basis: 50%;
-  margin-top: 32px;
+  margin-top: 20px;
 `;
 const StatTitle = styled.div`
   margin-top: 8px;
@@ -50,8 +53,10 @@ const valueText = (
 
 export const Slide01:React.FC = () => (
   <SlideContainer>
-    <Sprite icon="ICON::PROVENANCE" size="6rem" color="#3F80F3" />
-    <Title>Provenance Wallet</Title>
+    <LogoImg>
+      <Sprite viewBox="-8 0 60 60" icon="ICON::PROVENANCE" size="60px" color="#3F80F3" />
+    </LogoImg>
+    <Title margin="0">Provenance Wallet</Title>
     <InfoText>
       A wallet provides an easy way to manage multiple blockchain accounts.
     </InfoText>
@@ -67,7 +72,7 @@ export const Slide02:React.FC<Props> = ({ statistics = {} }) => {
 
   return (
     <SlideContainer>
-      <Title>Strong Fundamentals</Title>
+      <Title margin="0">Strong Fundamentals</Title>
       <StatsSection>
         <StatItem>
           <StatValue>
@@ -101,7 +106,7 @@ export const Slide02:React.FC<Props> = ({ statistics = {} }) => {
 
 export const Slide03:React.FC = () => (
   <SlideContainer>
-    <Title>Powerful Customization</Title>
+    <Title margin="0">Powerful Customization</Title>
     <CustomizationImg
       src={customizationCarousel}
       alt="Figure and Provenance Logos"

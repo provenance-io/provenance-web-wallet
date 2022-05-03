@@ -1,9 +1,9 @@
 import styled from 'styled-components';
 import { useState } from 'react';
-import { CopyValue, CtaButton, Header, Sprite } from 'Components';
+import { CopyValue, Button, Header, Sprite } from 'Components';
 import { useNavigate } from 'react-router-dom';
 import { DASHBOARD_URL, ICON_NAMES } from 'consts';
-import { useWallet } from 'redux/hooks';
+import { useAccount } from 'redux/hooks';
 
 const WalletItem = styled.div<{active?: boolean}>`
   display: flex;
@@ -23,7 +23,7 @@ const WalletText = styled.div`
   font-family: 'Gothic A1', sans-serif;
   line-height: 2.2rem;
 `;
-const WalletName = styled.div`
+const AccountName = styled.div`
   font-size: 1.4rem;
   font-weight: 700;
 `;
@@ -61,13 +61,13 @@ const WalletAction = styled.div`
 
 export const DashboardMenu:React.FC = () => {
   const navigate = useNavigate();
-  const { activeWalletIndex, wallets, setActiveWalletIndex } = useWallet();
-  const [ walletMenuTarget, setWalletMenuTarget ] = useState(-1);
+  const { activeAccountIndex, accounts, setActiveAccountIndex } = useAccount();
+  const [ accountMenuTarget, setAccountMenuTarget ] = useState(-1);
 
-  const renderWallets = () => wallets.map(({ address, walletName }, index) => (
-    <WalletItem key={address} active={index === activeWalletIndex} onClick={() => { setWalletMenuTarget(index)} }>
+  const renderWallets = () => accounts.map(({ address, name }, index) => (
+    <WalletItem key={address} active={index === activeAccountIndex} onClick={() => { setAccountMenuTarget(index)} }>
       <WalletText>
-        <WalletName>{walletName}</WalletName>
+        <AccountName>{name}</AccountName>
       </WalletText>
       <Sprite icon={ICON_NAMES.MENU} size="2.2rem" />
     </WalletItem>
@@ -77,23 +77,23 @@ export const DashboardMenu:React.FC = () => {
     <>
       <Header title='Wallets' iconLeft={ICON_NAMES.CLOSE} backLocation={DASHBOARD_URL} />
       {renderWallets()}
-      {walletMenuTarget > -1 && (
-        <WalletActionsPopup onClick={() => setWalletMenuTarget(-1)}>
-          {activeWalletIndex !== walletMenuTarget && (
-            <WalletAction onClick={() => setActiveWalletIndex(walletMenuTarget)}>
+      {accountMenuTarget > -1 && (
+        <WalletActionsPopup onClick={() => setAccountMenuTarget(-1)}>
+          {activeAccountIndex !== accountMenuTarget && (
+            <WalletAction onClick={() => setActiveAccountIndex(accountMenuTarget)}>
               Select Account
             </WalletAction>
           )}
           {/* TODO: User must click on text to copy, instead have user click on entire button row */}
           <WalletAction>
-            <CopyValue value={wallets[walletMenuTarget]?.address} successText="Address Copied!" noPopup>Copy Account Address</CopyValue>
+            <CopyValue value={accounts[accountMenuTarget]?.address} successText="Address Copied!" noPopup>Copy Account Address</CopyValue>
           </WalletAction>
           <WalletAction>Rename</WalletAction>
           <WalletAction>Remove</WalletAction>
-          <WalletAction onClick={() => setWalletMenuTarget(-1)}>Close</WalletAction>
+          <WalletAction onClick={() => setAccountMenuTarget(-1)}>Close</WalletAction>
         </WalletActionsPopup>
       )}
-      <CtaButton onClick={() => navigate('../create')}>Create Account</CtaButton>
+      <Button onClick={() => navigate('../create')} >Create Account</Button>
     </>
   );
 };

@@ -1,28 +1,26 @@
 import { useState } from 'react';
-import { BodyContent, CtaButton, Header, Input } from 'Components';
+import { BodyContent, Button, Header, Input as InputBase, Content } from 'Components';
 import { ICON_NAMES } from 'consts';
 import { useNavigate } from 'react-router-dom';
 import styled, { css } from 'styled-components';
-import { useWallet } from 'redux/hooks';
+import { useAccount } from 'redux/hooks';
 import {
   encryptKey,
   createMasterKeyFromMnemonic,
-  bytesToBase64,
   createWalletFromMasterKey,
   saveKey,
-  saveName,
+  bytesToBase64,
+  addSavedData,
+  saveAccount,
 } from 'utils';
 
-const Wrapper = styled.div`
-  padding: 42px 16px;
-  input {
-    margin-bottom: 10px;
-  }
-`;
 const Error = styled.div`
   color: #ED6E74;
   margin-top: 20px;
   font-size: 1.3rem;
+`;
+const Input = styled(InputBase)`
+  margin-bottom: 30px;
 `;
 
 interface Props {
@@ -31,38 +29,51 @@ interface Props {
 
 export const CreatePassword = ({ nextUrl }: Props) => {
   const navigate = useNavigate();
-  const { tempWallet, createWallet: createStoreWallet } = useWallet();
+  const { tempAccount, addAccount } = useAccount();
   const [walletPassword, setWalletPassword] = useState('');
   const [walletPasswordRepeat, setWalletPasswordRepeat] = useState('');
   const [error, setError] = useState('');
   const passwordMinLength = Number(process.env.REACT_APP_PASSWORD_MIN_LENGTH)!;
 
-  const handleContinue = () => {
+  const handleContinue = async () => {
     let latestError = '';
     if (walletPassword !== walletPasswordRepeat) latestError = 'Passwords must match';
     if (!walletPassword || !walletPasswordRepeat) latestError = 'Please confirm your password.';
     if (walletPassword.length < passwordMinLength) latestError = `Password must be a minimum of ${passwordMinLength} characters.`;
     if (!latestError) {
-      if (tempWallet?.mnemonic) {
+      if (tempAccount?.mnemonic) {
         // Generate master keyt and get data about wallet
-        const masterKey = createMasterKeyFromMnemonic(tempWallet.mnemonic);
-        const { address, publicKey, privateKey } = createWalletFromMasterKey(masterKey);
+        const masterKey = createMasterKeyFromMnemonic(tempAccount.mnemonic);
+        const prefix = tempAccount.network === 'mainnet' ?
+          process.env.REACT_APP_PROVENANCE_WALLET_PREFIX_MAINNET :
+          process.env.REACT_APP_PROVENANCE_WALLET_PREFIX_TESTNET;
+        const { address, publicKey } = createWalletFromMasterKey(masterKey, prefix);
         const b64PublicKey = bytesToBase64(publicKey);
-        const b64PrivateKey = bytesToBase64(privateKey);
-        // Save data to redux store and clear out tempWallet data
-        const newWalletData = {
-          address,
+        // Save data to redux store and clear out tempAccount data
+        const id = 0;
+        const newAccountData = {
           publicKey: b64PublicKey,
-          privateKey: b64PrivateKey,
-          walletName: tempWallet.walletName,
+          address,
+          name: tempAccount.name,
+          network: tempAccount.network,
+          id,
         };
-        createStoreWallet(newWalletData);
+        // ---------------------------------------------
+        // Save new account data into browser storage
+        // ---------------------------------------------
+        await addSavedData({
+          connected: true,
+          connectedIat: new Date().getTime(),
+          activeAccountIndex: id,
+        });
+        await saveAccount(newAccountData);
         // Encrypt data with provided password
         const encrypted = encryptKey(masterKey, walletPassword);
         // Add data to localStorage
-        saveKey(encrypted);
+        await saveKey(encrypted);
+        // Add account into redux store
+        addAccount(newAccountData);
         // This is the first account in the list, index will be 0
-        saveName(0, tempWallet.walletName);
         navigate(nextUrl);
       } else {
         latestError = 'Unable to locally save account, please try again later'
@@ -72,7 +83,7 @@ export const CreatePassword = ({ nextUrl }: Props) => {
   };
 
   return (
-    <Wrapper>
+    <Content>
       <Header iconLeft={ICON_NAMES.CLOSE} progress={33} title="Account Password" backLocation='/' />
       <BodyContent
         $css={css`
@@ -100,7 +111,7 @@ export const CreatePassword = ({ nextUrl }: Props) => {
         onChange={setWalletPasswordRepeat}
       />
       {error && <Error>{error}</Error>}
-      <CtaButton onClick={handleContinue}>Continue</CtaButton>
-    </Wrapper>
+      <Button onClick={handleContinue} >Continue</Button>
+    </Content>
   );
 };

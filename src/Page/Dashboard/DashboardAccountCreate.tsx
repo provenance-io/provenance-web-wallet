@@ -1,10 +1,10 @@
 import styled from 'styled-components';
-import { CtaButton, Header, Input } from 'Components';
+import { Button, Header, Input } from 'Components';
 import { ICON_NAMES } from 'consts';
 import { useState } from 'react';
 import { getKey, decryptKey } from 'utils';
 import { useNavigate } from 'react-router-dom';
-import { useWallet } from 'redux/hooks';
+import { useAccount } from 'redux/hooks';
 
 const Wrapper = styled.div`
   width: 100%;
@@ -19,17 +19,17 @@ interface Props {
 
 export const DashboardAccountCreate:React.FC<Props> = ({ nextUrl }) => {  
   const navigate = useNavigate();
-  const [accountName, setAccountName] = useState('');
+  const [name, setName] = useState('');
   const [walletPassword, setWalletPassword] = useState('');
-  const { addToHDWallet } = useWallet();
+  const { addToHDWallet } = useAccount();
   const [error, setError] = useState<string[]>([]); // [accountNameError, walletPasswordError]
   const passwordMinLength = Number(process.env.REACT_APP_PASSWORD_MIN_LENGTH)!;
   
-  const handleCreateAccount = () => {
+  const handleCreateAccount = async () => {
     let newError = [];
-    const localKey = getKey();
+    const localKey = await getKey();
     // Account name must exist
-    if (!accountName) newError[0] = 'Account Name Required';
+    if (!name) newError[0] = 'Account Name Required';
     // Wallet password must exist
     if (!walletPassword) newError[1] = 'Wallet Password Required';
     // Wallet password must be min length
@@ -40,8 +40,10 @@ export const DashboardAccountCreate:React.FC<Props> = ({ nextUrl }) => {
       const masterKey = decryptKey(localKey, walletPassword);
       if (!masterKey) newError[1] = 'Invalid password';
       else {
+        // TODO: Indicate if you want this account to be mainnet or testnet
+        const network = 'testnet';
         // Password was correct, add the account
-        addToHDWallet({ masterKey: masterKey, name: accountName })
+        addToHDWallet({ masterKey: masterKey, name, network })
         // Redirect back to dashboard menu
         navigate(nextUrl);
       }
@@ -57,8 +59,8 @@ export const DashboardAccountCreate:React.FC<Props> = ({ nextUrl }) => {
         label="Account Name"
         placeholder="Enter Account Name"
         id="Account-Name"
-        value={accountName}
-        onChange={setAccountName}
+        value={name}
+        onChange={setName}
         error={error[0]}
       />
       <Input
@@ -70,7 +72,7 @@ export const DashboardAccountCreate:React.FC<Props> = ({ nextUrl }) => {
         error={error[1]}
         type="password"
       />
-      <CtaButton onClick={handleCreateAccount}>Create</CtaButton>
+      <Button onClick={handleCreateAccount} >Create</Button>
     </Wrapper>
   );
 };

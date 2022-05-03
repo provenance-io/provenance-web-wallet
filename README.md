@@ -1,5 +1,5 @@
 # TODO:
-- Create activeWalletIndex and activeAccountIndex.
+- Create activeAccountIndex and activeAccountIndex.
 - Allow importing new seed phrases
 - Account Name => Wallet name
 - Split out all accounts in dashboard by wallet name

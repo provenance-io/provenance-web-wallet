@@ -41,6 +41,12 @@ const InputEl = styled.input<{error?: string}>`
   &::placeholder {
     color: ${COLORS.NEUTRAL_300};
   }
+  &:focus {
+    outline-color: #1b66ea;
+    outline-offset: -1px;
+    outline-width: 1px;
+    outline-style: solid;
+  }
 `;
 
 const Error = styled.div`

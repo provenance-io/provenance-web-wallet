@@ -13,6 +13,7 @@ export const DASHBOARD_MENU_URL = '/dashboard/menu';
 export const DASHBOARD_ACCOUNT_CREATE_URL = '/dashboard/create';
 export const DASHBOARD_SEND_URL = '/dashboard/send';
 export const DASHBOARD_RECEIVE_URL = '/dashboard/receive';
+export const DASHBOARD_CONNECTION_DETAILS_URL = '/dashboard/connection';
 // -- PROFILE URLS
 export const PROFILE_URL = '/profile';
 export const RESET_WALLETS_URL = '/profile/reset-wallets';
@@ -40,3 +41,5 @@ export const CREATE_COMPLETE_URL = '/create/complete';
 export const CREATE_PASSWORD_URL = '/create/password';
 // -- UNLOCK URLS
 export const UNLOCK_URL = '/unlock';
+// -- NOTIFICATIONS
+export const NOTIFICATION_URL = '/notification';

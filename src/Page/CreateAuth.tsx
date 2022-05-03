@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { Outlet } from 'react-router-dom';
 import { COLORS } from 'theme';
 import { CREATE_URL } from 'consts';
-import { useWallet } from 'redux/hooks';
+import { useAccount } from 'redux/hooks';
 import { useNavigate, useLocation } from 'react-router-dom';
 
 interface Props {
@@ -32,15 +32,15 @@ export const CreateAuth = ({ children = null }: Props) => {
   const navigate = useNavigate();
   const location = useLocation();
   const isCreateLandingPage = location.pathname === '/create';
-  const { tempWallet } = useWallet();
+  const { tempAccount } = useAccount();
   useEffect(() => {
-    if (!tempWallet) {
+    if (!tempAccount) {
       navigate(CREATE_URL);
     }
-  }, [tempWallet, navigate]);
+  }, [tempAccount, navigate]);
 
   return (
-    !!tempWallet || isCreateLandingPage ? (
+    !!tempAccount || isCreateLandingPage ? (
     <PageStyled>
       <Outlet />
       {children}

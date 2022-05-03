@@ -26,7 +26,7 @@ export const VerifyButtonGroup = ({ mnemonicArray, setCorrect, wordArr }: Props)
     <>
       <BodyContent
         $css={css`
-          margin: 24px 0 16px;
+          margin: 30px 0 10px 0;
           text-align: center;
         `}
       >
@@ -45,6 +45,7 @@ export const VerifyButtonGroup = ({ mnemonicArray, setCorrect, wordArr }: Props)
             key={word}
             variant={selected === word ? 'secondary' : 'default'}
             onClick={() => setSelected(word)}
+            layout="default"
           >
             {word}
           </Button>

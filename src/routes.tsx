@@ -8,11 +8,13 @@ import {
   CreateStart,
   Dashboard,
   DashboardAccountCreate,
+  DashboardConnectionDetails,
   DashboardMenu,
   DashboardReceive,
   DashboardSend,
   EnterSeed,
   Landing,
+  Notification,
   Page,
   Profile,
   RecoverAccountName,
@@ -41,10 +43,12 @@ import {
   CREATE_URL,
   CREATE_VERIFY_SEEDPHRASE_URL,
   DASHBOARD_ACCOUNT_CREATE_URL,
+  DASHBOARD_CONNECTION_DETAILS_URL,
   DASHBOARD_MENU_URL,
   DASHBOARD_RECEIVE_URL,
   DASHBOARD_SEND_URL,
   DASHBOARD_URL,
+  NOTIFICATION_URL,
   PROFILE_URL,
   RECOVER_NOTE_URL,
   RECOVER_PASSWORD_URL,
@@ -65,7 +69,7 @@ export const routes = [
     ),
     children: [
       // LANDING PAGE
-      { index: true, element: <Page bgImage align="center" justify='flex-end'><Landing /></Page> },
+      { index: true, element: <Page bgImage align="center"><Landing /></Page> },
       // DASHBOARD
       {
         path: DASHBOARD_URL,
@@ -76,6 +80,7 @@ export const routes = [
           { path: DASHBOARD_RECEIVE_URL, element: <DashboardReceive /> },
           { path: DASHBOARD_MENU_URL, element: <DashboardMenu /> },
           { path: DASHBOARD_ACCOUNT_CREATE_URL, element: <DashboardAccountCreate  nextUrl={DASHBOARD_MENU_URL} /> },
+          { path: DASHBOARD_CONNECTION_DETAILS_URL, element: <DashboardConnectionDetails /> },
         ]
       },
       // ASSET
@@ -194,6 +199,13 @@ export const routes = [
       { index: true, element: <Unlock nextUrl={DASHBOARD_URL} /> },
     ]
   },
+  {
+    path: NOTIFICATION_URL,
+    element: <Page bgImage/>,
+    children: [
+      { index: true, element: <Notification /> },
+    ],
+  }
   // { path: FOUR_OH_FOUR_URL, element: <NotFound /> },
   // { path: '*', element: <Navigate to={FOUR_OH_FOUR_URL} /> },
 ];

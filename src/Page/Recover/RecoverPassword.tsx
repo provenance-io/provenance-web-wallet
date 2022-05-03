@@ -1,9 +1,9 @@
 import { useState } from 'react';
-import { BodyContent, CtaButton, Header, Input } from 'Components';
+import { BodyContent, Button, Header, Input, Select } from 'Components';
 import { ICON_NAMES } from 'consts';
 import { useNavigate } from 'react-router-dom';
 import styled, { css } from 'styled-components';
-import { useWallet, useAddress } from 'redux/hooks';
+import { useAccount, useAddress } from 'redux/hooks';
 import { BIP32Interface } from 'bip32';
 import {
   encryptKey,
@@ -11,9 +11,9 @@ import {
   bytesToBase64,
   createWalletFromMasterKey,
   saveKey,
-  saveName,
   derivationPath,
 } from 'utils';
+import backupComplete from 'images/backup-complete.svg';
 
 const Wrapper = styled.div`
   padding: 42px 16px;
@@ -57,11 +57,15 @@ const AdvancedInputArea = styled.div`
     margin: 0;
   }
 `;
+const Image = styled.img`
+  width: 160px;
+  display: flex;
+  margin: 50px auto;
+`;
 
 interface Props {
   nextUrl: string;
 }
-
 
 interface CustomDerivationPathObject {
   account?: number,
@@ -73,48 +77,48 @@ export const RecoverPassword = ({ nextUrl }: Props) => {
   const navigate = useNavigate();
   const { getAddressAssetsRaw } = useAddress();
   const {
-    tempWallet,
-    createWallet: createStoreWallet,
-    clearTempWallet,
-    setActiveWalletIndex
-  } = useWallet();
+    tempAccount,
+    addAccount,
+    cleartempAccount,
+    setActiveAccountIndex
+  } = useAccount();
   const [walletPassword, setWalletPassword] = useState('');
   const [showAdvanced, setShowAdvanced] = useState(false);
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
   const [customDerivationPath, setCustomDerivationPath] = useState<CustomDerivationPathObject>({});
   const [walletPasswordRepeat, setWalletPasswordRepeat] = useState('');
+  const defaultNetwork = 'mainnet';
+  const [network, setNetwork] = useState(defaultNetwork);
   const [error, setError] = useState('');
   const defaultCoinType = process.env.REACT_APP_PROVENANCE_WALLET_COIN_TYPE;
   const { account, change, addressIndex } = customDerivationPath;
   const passwordMinLength = Number(process.env.REACT_APP_PASSWORD_MIN_LENGTH)!;
   const defaultAccountName = process.env.REACT_APP_DEFAULT_ACCOUNT_NAME!;
 
-  const recoverAccountLoop = async (masterKey: BIP32Interface, addressIndex: number = 0, defaultWalletName?: string): Promise<string> => {
+  const recoverAccountLoop = async (masterKey: BIP32Interface, addressIndex: number = 0, accountName?: string): Promise<string> => {
     const path = derivationPath({ address_index: addressIndex });
-    const { address, publicKey, privateKey } = createWalletFromMasterKey(masterKey, undefined, path);
+    const { address, publicKey } = createWalletFromMasterKey(masterKey, undefined, path);
     const b64PublicKey = bytesToBase64(publicKey);
-    const b64PrivateKey = bytesToBase64(privateKey);
-    const walletName = defaultWalletName || `${defaultAccountName}${addressIndex + 1}`;
-    // Save data to redux store and clear out tempWallet data
+    const name = accountName || `${defaultAccountName}${addressIndex + 1}`;
+    // Save data to redux store and clear out tempAccount data
     const newWalletData = {
       address,
       publicKey: b64PublicKey,
-      privateKey: b64PrivateKey,
-      walletName,
+      name,
+      network,
+      id: addressIndex,
     };
     // Loop up to see if account holds any hash, if it does, add it, if it doesn't stop this loop.
     const hasAssetsRequest = await getAddressAssetsRaw(address);
     const hasAssets = hasAssetsRequest?.data?.length;
     if (addressIndex === 0 || hasAssets) {
-      createStoreWallet(newWalletData);
-      // Add wallet and name to names list
-      saveName(addressIndex, walletName);
+      addAccount(newWalletData);
       // Loop function, bump address index up by one
       return recoverAccountLoop(masterKey, addressIndex + 1);
     } else {
       // Set first wallet to be active
-      setActiveWalletIndex(0);
+      setActiveAccountIndex(0);
       return 'complete';
     }
   };
@@ -127,20 +131,20 @@ export const RecoverPassword = ({ nextUrl }: Props) => {
     if (!walletPassword || !walletPasswordRepeat) latestError = 'Please confirm your password.';
     if (walletPassword.length < passwordMinLength) latestError = `Password must be a minimum of ${passwordMinLength} characters.`;
     if (!latestError) {
-      if (tempWallet?.mnemonic) {
+      if (tempAccount?.mnemonic) {
         // Generate master keyt and get data about wallet
-        const masterKey = createMasterKeyFromMnemonic(tempWallet.mnemonic);
+        const masterKey = createMasterKeyFromMnemonic(tempAccount.mnemonic);
         // const finalDerivationPath = showAdvanced ? derivationPath({ account, change, address_index: addressIndex }) : undefined;
         setLoading(true);
         // Loop over the account to add sub-accounts if they exist
-        await recoverAccountLoop(masterKey, 0, tempWallet.walletName);
-        setLoading(false);
+        await recoverAccountLoop(masterKey, 0, tempAccount.name);
         // Encrypt data with provided password
         const encrypted = encryptKey(masterKey, walletPassword);
         // Add data to localStorage
-        saveKey(encrypted);
-        // Remove tempWallet data
-        clearTempWallet();
+        await saveKey(encrypted);
+        setLoading(false);
+        // Remove tempAccount data
+        cleartempAccount();
         setSuccess(true);
       } else {
         latestError = 'Unable to locally save account, please try again later'
@@ -153,6 +157,7 @@ export const RecoverPassword = ({ nextUrl }: Props) => {
     if (showAdvanced) {
       setCustomDerivationPath({});
       setShowAdvanced(false);
+      setNetwork(defaultNetwork);
     }
     else setShowAdvanced(true);
   }
@@ -167,6 +172,7 @@ export const RecoverPassword = ({ nextUrl }: Props) => {
     success ? (
       <Wrapper>
         <Header progress={100} title="Account(s) Recovered" />
+        <Image src={backupComplete} />
         <BodyContent
           $css={css`
             text-align: center;
@@ -175,7 +181,7 @@ export const RecoverPassword = ({ nextUrl }: Props) => {
         >
           Your accounts were successfully recovered!
         </BodyContent>
-        <CtaButton onClick={() => navigate(nextUrl)}>Continue</CtaButton>
+        <Button onClick={() => navigate(nextUrl)} >Continue</Button>
       </Wrapper>
     ) : (
       <Wrapper>
@@ -183,7 +189,6 @@ export const RecoverPassword = ({ nextUrl }: Props) => {
         <BodyContent
           $css={css`
             text-align: center;
-            margin-bottom: 32px;
           `}
         >
           Enter an account password.  This password will be used to connect to this wallet, it is only stored locally to decrypt the created wallet.
@@ -213,9 +218,10 @@ export const RecoverPassword = ({ nextUrl }: Props) => {
             <AdvancedInputArea>
               m/44'/{defaultCoinType}'/<Input type="number" id="account" value={account !== undefined ? account : ''} onChange={(value) => changeCustomDerivationPath('account', value) } />'/<Input type="number" id="change" value={change !== undefined ? change : ''} onChange={(value) => changeCustomDerivationPath('change', value) } />/<Input type="number" id="addressIndex" value={addressIndex !== undefined ? addressIndex : ''} onChange={(value) => changeCustomDerivationPath('addressIndex', value) } />
             </AdvancedInputArea>
+            <Select label="Network" options={['mainnet', 'testnet']} value={network} onChange={setNetwork} />
           </AdvancedSection>
         )}
-        {loading ? <div>Please Wait..</div> : <CtaButton onClick={handleContinue}>Continue</CtaButton>}
+        {loading ? <div>Please Wait..</div> : <Button  onClick={handleContinue}>Continue</Button>}
       </Wrapper>
     )
   );

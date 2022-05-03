@@ -3,7 +3,7 @@ import addressReducer from './features/address/addressSlice';
 import genericReducer from './features/generic/genericSlice';
 import pricingReducer from './features/pricing/pricingSlice';
 import statisticsReducer from './features/statistics/statisticsSlice';
-import walletReducer from './features/wallet/walletSlice';
+import accountReducer from './features/account/accountSlice';
 import walletConnectReducer from './features/walletConnect/walletConnectSlice';
 
 export const store = configureStore({
@@ -12,7 +12,7 @@ export const store = configureStore({
     generic: genericReducer,
     pricing: pricingReducer,
     statistics: statisticsReducer,
-    wallet: walletReducer,
+    account: accountReducer,
     walletConnect: walletConnectReducer,
   },
   middleware: (getDefaultMiddleware) => getDefaultMiddleware({

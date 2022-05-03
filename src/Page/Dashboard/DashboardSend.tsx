@@ -105,7 +105,7 @@ export const DashboardSend:React.FC = () => {
           <Sprite icon={ICON_NAMES.CHEVRON} size="1.3rem" />
         </RecentAddressItem>
       </RecentAddressSection>
-      <Button variant='primary'>Next</Button>
+      <Button>Next</Button>
     </Wrapper>
   )
 };

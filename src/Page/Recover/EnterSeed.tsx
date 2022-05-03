@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useState } from 'react';
 import { Button, Header, Input } from 'Components';
 import { isMnumonic, validateMnemonic } from 'utils';
-import { useWallet } from 'redux/hooks';
+import { useAccount } from 'redux/hooks';
 
 const Wrapper = styled.div`
   width: 100%;
@@ -35,7 +35,7 @@ interface Props {
 export const EnterSeed:React.FC<Props> = ({ nextUrl }) => {
   const totalSeeds = 24;
   const navigate = useNavigate();
-  const { updateTempWallet } = useWallet();
+  const { updatetempAccount } = useAccount();
   const createInitialInputData = () => {
     // Clone all inputValues
     const newInputValues = [];
@@ -131,7 +131,7 @@ export const EnterSeed:React.FC<Props> = ({ nextUrl }) => {
       const validMnemonic = validateMnemonic(mnemonic);
       if (validMnemonic) {
         // Add mnemonic into the temp wallet
-        updateTempWallet({ mnemonic });
+        updatetempAccount({ mnemonic });
         navigate(nextUrl);
       } else {
         setSubmitError('Invalid Mnemonic');
@@ -142,6 +142,9 @@ export const EnterSeed:React.FC<Props> = ({ nextUrl }) => {
     else setSubmitError('Please fix input issues above');
   };
 
+  const filledOutInputs = inputValues.filter(({ value }) => !!value).length;
+  const allFilledOut = filledOutInputs === totalSeeds;
+
   return (
     <Wrapper>
       <Header title="Enter Recovery Passphrase" progress={100} />
@@ -149,7 +152,7 @@ export const EnterSeed:React.FC<Props> = ({ nextUrl }) => {
         {createSeedInputs(totalSeeds)}
       </InputSection>
       {submitError && <ErrorMessage>{submitError}</ErrorMessage>}
-      <Button variant='primary' onClick={handleContinue}>Continue</Button>
+      <Button onClick={handleContinue} disabled={!allFilledOut}>Continue</Button>
     </Wrapper>
   );
 };

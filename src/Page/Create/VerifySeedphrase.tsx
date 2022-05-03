@@ -1,9 +1,9 @@
 import { useEffect, useState } from 'react';
-import { BodyContent, Checkbox, Button, Header } from 'Components';
+import { BodyContent, Checkbox, Button, Header, Content } from 'Components';
 import { css } from 'styled-components';
 import { VerifyButtonGroup } from './VerifyButtonGroup';
 import { COLORS } from 'theme';
-import { useWallet } from 'redux/hooks';
+import { useAccount } from 'redux/hooks';
 import { useNavigate } from 'react-router-dom';
 
 interface Props {
@@ -47,8 +47,8 @@ export const VerifySeedphrase = ({ nextUrl }: Props) => {
   // Navigate
   const navigate = useNavigate();
   // Redux Store
-  const { tempWallet } = useWallet();
-  const mnemonic = (tempWallet && tempWallet?.mnemonic) || '';
+  const { tempAccount } = useAccount();
+  const mnemonic = (tempAccount && tempAccount?.mnemonic) || '';
   const mnemonicArray = mnemonic?.split(' ');
 
   const handleCorrect = (ind: number, correct: boolean) => {
@@ -104,7 +104,7 @@ export const VerifySeedphrase = ({ nextUrl }: Props) => {
   };
 
   return (
-    <>
+    <Content padBottom='80px'>
       <Header progress={66} title="Verify Passphrase" />
 
       {errorMsg && (
@@ -129,6 +129,6 @@ export const VerifySeedphrase = ({ nextUrl }: Props) => {
       <Button onClick={handleContinue} variant="primary">
         Continue
       </Button>
-    </>
+    </Content>
   );
 };

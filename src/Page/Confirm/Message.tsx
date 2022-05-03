@@ -1,6 +1,6 @@
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
-import { Button, List, Header } from 'Components';
+import { Button, ButtonGroup, List, Header } from 'Components';
 import { COLORS } from 'theme';
 import { ICON_NAMES } from 'consts';
 
@@ -34,15 +34,6 @@ const Data = styled.div`
 `;
 const AddItems = styled.div`
   margin-top: 40px;
-`;
-const ButtonGroup = styled.div`
-  margin-top: auto;
-`;
-const CancelButton = styled(Button)`
-  color: ${COLORS.PRIMARY_550};
-  background: none;
-  border: none;
-  margin-top: 10px;
 `;
 
 interface MsgProps {
@@ -97,11 +88,11 @@ export const Message = ({
       <List message={message} />
       <AddItems>{addItems}</AddItems>
       <ButtonGroup>
-        <Button variant={'primary'} onClick={handleApprove}>{buttonTitle}</Button>
+        <Button layout="default" onClick={handleApprove}>{buttonTitle}</Button>
         {cancelButton && 
-          <CancelButton variant={'default'} onClick={handleDecline}>
+          <Button layout="default" variant="transparent" onClick={handleDecline}>
             Decline
-          </CancelButton>
+          </Button>
         }
       </ButtonGroup>
     </Container>

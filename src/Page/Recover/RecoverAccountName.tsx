@@ -3,7 +3,7 @@ import { Header, Button, InfoText, Input } from 'Components';
 import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
 import { ICON_NAMES } from 'consts';
-import { useWallet } from 'redux/hooks';
+import { useAccount } from 'redux/hooks';
 
 const Group = styled.div`
   flex-grow: 1;
@@ -18,18 +18,18 @@ interface Props {
 }
 
 export const RecoverAccountName:React.FC<Props> = ({ nextUrl }) => {
-  const [ walletName, setWalletName ] = useState('');
+  const [ name, setName ] = useState('');
   const [error, setError] = useState('');
   const navigate = useNavigate();
-  const { updateTempWallet } = useWallet();
+  const { updatetempAccount } = useAccount();
 
   const handleContinue = () => {
     let newError = '';
-    if (!walletName) newError = 'Wallet name is required';
-    if (!/^[-\w\s]+$/.test(walletName)) newError = 'Wallet name must be alphanumeric';
+    if (!name) newError = 'Wallet name is required';
+    if (!/^[-\w\s]+$/.test(name)) newError = 'Wallet name must be alphanumeric';
     if (!newError) {
-      // Update the tempWallet to use this account name
-      updateTempWallet({ walletName });
+      // Update the tempAccount to use this account name
+      updatetempAccount({ name });
       navigate(nextUrl)
     }
     setError(newError);
@@ -50,13 +50,13 @@ export const RecoverAccountName:React.FC<Props> = ({ nextUrl }) => {
             label="Account Name"
             id="wallet-name"
             placeholder='Enter name'
-            value={walletName}
-            onChange={setWalletName}
+            value={name}
+            onChange={setName}
             error={error}
             />
         </InputGroup>
       </Group>
-      <Button variant='primary' onClick={handleContinue}>Continue</Button>
+      <Button onClick={handleContinue}>Continue</Button>
     </>
   );
 };

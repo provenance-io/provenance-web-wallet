@@ -1,6 +1,5 @@
 // Determine storage type for app
-// const useChromeStorage = !!window?.chrome?.storage;
-const useChromeStorage = false;
+const useChromeStorage = !!window?.chrome?.storage;
 const localSaveName = process.env.REACT_APP_LOCAL_SAVE_NAME || 'provenance-web-wallet';
 const defaultAccountName = process.env.REACT_APP_DEFAULT_ACCOUNT_NAME;
 
@@ -10,10 +9,10 @@ const defaultAccountName = process.env.REACT_APP_DEFAULT_ACCOUNT_NAME;
 type StorageType = 'sessionStorage' | 'localStorage';
 type StorageData = {} | [];
 type StorageKey = string;
-const getStorageData = (key?: StorageKey, type: StorageType = 'sessionStorage') => {
+const getStorageData = (key?: StorageKey, type: StorageType = 'sessionStorage', savedName = localSaveName) => {
   const windowData = window[type];
   // Look for the item in the current localStorage, if found, add to results
-  const rawData = windowData.getItem(localSaveName) || '{}';
+  const rawData = windowData.getItem(savedName) || '{}';
   const data = JSON.parse(rawData);
   // If no specific key is passed, just return the entire object
   return key ? data[key] : data;
@@ -53,21 +52,20 @@ const clearStorageData = (type: StorageType = 'sessionStorage') => {
 // ----------------------
 // Chrome Storage
 // ----------------------
-const getChromeStorage = () => {
-  console.log('TODO: getChromeStorage');
-  // // Speficic value
-  // if (key) return chrome.storage.local.get(key, (result) => { return result })
-  // // All values
-  // return chrome.storage.local.get(null, (result) => { return result })
+const getChromeStorage = async (keyValue?: StorageKey) => {
+  if (keyValue) {
+    const result = await chrome.storage.local.get(keyValue);
+    return result[keyValue];
+  } else return await chrome.storage.local.get();
+}
+const addChromeStorage = (newData: StorageData) => {
+  chrome.storage.local.set(newData);
 };
-const addChromeStorage = () => {
-  console.log('TODO: addChromeStorage');
-};
-const removeChromeStorage = () => {
-  console.log('TODO: removeChromeStorage');
+const removeChromeStorage = (key: StorageKey) => {
+  chrome.storage.local.remove(key);
 }
 const clearChromeStorage = () => {
-  console.log('TODO: clearChromeStorage');
+  chrome.storage.local.clear();
 };
 
 // ----------------------
@@ -75,18 +73,20 @@ const clearChromeStorage = () => {
 // (Will automatically use browser default or chrome storage)
 // ----------------------
 // Get one or more values from storage
-export const getSavedData = (key?: StorageKey, type: StorageType = 'sessionStorage') => {
-  if (useChromeStorage) return getChromeStorage();
-  return getStorageData(key, type);
+export const getSavedData = async (key?: StorageKey, type: StorageType = 'sessionStorage') => {
+  if (useChromeStorage) return await getChromeStorage(key);
+  else {
+    return getStorageData(key, type);
+  }
 };
 // Add to storage
 export const addSavedData = (newData: StorageData, type: StorageType = 'sessionStorage') => {
-  if (useChromeStorage) addChromeStorage();
+  if (useChromeStorage) addChromeStorage(newData);
   else addStorageData(newData, type);
 };
 // Clear out single value
 export const removeSavedData = (key: StorageKey, type: StorageType = 'sessionStorage') => {
-  if (useChromeStorage) removeChromeStorage();
+  if (useChromeStorage) removeChromeStorage(key);
   else removeStorageData(key, type);
 }
 // Clear out entire storage
@@ -97,40 +97,59 @@ export const clearSavedData = (type: StorageType = 'sessionStorage') => {
 // ----------------------------
 // Account Master Key storage
 // ----------------------------
-export const saveKey = (key: string) => {
-  addSavedData({key}, 'localStorage');
+export const saveKey = async (key: string) => {
+  await addSavedData({key}, 'localStorage');
 };
-export const getKey = () => {
-  return getSavedData('key', 'localStorage');
-};
-export const clearKey = () => {
-  removeSavedData('key', 'localStorage');
+export const getKey = async () => await getSavedData('key', 'localStorage');
+export const clearKey = async () => {
+  await removeSavedData('key', 'localStorage');
 };
 // ----------------------------
 // Account Name map storage
 // ----------------------------
-type AccountName = string;
+type Account = {
+  name?: string,
+  id: number,
+  network?: string,
+  address?: string,
+  publicKey?: string,
+}
 type AccountIndex = number;
-export const saveName = (accountIndex: AccountIndex, accountName: AccountName = `${defaultAccountName}${accountIndex}`) => {
+
+export const saveAccount = async ({
+  id,
+  name = `${defaultAccountName}${id}`,
+  network,
+  address,
+  publicKey,
+}:Account
+) => {
   // Check if existing name obj exists, if not, make a new obj
-  const existingNames = getSavedData('names', 'localStorage') || {};
+  let existingAccounts = await getSavedData('accounts', 'localStorage');
+
+  // No existing accounts exist
+  if (!existingAccounts) existingAccounts = [];
   // Add this accountName/accountIndex to object
-  existingNames[accountIndex] = accountName;
+  existingAccounts.push({ id, name, network, publicKey, address });
   // Save the map back to local storage
-  addSavedData({names: existingNames}, 'localStorage');
+  addSavedData({accounts: existingAccounts}, 'localStorage');
 };
-export const getNames = () => {
-  return getSavedData('names', 'localStorage');
-};
-export const removeName = (accountIndex: AccountIndex) => {
+export const getAccounts = async () => await getSavedData('accounts', 'localStorage');
+export const removeAccount = async (id: AccountIndex) => {
   // Check if existing name obj exists, if not, make a new obj
-  const existingNames = getSavedData('names', 'localStorage') || {};
-  delete existingNames[accountIndex];
-  // Convert back to JSON string for storage
-  const existingNamesString = JSON.stringify({names: existingNames});
+  let existingAccounts = await getSavedData('accounts', 'localStorage');
+  if (!existingAccounts) existingAccounts = [];
+  existingAccounts.filter(({ id: accountId }: Account) => { return (id !== accountId) });
   // Save the map back to local storage
-  addSavedData(existingNamesString, 'localStorage');
+  addSavedData(existingAccounts, 'localStorage');
 };
-export const clearNames = () => {
-  removeSavedData('names', 'localStorage');
+export const clearAccounts = () => {
+  removeSavedData('accounts', 'localStorage');
 };
+
+// ----------------------------
+// WalletConnect Data
+// ----------------------------
+export const getWalletConnectStorage = () => {
+  return getStorageData(undefined, 'localStorage', 'walletconnect');
+}

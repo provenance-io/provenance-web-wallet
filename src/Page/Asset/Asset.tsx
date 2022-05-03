@@ -12,10 +12,10 @@ const Wrapper = styled.div`
   width: 100%;
   text-align: center;
   font-family: 'Gothic A1', sans-serif;
-  overflow-y: scroll;
   scrollbar-width: none;
-  -ms-overflow-style: none;
   padding-bottom: 80px;
+  overflow-y: scroll;
+  -ms-overflow-style: none;
   &::-webkit-scrollbar {
     width: 0;
     height: 0;

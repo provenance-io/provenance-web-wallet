@@ -12,7 +12,7 @@ import { bufferToBytes, base64ToBytes as ogBase64ToBytes, bytesToBase64 as ogByt
 import { createHash } from 'crypto';
 import { derivationPath } from 'utils';
 
-const walletPrefix = process.env.REACT_APP_PROVENANCE_WALLET_PREFIX!;
+const walletPrefix = process.env.REACT_APP_PROVENANCE_WALLET_PREFIX_MAINNET!;
 const defaultDerivationPath = derivationPath();
 const mnemonicWordCount = 24
 

@@ -7,11 +7,11 @@ const CarouselContent = styled.div`
   cursor: pointer;
   user-select: none;
   max-width: 100%;
+  margin-top: 20px;
   overflow: hidden;
 `;
 const SliderControls = styled.div`
   margin-top: 20px;
-  margin-bottom: 32px;
   display: flex;
   justify-content: center;
 `;
@@ -26,7 +26,7 @@ const Slider = styled.div<{ active: boolean }>`
 const AllSlides = styled.div<{right: number, quickSwitch: boolean}>`
   display: flex;
   overflow: visible;
-  align-items: center;
+  align-items: flex-start;
   position: relative;
   right: ${({ right }) => `${right}px` };
   will-change: right;
@@ -37,7 +37,7 @@ const AllSlides = styled.div<{right: number, quickSwitch: boolean}>`
 export const Carousel:React.FC = () => {
   // Total number of slides
   const slideCount = 4;
-  const slideWidth = 311;
+  const slideWidth = 350;
   // How long before switching to a new slide
   const slideTransition = 7000;
   const [currentSlide, setCurrentSlide] = useState(1);

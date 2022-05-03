@@ -13,6 +13,7 @@ function App() {
       const asyncStorageGet = async () => {
         const accounts = await getSavedData('accounts');
         const activeAccountIndex = await getSavedData('activeAccountIndex');
+        console.log('App.tsx | initialLoad | accounts, activeAccountIndex: ', accounts, activeAccountIndex);
         setInitialValues({ accounts, activeAccountIndex });
       }
       asyncStorageGet();

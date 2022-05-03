@@ -32,15 +32,15 @@ export const CreateAuth = ({ children = null }: Props) => {
   const navigate = useNavigate();
   const location = useLocation();
   const isCreateLandingPage = location.pathname === '/create';
-  const { tempWallet } = useAccount();
+  const { tempAccount } = useAccount();
   useEffect(() => {
-    if (!tempWallet) {
+    if (!tempAccount) {
       navigate(CREATE_URL);
     }
-  }, [tempWallet, navigate]);
+  }, [tempAccount, navigate]);
 
   return (
-    !!tempWallet || isCreateLandingPage ? (
+    !!tempAccount || isCreateLandingPage ? (
     <PageStyled>
       <Outlet />
       {children}

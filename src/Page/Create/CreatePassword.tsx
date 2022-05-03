@@ -7,9 +7,10 @@ import { useAccount } from 'redux/hooks';
 import {
   encryptKey,
   createMasterKeyFromMnemonic,
-  bytesToBase64,
   createWalletFromMasterKey,
   saveKey,
+  addSavedData,
+  saveAccount,
 } from 'utils';
 
 const Error = styled.div`
@@ -27,7 +28,7 @@ interface Props {
 
 export const CreatePassword = ({ nextUrl }: Props) => {
   const navigate = useNavigate();
-  const { tempWallet, createWallet: createStoreWallet } = useAccount();
+  const { tempAccount, addAccount } = useAccount();
   const [walletPassword, setWalletPassword] = useState('');
   const [walletPasswordRepeat, setWalletPasswordRepeat] = useState('');
   const [error, setError] = useState('');
@@ -39,29 +40,36 @@ export const CreatePassword = ({ nextUrl }: Props) => {
     if (!walletPassword || !walletPasswordRepeat) latestError = 'Please confirm your password.';
     if (walletPassword.length < passwordMinLength) latestError = `Password must be a minimum of ${passwordMinLength} characters.`;
     if (!latestError) {
-      if (tempWallet?.mnemonic) {
+      if (tempAccount?.mnemonic) {
         // Generate master keyt and get data about wallet
-        const masterKey = createMasterKeyFromMnemonic(tempWallet.mnemonic);
-        const prefix = tempWallet.network === 'mainnet' ?
+        const masterKey = createMasterKeyFromMnemonic(tempAccount.mnemonic);
+        const prefix = tempAccount.network === 'mainnet' ?
           process.env.REACT_APP_PROVENANCE_WALLET_PREFIX_MAINNET :
           process.env.REACT_APP_PROVENANCE_WALLET_PREFIX_TESTNET;
-        const { address, publicKey, privateKey } = createWalletFromMasterKey(masterKey, prefix);
-        const b64PublicKey = bytesToBase64(publicKey);
-        const b64PrivateKey = bytesToBase64(privateKey);
-        // Save data to redux store and clear out tempWallet data
-        const newWalletData = {
+        const { address } = createWalletFromMasterKey(masterKey, prefix);
+        // Save data to redux store and clear out tempAccount data
+        const id = 0;
+        const newAccountData = {
           address,
-          publicKey: b64PublicKey,
-          privateKey: b64PrivateKey,
-          accountName: tempWallet.accountName,
-          network: tempWallet.network,
-          id: 0,
+          accountName: tempAccount.accountName,
+          network: tempAccount.network,
+          id,
         };
-        createStoreWallet(newWalletData);
+        // ---------------------------------------------
+        // Save new account data into browser storage
+        // ---------------------------------------------
+        await addSavedData({
+          connected: true,
+          connectedIat: new Date().getTime(),
+          activeAccountIndex: id,
+        });
+        await saveAccount(newAccountData);
         // Encrypt data with provided password
         const encrypted = encryptKey(masterKey, walletPassword);
         // Add data to localStorage
         await saveKey(encrypted);
+        // Add account into redux store
+        addAccount(newAccountData);
         // This is the first account in the list, index will be 0
         navigate(nextUrl);
       } else {

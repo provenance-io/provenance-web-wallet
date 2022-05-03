@@ -12,6 +12,7 @@ import {
   getKey,
   getAccounts,
   decryptKey,
+  getSavedData,
 } from 'utils';
 import { useAccount } from 'redux/hooks';
 
@@ -23,7 +24,7 @@ export const Unlock = ({ nextUrl }: Props) => {
   const navigate = useNavigate();
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
-  const { createHDWallet: createStoreHDWallet } = useAccount();
+  const { addAccounts } = useAccount();
   const passwordMinLength = Number(process.env.REACT_APP_PASSWORD_MIN_LENGTH)!;
 
   const handleSubmit = async () => {
@@ -41,8 +42,10 @@ export const Unlock = ({ nextUrl }: Props) => {
       if (!masterKey) newError = 'Invalid password';
       else {
         // Password was correct, build the wallets
-        const localAccounts = getAccounts();
-        createStoreHDWallet({ masterKey, localAccounts });
+        const localAccounts = await getAccounts();
+        const activeAccountIndex = await getSavedData('activeAccountIndex');
+        console.log('localAccounts: ', localAccounts);
+        addAccounts({ accounts: localAccounts, activeAccountIndex })
         // Redirect to dashboard
         navigate(nextUrl);
       }

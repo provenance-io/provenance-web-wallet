@@ -20,13 +20,13 @@ interface Account {
   network?: string,
   id?: number,
 }
-interface TempWallet extends Account {
+interface TempAccount extends Account {
   mnemonic: string
 }
 interface State {
   activeAccountIndex: number;
   accounts: Account[];
-  tempWallet?: TempWallet;
+  tempAccount?: TempAccount;
   initialLoad: boolean;
 }
 
@@ -36,7 +36,7 @@ interface State {
 const initialState: State = {
   activeAccountIndex: -1,
   accounts: [],
-  tempWallet: undefined,
+  tempAccount: undefined,
   initialLoad: true,
 };
 
@@ -59,22 +59,14 @@ const accountSlice = createSlice({
       // Reset redux store state
       state = initialState;
     },
-    createWallet: (state, { payload }) => {
-      const { accountName: name, network, id } = payload;
+    addAccount: (state, { payload }) => {
       state.accounts.push(payload);
-      const totalAccounts = state.accounts.length;
-      const activeAccountIndex = totalAccounts - 1;
-      // Update active walletIndex
+      state.activeAccountIndex = payload.id;
+    },
+    addAccounts: (state, { payload }) => {
+      const { accounts, activeAccountIndex } = payload;
+      state.accounts.push(...accounts);
       state.activeAccountIndex = activeAccountIndex;
-      // Save wallet data into savedStorage
-      addSavedData({
-        connected: true,
-        connectedIat: new Date().getTime(),
-        accounts: state.accounts,
-      });
-      // Save active wallet into localStorage
-      addSavedData({ activeAccountIndex }, 'localStorage');
-      saveAccount({ name, network, id });
     },
     // Create multiple accounts from a single masterKey
     createHDWallet: (state, { payload }) => {
@@ -86,7 +78,7 @@ const accountSlice = createSlice({
       const { masterKey, localAccounts } = payload;
       // Loop though each account to create that wallet account
       localAccounts.forEach((account: AccountType) => {
-        const {id, name, network} = account;
+        const { id, name, network } = account;
         const path = derivationPath({ address_index: Number(id) });
         const prefix = network === 'mainnet' ?
           process.env.REACT_APP_PROVENANCE_WALLET_PREFIX_MAINNET :
@@ -166,11 +158,11 @@ const accountSlice = createSlice({
         activeAccountIndex: state.activeAccountIndex,
       }, 'localStorage');
     },
-    updateTempWallet: (state, { payload }) => {
-      state.tempWallet = {...payload, ...state.tempWallet};
+    updatetempAccount: (state, { payload }) => {
+      state.tempAccount = {...payload, ...state.tempAccount};
     },
-    clearTempWallet: (state) => {
-      state.tempWallet = undefined;
+    cleartempAccount: (state) => {
+      state.tempAccount = undefined;
     },
   },
 });

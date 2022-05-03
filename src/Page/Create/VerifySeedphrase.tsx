@@ -47,8 +47,8 @@ export const VerifySeedphrase = ({ nextUrl }: Props) => {
   // Navigate
   const navigate = useNavigate();
   // Redux Store
-  const { tempWallet } = useAccount();
-  const mnemonic = (tempWallet && tempWallet?.mnemonic) || '';
+  const { tempAccount } = useAccount();
+  const mnemonic = (tempAccount && tempAccount?.mnemonic) || '';
   const mnemonicArray = mnemonic?.split(' ');
 
   const handleCorrect = (ind: number, correct: boolean) => {

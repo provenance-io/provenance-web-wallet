@@ -77,9 +77,9 @@ export const RecoverPassword = ({ nextUrl }: Props) => {
   const navigate = useNavigate();
   const { getAddressAssetsRaw } = useAddress();
   const {
-    tempWallet,
-    createWallet: createStoreWallet,
-    clearTempWallet,
+    tempAccount,
+    addAccount,
+    cleartempAccount,
     setActiveAccountIndex
   } = useAccount();
   const [walletPassword, setWalletPassword] = useState('');
@@ -102,7 +102,7 @@ export const RecoverPassword = ({ nextUrl }: Props) => {
     const b64PublicKey = bytesToBase64(publicKey);
     const b64PrivateKey = bytesToBase64(privateKey);
     const accountName = defaultaccountName || `${defaultAccountName}${addressIndex + 1}`;
-    // Save data to redux store and clear out tempWallet data
+    // Save data to redux store and clear out tempAccount data
     const newWalletData = {
       address,
       publicKey: b64PublicKey,
@@ -115,7 +115,7 @@ export const RecoverPassword = ({ nextUrl }: Props) => {
     const hasAssetsRequest = await getAddressAssetsRaw(address);
     const hasAssets = hasAssetsRequest?.data?.length;
     if (addressIndex === 0 || hasAssets) {
-      createStoreWallet(newWalletData);
+      addAccount(newWalletData);
       // Loop function, bump address index up by one
       return recoverAccountLoop(masterKey, addressIndex + 1);
     } else {
@@ -133,20 +133,20 @@ export const RecoverPassword = ({ nextUrl }: Props) => {
     if (!walletPassword || !walletPasswordRepeat) latestError = 'Please confirm your password.';
     if (walletPassword.length < passwordMinLength) latestError = `Password must be a minimum of ${passwordMinLength} characters.`;
     if (!latestError) {
-      if (tempWallet?.mnemonic) {
+      if (tempAccount?.mnemonic) {
         // Generate master keyt and get data about wallet
-        const masterKey = createMasterKeyFromMnemonic(tempWallet.mnemonic);
+        const masterKey = createMasterKeyFromMnemonic(tempAccount.mnemonic);
         // const finalDerivationPath = showAdvanced ? derivationPath({ account, change, address_index: addressIndex }) : undefined;
         setLoading(true);
         // Loop over the account to add sub-accounts if they exist
-        await recoverAccountLoop(masterKey, 0, tempWallet.accountName);
+        await recoverAccountLoop(masterKey, 0, tempAccount.accountName);
         // Encrypt data with provided password
         const encrypted = encryptKey(masterKey, walletPassword);
         // Add data to localStorage
         await saveKey(encrypted);
         setLoading(false);
-        // Remove tempWallet data
-        clearTempWallet();
+        // Remove tempAccount data
+        cleartempAccount();
         setSuccess(true);
       } else {
         latestError = 'Unable to locally save account, please try again later'

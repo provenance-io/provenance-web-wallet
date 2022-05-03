@@ -16,10 +16,10 @@ const Image = styled.img`
 
 export const CreateComplete = ({ nextUrl }: Props) => {
   const navigate = useNavigate();
-  const { clearTempWallet } = useAccount();
+  const { cleartempAccount } = useAccount();
   const finishCreation = () => {
     // Remove temp data
-    clearTempWallet();
+    cleartempAccount();
     // Go to /dashboard
     navigate(nextUrl);
   };

@@ -1,6 +1,5 @@
 // Determine storage type for app
 const useChromeStorage = !!window?.chrome?.storage;
-console.log('Using chrome.storage: ', useChromeStorage);
 const localSaveName = process.env.REACT_APP_LOCAL_SAVE_NAME || 'provenance-web-wallet';
 const defaultAccountName = process.env.REACT_APP_DEFAULT_ACCOUNT_NAME;
 
@@ -53,7 +52,12 @@ const clearStorageData = (type: StorageType = 'sessionStorage') => {
 // ----------------------
 // Chrome Storage
 // ----------------------
-const getChromeStorage = async (key?: StorageKey) => await chrome.storage.local.get(key);
+const getChromeStorage = async (keyValue?: StorageKey) => {
+  if (keyValue) {
+    const result = await chrome.storage.local.get(keyValue);
+    return result[keyValue];
+  } else return await chrome.storage.local.get();
+}
 const addChromeStorage = (newData: StorageData) => {
   chrome.storage.local.set(newData);
 };
@@ -93,14 +97,12 @@ export const clearSavedData = (type: StorageType = 'sessionStorage') => {
 // ----------------------------
 // Account Master Key storage
 // ----------------------------
-export const saveKey = (key: string) => {
-  addSavedData({key}, 'localStorage');
+export const saveKey = async (key: string) => {
+  await addSavedData({key}, 'localStorage');
 };
-export const getKey = () => {
-  return getSavedData('key', 'localStorage');
-};
-export const clearKey = () => {
-  removeSavedData('key', 'localStorage');
+export const getKey = async () => await getSavedData('key', 'localStorage');
+export const clearKey = async () => {
+  await removeSavedData('key', 'localStorage');
 };
 // ----------------------------
 // Account Name map storage
@@ -108,7 +110,9 @@ export const clearKey = () => {
 type Account = {
   name?: string,
   id: number,
-  network: string,
+  network?: string,
+  address?: string,
+  publicKey?: string,
 }
 type AccountIndex = number;
 
@@ -116,26 +120,29 @@ export const saveAccount = async ({
   id,
   name = `${defaultAccountName}${id}`,
   network,
+  address,
+  publicKey,
 }:Account
 ) => {
   // Check if existing name obj exists, if not, make a new obj
-  const existingAccounts = await getSavedData('accounts', 'localStorage') || [];
+  let existingAccounts = await getSavedData('accounts', 'localStorage');
+
+  // No existing accounts exist
+  if (!existingAccounts) existingAccounts = [];
   // Add this accountName/accountIndex to object
-  existingAccounts[id] = { id, name, network };
+  console.log('existingAccounts :', existingAccounts);
+  existingAccounts.push({ id, name, network, publicKey, address });
   // Save the map back to local storage
   addSavedData({accounts: existingAccounts}, 'localStorage');
 };
-export const getAccounts = () => {
-  return getSavedData('accounts', 'localStorage');
-};
+export const getAccounts = async () => await getSavedData('accounts', 'localStorage');
 export const removeAccount = async (id: AccountIndex) => {
   // Check if existing name obj exists, if not, make a new obj
-  const existingAccounts = await getSavedData('accounts', 'localStorage') || [];
-  delete existingAccounts[id];
-  // Convert back to JSON string for storage
-  const existingAccountsString = JSON.stringify({accounts: existingAccounts});
+  let existingAccounts = await getSavedData('accounts', 'localStorage');
+  if (!existingAccounts) existingAccounts = [];
+  existingAccounts.filter(({ id: accountId }: Account) => { return (id !== accountId) });
   // Save the map back to local storage
-  addSavedData(existingAccountsString, 'localStorage');
+  addSavedData(existingAccounts, 'localStorage');
 };
 export const clearAccounts = () => {
   removeSavedData('accounts', 'localStorage');

@@ -18,17 +18,15 @@ export const Landing: React.FC = () => {
     asyncGetKey();
   }, []);
   
-  const renderLandingActions = () => {
-    return savedKey ? (
-      <Button layout="default" onClick={() => navigate('/unlock')}>
-        Unlock
-      </Button>
-    ) : (
-      <Button layout="default" onClick={() => navigate('/create')}>
-        Create Wallet
-      </Button>
-    )
-  };
+  const renderLandingActions = () => savedKey ? (
+    <Button layout="default" onClick={() => navigate('/unlock')}>
+      Unlock
+    </Button>
+  ) : (
+    <Button layout="default" onClick={() => navigate('/create')}>
+      Create Wallet
+    </Button>
+  );
 
   return (
     <>

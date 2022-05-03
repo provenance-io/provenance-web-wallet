@@ -21,15 +21,15 @@ export const RecoverAccountName:React.FC<Props> = ({ nextUrl }) => {
   const [ accountName, setaccountName ] = useState('');
   const [error, setError] = useState('');
   const navigate = useNavigate();
-  const { updateTempWallet } = useAccount();
+  const { updatetempAccount } = useAccount();
 
   const handleContinue = () => {
     let newError = '';
     if (!accountName) newError = 'Wallet name is required';
     if (!/^[-\w\s]+$/.test(accountName)) newError = 'Wallet name must be alphanumeric';
     if (!newError) {
-      // Update the tempWallet to use this account name
-      updateTempWallet({ accountName });
+      // Update the tempAccount to use this account name
+      updatetempAccount({ accountName });
       navigate(nextUrl)
     }
     setError(newError);

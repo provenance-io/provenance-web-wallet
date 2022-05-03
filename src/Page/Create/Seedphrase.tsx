@@ -39,8 +39,8 @@ interface Props {
 
 export const Seedphrase = ({ nextUrl }: Props) => {
   const navigate = useNavigate();
-  const { tempWallet } = useAccount();
-  const mnemonic = tempWallet?.mnemonic || '';
+  const { tempAccount } = useAccount();
+  const mnemonic = tempAccount?.mnemonic || '';
   const handleContinue = () => {
     navigate(nextUrl);
   };

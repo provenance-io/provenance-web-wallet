@@ -11,8 +11,9 @@ import type { Wallet, KeyPair } from '@tendermint/sig';
 import { bufferToBytes, base64ToBytes as ogBase64ToBytes, bytesToBase64 as ogBytesToBase64 } from '@tendermint/belt';
 import { createHash } from 'crypto';
 import { derivationPath } from 'utils';
+import { PROVENANCE_ADDRESS_PREFIX_MAINNET } from 'consts';
 
-const walletPrefix = process.env.REACT_APP_PROVENANCE_WALLET_PREFIX_MAINNET!;
+const walletPrefix = PROVENANCE_ADDRESS_PREFIX_MAINNET!;
 const defaultDerivationPath = derivationPath();
 const mnemonicWordCount = 24
 

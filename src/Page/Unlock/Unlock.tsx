@@ -6,7 +6,7 @@ import {
   Content,
   BodyContent,
 } from 'Components';
-import { ICON_NAMES } from 'consts';
+import { ICON_NAMES, PASSWORD_MIN_LENGTH } from 'consts';
 import { useNavigate } from 'react-router-dom';
 import {
   getKey,
@@ -25,7 +25,7 @@ export const Unlock = ({ nextUrl }: Props) => {
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const { addAccounts } = useAccount();
-  const passwordMinLength = Number(process.env.REACT_APP_PASSWORD_MIN_LENGTH)!;
+  const passwordMinLength = Number(PASSWORD_MIN_LENGTH)!;
 
   const handleSubmit = async () => {
     // Clear out any previous error

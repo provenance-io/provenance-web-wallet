@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 import { Button, Header, Input } from 'Components';
-import { ICON_NAMES } from 'consts';
+import { ICON_NAMES, PASSWORD_MIN_LENGTH } from 'consts';
 import { useState } from 'react';
 import { getKey, decryptKey } from 'utils';
 import { useNavigate } from 'react-router-dom';
@@ -23,7 +23,7 @@ export const DashboardAccountCreate:React.FC<Props> = ({ nextUrl }) => {
   const [walletPassword, setWalletPassword] = useState('');
   const { addToHDWallet } = useAccount();
   const [error, setError] = useState<string[]>([]); // [accountNameError, walletPasswordError]
-  const passwordMinLength = Number(process.env.REACT_APP_PASSWORD_MIN_LENGTH)!;
+  const passwordMinLength = Number(PASSWORD_MIN_LENGTH)!;
   
   const handleCreateAccount = async () => {
     let newError = [];

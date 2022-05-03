@@ -1,6 +1,11 @@
 import { useState } from 'react';
 import { BodyContent, Button, Header, Input as InputBase, Content } from 'Components';
-import { ICON_NAMES } from 'consts';
+import {
+  ICON_NAMES,
+  PASSWORD_MIN_LENGTH,
+  PROVENANCE_ADDRESS_PREFIX_MAINNET,
+  PROVENANCE_ADDRESS_PREFIX_TESTNET,
+} from 'consts';
 import { useNavigate } from 'react-router-dom';
 import styled, { css } from 'styled-components';
 import { useAccount } from 'redux/hooks';
@@ -33,7 +38,7 @@ export const CreatePassword = ({ nextUrl }: Props) => {
   const [walletPassword, setWalletPassword] = useState('');
   const [walletPasswordRepeat, setWalletPasswordRepeat] = useState('');
   const [error, setError] = useState('');
-  const passwordMinLength = Number(process.env.REACT_APP_PASSWORD_MIN_LENGTH)!;
+  const passwordMinLength = Number(PASSWORD_MIN_LENGTH)!;
 
   const handleContinue = async () => {
     let latestError = '';
@@ -44,9 +49,7 @@ export const CreatePassword = ({ nextUrl }: Props) => {
       if (tempAccount?.mnemonic) {
         // Generate master keyt and get data about wallet
         const masterKey = createMasterKeyFromMnemonic(tempAccount.mnemonic);
-        const prefix = tempAccount.network === 'mainnet' ?
-          process.env.REACT_APP_PROVENANCE_WALLET_PREFIX_MAINNET :
-          process.env.REACT_APP_PROVENANCE_WALLET_PREFIX_TESTNET;
+        const prefix = tempAccount.network === 'mainnet' ? PROVENANCE_ADDRESS_PREFIX_MAINNET : PROVENANCE_ADDRESS_PREFIX_TESTNET;
         const { address, publicKey } = createWalletFromMasterKey(masterKey, prefix);
         const b64PublicKey = bytesToBase64(publicKey);
         // Save data to redux store and clear out tempAccount data

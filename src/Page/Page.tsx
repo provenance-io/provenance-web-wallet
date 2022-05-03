@@ -2,6 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import { Outlet } from 'react-router-dom';
 import { COLORS } from 'theme';
+import { MAX_HEIGHT, MAX_WIDTH } from 'consts';
 import bg from 'images/bg.png';
 
 interface Props {
@@ -11,9 +12,6 @@ interface Props {
   justify?: string,
   noOutlet?: boolean,
 }
-
-const MAX_HEIGHT = process.env.REACT_APP_MAX_HEIGHT;
-const MAX_WIDTH = process.env.REACT_APP_MAX_WIDTH;
 
 const PageStyled = styled.div<Props>`
   align-items: ${({ align }) => align};

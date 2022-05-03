@@ -2,7 +2,6 @@
 ## To do shortlist
 
 ### Wallet Connect / dApps
-* When opening the extension, after connecting, display that the user is connected
 * When connecting into a dApp, user should be able to select target account to connect (and set active)
 * Determine if we want to require password before allowing a connection into dApp
 * Correctly form/create JWT when connecting with wallet connect

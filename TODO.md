@@ -1,7 +1,12 @@
 # TODO
 ## To do shortlist
 
+### Wallet Functionality
+* Sign messages
+* Sign for transactions
+
 ### Wallet Connect / dApps
+* When prompting user for action show wallet notification and/or popup (like connecting)
 * When connecting into a dApp, user should be able to select target account to connect (and set active)
 * Determine if we want to require password before allowing a connection into dApp
 * Correctly form/create JWT when connecting with wallet connect

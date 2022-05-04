@@ -4,6 +4,10 @@
 ### Wallet Functionality
 * Sign messages
 * Sign for transactions
+* Notification page should be a shell which loads other pages into itself
+  - WalletConnect Initialization/Connection
+  - Approve/Deny Signing a message
+  - Approve/Deny a transaction
 
 ### Wallet Connect / dApps
 * When prompting user for action show wallet notification and/or popup (like connecting)

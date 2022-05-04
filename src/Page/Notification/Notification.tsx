@@ -5,7 +5,7 @@ import { ICON_NAMES, CHAINID_TESTNET } from 'consts';
 import { useEffect, useState } from 'react';
 import { useWalletConnect, useAccount } from 'redux/hooks';
 import circleIcon from 'images/circle-icon.svg';
-import { trimString } from 'utils';
+import { trimString, signBytes } from 'utils';
 
 const Title = styled.div`
   font-weight: 600;
@@ -100,6 +100,28 @@ export const Notification:React.FC = () => {
       });
       connector.on('disconnect', (error, payload) => {
         console.log('DISCONNECT EVENT: ', payload, error);
+      });
+      connector.on('provenance_sign', (error, payload) => {
+        console.log('provenance_sign: ', payload, error);
+        const { id, jsonrpc } = payload;
+        // TESTING: REMOVE ME
+        // Need to prompt user for password to use masterKey to get privateKey and call signBytes
+        setTimeout(() => {
+          const result = signBytes('123', '123');
+          connector.approveRequest({
+            id, jsonrpc, result: 'success',
+          })
+        }, 3000);
+      });
+      connector.on('provenance_sendTransaction', (error, payload) => {
+        console.log('provenance_sendTransaction: ', payload, error);
+        const { id, jsonrpc } = payload;
+        // TESTING: REMOVE ME
+        setTimeout(() => {
+          connector.approveRequest({
+            id, jsonrpc, result: 'success',
+          })
+        }, 3000);
       });
 
       return () => {

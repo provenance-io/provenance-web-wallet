@@ -12,6 +12,7 @@ import { bufferToBytes, base64ToBytes as ogBase64ToBytes, bytesToBase64 as ogByt
 import { createHash } from 'crypto';
 import { derivationPath } from 'utils';
 import { PROVENANCE_ADDRESS_PREFIX_MAINNET } from 'consts';
+import { ecdsaSign as secp256k1EcdsaSign } from 'secp256k1';
 
 const walletPrefix = PROVENANCE_ADDRESS_PREFIX_MAINNET!;
 const defaultDerivationPath = derivationPath();
@@ -41,6 +42,13 @@ const ripemd160 = (bytes: Bytes): Bytes => {
   const buffer2 = createHash('ripemd160').update(buffer1).digest();
 
   return bufferToBytes(buffer2);
+}
+
+export const signBytes = (bytes: Uint8Array, privateKey: Bytes): Uint8Array => {
+  const hash = sha256(bytes);
+  const { signature } = secp256k1EcdsaSign(hash, privateKey);
+
+  return signature;
 }
 
 const createAddress = (publicKey: Bytes, prefix: string = walletPrefix): Bech32String => {

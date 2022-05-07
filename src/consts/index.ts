@@ -4,3 +4,4 @@ export * from './connectionTimeout';
 export * from './chainID';
 export * from './app';
 export * from './addressInfo';
+export * from './walletConnect';

@@ -9,6 +9,14 @@ export type IClientMeta = {
   name: string;
 }
 
+export type EventPayload = {
+  payload: {
+    params: {
+      peerMeta?: IClientMeta,
+    }[]
+  },
+}
+
 export type ConnectionEventPayload = {
   publicKey: string,
   address: string,

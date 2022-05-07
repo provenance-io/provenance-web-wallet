@@ -2,6 +2,7 @@ import { EventPayload } from 'types';
 import styled from 'styled-components';
 import { Authenticate } from './Authenticate';
 import { useWalletConnect } from 'redux/hooks';
+import { List } from 'Components';
 // import { signBytes } from 'utils';
 
 const Title = styled.div`
@@ -13,25 +14,6 @@ const Title = styled.div`
   font-size: 1.6rem;
   text-align: center;
   margin-bottom: 20px;
-`;
-const DisplayTitle = styled.div`
-  font-family: "Courier New", Courier, monospace;
-  color: white;
-  font-weight: bold;
-  background: rgba(255,255,255,0.5);
-  box-shadow: 0px 0px 9px 0px rgb(255 255 255 / 70%) inset;
-  padding: 10px 20px;
-  border-radius: 50px;
-  font-size: 1.6rem;
-  margin: 30px;
-  white-space: nowrap;
-  overflow: scroll;
-  overflow-y: scroll;
-  -ms-overflow-style: none;
-  &::-webkit-scrollbar {
-    width: 0;
-    height: 0;
-  }
 `;
 const SubTitle = styled.div`
   font-weight: 400;
@@ -78,13 +60,18 @@ export const SignRequest:React.FC<Props> = ({ data }) => {
     }
   }
   
+  const ListItems = {
+    platform: 'Figure Equity Solutions',
+    address: 'address',
+    created: 'created',
+    messageType: 'messageType',
+    'Est. Gas Fee': '0.00 Hash',
+  };
+
   return (
     <>
       <Title>Sign Request</Title>
-      <DisplayTitle>You have a new signing request</DisplayTitle>
-      <SubTitle>
-        Sign message: "test_123"
-      </SubTitle>
+      <List message={ListItems} />
       <Authenticate handleApprove={handleApprove} handleDecline={handleDecline} />
     </>
   );

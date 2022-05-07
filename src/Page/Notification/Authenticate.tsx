@@ -15,6 +15,7 @@ export const Authenticate:React.FC<Props> = ({ handleApprove, handleDecline }) =
 
   const handleAuthAccount = async () => {
     let newPasswordError = '';
+    // TODO: If no localKey from getKey(), inform the user, redirect to landing page
     const localKey = await getKey();
     // Wallet password must exist
     if (!walletPassword) newPasswordError = 'Enter password';
@@ -45,7 +46,7 @@ export const Authenticate:React.FC<Props> = ({ handleApprove, handleDecline }) =
         <Button layout="default" variant='transparent' onClick={handleDecline}>Reject</Button>
       </ButtonGroup>
     ) : (
-      <div>
+      <ButtonGroup>
         <Input
           label="Wallet Password"
           placeholder="Enter Wallet Password"
@@ -55,8 +56,8 @@ export const Authenticate:React.FC<Props> = ({ handleApprove, handleDecline }) =
           error={passwordError}
           type="password"
         />
-        <Button onClick={handleAuthAccount}>Authenticate</Button>
-      </div>
+        <Button layout="default" onClick={handleAuthAccount}>Authenticate</Button>
+      </ButtonGroup>
     )
   );
 };

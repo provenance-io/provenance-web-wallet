@@ -57,7 +57,7 @@ const ConnectIcon = styled.div`
   align-items: center;
   justify-content: center;
   position: relative;
-  margin: 50px 0 80px 0;
+  margin: 20px 0px 30px;
 `;
 const ConnectPeerImg = styled.img`
   z-index: 1;
@@ -71,16 +71,17 @@ const ConnectBgImg = styled.img`
 `;
 
 interface Props {
-  data: EventPayload
+  payload: EventPayload
 }
 
-export const WalletConnectInit:React.FC<Props> = ({ data }) => {
+export const WalletConnectInit:React.FC<Props> = ({ payload }) => {
+  console.log('WalletConnectInit | data: ', payload);
   const [useFallbackIcon, setUseFallbackIcon] = useState(false);
   const { peerMeta = {
     name: 'N/A',
     url: 'N/A',
     icons: [],
-  } } = data?.payload?.params[0];
+  } } = payload?.params[0];
   const { name, url, icons } = peerMeta;
   const { accounts, activeAccountIndex } = useAccount();
   const { connector } = useWalletConnect();

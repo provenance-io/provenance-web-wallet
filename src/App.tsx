@@ -16,7 +16,6 @@ function App() {
       // ----------------------------------------
       // Get saved account data from storage
       // ----------------------------------------
-      console.log('App.tsx | useEffect | initialLoad');
       const asyncStorageGet = async () => {
         const accounts = await getSavedData('accounts');
         const activeAccountIndex = await getSavedData('activeAccountIndex');
@@ -28,7 +27,6 @@ function App() {
       // ---------------------------------------------
       const walletConnectData = getWalletConnectStorage();
       if (Object.keys(walletConnectData).length) {
-        console.log('App.tsx | useEffect | walletConnectData: ', walletConnectData);
         setSession(walletConnectData);
       }
     }

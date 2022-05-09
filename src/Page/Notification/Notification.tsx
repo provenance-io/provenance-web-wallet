@@ -15,28 +15,6 @@ export const Notification:React.FC = () => {
   const { createConnector, connector } = useWalletConnect();
   const walletConnectUriParam = searchParams.get('wc');
 
-  // TEST: Only testing the rendering of the notification pages locally while offline, remove me!
-  const offlineTest = searchParams.get('offline');
-  useEffect(() => {
-    console.log('Checking for offlineTest...')
-    if (offlineTest) {
-      console.log('Is offlineTest: ', offlineTest);
-      setEventPayload({
-        payload: {
-          params: [
-            { peerMeta: {
-                description: 'description',
-                url: 'url',
-                name: 'name',
-                icons: [],
-            } }
-          ]
-        }
-      })
-      setNotificationType(offlineTest);
-    }
-  }, [offlineTest]);
-
   // On load, create the walletConnect event listeners
   useEffect(() => {
     // Connector must exist to create events
@@ -74,8 +52,8 @@ export const Notification:React.FC = () => {
   const renderNotificationContent = () => {
     if (!eventPayload) return null;
     switch(notificationType) {
-      case 'session_request': return <WalletConnectInit data={eventPayload} />
-      case 'provenance_sign': return <SignRequest data={eventPayload} />;
+      case 'session_request': return <WalletConnectInit payload={eventPayload} />
+      case 'provenance_sign': return <SignRequest payload={eventPayload} />;
       default: return null;
     }
   };

@@ -45,8 +45,12 @@ const ripemd160 = (bytes: Bytes): Bytes => {
 }
 
 export const signBytes = (bytes: Uint8Array, privateKey: Bytes): Uint8Array => {
+  console.log('signBytes | bytes: ', bytes);
+  console.log('signBytes | privateKey: ', privateKey);
   const hash = sha256(bytes);
+  console.log('signBytes | hash: ', hash);
   const { signature } = secp256k1EcdsaSign(hash, privateKey);
+  console.log('signBytes | signature: ', signature);
 
   return signature;
 }

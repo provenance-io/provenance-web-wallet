@@ -62,7 +62,6 @@ const walletConnectSlice = createSlice({
       const connector = new WalletConnectClient(session);
       state.connector = connector;
       state.session = session;
-      console.log('walletConnectSlice.ts | setSession | connector: ', connector);
     }
   },
 });

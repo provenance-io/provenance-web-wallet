@@ -6,9 +6,10 @@ import { getKey, decryptKey, createWalletFromMasterKey } from 'utils';
 interface Props {
   handleApprove: () => void,
   handleDecline: () => void,
+  handleAuth?: (privateKey: Uint8Array) => void,
 }
 
-export const Authenticate:React.FC<Props> = ({ handleApprove, handleDecline }) => {
+export const Authenticate:React.FC<Props> = ({ handleApprove, handleDecline, handleAuth }) => {
   const [walletPassword, setWalletPassword] = useState('');
   const [authenticated, setAuthenticated] = useState(false);
   const [passwordError, setPasswordError] = useState('');
@@ -28,8 +29,9 @@ export const Authenticate:React.FC<Props> = ({ handleApprove, handleDecline }) =
       if (!masterKey) newPasswordError = 'Invalid password';
       else {
         // TODO: Indicate if you want this account to be mainnet or testnet
-        const network = 'testnet';
+        // const network = 'testnet';
         const { privateKey } = createWalletFromMasterKey(masterKey);
+        if (handleAuth) handleAuth(privateKey);
         // Password was correct, derive the privateKey
         // Update local authentication status
         setAuthenticated(true);
@@ -41,14 +43,13 @@ export const Authenticate:React.FC<Props> = ({ handleApprove, handleDecline }) =
 
   return (
     authenticated ? (
-      <ButtonGroup>
+      <ButtonGroup background="rgba(0, 0, 0, 0.50)">
         <Button layout="default" onClick={handleApprove}>Approve</Button>
         <Button layout="default" variant='transparent' onClick={handleDecline}>Reject</Button>
       </ButtonGroup>
     ) : (
-      <ButtonGroup>
+      <ButtonGroup background="rgba(0, 0, 0, 0.50)">
         <Input
-          label="Wallet Password"
           placeholder="Enter Wallet Password"
           id="Wallet-Pasword"
           value={walletPassword}
@@ -57,6 +58,7 @@ export const Authenticate:React.FC<Props> = ({ handleApprove, handleDecline }) =
           type="password"
         />
         <Button layout="default" onClick={handleAuthAccount}>Authenticate</Button>
+        <Button layout="default" variant='transparent' onClick={handleDecline}>Reject</Button>
       </ButtonGroup>
     )
   );

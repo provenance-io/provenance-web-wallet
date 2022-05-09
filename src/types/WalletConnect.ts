@@ -10,11 +10,11 @@ export type IClientMeta = {
 }
 
 export type EventPayload = {
-  payload: {
-    params: {
-      peerMeta?: IClientMeta,
-    }[]
-  },
+  id: number,
+  jsonrpc: string,
+  params: {
+    peerMeta?: IClientMeta,
+  }[]
 }
 
 export type ConnectionEventPayload = {

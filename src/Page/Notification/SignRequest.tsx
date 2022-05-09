@@ -1,9 +1,15 @@
 import { EventPayload } from 'types';
 import styled from 'styled-components';
+import { convertHexToUtf8, convertHexToBuffer } from "@walletconnect/utils";
 import { Authenticate } from './Authenticate';
 import { useWalletConnect } from 'redux/hooks';
 import { List } from 'Components';
-// import { signBytes } from 'utils';
+import { useEffect, useState } from 'react';
+import { signBytes } from 'utils';
+
+const SignContainer = styled.div`
+  padding-bottom: 300px;
+`;
 
 const Title = styled.div`
   font-weight: 600;
@@ -15,23 +21,37 @@ const Title = styled.div`
   text-align: center;
   margin-bottom: 20px;
 `;
-const SubTitle = styled.div`
-  font-weight: 400;
-  font-family: "Gothic A1", sans-serif;
-  letter-spacing: 0.04em;
-  line-height: 160%;
-  text-align: center;
-  font-size: 1.6rem;
-  margin: 32px;
-`;
 
 interface Props {
-  data: EventPayload
+  payload: EventPayload
+}
+interface ParsedParams {
+  address?: string,
+  description?: string,
+  payload?: string,
 }
 
-export const SignRequest:React.FC<Props> = ({ data }) => {
-  const { connector } = useWalletConnect();  
+export const SignRequest:React.FC<Props> = ({ payload }) => {
+  const { connector } = useWalletConnect();
+  const [parsedParams, setParsedParams] = useState<ParsedParams>({});
+  const [encodedMessage, setEncodedMessage] = useState('');
+  const [privateKey, setPrivateKey] = useState<Uint8Array>();
+  console.log('SignRequest | payload :', payload);
+  console.log('SignRequest | connector :', connector);
     
+  // Onload, pull out and parse payload params
+  useEffect(() => {
+    const { params } = payload;
+    const [detailsJSONString, hexEncodedMessage] = params as string[];
+    setEncodedMessage(hexEncodedMessage);
+    const details = JSON.parse(detailsJSONString);
+    const decodedMessage = convertHexToUtf8(hexEncodedMessage);
+    setParsedParams({
+      ...details,
+      payload: decodedMessage,
+    })
+  }, [payload]);
+
   const closeWindow = async () => {
     const currentWindow = await chrome.windows.getCurrent();
     if (currentWindow.id) {
@@ -42,37 +62,55 @@ export const SignRequest:React.FC<Props> = ({ data }) => {
   };
 
   const handleApprove = async () => {
-    if (connector) {
-      // const result = signBytes(bites, privateKey);
-      // connector.approveRequest({
-      //   id, jsonrpc, result: 'success',
-      // })
-      // await connector.approveSession(data as any);
-      // Close the popup
-      closeWindow();
+    if (connector && privateKey && encodedMessage) {
+      console.log('handleApprove | encodedMessage: ', encodedMessage);
+      const bites = convertHexToBuffer(encodedMessage);
+      console.log('handleApprove | bites: ', bites);
+      console.log('handleApprove | privateKey: ', privateKey);
+      const result = signBytes(bites, privateKey);
+      console.log('handleApprove | result: ', result);
+      await connector.approveRequest({
+        id: payload.id,
+        jsonrpc: payload.jsonrpc,
+        result,
+      })
+      // Close the popup TEMP: UNCOMMENT THIS
+      // closeWindow();
     }
   }
   const handleDecline = async () => {
     if (connector) {
-      await connector.rejectSession({ message: 'Sign request rejected by user' });
+      await connector.rejectRequest({
+        error: { message: 'Sign request rejected by user' },
+        id: payload.id,
+        jsonrpc: payload.jsonrpc,
+      });
       // Close the popup
       closeWindow();
     }
   }
-  
+  const handleAuth = (privateKey: Uint8Array) => {
+    setPrivateKey(privateKey);
+  }
+
   const ListItems = {
-    platform: 'Figure Equity Solutions',
-    address: 'address',
-    created: 'created',
-    messageType: 'messageType',
-    'Est. Gas Fee': '0.00 Hash',
+    platform: connector?.peerMeta?.name || 'N/A',
+    address: parsedParams?.address || 'N/A',
+    created: '[Data_Missing]',
+    'message type': 'provenance_sign',
+    description: parsedParams?.description || 'N/A',
+    payload: parsedParams?.payload || 'N/A',
   };
 
   return (
-    <>
+    <SignContainer>
       <Title>Sign Request</Title>
       <List message={ListItems} />
-      <Authenticate handleApprove={handleApprove} handleDecline={handleDecline} />
-    </>
+      <Authenticate
+        handleApprove={handleApprove}
+        handleDecline={handleDecline}
+        handleAuth={handleAuth}
+      />
+    </SignContainer>
   );
 };

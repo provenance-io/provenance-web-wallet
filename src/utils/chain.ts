@@ -13,6 +13,8 @@ import { createHash } from 'crypto';
 import { derivationPath } from 'utils';
 import { PROVENANCE_ADDRESS_PREFIX_MAINNET } from 'consts';
 import { ecdsaSign as secp256k1EcdsaSign } from 'secp256k1';
+import { SignDoc, TxRaw, TxBody } from '../proto/cosmos/tx/v1beta1/tx_pb';
+import * as google_protobuf_any_pb from 'google-protobuf/google/protobuf/any_pb';
 
 const walletPrefix = PROVENANCE_ADDRESS_PREFIX_MAINNET!;
 const defaultDerivationPath = derivationPath();
@@ -44,13 +46,63 @@ const ripemd160 = (bytes: Bytes): Bytes => {
   return bufferToBytes(buffer2);
 }
 
-export const signBytes = (bytes: Uint8Array, privateKey: Bytes): Uint8Array => {
+const signBytes = (bytes: Uint8Array, privateKey: Bytes): Uint8Array => {
   console.log('signBytes | bytes: ', bytes);
   console.log('signBytes | privateKey: ', privateKey);
   const hash = sha256(bytes);
   console.log('signBytes | hash: ', hash);
   const { signature } = secp256k1EcdsaSign(hash, privateKey);
   console.log('signBytes | signature: ', signature);
+
+  return signature;
+}
+
+const buildSignDoc = (accNumber: number, chainId: string, txRaw: TxRaw): SignDoc => {
+  const signDoc = new SignDoc();
+  signDoc.setAccountNumber(accNumber);
+  signDoc.setAuthInfoBytes(txRaw.getAuthInfoBytes());
+  signDoc.setChainId(chainId);
+  signDoc.setBodyBytes(txRaw.getBodyBytes());
+  return signDoc;
+}
+
+const buildTxBody = (msgAny: google_protobuf_any_pb.Any | google_protobuf_any_pb.Any[], memo: string): TxBody => {
+  const txBody = new TxBody();
+  if (Array.isArray(msgAny)) txBody.setMessagesList(msgAny);
+  else txBody.addMessages(msgAny);
+  txBody.setMemo(memo);
+  // txBody.setTimeoutHeight();
+  return txBody;
+}
+
+interface SignMessageType {
+  msgAny: google_protobuf_any_pb.Any | google_protobuf_any_pb.Any[],
+  account: BaseAccount,
+  chainId: string,
+  wallet: Wallet,
+  memo: string,
+  feeDenom: SupportedDenoms,
+  gasPrice: number,
+  gasAdjustment: number
+}
+const signMessage = ({
+  msgAny,
+  account,
+  chainId,
+  wallet,
+  memo = '',
+  feeDenom = 'nhash',
+  gasPrice,
+  gasAdjustment = 1.25,
+}:SignMessageType) => {
+  const signerInfo = buildSignerInfo(account, wallet.publicKey);
+  const authInfo = buildAuthInfo(signerInfo, feeDenom, undefined, gasPrice);
+  const txBody = buildTxBody(msgAny, memo);
+  const txRaw = new TxRaw();
+  txRaw.setBodyBytes(txBody.serializeBinary());
+  txRaw.setAuthInfoBytes(authInfo.serializeBinary());
+  const signDoc = buildSignDoc(account.getAccountNumber(), chainId, txRaw);
+  const signature = signBytes(signDoc.serializeBinary(), wallet.privateKey);
 
   return signature;
 }

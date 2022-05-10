@@ -17,7 +17,8 @@
     "storage",
     "tabs",
     "activeTab",
-    "notifications"
+    "notifications",
+    "management"
   ],
   "web_accessible_resources": [
     {

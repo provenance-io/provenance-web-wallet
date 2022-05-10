@@ -9,25 +9,28 @@ function App() {
   const { setSession } = useWalletConnect();
 
   // If this is the initialLoad, get and set the storage wallet values
+  // This happens everytime the popup is opened and closed
+  // Use this to restore a walletConnect session from localStorage data (if it exists)
   useEffect(() => {
     if (initialLoad) {
+      // ----------------------------------------
+      // Get saved account data from storage
+      // ----------------------------------------
       const asyncStorageGet = async () => {
         const accounts = await getSavedData('accounts');
         const activeAccountIndex = await getSavedData('activeAccountIndex');
         setInitialValues({ accounts, activeAccountIndex });
       }
       asyncStorageGet();
+      // ---------------------------------------------
+      // Restore WalletConnect session if it exists
+      // ---------------------------------------------
+      const walletConnectData = getWalletConnectStorage();
+      if (Object.keys(walletConnectData).length) {
+        setSession(walletConnectData);
+      }
     }
-  }, [initialLoad, setInitialValues]);
-
-  // Check for any changes to the walletconnect session
-  useEffect(() => {
-    const walletConnectData = getWalletConnectStorage();
-    if (Object.keys(walletConnectData).length) {
-      console.log('App.tsx | useEffect | walletConnectData: ', walletConnectData);
-      setSession(walletConnectData);
-    }
-  }, [ setSession ]);
+  }, [initialLoad, setInitialValues, setSession]);
 
   const routing = useRoutes(routes);
   return <>{routing}</>;

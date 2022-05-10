@@ -9,6 +9,14 @@ export type IClientMeta = {
   name: string;
 }
 
+export type EventPayload = {
+  id: number,
+  jsonrpc: string,
+  params: {
+    peerMeta?: IClientMeta,
+  }[]
+}
+
 export type ConnectionEventPayload = {
   publicKey: string,
   address: string,

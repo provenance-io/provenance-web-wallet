@@ -3,14 +3,16 @@ import styled from 'styled-components';
 interface StyledProps {
   layout: 'float' | 'inline';
   direction: 'column' | 'row';
+  background?: string;
 }
 
 const Wrapper = styled.div<StyledProps>`
   display: flex;
   flex-direction: ${({ direction }) => direction};
+  ${({ background }) => background && `background: ${background};` }
   width: 100%;
   bottom: 0;
-  padding: 0px 16px 20px 16px;
+  padding: 20px 16px 20px 16px;
   ${({ layout }) => layout === 'float' && `
     position: fixed;
     bottom: 0;
@@ -34,11 +36,12 @@ interface Props {
   children: React.ReactNode;
   layout?: 'float' | 'inline';
   direction?: 'column' | 'row';
+  background?: string,
 }
 
-export const ButtonGroup:React.FC<Props> = ({ children, layout = 'float', direction = 'column' }) => {
+export const ButtonGroup:React.FC<Props> = ({ children, layout = 'float', direction = 'column', background }) => {
   return (
-    <Wrapper layout={layout} direction={direction}>
+    <Wrapper layout={layout} direction={direction} background={background}>
       {children}
     </Wrapper>
   )

@@ -2,21 +2,25 @@ import styled from 'styled-components';
 import { capitalize } from 'utils';
 import { COLORS } from 'theme';
 
-const Section = styled.div`
-  border-bottom: 1px solid ${COLORS.NEUTRAL_600};
-  padding: 15px 10px;
-  font-weight: 400;
+const ListRow = styled.div`
+  border-top: 1px solid ${COLORS.NEUTRAL_600};
+  padding: 16px 8px;
   display: flex;
   justify-content: space-between;
-  align-items: center;
-  font-size: 1.2rem;
 `;
-const SectionTitle = styled.div`
-  font-weight: 100;
+const ListContent = styled.div`
+  font-size: 1.4rem;
+  &:nth-child(1) {
+    margin-right: 6px;
+    min-width: 80px;
+  }
+  &:nth-child(2) {
+    margin-left: 6px;
+    text-align: right;
+    word-break: break-all;
+  }
 `;
-const SectionContent = styled.div`
-  font-weight: 100;
-`;
+
 
 interface ListProps {
   message: {
@@ -29,10 +33,10 @@ export const List = ({
 }: ListProps) => {
 
   const createList = Object.keys(message).map(item => (
-    <Section key={item}>
-      <SectionTitle>{capitalize(item)}</SectionTitle>
-      <SectionContent>{message[item]}</SectionContent>
-    </Section>
+    <ListRow key={item}>
+      <ListContent>{capitalize(item)}</ListContent>
+      <ListContent>{message[item]}</ListContent>
+    </ListRow>
   ));
 
   return (

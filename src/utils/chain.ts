@@ -1,3 +1,8 @@
+// CONSTANTS/VARIABLES
+import { PROVENANCE_ADDRESS_PREFIX_MAINNET } from 'consts';
+// LOCAL HELPER FUNCTIONS
+import { derivationPath } from 'utils';
+// CHAIN HELPER FUNCTIONS
 import {
   generateMnemonic as bip39gm,
   mnemonicToSeedSync as bip39mts,
@@ -6,15 +11,20 @@ import {
 import { fromSeed as bip32FromSeed, BIP32Interface, fromBase58 as bip32FromB58 } from 'bip32';
 import { toWords as bech32ToWords, encode as bech32Encode } from 'bech32';
 import { publicKeyCreate as secp256k1PublicKeyCreate } from 'secp256k1';
-import type { Bech32String, Bytes } from '@tendermint/types';
-import type { Wallet, KeyPair } from '@tendermint/sig';
 import { bufferToBytes, base64ToBytes as ogBase64ToBytes, bytesToBase64 as ogBytesToBase64 } from '@tendermint/belt';
 import { createHash } from 'crypto';
-import { derivationPath } from 'utils';
-import { PROVENANCE_ADDRESS_PREFIX_MAINNET } from 'consts';
 import { ecdsaSign as secp256k1EcdsaSign } from 'secp256k1';
-import { SignDoc, TxRaw, TxBody } from '../proto/cosmos/tx/v1beta1/tx_pb';
+// TYPESCRIPT TYPES
+import type { Bech32String, Bytes } from '@tendermint/types';
+import type { Wallet, KeyPair } from '@tendermint/sig';
+import { SupportedDenoms } from 'types';
+// PROTO IMPORTS
 import * as google_protobuf_any_pb from 'google-protobuf/google/protobuf/any_pb';
+import { BaseAccount } from '../proto/cosmos/auth/v1beta1/auth_pb';
+import { AuthInfo, Fee, ModeInfo, SignDoc, SignerInfo, TxBody, TxRaw } from '../proto/cosmos/tx/v1beta1/tx_pb';
+import { PubKey } from '../proto/cosmos/crypto/secp256k1/keys_pb';
+import { Coin } from '../proto/cosmos/base/v1beta1/coin_pb';
+import { SignMode } from '../proto/cosmos/tx/signing/v1beta1/signing_pb';
 
 const walletPrefix = PROVENANCE_ADDRESS_PREFIX_MAINNET!;
 const defaultDerivationPath = derivationPath();
@@ -75,6 +85,34 @@ const buildTxBody = (msgAny: google_protobuf_any_pb.Any | google_protobuf_any_pb
   return txBody;
 }
 
+const buildSignerInfo = (baseAccount: BaseAccount, pubKeyBytes: Bytes): SignerInfo => {
+  const single = new ModeInfo.Single();
+  single.setMode(SignMode.SIGN_MODE_DIRECT);
+  const modeInfo = new ModeInfo();
+  modeInfo.setSingle(single);
+  const signerInfo = new SignerInfo();
+  const pubKey = new PubKey();
+  pubKey.setKey(pubKeyBytes);
+  const pubKeyAny = new google_protobuf_any_pb.Any();
+  pubKeyAny.pack(pubKey.serializeBinary(), 'cosmos.crypto.secp256k1.PubKey', '/');
+  signerInfo.setPublicKey(pubKeyAny);
+  signerInfo.setModeInfo(modeInfo);
+  signerInfo.setSequence(baseAccount.getSequence());
+  return signerInfo;
+}
+const buildAuthInfo = (signerInfo: SignerInfo, feeDenom: SupportedDenoms, feeEstimate = 0, gasEstimate: number): AuthInfo => {
+  const feeCoin = new Coin();
+  feeCoin.setDenom(feeDenom);
+  feeCoin.setAmount(feeEstimate.toString());
+  const fee = new Fee();
+  fee.setAmountList([feeCoin]);
+  fee.setGasLimit(gasEstimate);
+  const authInfo = new AuthInfo();
+  authInfo.setFee(fee);
+  authInfo.setSignerInfosList([signerInfo]);
+  return authInfo;
+}
+
 interface SignMessageType {
   msgAny: google_protobuf_any_pb.Any | google_protobuf_any_pb.Any[],
   account: BaseAccount,
@@ -85,7 +123,7 @@ interface SignMessageType {
   gasPrice: number,
   gasAdjustment: number
 }
-const signMessage = ({
+export const signMessage = ({
   msgAny,
   account,
   chainId,

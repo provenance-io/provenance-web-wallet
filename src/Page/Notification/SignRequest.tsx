@@ -5,7 +5,7 @@ import { Authenticate } from './Authenticate';
 import { useWalletConnect } from 'redux/hooks';
 import { List } from 'Components';
 import { useEffect, useState } from 'react';
-import { signBytes } from 'utils';
+// import { signMessage } from 'utils';
 
 const SignContainer = styled.div`
   padding-bottom: 300px;
@@ -67,7 +67,17 @@ export const SignRequest:React.FC<Props> = ({ payload }) => {
       const bites = convertHexToBuffer(encodedMessage);
       console.log('handleApprove | bites: ', bites);
       console.log('handleApprove | privateKey: ', privateKey);
-      const result = signBytes(bites, privateKey);
+      // const result = signMessage({
+      //   msgAny: encodedMessage,
+      //   account: parsedParams.address,
+      //   chainId,
+      //   wallet,
+      //   memo = '',
+      //   feeDenom = 'nhash',
+      //   gasPrice,
+      //   gasAdjustment = 1.25,
+      // });
+      const result = 'result'
       console.log('handleApprove | result: ', result);
       await connector.approveRequest({
         id: payload.id,

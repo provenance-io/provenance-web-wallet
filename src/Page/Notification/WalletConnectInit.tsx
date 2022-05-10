@@ -1,7 +1,7 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { Sprite } from 'Components';
-import { trimString } from 'utils';
+import { trimString, addPendingRequest, removePendingRequest } from 'utils';
 import { ICON_NAMES, CHAINID_TESTNET } from 'consts';
 import circleIcon from 'images/circle-icon.svg';
 import { useAccount, useWalletConnect } from 'redux/hooks';
@@ -87,6 +87,20 @@ export const WalletConnectInit:React.FC<Props> = ({ payload }) => {
   const { connector } = useWalletConnect();
   const activeAccount = accounts[activeAccountIndex];
 
+  // Page is initially loaded
+  useEffect(() => {
+    // Save the request in Chrome data
+    // - If the user closes the window/popup or doesn't notice it in the background it can be retreived
+    //    - Clicking QR Code modal connect button again
+    //    - Opening extension directly (which should be showing a "1" notification in the icon)
+    const asyncChromeStorage = async () => {
+      const { id } = payload;
+      await addPendingRequest(id, payload);
+    };
+
+    asyncChromeStorage();
+  }, [payload]);
+
   const closeWindow = async () => {
     const currentWindow = await chrome.windows.getCurrent();
     if (currentWindow.id) {
@@ -114,6 +128,7 @@ export const WalletConnectInit:React.FC<Props> = ({ payload }) => {
         }],
       };
       await connector.approveSession(data as any);
+      await removePendingRequest(payload.id);
       // Close the popup
       closeWindow();
     }
@@ -121,6 +136,7 @@ export const WalletConnectInit:React.FC<Props> = ({ payload }) => {
   const handleDecline = async () => {
     if (connector) {
       await connector.rejectSession({ message: 'Connection rejected by user' });
+      await removePendingRequest(payload.id);
       // Close the popup
       closeWindow();
     }

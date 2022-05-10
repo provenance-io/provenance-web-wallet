@@ -1,4 +1,5 @@
 import { LOCAL_SAVE_NAME, DEFAULT_ACCOUNT_NAME } from 'consts';
+import { EventPayload } from 'types';
 
 // Determine storage type for app
 const useChromeStorage = !!window?.chrome?.storage;
@@ -154,3 +155,47 @@ export const clearAccounts = () => {
 export const getWalletConnectStorage = () => {
   return getStorageData(undefined, 'localStorage', 'walletconnect');
 }
+
+// ----------------------------
+// Pending Request storage
+// ----------------------------
+const PENDING_REQUESTS = 'pendingRequests';
+export const addPendingRequest = async (id: number, data: EventPayload) => {
+  // Get all pendingRequests (if it doesn't exist we will create an empty object)
+  const existingPendingRequests = await getSavedData(PENDING_REQUESTS, 'localStorage') || {};
+  // Add new id (or replace existing id) to pending requests and set data 
+  existingPendingRequests[id] = data;
+  // Count total pendingRequests and update saved value
+  const totalPendingRequests = Object.keys(existingPendingRequests).length;
+  await addSavedData({ totalPendingRequests });
+  chrome.action.setBadgeText({text: `${totalPendingRequests}`});
+  chrome.action.setBadgeBackgroundColor({ color: [255, 0, 0, 255] });
+  // Save updated pending requests to storage
+  await addSavedData({ [PENDING_REQUESTS]: existingPendingRequests });
+};
+// Remove all requests from storage
+export const removeAllPendingRequests = async () => {
+  await addSavedData({ totalPendingRequests: 0 });
+  chrome.action.setBadgeText({text: ''});
+  await removeSavedData(PENDING_REQUESTS);
+};
+// Remove a specific pending request from storage
+export const removePendingRequest = async (id: number) => {
+  // Get all pendingRequests (if it doesn't exist we will create an empty object)
+  const existingPendingRequests = await getSavedData(PENDING_REQUESTS, 'localStorage') || {};
+  // Delete the id (no error if it doesn't exist)
+  delete existingPendingRequests[id];
+  // Count total pendingRequests and update saved value
+  const totalPendingRequests = Object.keys(existingPendingRequests).length;
+  await addSavedData({ totalPendingRequests });
+  chrome.action.setBadgeText({text: `${totalPendingRequests}`});
+  chrome.action.setBadgeBackgroundColor({ color: [255, 0, 0, 255] });
+  // Save remaining pending requests
+  await addSavedData({ [PENDING_REQUESTS]: existingPendingRequests });
+};
+export const getPendingRequest = async (id?: number) => {
+  // Get all pendingRequests (if it doesn't exist we will create an empty object)
+  const existingPendingRequests = await getSavedData(PENDING_REQUESTS, 'localStorage') || {};
+  // Return the requested id or all requests
+  return id ? existingPendingRequests[id] : existingPendingRequests;
+};

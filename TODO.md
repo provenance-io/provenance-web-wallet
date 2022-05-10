@@ -13,6 +13,7 @@
 * Create logout button
 * Log user out once timeout reached
 * In settings, allow user to set timeout for auto-logout
+* Success page (typically used after a Notification)
 
 ### Accounts
 * Automatically switch API urls based on current active wallet.  TP will go to test urls, PB will go to prod urls

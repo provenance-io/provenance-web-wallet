@@ -2,10 +2,11 @@ import { useNavigate, useSearchParams } from 'react-router-dom';
 import { WC_NOTIFICATION_TYPES } from 'consts';
 import { useEffect, useState } from 'react';
 import { useWalletConnect } from 'redux/hooks';
-import { WalletConnectInit } from './WalletConnectInit';
 import { EventPayload } from 'types';
 import { Content } from 'Components';
+import { WalletConnectInit } from './WalletConnectInit';
 import { SignRequest } from './SignRequest';
+import { getPendingRequest } from 'utils';
 
 export const Notification:React.FC = () => {
   const [notificationType, setNotificationType] = useState<string>('');
@@ -48,6 +49,25 @@ export const Notification:React.FC = () => {
       setSearchParams('');
     }
   }, [connector, walletConnectUriParam, createConnector, setSearchParams]);
+
+  // If there is no event payload we need to see if there is already a session_request event waiting for the user
+  // Note: We won't get another triggered event from the dApp, so we need to search for a pending session_request
+  useEffect(() => {
+    const asyncSessionRequestSearch = async () => {
+      const allPendingRequests = await getPendingRequest();
+      // Look through each request and pull out the first one with a method of 'session_request' to display to the user
+      const allPendingKeys = Object.keys(allPendingRequests);
+      const sessionRequestId = allPendingKeys.filter(id => allPendingRequests[id].method === 'session_request')[0];
+      const targetSessionRequest = allPendingRequests[sessionRequestId];
+      // If we have a sessionRequest pending, use that data as the event payload and set the notification type
+      if (targetSessionRequest) {
+        setNotificationType('session_request');
+        setEventPayload(targetSessionRequest);
+      }
+    };
+
+    asyncSessionRequestSearch();
+  }, []);
 
   const renderNotificationContent = () => {
     if (!eventPayload) return null;

@@ -4,20 +4,14 @@
 ### Wallet Functionality
 * Sign messages
 * Sign for transactions
-* Notification page should be a shell which loads other pages into itself
-  - WalletConnect Initialization/Connection
-  - Approve/Deny Signing a message
-  - Approve/Deny a transaction
 
 ### Wallet Connect / dApps
-* When prompting user for action show wallet notification and/or popup (like connecting)
 * When connecting into a dApp, user should be able to select target account to connect (and set active)
-* Determine if we want to require password before allowing a connection into dApp
 * Correctly form/create JWT when connecting with wallet connect
 
 ### General
-* Keep user logged in (no password/unlock required) until browser closed or timeout reached
 * Create logout button
+* Log user out once timeout reached
 * In settings, allow user to set timeout for auto-logout
 
 ### Accounts
@@ -30,7 +24,6 @@
 * Update/Finish transactions page
 * Update all settings, get them to function correctly
 * Ability to reset/remove all wallets (Are we sure we want this functionality?)
-* Handle signing requests
 * Ability so Send/Receive from the dashboard page
 
 ### Extra

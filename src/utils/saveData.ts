@@ -8,19 +8,18 @@ const localSaveName = LOCAL_SAVE_NAME || 'provenance-web-wallet';
 // ----------------------
 // Session/Local Storage
 // ----------------------
-type StorageType = 'sessionStorage' | 'localStorage';
 type StorageData = {} | [];
 type StorageKey = string;
-const getStorageData = (key?: StorageKey, type: StorageType = 'sessionStorage', savedName = localSaveName) => {
-  const windowData = window[type];
+const getStorageData = (key?: StorageKey, savedName = localSaveName) => {
+  const windowData = window.localStorage;
   // Look for the item in the current localStorage, if found, add to results
   const rawData = windowData.getItem(savedName) || '{}';
   const data = JSON.parse(rawData);
   // If no specific key is passed, just return the entire object
   return key ? data[key] : data;
 };
-const addStorageData = (newData: StorageData, type: StorageType = 'sessionStorage') => {
-  const windowData = window[type];
+const addStorageData = (newData: StorageData) => {
+  const windowData = window.localStorage;
   // Pull from storage
   const rawData = windowData.getItem(localSaveName) || '{}';
   // Parse to edit
@@ -32,8 +31,8 @@ const addStorageData = (newData: StorageData, type: StorageType = 'sessionStorag
   // Save
   windowData.setItem(localSaveName, stringFinalData);
 };
-const removeStorageData = (key: StorageKey, type: StorageType = 'sessionStorage') => {
-  const windowData = window[type];
+const removeStorageData = (key: StorageKey) => {
+  const windowData = window.localStorage;
   // Pull from storage
   const rawData = windowData.getItem(localSaveName) || '{}';
   // Parse to edit
@@ -46,8 +45,8 @@ const removeStorageData = (key: StorageKey, type: StorageType = 'sessionStorage'
   // Save
   windowData.setItem(localSaveName, stringFinalData);
 };
-const clearStorageData = (type: StorageType = 'sessionStorage') => {
-  const windowData = window[type];
+const clearStorageData = () => {
+  const windowData = window.localStorage;
   windowData.removeItem(localSaveName);
 };
 
@@ -75,36 +74,36 @@ const clearChromeStorage = () => {
 // (Will automatically use browser default or chrome storage)
 // ----------------------
 // Get one or more values from storage
-export const getSavedData = async (key?: StorageKey, type: StorageType = 'sessionStorage') => {
+export const getSavedData = async (key?: StorageKey) => {
   if (useChromeStorage) return await getChromeStorage(key);
   else {
-    return getStorageData(key, type);
+    return getStorageData(key);
   }
 };
 // Add to storage
-export const addSavedData = (newData: StorageData, type: StorageType = 'sessionStorage') => {
+export const addSavedData = (newData: StorageData) => {
   if (useChromeStorage) addChromeStorage(newData);
-  else addStorageData(newData, type);
+  else addStorageData(newData);
 };
 // Clear out single value
-export const removeSavedData = (key: StorageKey, type: StorageType = 'sessionStorage') => {
+export const removeSavedData = (key: StorageKey) => {
   if (useChromeStorage) removeChromeStorage(key);
-  else removeStorageData(key, type);
+  else removeStorageData(key);
 }
 // Clear out entire storage
-export const clearSavedData = (type: StorageType = 'sessionStorage') => {
+export const clearSavedData = () => {
   if (useChromeStorage) clearChromeStorage();
-  else clearStorageData(type);
+  else clearStorageData();
 };
 // ----------------------------
 // Account Master Key storage
 // ----------------------------
 export const saveKey = async (key: string) => {
-  await addSavedData({key}, 'localStorage');
+  await addSavedData({key});
 };
-export const getKey = async () => await getSavedData('key', 'localStorage');
+export const getKey = async () => await getSavedData('key');
 export const clearKey = async () => {
-  await removeSavedData('key', 'localStorage');
+  await removeSavedData('key');
 };
 // ----------------------------
 // Account Name map storage
@@ -127,33 +126,33 @@ export const saveAccount = async ({
 }:Account
 ) => {
   // Check if existing name obj exists, if not, make a new obj
-  let existingAccounts = await getSavedData('accounts', 'localStorage');
+  let existingAccounts = await getSavedData('accounts');
 
   // No existing accounts exist
   if (!existingAccounts) existingAccounts = [];
   // Add this accountName/accountIndex to object
   existingAccounts.push({ id, name, network, publicKey, address });
   // Save the map back to local storage
-  addSavedData({accounts: existingAccounts}, 'localStorage');
+  addSavedData({accounts: existingAccounts});
 };
-export const getAccounts = async () => await getSavedData('accounts', 'localStorage');
+export const getAccounts = async () => await getSavedData('accounts');
 export const removeAccount = async (id: AccountIndex) => {
   // Check if existing name obj exists, if not, make a new obj
-  let existingAccounts = await getSavedData('accounts', 'localStorage');
+  let existingAccounts = await getSavedData('accounts');
   if (!existingAccounts) existingAccounts = [];
   existingAccounts.filter(({ id: accountId }: Account) => { return (id !== accountId) });
   // Save the map back to local storage
-  addSavedData(existingAccounts, 'localStorage');
+  addSavedData(existingAccounts);
 };
 export const clearAccounts = () => {
-  removeSavedData('accounts', 'localStorage');
+  removeSavedData('accounts');
 };
 
 // ----------------------------
 // WalletConnect Data
 // ----------------------------
 export const getWalletConnectStorage = () => {
-  return getStorageData(undefined, 'localStorage', 'walletconnect');
+  return getStorageData(undefined, 'walletconnect');
 }
 
 // ----------------------------
@@ -162,7 +161,7 @@ export const getWalletConnectStorage = () => {
 const PENDING_REQUESTS = 'pendingRequests';
 export const addPendingRequest = async (id: number, data: EventPayload) => {
   // Get all pendingRequests (if it doesn't exist we will create an empty object)
-  const existingPendingRequests = await getSavedData(PENDING_REQUESTS, 'localStorage') || {};
+  const existingPendingRequests = await getSavedData(PENDING_REQUESTS) || {};
   // Add new id (or replace existing id) to pending requests and set data 
   existingPendingRequests[id] = data;
   // Count total pendingRequests and update saved value
@@ -182,7 +181,7 @@ export const removeAllPendingRequests = async () => {
 // Remove a specific pending request from storage
 export const removePendingRequest = async (id: number) => {
   // Get all pendingRequests (if it doesn't exist we will create an empty object)
-  const existingPendingRequests = await getSavedData(PENDING_REQUESTS, 'localStorage') || {};
+  const existingPendingRequests = await getSavedData(PENDING_REQUESTS) || {};
   // Delete the id (no error if it doesn't exist)
   delete existingPendingRequests[id];
   // Count total pendingRequests and update saved value
@@ -195,7 +194,7 @@ export const removePendingRequest = async (id: number) => {
 };
 export const getPendingRequest = async (id?: number) => {
   // Get all pendingRequests (if it doesn't exist we will create an empty object)
-  const existingPendingRequests = await getSavedData(PENDING_REQUESTS, 'localStorage') || {};
+  const existingPendingRequests = await getSavedData(PENDING_REQUESTS) || {};
   // Return the requested id or all requests
   return id ? existingPendingRequests[id] : existingPendingRequests;
 };

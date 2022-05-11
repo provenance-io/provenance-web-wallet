@@ -25,12 +25,15 @@ export const SpriteSheet = () => (
     </g>
     <g id={ICON_NAMES.ARROW_TALL}>
       <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 7 14">
-        <path fill="currentColor" d="m.96 4.58 2.55-4 2.53 4-.63.31-1.47-1.56v9.7h-.85v-9.7L1.61 4.9l-.65-.31Z"/>
+        <path
+          fill="currentColor"
+          d="m.96 4.58 2.55-4 2.53 4-.63.31-1.47-1.56v9.7h-.85v-9.7L1.61 4.9l-.65-.31Z"
+        />
       </svg>
     </g>
     <g id={ICON_NAMES.CARET}>
       <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 5">
-        <path fill="currentColor" d="M10 0 5 5 0 0h10Z"/>
+        <path fill="currentColor" d="M10 0 5 5 0 0h10Z" />
       </svg>
     </g>
     <g id={ICON_NAMES.CHECK}>
@@ -40,24 +43,37 @@ export const SpriteSheet = () => (
     </g>
     <g id={ICON_NAMES.CHEVRON}>
       <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 6 11">
-        <path stroke="currentColor" strokeLinecap="square" d="m1 2 4 4-4 4"/>
+        <path stroke="currentColor" strokeLinecap="square" d="m1 2 4 4-4 4" />
       </svg>
     </g>
     <g id={ICON_NAMES.CLOSE}>
-    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 16 16">
-      <path stroke="currentColor" d="m1 1 14 14m0-14L1 15"/>
-    </svg>
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 16 16">
+        <path stroke="currentColor" d="m1 1 14 14m0-14L1 15" />
+      </svg>
     </g>
     <g id={ICON_NAMES.COPY}>
-    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 13 16">
-      <path stroke="currentColor" d="M4 3H1v12h8v-3"/>
-      <path stroke="currentColor" d="M4 1h4.5L12 4.5V12H4V1Z"/>
-      <path stroke="currentColor" d="M8 1v4h4"/>
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 13 16">
+        <path stroke="currentColor" d="M4 3H1v12h8v-3" />
+        <path stroke="currentColor" d="M4 1h4.5L12 4.5V12H4V1Z" />
+        <path stroke="currentColor" d="M8 1v4h4" />
+      </svg>
+    </g>
+    <g id={ICON_NAMES.CUBES}>
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="9.5 2 19 16">
+      <path stroke="currentColor" d="m19 1-9 5v8l9 5 9-5V6l-9-5Zm0 10-9-5"/>
+      <path stroke="currentColor" d="m28 6-9 5v8m-9-5-9 5v8l9 5 9-5v-8l-9-5Zm0 10-9-5"/>
+      <path stroke="currentColor" d="m19 19-9 5v8m18-18-9 5v8l9 5 9-5v-8l-9-5Zm0 10-9-5"/>
+      <path stroke="currentColor" d="m37 19-9 5v8"/>
     </svg>
     </g>
     <g id={ICON_NAMES.DASHBOARD}>
       <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 17 16">
-        <path fill="currentColor" fillRule="evenodd" d="M.5 1.1V4h16V1.1C16.5 0 15.4 0 15.4 0H1.6S.5 0 .5 1.1Zm6 4.9h-6v8.9C.5 16 1.6 16 1.6 16h4.9V6Zm2 10h6.9c1.1 0 1.1-1.1 1.1-1.1V6h-8v10Z" clipRule="evenodd"/>
+        <path
+          fill="currentColor"
+          fillRule="evenodd"
+          d="M.5 1.1V4h16V1.1C16.5 0 15.4 0 15.4 0H1.6S.5 0 .5 1.1Zm6 4.9h-6v8.9C.5 16 1.6 16 1.6 16h4.9V6Zm2 10h6.9c1.1 0 1.1-1.1 1.1-1.1V6h-8v10Z"
+          clipRule="evenodd"
+        />
       </svg>
     </g>
     <g id={ICON_NAMES.IN_PROGRESS}>
@@ -70,9 +86,9 @@ export const SpriteSheet = () => (
     </g>
     <g id={ICON_NAMES.MENU}>
       <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 4 20">
-        <circle cx="2" cy="2" r="2" fill="currentColor"/>
-        <circle cx="2" cy="10" r="2" fill="currentColor"/>
-        <circle cx="2" cy="18" r="2" fill="currentColor"/>
+        <circle cx="2" cy="2" r="2" fill="currentColor" />
+        <circle cx="2" cy="10" r="2" fill="currentColor" />
+        <circle cx="2" cy="18" r="2" fill="currentColor" />
       </svg>
     </g>
     <g id={ICON_NAMES.PROVENANCE}>
@@ -85,27 +101,55 @@ export const SpriteSheet = () => (
     </g>
     <g id={ICON_NAMES.PROFILE}>
       <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 19 18">
-        <path fill="currentColor" fillRule="evenodd" d="M16.1 15A9 9 0 0 0 9.5 0a9 9 0 0 0-6.7 15c.8-1.4 2-2.4 3.5-3a5.3 5.3 0 1 1 6.3 0 8.4 8.4 0 0 1 3.5 3Zm-1.5 1.4c-.3-.4-.6-1-1-1.3a6.4 6.4 0 0 0-4.1-1.8 5.7 5.7 0 0 0-5.2 3 9 9 0 0 0 10.3.1ZM9.5 11a3.3 3.3 0 1 0 0-6.7 3.3 3.3 0 0 0 0 6.7Z" clipRule="evenodd"/>
+        <path
+          fill="currentColor"
+          fillRule="evenodd"
+          d="M16.1 15A9 9 0 0 0 9.5 0a9 9 0 0 0-6.7 15c.8-1.4 2-2.4 3.5-3a5.3 5.3 0 1 1 6.3 0 8.4 8.4 0 0 1 3.5 3Zm-1.5 1.4c-.3-.4-.6-1-1-1.3a6.4 6.4 0 0 0-4.1-1.8 5.7 5.7 0 0 0-5.2 3 9 9 0 0 0 10.3.1ZM9.5 11a3.3 3.3 0 1 0 0-6.7 3.3 3.3 0 0 0 0 6.7Z"
+          clipRule="evenodd"
+        />
       </svg>
     </g>
     <g id={ICON_NAMES.QRCODE}>
       <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 48 48">
-        <circle cx="24" cy="24" r="23.5" stroke="currentColor"/>
-        <path stroke="currentColor" strokeWidth="1.222" d="M13.611 28.278h6.111v6.111h-6.111zm0-14.667h6.111v6.111h-6.111zm14.666 0h6.111v6.111h-6.111zM13 22.166h1.222m2.446 0h3.667m2.445 9.778H24m0 1.223h1.223m8.554-7.334H35m-6.111-1.223h1.222M13 25.833h1.222m.001-2.444h3.666m-3.666 1.222h2.444m4.889 9.777h7.333m-2.444-1.222h2.444m1.222-11H35m-2.444 1.223H35m-6.111 2.444h3.667m-2.445 1.222h1.222m1.834-.61v2.444m-2.445-1.834v4.278m-9.166-7.944h1.223m-2.445 1.222h4.889m8.555 9.777h-2.444m3.055-3.055v3.666m-18.944-9.166h7.334m-.613-10.389v4.89m-.611-6.723h1.222M25.832 13v3.667m-2.444-1.223v2.445m4.278 4.277h1.222m-4.278 9.167V30.11m.611-1.834h3.667m2.444 2.445h2.445M24.61 19.11v3.667m1.222-1.223V24m-2.444 6.11v-3.666m3.055 3.056h1.223m-.611-3.056V24m.61 3.055h1.223m0 6.111h2.444m-3.055-.61V30.11M25.22 18.5h1.223"/>
-        <path fill="currentColor" d="M15.445 15.444h2.444v2.444h-2.444zm0 14.667h2.444v2.444h-2.444zm14.666-14.667h2.444v2.444h-2.444z"/>
+        <circle cx="24" cy="24" r="23.5" stroke="currentColor" />
+        <path
+          stroke="currentColor"
+          strokeWidth="1.222"
+          d="M13.611 28.278h6.111v6.111h-6.111zm0-14.667h6.111v6.111h-6.111zm14.666 0h6.111v6.111h-6.111zM13 22.166h1.222m2.446 0h3.667m2.445 9.778H24m0 1.223h1.223m8.554-7.334H35m-6.111-1.223h1.222M13 25.833h1.222m.001-2.444h3.666m-3.666 1.222h2.444m4.889 9.777h7.333m-2.444-1.222h2.444m1.222-11H35m-2.444 1.223H35m-6.111 2.444h3.667m-2.445 1.222h1.222m1.834-.61v2.444m-2.445-1.834v4.278m-9.166-7.944h1.223m-2.445 1.222h4.889m8.555 9.777h-2.444m3.055-3.055v3.666m-18.944-9.166h7.334m-.613-10.389v4.89m-.611-6.723h1.222M25.832 13v3.667m-2.444-1.223v2.445m4.278 4.277h1.222m-4.278 9.167V30.11m.611-1.834h3.667m2.444 2.445h2.445M24.61 19.11v3.667m1.222-1.223V24m-2.444 6.11v-3.666m3.055 3.056h1.223m-.611-3.056V24m.61 3.055h1.223m0 6.111h2.444m-3.055-.61V30.11M25.22 18.5h1.223"
+        />
+        <path
+          fill="currentColor"
+          d="M15.445 15.444h2.444v2.444h-2.444zm0 14.667h2.444v2.444h-2.444zm14.666-14.667h2.444v2.444h-2.444z"
+        />
       </svg>
     </g>
     <g id={ICON_NAMES.TRANSACTIONS}>
       <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 19 20">
-        <path fill="currentColor" d="m5.375 8-.937 1.171 2.437 1.95V8h-1.5Zm-2.5-2-.937-1.171L.474 6l1.464 1.171L2.875 6Zm2.5-2h1.5V.88L4.438 2.828 5.375 4Zm.937 2.829-2.5-2L1.938 7.17l2.5 2 1.874-2.34Zm-2.5.342 2.5-2L4.438 2.83l-2.5 2 1.874 2.34ZM6.875 8V4h-3v4h3Zm6.5 8 .937 1.171-2.436 1.95v-3.12l1.5-.001Zm2.5-2 .937-1.171 1.464 1.17-1.464 1.172L15.875 14Zm-2.5-2h-1.5V8.88l2.437 1.95-.937 1.17Zm-.937 2.829 2.5-2 1.874 2.342-2.5 2-1.874-2.342Zm2.5.342-2.5-2 1.874-2.342 2.5 2-1.874 2.342Zm-3.063.83v-4l3-.001v4h-3Z"/>
-        <path stroke="currentColor" strokeLinecap="square" strokeWidth="3" d="M5.375 6h10.5m-2.5 8.5h-10.5"/>
+        <path
+          fill="currentColor"
+          d="m5.375 8-.937 1.171 2.437 1.95V8h-1.5Zm-2.5-2-.937-1.171L.474 6l1.464 1.171L2.875 6Zm2.5-2h1.5V.88L4.438 2.828 5.375 4Zm.937 2.829-2.5-2L1.938 7.17l2.5 2 1.874-2.34Zm-2.5.342 2.5-2L4.438 2.83l-2.5 2 1.874 2.34ZM6.875 8V4h-3v4h3Zm6.5 8 .937 1.171-2.436 1.95v-3.12l1.5-.001Zm2.5-2 .937-1.171 1.464 1.17-1.464 1.172L15.875 14Zm-2.5-2h-1.5V8.88l2.437 1.95-.937 1.17Zm-.937 2.829 2.5-2 1.874 2.342-2.5 2-1.874-2.342Zm2.5.342-2.5-2 1.874-2.342 2.5 2-1.874 2.342Zm-3.063.83v-4l3-.001v4h-3Z"
+        />
+        <path
+          stroke="currentColor"
+          strokeLinecap="square"
+          strokeWidth="3"
+          d="M5.375 6h10.5m-2.5 8.5h-10.5"
+        />
       </svg>
     </g>
     <g id={ICON_NAMES.CHAIN}>
       <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 48 48">
-        <circle cx="24" cy="24" r="23.5" stroke="currentColor"/>
-        <path fill="currentColor" transform="scale(0.05) translate(200,220)" d="M212.26,390.24l-60.331,60.331c-25.012,25.012-65.517,25.012-90.508,0.005c-24.996-24.996-24.996-65.505-0.005-90.496     l120.683-120.683c24.991-24.992,65.5-24.992,90.491,0c8.331,8.331,21.839,8.331,30.17,0c8.331-8.331,8.331-21.839,0-30.17     c-41.654-41.654-109.177-41.654-150.831,0L31.247,329.909c-41.654,41.654-41.654,109.177,0,150.831     c41.649,41.676,109.177,41.676,150.853,0l60.331-60.331c8.331-8.331,8.331-21.839,0-30.17S220.591,381.909,212.26,390.24z"/>
-        <path fill="currentColor" transform="scale(0.05) translate(200,220)" d="M480.751,31.24c-41.654-41.654-109.199-41.654-150.853,0l-72.384,72.384c-8.331,8.331-8.331,21.839,0,30.17     c8.331,8.331,21.839,8.331,30.17,0l72.384-72.384c24.991-24.992,65.521-24.992,90.513,0c24.991,24.991,24.991,65.5,0,90.491     L317.845,284.638c-24.992,24.992-65.5,24.992-90.491,0c-8.331-8.331-21.839-8.331-30.17,0s-8.331,21.839,0,30.17     c41.654,41.654,109.177,41.654,150.831,0l132.736-132.736C522.405,140.418,522.405,72.894,480.751,31.24z"/>
+        <circle cx="24" cy="24" r="23.5" stroke="currentColor" />
+        <path
+          fill="currentColor"
+          transform="scale(0.05) translate(200,220)"
+          d="M212.26,390.24l-60.331,60.331c-25.012,25.012-65.517,25.012-90.508,0.005c-24.996-24.996-24.996-65.505-0.005-90.496     l120.683-120.683c24.991-24.992,65.5-24.992,90.491,0c8.331,8.331,21.839,8.331,30.17,0c8.331-8.331,8.331-21.839,0-30.17     c-41.654-41.654-109.177-41.654-150.831,0L31.247,329.909c-41.654,41.654-41.654,109.177,0,150.831     c41.649,41.676,109.177,41.676,150.853,0l60.331-60.331c8.331-8.331,8.331-21.839,0-30.17S220.591,381.909,212.26,390.24z"
+        />
+        <path
+          fill="currentColor"
+          transform="scale(0.05) translate(200,220)"
+          d="M480.751,31.24c-41.654-41.654-109.199-41.654-150.853,0l-72.384,72.384c-8.331,8.331-8.331,21.839,0,30.17     c8.331,8.331,21.839,8.331,30.17,0l72.384-72.384c24.991-24.992,65.521-24.992,90.513,0c24.991,24.991,24.991,65.5,0,90.491     L317.845,284.638c-24.992,24.992-65.5,24.992-90.491,0c-8.331-8.331-21.839-8.331-30.17,0s-8.331,21.839,0,30.17     c41.654,41.654,109.177,41.654,150.831,0l132.736-132.736C522.405,140.418,522.405,72.894,480.751,31.24z"
+        />
       </svg>
     </g>
   </Svg>

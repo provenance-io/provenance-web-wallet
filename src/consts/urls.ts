@@ -27,6 +27,8 @@ export const RECOVER_URL = '/recover';
 export const RECOVER_NOTE_URL = '/recover/note';
 export const RECOVER_SEED_URL = '/recover/seed';
 export const RECOVER_PASSWORD_URL ='/recover/password';
+// -- ACTIONS URLS
+export const ACTIONS_URL = '/actions';
 // -- ASSET URLS
 export const ASSET_URL = '/asset/:assetName';
 // -- CONFIRMATION

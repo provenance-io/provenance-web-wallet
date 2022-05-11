@@ -1,4 +1,5 @@
 import {
+  Actions,
   Asset,
   Confirm,
   Connect,
@@ -32,6 +33,7 @@ import {
   VerifySeedphrase,
 } from 'Page';
 import {
+  ACTIONS_URL,
   APP_URL,
   ASSET_URL,
   CONFIRM_URL,
@@ -82,6 +84,14 @@ export const routes = [
           { path: DASHBOARD_ACCOUNT_CREATE_URL, element: <DashboardAccountCreate  nextUrl={DASHBOARD_MENU_URL} /> },
           { path: DASHBOARD_CONNECTION_DETAILS_URL, element: <DashboardConnectionDetails /> },
         ]
+      },
+      // ACTIONS
+      {
+        path: ACTIONS_URL,
+        element: <Page />,
+        children: [
+          { index: true, element: <Actions /> },
+        ],
       },
       // ASSET
       {

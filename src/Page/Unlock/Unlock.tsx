@@ -38,12 +38,17 @@ export const Unlock = ({ nextUrl }: Props) => {
     if (!newError) {
       const localKey = await getKey();
       // Attempt to decrypt the key with the provided password
+      console.log('localKey :', localKey);
+      console.log('password :', password);
       const masterKey = decryptKey(localKey, password);
+      console.log('masterKey :', masterKey);
       if (!masterKey) newError = 'Invalid password';
       else {
         // Password was correct, build the wallets
         const localAccounts = await getAccounts();
+        console.log('localAccounts :', localAccounts);
         const activeAccountIndex = await getSavedData('activeAccountIndex');
+        console.log('activeAccountIndex :', activeAccountIndex);
         addAccounts({ accounts: localAccounts, activeAccountIndex })
         // Redirect to dashboard
         navigate(nextUrl);

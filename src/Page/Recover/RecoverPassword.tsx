@@ -1,6 +1,13 @@
 import { useState } from 'react';
 import { BodyContent, Button, Header, Input, Select } from 'Components';
-import { ICON_NAMES, PASSWORD_MIN_LENGTH, DEFAULT_ACCOUNT_NAME, PROVENANCE_WALLET_COIN_TYPE } from 'consts';
+import {
+  ICON_NAMES,
+  PASSWORD_MIN_LENGTH,
+  DEFAULT_ACCOUNT_NAME,
+  PROVENANCE_WALLET_COIN_TYPE,
+  PROVENANCE_ADDRESS_PREFIX_MAINNET,
+  PROVENANCE_ADDRESS_PREFIX_TESTNET,
+} from 'consts';
 import { useNavigate } from 'react-router-dom';
 import styled, { css } from 'styled-components';
 import { useAccount, useAddress } from 'redux/hooks';
@@ -12,6 +19,7 @@ import {
   createWalletFromMasterKey,
   saveKey,
   derivationPath,
+  saveAccount,
 } from 'utils';
 import backupComplete from 'images/backup-complete.svg';
 
@@ -86,7 +94,11 @@ export const RecoverPassword = ({ nextUrl }: Props) => {
   const [showAdvanced, setShowAdvanced] = useState(false);
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
-  const [customDerivationPath, setCustomDerivationPath] = useState<CustomDerivationPathObject>({});
+  const [customDerivationPath, setCustomDerivationPath] = useState<CustomDerivationPathObject>({
+    account: 0,
+    change: 0,
+    addressIndex: 0,
+  });
   const [walletPasswordRepeat, setWalletPasswordRepeat] = useState('');
   const defaultNetwork = 'mainnet';
   const [network, setNetwork] = useState(defaultNetwork);
@@ -97,8 +109,9 @@ export const RecoverPassword = ({ nextUrl }: Props) => {
   const defaultAccountName = DEFAULT_ACCOUNT_NAME!;
 
   const recoverAccountLoop = async (masterKey: BIP32Interface, addressIndex: number = 0, accountName?: string): Promise<string> => {
-    const path = derivationPath({ address_index: addressIndex });
-    const { address, publicKey } = createWalletFromMasterKey(masterKey, undefined, path);
+    const path = derivationPath({ ...customDerivationPath, address_index: addressIndex });
+    const prefix = network === 'mainnet' ? PROVENANCE_ADDRESS_PREFIX_MAINNET : PROVENANCE_ADDRESS_PREFIX_TESTNET;
+    const { address, publicKey } = createWalletFromMasterKey(masterKey, prefix, path);
     const b64PublicKey = bytesToBase64(publicKey);
     const name = accountName || `${defaultAccountName}${addressIndex + 1}`;
     // Save data to redux store and clear out tempAccount data
@@ -113,6 +126,9 @@ export const RecoverPassword = ({ nextUrl }: Props) => {
     const hasAssetsRequest = await getAddressAssetsRaw(address);
     const hasAssets = hasAssetsRequest?.data?.length;
     if (addressIndex === 0 || hasAssets) {
+      // Save to local storage
+      await saveAccount(newWalletData);
+      // Save to redux store
       addAccount(newWalletData);
       // Loop function, bump address index up by one
       return recoverAccountLoop(masterKey, addressIndex + 1);

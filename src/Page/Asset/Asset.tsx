@@ -5,8 +5,8 @@ import { FooterNav, Header, Sprite, AssetRow } from 'Components';
 import { ICON_NAMES } from 'consts';
 import { AssetChart } from './AssetChart';
 import { AssetStats } from './AssetStats';
-import { ChangeValueArgs } from 'types';
-import { format } from 'date-fns';
+import { ChangeValueArgs, TimePeriodType } from 'types';
+import { generateLabels } from 'utils';
 
 const Wrapper = styled.div`
   width: 100%;
@@ -70,16 +70,19 @@ export const Asset:React.FC = () => {
   const { assetName } = useParams();
   const [currentAssetValue, setCurrentAssetValue] = useState(0);
   const [currentPriceChange, setCurrentPriceChange] = useState(0);
+  const [currentTimePeriod, setCurrentTimePeriod] = useState<TimePeriodType>('HOURLY');
   const [loading, setLoading] = useState(true);
   const [currentPriceChangePercent, setCurrentPriceChangePercent] = useState('');
   const [currentDate, setCurrentDate] = useState('');
   const [error, setError] = useState<string | boolean>(false);
 
-  const onValueChange = ({value = 0, diff = 0, diffPercent = '', date = ''}: ChangeValueArgs) => {
+  const onValueChange = ({value = 0, diff = 0, diffPercent = '', date = '', timePeriod = 'HOURLY'}: ChangeValueArgs) => {
+    console.log('onValueChange | timePeriod: ', timePeriod);
     setCurrentAssetValue(value);
     setCurrentPriceChange(diff);
     setCurrentPriceChangePercent(diffPercent);
     setCurrentDate(date);
+    setCurrentTimePeriod(timePeriod);
   };
 
   const PriceChangePolarity = currentPriceChange === 0 ? 'neutral' : currentPriceChange > 0 ? 'positive' : 'negative';
@@ -99,7 +102,7 @@ export const Asset:React.FC = () => {
         {PriceChangePolarity !== 'neutral' && <Sprite icon={ICON_NAMES.ARROW_TALL} size="1.5rem" spin={PriceChangePolarity === 'positive' ? '0' : '180'} />}
         ${currentPriceChange.toFixed(2)}{PriceChangePolarity !== 'neutral' && ` (${currentPriceChangePercent})`}
       </PriceChange>
-      {currentDate && <CurrentDate>{format(new Date(currentDate), 'h:MM bb, MMM dd, yyyy')}</CurrentDate>}
+      {currentDate && <CurrentDate>{generateLabels(currentDate, currentTimePeriod)}</CurrentDate>}
       <AssetChart onValueChange={onValueChange} setError={setError} loading={loading} setLoading={setLoading} />
       <AssetStats />
       <SectionTitle>Recent Transactions</SectionTitle>

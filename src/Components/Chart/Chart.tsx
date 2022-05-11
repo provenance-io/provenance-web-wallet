@@ -8,6 +8,7 @@ import {
   ChartLabelsType,
   ChangeValueType,
   ChartValueDiffPercentsType,
+  TimePeriodType,
 } from 'types';
 
 const ChartContainer = styled.div`
@@ -23,6 +24,7 @@ interface Props {
   diffPercents: ChartValueDiffPercentsType,
   options?: ChartOptions,
   type?: string,
+  timePeriod: TimePeriodType,
   onValueChange?: ChangeValueType,
 }
 
@@ -33,6 +35,7 @@ export const Chart:React.FC<Props> = ({
   diffPercents: chartValueDiffPercents,
   options: chartOptions = {},
   type: chartType = 'line',
+  timePeriod,
   onValueChange,
 }) => {
   const chartElement = useRef(null);
@@ -69,7 +72,7 @@ export const Chart:React.FC<Props> = ({
               // Create shadow to darken rest of chart
               ctx.globalCompositeOperation='source-atop';
               ctx.fillStyle = 'rgba(0, 0, 0, 0.70)';
-              ctx.fillRect(x, yAxis.top - 10, 900, yAxis.bottom);
+              ctx.fillRect(x, yAxis.top, 900, yAxis.bottom + 100);
               ctx.restore();
             }
           },
@@ -88,6 +91,7 @@ export const Chart:React.FC<Props> = ({
                 date: latestDate,
                 diff: latestDiff,
                 diffPercent: latestDiffPercent,
+                timePeriod,
               });
             }
           }
@@ -100,7 +104,7 @@ export const Chart:React.FC<Props> = ({
         },
         scales: {
           y: { ticks: { display: false }, grid: { display: false } },
-          x: { type: 'time', ticks: { display: false, }, grid: { display: false } },
+          x: { type: 'time', time: { unit: 'minute' }, ticks: { display: false, }, grid: { display: false } },
         },
         responsive: true,
         plugins:{
@@ -115,6 +119,7 @@ export const Chart:React.FC<Props> = ({
                   diff: chartValueDiffs[data.dataIndex],
                   diffPercent: chartValueDiffPercents[data.dataIndex],
                   date: chartLabels[data.dataIndex],
+                  timePeriod
                 });
               }
             },
@@ -131,7 +136,7 @@ export const Chart:React.FC<Props> = ({
 
   return (
     <ChartContainer>
-      <ChartCanvas ref={chartElement} width="311" height="311" />
+      <ChartCanvas ref={chartElement} />
     </ChartContainer>
   );
 };

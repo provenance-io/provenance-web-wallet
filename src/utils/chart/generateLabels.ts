@@ -1,19 +1,15 @@
-import { ChartLabelsType, TimePeriodType } from 'types';
+import { TimePeriodType } from 'types';
+import { format } from 'date-fns';
 
-export const generateLabels = (newTimePeriod: TimePeriodType, labels: ChartLabelsType) => {  
+export const generateLabels = (date: string, newTimePeriod: TimePeriodType, ) => {  
   switch (newTimePeriod) {
-    case 'HOURLY': return labels.map((date: string) => {
-      let hours = new Date(date).getHours();
-      const per = (hours >= 12) ? 'PM' : 'AM';
-      hours %= 12;
-      hours = hours || 12;
-      return `${hours} ${per}`
-    });
+    case 'MINUTE': return format(new Date(date), 'h:mm aa, MMM dd, yyyy');
+    case 'HOURLY': return format(new Date(date), 'h:mm aa, MMM dd, yyyy');
     case 'DAILY': // fallthrough
-    case 'WEEKLY': return labels.map((date: string) => `${new Date(date).getMonth()}/${new Date(date).getDate()}`);
-    case 'MONTHLY': return labels.map((date: string) => `${new Date(date).getMonth()}`);
-    case 'YEARLY': return labels.map((date: string) => `${new Date(date).getFullYear()}`);
-    case 'ALL': return labels.map((date: string) => `${new Date(date).getMonth()}/${new Date(date).getFullYear()}`);
-    default: return [''];
+    case 'WEEKLY': return format(new Date(date), 'MMM dd, yyyy');
+    case 'MONTHLY': return format(new Date(date), 'MMM dd, yyyy');
+    case 'YEARLY': return format(new Date(date), 'MMM dd, yyyy');
+    case 'ALL': return format(new Date(date), 'MMM dd, yyyy');
+    default: return date;
   }
 };

@@ -12,9 +12,16 @@ export type IClientMeta = {
 export type EventPayload = {
   id: number,
   jsonrpc: string,
+  method?: string,
+  date?: number,
+  session?: WalletConnectClient | null,
   params: {
     peerMeta?: IClientMeta,
   }[]
+}
+
+export type SavedPendingRequests = {
+  [id: number]: EventPayload,
 }
 
 export type ConnectionEventPayload = {

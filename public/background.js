@@ -27,8 +27,6 @@ const notificationPopupEvent = function(request, sender, sendResponse) {
         break;
       case 'walletconnect_event':
         // walletconnect event passed through, should trigger same as .on(event_name, callback)
-        chrome.action.setBadgeText({text: 'Sign'});
-        chrome.action.setBadgeBackgroundColor({ color: [255, 0, 0, 255] });
         popupConfig.url = `${popupConfig.url}?redirectTo=NOTIFICATION_URL`;
         chrome.windows.create(popupConfig);
         break;
@@ -37,13 +35,25 @@ const notificationPopupEvent = function(request, sender, sendResponse) {
   });
 };
 
-// ----------------------------------------
-// Setup all event listeners
-// ----------------------------------------
-chrome.runtime.onMessageExternal.addListener(notificationPopupEvent);
-
 const asyncGetStorage = async () => {
   const allData = await chrome.storage.local.get();
   console.log('allData :', allData);
+  // Update the badge based on the existing number of requests
+  chrome.action.setBadgeText({text: `${allData?.totalPendingRequests || ''}`});
+  chrome.action.setBadgeBackgroundColor({ color: [255, 0, 0, 255] });
 };
 asyncGetStorage();
+
+// ----------------------------------------
+// Setup all event listeners
+// ----------------------------------------
+const asyncSetup = async () => {
+  const walletKey = await chrome.storage.local.get('key');
+  const walletExists = walletKey?.key;
+  // Only set up listeners if user has created an extension wallet
+  if (walletExists) {
+    console.log('walletExists :', walletExists);
+    chrome.runtime.onMessageExternal.addListener(notificationPopupEvent);
+  }
+}
+asyncSetup();

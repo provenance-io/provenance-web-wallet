@@ -15,7 +15,7 @@ import {
 } from 'types';
 
 const ChartArea = styled.div`
-  min-height: 350px;
+  min-height: 250px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -115,6 +115,7 @@ export const AssetChart:React.FC<Props> = ({ onValueChange, setError, loading, s
           date: newLabels[newLabels.length -1],
           diff: newValueDiffs[newValueDiffs.length - 1],
           diffPercent: newValueDiffPercents[newValueDiffPercents.length - 1],
+          timePeriod
         })
       } else { setError(apiError) }
       setLoading(false);
@@ -155,11 +156,12 @@ export const AssetChart:React.FC<Props> = ({ onValueChange, setError, loading, s
           diffs={chartValueDiffs}
           diffPercents={chartValueDiffPercents}
           onValueChange={onValueChange}
+          timePeriod={timePeriod}
         /> :
         <ChartMessage>No Data Available</ChartMessage>
       )}
       <ChartOptions>
-        <ChartOption disabled={loading} active={timePeriod === 'MIN'} onClick={() => changeTimePeriod('MIN')}>1H</ChartOption>
+        <ChartOption disabled={loading} active={timePeriod === 'MINUTE'} onClick={() => changeTimePeriod('MINUTE')}>1H</ChartOption>
         <ChartOption disabled={loading} active={timePeriod === 'HOURLY'} onClick={() => changeTimePeriod('HOURLY')}>1D</ChartOption>
         <ChartOption disabled={loading} active={timePeriod === 'DAILY'} onClick={() => changeTimePeriod('DAILY')}>1W</ChartOption>
         <ChartOption disabled={loading} active={timePeriod === 'WEEKLY'} onClick={() => changeTimePeriod('WEEKLY')}>1M</ChartOption>

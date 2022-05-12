@@ -1,4 +1,4 @@
-const timePeriodOptions = ['MIN', 'HOURLY', 'DAILY', 'WEEKLY', 'MONTHLY', 'YEARLY', 'ALL'] as const;
+const timePeriodOptions = ['MINUTE', 'HOURLY', 'DAILY', 'WEEKLY', 'MONTHLY', 'YEARLY', 'ALL'] as const;
 
 export type TimePeriodType  = typeof timePeriodOptions[number];
 export type ChartLabelsType = string[];
@@ -22,10 +22,12 @@ export interface ChangeValueArgs {
   diff?: number,
   diffPercent?: string,
   date?: string,
+  timePeriod?: TimePeriodType,
 }
 export type ChangeValueType = ({
   value,
   diff,
   diffPercent,
   date,
+  timePeriod,
 }:ChangeValueArgs) => void;

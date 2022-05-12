@@ -5,9 +5,9 @@
   "license": "Apache-2.0",
   "homepage": "/",
   "dependencies": {
-    "@provenanceio/walletconnect-js": "0.2.15",
     "@reduxjs/toolkit": "^1.7.2",
     "@walletconnect/client": "1.7.1",
+    "@walletconnect/utils": "1.7.8",
     "@tendermint/belt": "0.3.0",
     "@tendermint/sig": "0.6.0",
     "axios": "0.26.1",
@@ -53,11 +53,8 @@
     "env-cmd": "10.1.0",
     "eslint-config-prettier": "8.3.0",
     "file-loader": "6.2.0",
-    "grpc_tools_node_protoc_ts": "5.2.2",
-    "json-schema-to-typescript": "10.1.4",
     "prettier": "2.5.1",
     "process": "0.11.10",
-    "protoc-gen-grpc-web": "1.2.1",
     "react-scripts": "4.0.3",
     "stream-browserify": "3.0.0",
     "typescript": "~4.1.5",
@@ -66,11 +63,8 @@
   "scripts": {
     "clean": "rm -rf ./build",
     "start": "env-cmd -e default,staging react-scripts start",
-    "build": "npm run clean && npm run build-protos && npm run schema-to-ts && npm run build-prod",
-    "build-prod": "env-cmd -e default,production react-scripts build",
+    "build": "env-cmd -e default,production react-scripts build",
     "test": "env-cmd -e e2e react-scripts test",
-    "build-protos": "bash ./scripts/build-protos.sh",
-    "schema-to-ts": "json2ts -i third_party/schema -o src/types/schema/",
     "eject": "react-scripts eject"
   },
   "eslintConfig": {

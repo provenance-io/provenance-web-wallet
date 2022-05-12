@@ -134,7 +134,7 @@ const accountSlice = createSlice({
         accounts: state.accounts,
       })
       saveAccount({ id, name, network });
-      addSavedData({ activeAccountIndex }, 'localStorage');
+      addSavedData({ activeAccountIndex });
     },
     updateWallet: (state, { payload }) => {
       const { walletIndex, ...rest } = payload;
@@ -153,7 +153,7 @@ const accountSlice = createSlice({
       // Save wallet data into savedStorage
       addSavedData({
         activeAccountIndex: state.activeAccountIndex,
-      }, 'localStorage');
+      });
     },
     updatetempAccount: (state, { payload }) => {
       state.tempAccount = {...payload, ...state.tempAccount};

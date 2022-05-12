@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import styled from 'styled-components';
 import { Sprite } from 'Components';
-import { trimString } from 'utils';
+import { trimString, removePendingRequest } from 'utils';
 import { ICON_NAMES, CHAINID_TESTNET } from 'consts';
 import circleIcon from 'images/circle-icon.svg';
 import { useAccount, useWalletConnect } from 'redux/hooks';
@@ -16,26 +16,8 @@ const Title = styled.div`
   line-height: 20px;
   font-size: 1.6rem;
   text-align: center;
-  margin-bottom: 20px;
-`;
-const DisplayTitle = styled.div`
-  font-family: "Courier New", Courier, monospace;
-  color: white;
-  font-weight: bold;
-  background: rgba(255,255,255,0.5);
-  box-shadow: 0px 0px 9px 0px rgb(255 255 255 / 70%) inset;
-  padding: 10px 20px;
-  border-radius: 50px;
-  font-size: 1.6rem;
-  margin: 30px;
-  white-space: nowrap;
-  overflow: scroll;
-  overflow-y: scroll;
-  -ms-overflow-style: none;
-  &::-webkit-scrollbar {
-    width: 0;
-    height: 0;
-  }
+  max-width: 200px;
+  margin: 50px auto 20px auto;
 `;
 const SubTitle = styled.div`
   font-weight: 400;
@@ -43,13 +25,14 @@ const SubTitle = styled.div`
   letter-spacing: 0.04em;
   line-height: 160%;
   text-align: center;
-  font-size: 1.6rem;
-  margin: 32px;
+  font-size: 1.4rem;
+  max-width: 200px;
+  margin: auto;
 `;
-const Warning = styled.div`
+const UrlText = styled.div`
   font-size: 1.2rem;
-  color: #a85858;
   font-style: italic;
+  color: #DDDDDD;
 `;
 const ConnectIcon = styled.div`
   max-width: 100%;
@@ -57,7 +40,8 @@ const ConnectIcon = styled.div`
   align-items: center;
   justify-content: center;
   position: relative;
-  margin: 20px 0px 30px;
+  margin-top: 40px;
+  height: 80px;
 `;
 const ConnectPeerImg = styled.img`
   z-index: 1;
@@ -71,11 +55,11 @@ const ConnectBgImg = styled.img`
 `;
 
 interface Props {
-  payload: EventPayload
+  payload: EventPayload,
+  closeWindow: () => void,
 }
 
-export const WalletConnectInit:React.FC<Props> = ({ payload }) => {
-  console.log('WalletConnectInit | data: ', payload);
+export const WalletConnectInit:React.FC<Props> = ({ payload, closeWindow }) => {
   const [useFallbackIcon, setUseFallbackIcon] = useState(false);
   const { peerMeta = {
     name: 'N/A',
@@ -86,15 +70,6 @@ export const WalletConnectInit:React.FC<Props> = ({ payload }) => {
   const { accounts, activeAccountIndex } = useAccount();
   const { connector } = useWalletConnect();
   const activeAccount = accounts[activeAccountIndex];
-
-  const closeWindow = async () => {
-    const currentWindow = await chrome.windows.getCurrent();
-    if (currentWindow.id) {
-      chrome.windows.remove(currentWindow.id);
-    } else {
-      window.close();
-    }
-  };
 
   const handleApprove = async () => {
     if (connector) {
@@ -124,14 +99,20 @@ export const WalletConnectInit:React.FC<Props> = ({ payload }) => {
       // Close the popup
       closeWindow();
     }
+    else {
+      // No connector, this session is long gone, just kill it
+      await removePendingRequest(payload.id);
+      // Close the popup
+      closeWindow();
+    }
   }
 
   return (
     <>
       <Title>Connection Request</Title>
-      <DisplayTitle>{trimString(name, 20)}</DisplayTitle>
       <SubTitle>
-        Allow connection to {url}?
+        Allow connection to {trimString(name, 120)}?
+        <UrlText>({url})</UrlText>
       </SubTitle>
       <ConnectIcon>
         {(icons?.length && !useFallbackIcon) ? (
@@ -139,9 +120,6 @@ export const WalletConnectInit:React.FC<Props> = ({ payload }) => {
         ) : <Sprite icon={ICON_NAMES.CHAIN} size="6rem" />}
         <ConnectBgImg src={circleIcon} />
       </ConnectIcon>
-      <Warning>
-        Be careful about which Dapps you connect to, and what permissions you give them. Certain types of transaction require granting a Dapp permission to access your funds
-      </Warning>
       <Authenticate handleApprove={handleApprove} handleDecline={handleDecline} />
     </>
   );

@@ -31,10 +31,10 @@ const addStorageData = (newData: StorageData) => {
   // Save
   windowData.setItem(localSaveName, stringFinalData);
 };
-const removeStorageData = (key: StorageKey) => {
+const removeStorageData = (key: StorageKey, customLocalSaveName = localSaveName) => {
   const windowData = window.localStorage;
   // Pull from storage
-  const rawData = windowData.getItem(localSaveName) || '{}';
+  const rawData = windowData.getItem(customLocalSaveName) || '{}';
   // Parse to edit
   const data = JSON.parse(rawData);
   // Update key/value
@@ -43,11 +43,11 @@ const removeStorageData = (key: StorageKey) => {
   // Stringify to save
   const stringFinalData = JSON.stringify(finalData);
   // Save
-  windowData.setItem(localSaveName, stringFinalData);
+  windowData.setItem(customLocalSaveName, stringFinalData);
 };
-const clearStorageData = () => {
+const clearStorageData = (customLocalSaveName = localSaveName) => {
   const windowData = window.localStorage;
-  windowData.removeItem(localSaveName);
+  windowData.removeItem(customLocalSaveName);
 };
 
 // ----------------------
@@ -151,8 +151,12 @@ export const clearAccounts = () => {
 // ----------------------------
 // WalletConnect Data
 // ----------------------------
+// Walletconnect will always save to localstorage
 export const getWalletConnectStorage = () => {
   return getStorageData(undefined, 'walletconnect');
+}
+export const clearWalletConnectStorage = () => {
+  return clearStorageData('walletconnect');
 }
 
 // ----------------------------
@@ -160,6 +164,7 @@ export const getWalletConnectStorage = () => {
 // ----------------------------
 const PENDING_REQUESTS = 'pendingRequests';
 export const addPendingRequest = async (id: number, data: EventPayload) => {
+  console.log('saveData | addPendingRequest | id, data: ', id, data);
   // Get all pendingRequests (if it doesn't exist we will create an empty object)
   const existingPendingRequests = await getSavedData(PENDING_REQUESTS) || {};
   // Add new id (or replace existing id) to pending requests and set data 
@@ -167,7 +172,7 @@ export const addPendingRequest = async (id: number, data: EventPayload) => {
   // Count total pendingRequests and update saved value
   const totalPendingRequests = Object.keys(existingPendingRequests).length;
   await addSavedData({ totalPendingRequests });
-  chrome.action.setBadgeText({text: `${totalPendingRequests}`});
+  chrome.action.setBadgeText({text: totalPendingRequests ? `${totalPendingRequests}` : ''});
   chrome.action.setBadgeBackgroundColor({ color: [255, 0, 0, 255] });
   // Save updated pending requests to storage
   await addSavedData({ [PENDING_REQUESTS]: existingPendingRequests });
@@ -178,6 +183,12 @@ export const removeAllPendingRequests = async () => {
   chrome.action.setBadgeText({text: ''});
   await removeSavedData(PENDING_REQUESTS);
 };
+// Get the count of pending requests
+export const getPendingRequestCount = async () => {
+  // Get all pendingRequests (if it doesn't exist we will create an empty object)
+  const existingPendingRequests = await getSavedData(PENDING_REQUESTS) || {};
+  return Object.keys(existingPendingRequests).length;
+};
 // Remove a specific pending request from storage
 export const removePendingRequest = async (id: number) => {
   // Get all pendingRequests (if it doesn't exist we will create an empty object)
@@ -187,7 +198,7 @@ export const removePendingRequest = async (id: number) => {
   // Count total pendingRequests and update saved value
   const totalPendingRequests = Object.keys(existingPendingRequests).length;
   await addSavedData({ totalPendingRequests });
-  chrome.action.setBadgeText({text: `${totalPendingRequests}`});
+  chrome.action.setBadgeText({text: totalPendingRequests ? `${totalPendingRequests}` : ''});
   chrome.action.setBadgeBackgroundColor({ color: [255, 0, 0, 255] });
   // Save remaining pending requests
   await addSavedData({ [PENDING_REQUESTS]: existingPendingRequests });

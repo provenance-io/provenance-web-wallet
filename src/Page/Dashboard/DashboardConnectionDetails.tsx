@@ -24,7 +24,7 @@ const DataContent = styled.div`
 `;
 
 export const DashboardConnectionDetails:React.FC = () => {
-  const { session, connector } = useWalletConnect();
+  const { session, connector, killSession } = useWalletConnect();
   const { connected } = session;
   const navigate = useNavigate();
 
@@ -35,10 +35,13 @@ export const DashboardConnectionDetails:React.FC = () => {
 
   const handleDisconnect = async () => {
     console.log('handleDisconnect');
-    if (connector) {
+    if (connector && connector.peerId) {
+      // Kill wc session
       await connector.killSession();
-      navigate(DASHBOARD_URL);
     }
+    // Remove wc data from redux store
+    killSession();
+    navigate(DASHBOARD_URL);
   };
 
   const renderConnectedAccounts = () => (session && session.accounts) ?

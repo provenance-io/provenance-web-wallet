@@ -23,7 +23,8 @@ const Title = styled.div`
 `;
 
 interface Props {
-  payload: EventPayload
+  payload: EventPayload,
+  closeWindow: () => void,
 }
 interface ParsedParams {
   address?: string,
@@ -31,7 +32,7 @@ interface ParsedParams {
   payload?: string,
 }
 
-export const SignRequest:React.FC<Props> = ({ payload }) => {
+export const SignRequest:React.FC<Props> = ({ payload, closeWindow }) => {
   const { connector } = useWalletConnect();
   const [parsedParams, setParsedParams] = useState<ParsedParams>({});
   const [encodedMessage, setEncodedMessage] = useState('');
@@ -51,15 +52,6 @@ export const SignRequest:React.FC<Props> = ({ payload }) => {
       payload: decodedMessage,
     })
   }, [payload]);
-
-  const closeWindow = async () => {
-    const currentWindow = await chrome.windows.getCurrent();
-    if (currentWindow.id) {
-      chrome.windows.remove(currentWindow.id);
-    } else {
-      window.close();
-    }
-  };
 
   const handleApprove = async () => {
     if (connector && privateKey && encodedMessage) {

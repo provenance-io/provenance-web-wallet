@@ -1,6 +1,14 @@
 # TODO
 ## To do shortlist
 
+### Notes
+* Issue connecting to WalletConnect:
+* - When connecting from popup (first try)
+*   - Works (has handshakeId, peerId, and peerMeta)
+* - When connecting from saved uri later (second try)
+*   - Fails (no handshakeId, peerId, or peerMeta)
+* - Why is the uri "key" different between these?
+
 ### Wallet Functionality
 * Sign messages
 * Sign for transactions

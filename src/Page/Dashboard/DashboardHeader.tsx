@@ -74,7 +74,7 @@ export const DashboardHeader:React.FC = () => {
       <WalletConnect>
         {!!connected && !!connector && (
           <>
-            <Sprite onClick={viewNotifications} icon={ICON_NAMES.CHAIN} size="4.8rem" spin="90" color="#8BF551" />
+            <Sprite onClick={viewNotifications} icon={ICON_NAMES.CHAIN} size="4.8rem" />
             {notify && <Notify>{notifications}</Notify>}
           </>
         )}

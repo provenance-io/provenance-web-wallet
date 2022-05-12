@@ -35,11 +35,6 @@ const notificationPopupEvent = function(request, sender, sendResponse) {
   });
 };
 
-// ----------------------------------------
-// Setup all event listeners
-// ----------------------------------------
-chrome.runtime.onMessageExternal.addListener(notificationPopupEvent);
-
 const asyncGetStorage = async () => {
   const allData = await chrome.storage.local.get();
   console.log('allData :', allData);
@@ -48,3 +43,17 @@ const asyncGetStorage = async () => {
   chrome.action.setBadgeBackgroundColor({ color: [255, 0, 0, 255] });
 };
 asyncGetStorage();
+
+// ----------------------------------------
+// Setup all event listeners
+// ----------------------------------------
+const asyncSetup = async () => {
+  const walletKey = await chrome.storage.local.get('key');
+  const walletExists = walletKey?.key;
+  // Only set up listeners if user has created an extension wallet
+  if (walletExists) {
+    console.log('walletExists :', walletExists);
+    chrome.runtime.onMessageExternal.addListener(notificationPopupEvent);
+  }
+}
+asyncSetup();

@@ -77,7 +77,6 @@ export const Asset:React.FC = () => {
   const [error, setError] = useState<string | boolean>(false);
 
   const onValueChange = ({value = 0, diff = 0, diffPercent = '', date = '', timePeriod = 'HOURLY'}: ChangeValueArgs) => {
-    console.log('onValueChange | timePeriod: ', timePeriod);
     setCurrentAssetValue(value);
     setCurrentPriceChange(diff);
     setCurrentPriceChangePercent(diffPercent);

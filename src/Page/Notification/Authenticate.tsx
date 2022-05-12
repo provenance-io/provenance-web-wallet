@@ -7,9 +7,10 @@ interface Props {
   handleApprove: () => void,
   handleDecline: () => void,
   handleAuth?: (privateKey: Uint8Array) => void,
+  background?: string,
 }
 
-export const Authenticate:React.FC<Props> = ({ handleApprove, handleDecline, handleAuth }) => {
+export const Authenticate:React.FC<Props> = ({ handleApprove, handleDecline, handleAuth, background }) => {
   const [walletPassword, setWalletPassword] = useState('');
   const [authenticated, setAuthenticated] = useState(false);
   const [passwordError, setPasswordError] = useState('');
@@ -43,12 +44,12 @@ export const Authenticate:React.FC<Props> = ({ handleApprove, handleDecline, han
 
   return (
     authenticated ? (
-      <ButtonGroup background="rgba(0, 0, 0, 0.50)">
+      <ButtonGroup background={background}>
         <Button layout="default" onClick={handleApprove}>Approve</Button>
         <Button layout="default" variant='transparent' onClick={handleDecline}>Reject</Button>
       </ButtonGroup>
     ) : (
-      <ButtonGroup background="rgba(0, 0, 0, 0.50)">
+      <ButtonGroup background={background}>
         <Input
           placeholder="Enter Wallet Password"
           id="Wallet-Pasword"

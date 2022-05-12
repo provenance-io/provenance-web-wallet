@@ -2,11 +2,24 @@ import { useEffect } from 'react';
 import { useRoutes } from "react-router-dom";
 import { useAccount, useWalletConnect } from 'redux/hooks';
 import { routes } from "routes";
-import { getSavedData, getWalletConnectStorage } from 'utils';
+import { getSavedData, getWalletConnectStorage, removeAllPendingRequests } from 'utils';
 
 function App() {
   const { initialLoad, setInitialValues } = useAccount();
-  const { setSession } = useWalletConnect();
+  const { setSession, connector, killSession } = useWalletConnect();
+
+  // TODO: Need to find a better place for these listeners
+  useEffect(() => {
+    if (connector) {
+      // If we have a connector, listen for the disconnect event
+      connector.on('disconnect', async (error, payload) => {
+        // Remove all pending requests
+        await removeAllPendingRequests();
+        // Kill the session from walletconnect in redux store
+        killSession();
+      });
+    }
+  });
 
   // If this is the initialLoad, get and set the storage wallet values
   // This happens everytime the popup is opened and closed
@@ -27,7 +40,7 @@ function App() {
       // ---------------------------------------------
       const walletConnectData = getWalletConnectStorage();
       if (Object.keys(walletConnectData).length) {
-        console.log('App.tsx | resuming walletConnect session...');
+        console.log('App.tsx | resuming walletConnect session | walletConnectData: ', walletConnectData);
         setSession(walletConnectData);
       }
     }

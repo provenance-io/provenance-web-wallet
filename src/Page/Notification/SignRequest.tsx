@@ -5,7 +5,9 @@ import { Authenticate } from './Authenticate';
 import { useWalletConnect } from 'redux/hooks';
 import { List } from 'Components';
 import { useEffect, useState } from 'react';
+import { format } from 'date-fns';
 // import { signMessage } from 'utils';
+import { removePendingRequest } from 'utils';
 
 const SignContainer = styled.div`
   padding-bottom: 300px;
@@ -76,6 +78,7 @@ export const SignRequest:React.FC<Props> = ({ payload, closeWindow }) => {
         jsonrpc: payload.jsonrpc,
         result,
       })
+      await removePendingRequest(payload.id);
       // Close the popup TEMP: UNCOMMENT THIS
       // closeWindow();
     }
@@ -87,6 +90,7 @@ export const SignRequest:React.FC<Props> = ({ payload, closeWindow }) => {
         id: payload.id,
         jsonrpc: payload.jsonrpc,
       });
+      await removePendingRequest(payload.id);
       // Close the popup
       closeWindow();
     }
@@ -98,7 +102,7 @@ export const SignRequest:React.FC<Props> = ({ payload, closeWindow }) => {
   const ListItems = {
     platform: connector?.peerMeta?.name || 'N/A',
     address: parsedParams?.address || 'N/A',
-    created: '[Data_Missing]',
+    created: payload?.date ? format(new Date(payload.date), 'MMM d, h:mm a') : 'N/A',
     'message type': 'provenance_sign',
     description: parsedParams?.description || 'N/A',
     payload: parsedParams?.payload || 'N/A',

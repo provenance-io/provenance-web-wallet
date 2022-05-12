@@ -4,6 +4,7 @@ import { Button, Content, Header } from 'Components';
 import { useNavigate } from 'react-router';
 import { useEffect } from 'react';
 import { DASHBOARD_URL, ICON_NAMES } from 'consts';
+import { removeAllPendingRequests } from 'utils';
 
 const DataRow = styled.div`
   border-top: 2px solid #2C2F3A;
@@ -41,6 +42,8 @@ export const DashboardConnectionDetails:React.FC = () => {
     }
     // Remove wc data from redux store
     killSession();
+    // Remove all pendingActions on a disconnect
+    await removeAllPendingRequests();
     navigate(DASHBOARD_URL);
   };
 

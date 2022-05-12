@@ -43,7 +43,7 @@ const Notification = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 1.0rem;
+  font-size: 0.8rem;
   z-index: 10;
   border-radius: 100%;
   top: 0;

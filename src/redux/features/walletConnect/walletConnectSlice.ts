@@ -56,11 +56,9 @@ const walletConnectSlice = createSlice({
   reducers: {
     createConnector: (state, { payload: uri }) => {
       const connector = new WalletConnectClient({ uri });
-      console.log('walletConnectSlice | createConnector | uri, connector: ', uri, connector);
       state.connector = connector;
     },
     setSession: (state, { payload: session }) => {
-      console.log('walletConnectSlice | setSession | session: ', session);
       // Must have a peerId to start a session
       if (session.peerId) {
         const connector = new WalletConnectClient(session);

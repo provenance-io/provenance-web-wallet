@@ -40,7 +40,6 @@ function App() {
       // ---------------------------------------------
       const walletConnectData = getWalletConnectStorage();
       if (Object.keys(walletConnectData).length) {
-        console.log('App.tsx | resuming walletConnect session | walletConnectData: ', walletConnectData);
         setSession(walletConnectData);
       }
     }

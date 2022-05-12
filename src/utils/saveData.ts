@@ -163,8 +163,7 @@ export const clearWalletConnectStorage = () => {
 // Pending Request storage
 // ----------------------------
 const PENDING_REQUESTS = 'pendingRequests';
-export const addPendingRequest = async (id: number, data: EventPayload) => {
-  console.log('saveData | addPendingRequest | id, data: ', id, data);
+export const addPendingRequest = async (id: string, data: EventPayload) => {
   // Get all pendingRequests (if it doesn't exist we will create an empty object)
   const existingPendingRequests = await getSavedData(PENDING_REQUESTS) || {};
   // Add new id (or replace existing id) to pending requests and set data 
@@ -190,7 +189,7 @@ export const getPendingRequestCount = async () => {
   return Object.keys(existingPendingRequests).length;
 };
 // Remove a specific pending request from storage
-export const removePendingRequest = async (id: number) => {
+export const removePendingRequest = async (id: string) => {
   // Get all pendingRequests (if it doesn't exist we will create an empty object)
   const existingPendingRequests = await getSavedData(PENDING_REQUESTS) || {};
   // Delete the id (no error if it doesn't exist)
@@ -203,7 +202,7 @@ export const removePendingRequest = async (id: number) => {
   // Save remaining pending requests
   await addSavedData({ [PENDING_REQUESTS]: existingPendingRequests });
 };
-export const getPendingRequest = async (id?: number) => {
+export const getPendingRequest = async (id?: string) => {
   // Get all pendingRequests (if it doesn't exist we will create an empty object)
   const existingPendingRequests = await getSavedData(PENDING_REQUESTS) || {};
   // Return the requested id or all requests

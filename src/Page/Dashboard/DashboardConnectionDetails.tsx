@@ -35,7 +35,6 @@ export const DashboardConnectionDetails:React.FC = () => {
   }, [navigate, connector, connected]);
 
   const handleDisconnect = async () => {
-    console.log('handleDisconnect');
     if (connector && connector.peerId) {
       // Kill wc session
       await connector.killSession();

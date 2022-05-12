@@ -94,23 +94,22 @@ export const Actions:React.FC = () => {
     }
   }
 
-  const handleRequestClick = (id: number) => {
+  const handleRequestClick = (id: string) => {
     navigate(`${NOTIFICATION_URL}?pid=${id}`);
   };
 
   const renderPendingRequests = () => {
     const allPendingIds = Object.keys(pendingRequests);
     // Loop through each pending request ID to create it
-    return allPendingIds.map((id: string) => {
-      const numberId = Number(id);
-      const targetRequest = pendingRequests[numberId];
+    return allPendingIds.map((pendingId: string) => {
+      const targetRequest = pendingRequests[pendingId];
       const methodName = getMethodDisplayName(targetRequest.method!);
-      const requestDate = targetRequest?.date ? format(new Date(targetRequest.date), 'MMM d, h:mm a') : 'N/A';
+      const requestDate = targetRequest?.date ? format(new Date(targetRequest.date), 'MMM d, h:mm:ss a') : 'N/A';
       const peerMeta = targetRequest?.params[0]?.peerMeta || { icons: []};
       const peerIcon = peerMeta?.icons[0] || '';
 
       return (
-        <RequestItem onClick={() => {handleRequestClick(numberId)}}>
+        <RequestItem onClick={() => {handleRequestClick(pendingId)}}>
           <RequestIcon>
             <RequestIconBg src={circleIcon} alt="request background" />
             {!!peerIcon && <RequestIconPeer src={peerIcon} alt="peer logo" />}

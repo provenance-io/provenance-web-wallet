@@ -6,7 +6,7 @@ import { useWalletConnect } from 'redux/hooks';
 import { List } from 'Components';
 import { useEffect, useState } from 'react';
 import { format } from 'date-fns';
-// import { signMessage } from 'utils';
+import { signBytes } from 'utils';
 import { removePendingRequest } from 'utils';
 
 const SignContainer = styled.div`
@@ -39,11 +39,10 @@ export const SignRequest:React.FC<Props> = ({ payload, closeWindow }) => {
   const [parsedParams, setParsedParams] = useState<ParsedParams>({});
   const [encodedMessage, setEncodedMessage] = useState('');
   const [privateKey, setPrivateKey] = useState<Uint8Array>();
-  console.log('SignRequest | payload :', payload);
-  console.log('SignRequest | connector :', connector);
     
   // Onload, pull out and parse payload params
   useEffect(() => {
+    console.log('SignRequest | useEffect | payload: ', payload);
     const { params } = payload;
     const [detailsJSONString, hexEncodedMessage] = params as string[];
     setEncodedMessage(hexEncodedMessage);
@@ -57,10 +56,10 @@ export const SignRequest:React.FC<Props> = ({ payload, closeWindow }) => {
 
   const handleApprove = async () => {
     if (connector && privateKey && encodedMessage) {
-      console.log('handleApprove | encodedMessage: ', encodedMessage);
+      console.log('SignRequest | handleApprove | encodedMessage: ', encodedMessage); // Hex
       const bites = convertHexToBuffer(encodedMessage);
-      console.log('handleApprove | bites: ', bites);
-      console.log('handleApprove | privateKey: ', privateKey);
+      console.log('SignRequest | handleApprove | bites: ', bites); // Uint8Array(41)
+      console.log('SignRequest | handleApprove | privateKey: ', privateKey); // Uint8Array(32)
       // const result = signMessage({
       //   msgAny: encodedMessage,
       //   account: parsedParams.address,
@@ -71,16 +70,21 @@ export const SignRequest:React.FC<Props> = ({ payload, closeWindow }) => {
       //   gasPrice,
       //   gasAdjustment = 1.25,
       // });
-      const result = 'result'
+      const signature = signBytes(bites, privateKey);
+      // TEST: mobile app has a result that looks like this:
+      // b56456d055222fc6bb100d53b9b1c524b27290c2a9d548b07207da6b46b84132478b41d69138d532a3e34b8eb61771ff6b9514de1c68887cbc605188951b1f06
+      // Current iteration returns:
+      // ML/diB/uVhsswVnvpL+4F4fR8DQ0DNuqkOlfgzTXzxgvqwj32ULsfsLCx7ngA13iyi3MS40N1fBcov++9YGpSA==
+      const result = Buffer.from(signature).toString('base64');
       console.log('handleApprove | result: ', result);
       await connector.approveRequest({
         id: payload.id,
         jsonrpc: payload.jsonrpc,
         result,
-      })
-      await removePendingRequest(payload.id);
-      // Close the popup TEMP: UNCOMMENT THIS
-      // closeWindow();
+      });
+      const pendingId = `${payload.date}_${payload.id}`;
+      await removePendingRequest(pendingId);
+      closeWindow();
     }
   }
   const handleDecline = async () => {
@@ -90,7 +94,8 @@ export const SignRequest:React.FC<Props> = ({ payload, closeWindow }) => {
         id: payload.id,
         jsonrpc: payload.jsonrpc,
       });
-      await removePendingRequest(payload.id);
+      const pendingId = `${payload.date}_${payload.id}`;
+      await removePendingRequest(pendingId);
       // Close the popup
       closeWindow();
     }

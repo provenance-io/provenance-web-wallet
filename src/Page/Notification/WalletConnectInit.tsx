@@ -101,7 +101,8 @@ export const WalletConnectInit:React.FC<Props> = ({ payload, closeWindow }) => {
     }
     else {
       // No connector, this session is long gone, just kill it
-      await removePendingRequest(payload.id);
+      const pendingId = `${payload.date}_${payload.id}`;
+      await removePendingRequest(pendingId);
       // Close the popup
       closeWindow();
     }

@@ -1,13 +1,15 @@
 # TODO
 ## To do shortlist
 
+### Unsolved Issues
+* dApp sending back to back messages sometimes no popup is triggered causing the dApp to hang
+
 ### Wallet Functionality
-* Sign messages
 * Sign for transactions
 
 ### Wallet Connect / dApps
 * When connecting into a dApp, user should be able to select target account to connect (and set active)
-* Correctly form/create JWT when connecting with wallet connect
+* Correctly form/create JWT when connecting with wallet connect (just dummy data right now)
 
 ### General
 * Create logout button

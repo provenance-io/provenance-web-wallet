@@ -1,7 +1,7 @@
 import { Button, ButtonGroup, FooterNav, AssetRow, Content, Denom } from 'Components';
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useAddress, useAccount, useWalletConnect } from 'redux/hooks';
+import { useAddress, useAccount } from 'redux/hooks';
 import styled from 'styled-components';
 import { DashboardHeader } from './DashboardHeader';
 
@@ -42,14 +42,8 @@ export const Dashboard = () => {
   const navigate = useNavigate();
   const { getAddressAssets, assets } = useAddress();
   const { activeAccountIndex, accounts } = useAccount();
-  const allData = useWalletConnect();
   const activeAccount = accounts[activeAccountIndex];
   const { address } = activeAccount;
-
-  // REMOVE: TESTING STORE VALUES
-  useEffect(() => {
-    console.log('Dashboard | useWalletConnect allData: ', allData);
-  }, [allData])
 
   // Onload get account assets
   useEffect(() => {

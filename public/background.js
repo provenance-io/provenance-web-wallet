@@ -52,7 +52,6 @@ const asyncSetup = async () => {
   const walletExists = walletKey?.key;
   // Only set up listeners if user has created an extension wallet
   if (walletExists) {
-    console.log('walletExists :', walletExists);
     chrome.runtime.onMessageExternal.addListener(notificationPopupEvent);
   }
 }

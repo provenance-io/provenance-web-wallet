@@ -21,7 +21,7 @@ export type EventPayload = {
 }
 
 export type SavedPendingRequests = {
-  [id: number]: EventPayload,
+  [id: string]: EventPayload,
 }
 
 export type ConnectionEventPayload = {

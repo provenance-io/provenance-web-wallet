@@ -1,11 +1,13 @@
 import { EventPayload } from 'types';
 import styled from 'styled-components';
-import { convertHexToUtf8, convertHexToBuffer } from "@walletconnect/utils";
+import { convertHexToUtf8, convertHexToBuffer, convertArrayBufferToHex } from "@walletconnect/utils";
 import { Authenticate } from './Authenticate';
 import { useWalletConnect } from 'redux/hooks';
 import { List } from 'Components';
 import { useEffect, useState } from 'react';
-// import { signMessage } from 'utils';
+import { format } from 'date-fns';
+import { signBytes } from 'utils';
+import { removePendingRequest } from 'utils';
 
 const SignContainer = styled.div`
   padding-bottom: 300px;
@@ -37,8 +39,6 @@ export const SignRequest:React.FC<Props> = ({ payload, closeWindow }) => {
   const [parsedParams, setParsedParams] = useState<ParsedParams>({});
   const [encodedMessage, setEncodedMessage] = useState('');
   const [privateKey, setPrivateKey] = useState<Uint8Array>();
-  console.log('SignRequest | payload :', payload);
-  console.log('SignRequest | connector :', connector);
     
   // Onload, pull out and parse payload params
   useEffect(() => {
@@ -55,29 +55,20 @@ export const SignRequest:React.FC<Props> = ({ payload, closeWindow }) => {
 
   const handleApprove = async () => {
     if (connector && privateKey && encodedMessage) {
-      console.log('handleApprove | encodedMessage: ', encodedMessage);
       const bites = convertHexToBuffer(encodedMessage);
-      console.log('handleApprove | bites: ', bites);
-      console.log('handleApprove | privateKey: ', privateKey);
-      // const result = signMessage({
-      //   msgAny: encodedMessage,
-      //   account: parsedParams.address,
-      //   chainId,
-      //   wallet,
-      //   memo = '',
-      //   feeDenom = 'nhash',
-      //   gasPrice,
-      //   gasAdjustment = 1.25,
-      // });
-      const result = 'result'
-      console.log('handleApprove | result: ', result);
+      const signature = signBytes(bites, privateKey);
+      // Convert back to hex
+      const resultFull = convertArrayBufferToHex(signature);
+      // Cut off the leading "0x"
+      const result = resultFull.slice(2, resultFull.length);
       await connector.approveRequest({
         id: payload.id,
         jsonrpc: payload.jsonrpc,
         result,
-      })
-      // Close the popup TEMP: UNCOMMENT THIS
-      // closeWindow();
+      });
+      const pendingId = `${payload.date}_${payload.id}`;
+      await removePendingRequest(pendingId);
+      closeWindow();
     }
   }
   const handleDecline = async () => {
@@ -87,6 +78,8 @@ export const SignRequest:React.FC<Props> = ({ payload, closeWindow }) => {
         id: payload.id,
         jsonrpc: payload.jsonrpc,
       });
+      const pendingId = `${payload.date}_${payload.id}`;
+      await removePendingRequest(pendingId);
       // Close the popup
       closeWindow();
     }
@@ -98,7 +91,7 @@ export const SignRequest:React.FC<Props> = ({ payload, closeWindow }) => {
   const ListItems = {
     platform: connector?.peerMeta?.name || 'N/A',
     address: parsedParams?.address || 'N/A',
-    created: '[Data_Missing]',
+    created: payload?.date ? format(new Date(payload.date), 'MMM d, h:mm a') : 'N/A',
     'message type': 'provenance_sign',
     description: parsedParams?.description || 'N/A',
     payload: parsedParams?.payload || 'N/A',

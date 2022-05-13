@@ -10,7 +10,7 @@ import {
 } from 'bip39';
 import { fromSeed as bip32FromSeed, BIP32Interface, fromBase58 as bip32FromB58 } from 'bip32';
 import { toWords as bech32ToWords, encode as bech32Encode } from 'bech32';
-import { publicKeyCreate as secp256k1PublicKeyCreate } from 'secp256k1';
+import { publicKeyCreate as secp256k1PublicKeyCreate, ecdsaSign as secp256k1EcdsaSign } from 'secp256k1';
 import { bufferToBytes, base64ToBytes as ogBase64ToBytes, bytesToBase64 as ogBytesToBase64 } from '@tendermint/belt';
 import { createHash } from 'crypto';
 // TYPESCRIPT TYPES
@@ -48,8 +48,11 @@ const ripemd160 = (bytes: Bytes): Bytes => {
   return bufferToBytes(buffer2);
 }
 
-export const signMessage = () => {
-  return 'signMessage';
+export const signBytes = (bytes: Uint8Array, privateKey: Bytes): Uint8Array => {
+  const hash = sha256(bytes);
+  const { signature } = secp256k1EcdsaSign(hash, privateKey);
+
+  return signature;
 }
 
 const createAddress = (publicKey: Bytes, prefix: string = walletPrefix): Bech32String => {

@@ -3,11 +3,13 @@ import { COLORS } from 'theme/colors';
 
 interface InputProps {
   id: string;
-  label: string;
+  label?: string;
+  disabled?: boolean,
   type?: string;
   placeholder?: string;
   value?: string | number,
   error?: string,
+  children?: React.ReactNode;
   onChange?: (e: any) => void
 }
 
@@ -16,6 +18,7 @@ const InputGroup = styled.div`
   flex-direction: column;
   gap: 10px;
   font-family: 'Gothic A1', sans-serif;
+  position: relative;
 `;
 
 const Label = styled.label`
@@ -38,6 +41,12 @@ const InputEl = styled.input<{error?: string}>`
   &::placeholder {
     color: ${COLORS.NEUTRAL_300};
   }
+  &:focus {
+    outline-color: #1b66ea;
+    outline-offset: -1px;
+    outline-width: 1px;
+    outline-style: solid;
+  }
 `;
 
 const Error = styled.div`
@@ -52,19 +61,24 @@ export const Input = ({
   type = 'text',
   value,
   error,
+  disabled,
   onChange,
+  children,
   ...rest
 }: InputProps) => (
   <InputGroup>
-    <Label htmlFor={id}>{label}</Label>
+    {label && <Label htmlFor={id}>{label}</Label>}
     {error && <Error>{error}</Error>}
     <InputEl
       id={id}
       type={type}
       value={value}
-      onChange={onChange}
+      onChange={(event) => (event?.target && onChange) && onChange(event.target.value)}
       error={error}
+      disabled={disabled}
+      autoComplete="off"
       {...rest}
     />
+    {children}
   </InputGroup>
 );

@@ -6,6 +6,7 @@ import { baseFonts, BaseTypographyLoader, FONTS } from './fonts';
 import { baseColors, COLORS } from './colors';
 import { ThemeProvider } from 'styled-components';
 import { SpriteSheet } from 'Components';
+import { MAX_HEIGHT, MAX_WIDTH } from 'consts';
 
 export const baseTheme: DefaultTheme = {
   colors: { ...COLORS },
@@ -18,6 +19,12 @@ export const GlobalStyles = createGlobalStyle<{
 }>`
   ${normalize}
 
+  // React local causes iframe when error process is not defined shows up.
+  // https://github.com/facebook/create-react-app/issues/11773
+  iframe {
+    pointer-events: none;
+  }
+
   :root {
     ${baseColors};
     ${baseFonts};
@@ -28,7 +35,10 @@ export const GlobalStyles = createGlobalStyle<{
   html {
     font-size: 62.5%; // 1rem = 10px
     box-sizing: border-box;
-    height: 100%;
+    max-width: ${MAX_WIDTH};
+    max-height: ${MAX_HEIGHT};
+    height: ${MAX_HEIGHT};
+    width: ${MAX_WIDTH};
   }
 
   *, *:before, *:after {
@@ -40,7 +50,10 @@ export const GlobalStyles = createGlobalStyle<{
     ${FONTS.PRIMARY_FONT};
     font-weight: 400;
     font-size: 1.6rem;
-    height: 100%;
+    max-width: ${MAX_WIDTH};
+    max-height: ${MAX_HEIGHT};
+    height: ${MAX_HEIGHT};
+    width: ${MAX_WIDTH};
   }
 
   button, div, a, p {

@@ -2,11 +2,8 @@
   "name": "Provenance Blockchain Wallet",
   "description": "Provenance Blockchain Wallet Browser Extension",
   "author": "Figure Tech",
-  "version": "0.1",
+  "version": "1.0.0",
   "manifest_version": 3,
-  "background": {
-    "service_worker": "background.js"
-  },
   "icons": {
     "16": "16.png",
     "32": "32.png",
@@ -16,5 +13,30 @@
   "action": {
     "default_popup": "index.html"
   },
-  "permissions": ["storage"]
+  "permissions": [
+    "storage",
+    "tabs",
+    "activeTab",
+    "notifications",
+    "management"
+  ],
+  "web_accessible_resources": [
+    {
+      "resources": [ "background.js" ],
+      "matches": [
+        "*://*.figure.tech/*",
+        "http://localhost:3000/*"
+      ]
+    }
+  ],
+  "host_permissions": [
+    "*://*.figure.tech/*",
+    "http://localhost:3000/*"
+  ],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "externally_connectable": {
+    "matches": ["https://*.figure.tech/*", "http://localhost:3000/*", "https://localhost:3000/*"]
+  }
 }

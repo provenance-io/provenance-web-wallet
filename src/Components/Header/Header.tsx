@@ -5,16 +5,17 @@ import { COLORS, FONTS } from 'theme';
 import { ICON_NAMES } from 'consts';
 import React from 'react';
 
-const Wrapper = styled.header`
+const Wrapper = styled.header<{marginBottom: string}>`
   display: flex;
   flex-direction: column;
   gap: 18px;
-  margin-bottom: 32px;
+  margin-bottom: ${({ marginBottom }) => marginBottom };
+  width: 100%;
 `;
 
-const Content = styled.div`
+const Content = styled.div<{excludeBackButton: boolean}>`
   display: grid;
-  grid-template-columns: 1.4rem 1fr 1.4rem;
+  grid-template-columns: ${({ excludeBackButton }) => excludeBackButton ? '1fe' : '1.4rem 1fr 1.4rem' };
   align-items: center;
 `;
 
@@ -29,7 +30,7 @@ const Title = styled.span`
 `;
 
 const ProgressBar = styled.div<{
-  progress: number;
+  progress?: number;
 }>`
   position: relative;
   height: 3px;
@@ -65,25 +66,33 @@ const LinkOrButton = styled.button`
   ${combineCss()}
 `;
 
-const BackButton = ({ children }: { children: React.ReactNode }) => {
+const BackButton = ({ children, backLocation }: { children: React.ReactNode, backLocation?: string }) => {
   const navigate = useNavigate();
-  return <LinkOrButton onClick={() => navigate(-1)}>{children}</LinkOrButton>;
+  return <LinkOrButton onClick={() => backLocation ? navigate(backLocation) : navigate(-1)}>{children}</LinkOrButton>;
 };
 
 interface HeaderProps {
   iconLeft?: string;
-  progress: number;
-  title: string;
+  progress?: number;
+  title?: string | React.ReactNode;
+  marginBottom?: string;
+  backLocation?: string;
 }
 
-export const Header = ({ iconLeft = ICON_NAMES.ARROW, progress, title }: HeaderProps) => (
-  <Wrapper>
-    <Content>
-      <BackButton>
-        <Sprite size="1.4rem" icon={iconLeft} />
-      </BackButton>
-      <Title>{title}</Title>
-    </Content>
-    <ProgressBar progress={progress} />
-  </Wrapper>
-);
+export const Header = ({ iconLeft = ICON_NAMES.ARROW, progress, title, marginBottom = '32px', backLocation }: HeaderProps) => {
+  const excludeBackButton = iconLeft === 'false' || iconLeft === 'none' || iconLeft === 'off';
+
+  return (
+    <Wrapper marginBottom={marginBottom}>
+      <Content excludeBackButton={excludeBackButton}>
+        {!excludeBackButton && (
+          <BackButton backLocation={backLocation}>
+            <Sprite size="1.4rem" icon={iconLeft} />
+          </BackButton>
+        )}
+        {title && <Title>{title}</Title>}
+      </Content>
+      {progress !== undefined && <ProgressBar progress={progress} />}
+    </Wrapper>
+  );
+};

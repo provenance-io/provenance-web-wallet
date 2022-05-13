@@ -1,10 +1,10 @@
 import { useMemo } from 'react';
 import { bindActionCreators } from 'redux';
-import { useAppDispatch, useAppSelector } from 'redux/hooks';
+import { useAppDispatch, useAppSelector } from './useStore';
 import {
   genericActions as actionsList,
   selectGeneric as selector,
-} from 'redux/features/generic/genericSlice';
+} from '../features/generic/genericSlice';
 
 export const useGeneric = () => {
   const dispatch = useAppDispatch();

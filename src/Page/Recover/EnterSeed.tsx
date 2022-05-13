@@ -1,12 +1,9 @@
 import styled from 'styled-components';
-import { mnemonicToSeedSync } from 'bip39';
 import { useNavigate } from 'react-router-dom';
-import { publicKeyCreate as secp256k1PublicKeyCreate } from 'secp256k1';
-import { base64ToBytes } from '@tendermint/belt';
-import type { Wallet } from '@tendermint/sig';
 import { useState } from 'react';
 import { Button, Header, Input } from 'Components';
-import { isMnumonic } from 'utils';
+import { isMnumonic, validateMnemonic } from 'utils';
+import { useAccount } from 'redux/hooks';
 
 const Wrapper = styled.div`
   width: 100%;
@@ -31,10 +28,14 @@ interface InputData {
   error?: string,
   value?: string,
 };
+interface Props {
+  nextUrl: string,
+}
 
-export const EnterSeed:React.FC = () => {
+export const EnterSeed:React.FC<Props> = ({ nextUrl }) => {
   const totalSeeds = 24;
   const navigate = useNavigate();
+  const { updatetempAccount } = useAccount();
   const createInitialInputData = () => {
     // Clone all inputValues
     const newInputValues = [];
@@ -51,7 +52,7 @@ export const EnterSeed:React.FC = () => {
     return newInputValues;
   };
   const [inputValues, setInputValues] = useState<InputData[]>(createInitialInputData());
-  const [submitError, setSubmitError] = useState<boolean>(false);
+  const [submitError, setSubmitError] = useState<string>('');
 
   const updateInput = (index: number, field: 'error' | 'value', value: string) => {
     // Clone all inputValues
@@ -89,17 +90,14 @@ export const EnterSeed:React.FC = () => {
   const createSeedInputs = (total: number) => {
     const allInputsElements = [];
 
-    const onInputChange = (i: number, e: any) => {
-      const value = e?.target?.value;
-      // Check first input to see if the value entered is an entire pasted mnumonic
-      if (i === 0) {
-        const wholeMnumonic = isMnumonic(value, totalSeeds);
-        if (wholeMnumonic) {
-          // Loop through each input and change the value to match the pasted mnumonic
-          wholeMnumonic.forEach((word, index) => {
-            updateInput(index, 'value', word);
-          });
-        } else updateInput(i, 'value', value);
+    const onInputChange = (i: number, value: any) => {
+      // Check to see if the value entered is an entire pasted mnumonic
+      const wholeMnumonic = isMnumonic(value, totalSeeds);
+      if (wholeMnumonic) {
+        // Loop through each input and change the value to match the pasted mnumonic
+        wholeMnumonic.forEach((word, index) => {
+          updateInput(index, 'value', word);
+        });
       } else updateInput(i, 'value', value);
     }
 
@@ -112,7 +110,7 @@ export const EnterSeed:React.FC = () => {
           label={`Passphrase ${displayNum}`}
           key={`Passphrase ${displayNum}`}
           value={value}
-          onChange={(e: any) => onInputChange(i, e)}
+          onChange={(value: any) => onInputChange(i, value)}
           error={error}
         />
       );
@@ -120,45 +118,32 @@ export const EnterSeed:React.FC = () => {
     return allInputsElements;
   };
 
-  // const createWallet = (privateKeyString: string): Wallet  => {
-  //   try {
-  //     const privateKey = base64ToBytes(privateKeyString);
-  //     const publicKey = secp256k1PublicKeyCreate(privateKey);
-  //     // const address = createAddress(publicKey);
-  //     const address = '12345abcde';
-  //     return {
-  //       privateKey,
-  //       publicKey,
-  //       address,
-  //     };
-  //   } catch (e) {
-  //     throw new Error('Failed to create wallet from private key');
-  //   }
-  // }
-
   const handleContinue = () => {
     // Clear out previous error
-    setSubmitError(false);
+    setSubmitError('');
     // Validate all inputs first
-    const valid = validateInputs();
+    const validInputs = validateInputs();
     // If there are no errors, go to the next page
-    if (valid) {
-      console.log('Success!');
+    if (validInputs) {
       // Grab all input values
-      const mnumonic = inputValues.map(({ value }) => value).join(' ');
-      console.log('mnumonic: ', mnumonic);
-      // Create mnemonic seed
-      const seed = mnemonicToSeedSync(mnumonic)
-      console.log('seed: ', seed);
-      // Create public and private keys
-      // const wallet = ethers.Wallet.fromMnemonic(mnumonic);
-      // console.log('wallet :', wallet);
-      // Redirect user to dashboard
-      navigate('/dashboard');
+      const mnemonic = inputValues.map(({ value }) => value).join(' ');
+      // Validate mnemonic
+      const validMnemonic = validateMnemonic(mnemonic);
+      if (validMnemonic) {
+        // Add mnemonic into the temp wallet
+        updatetempAccount({ mnemonic });
+        navigate(nextUrl);
+      } else {
+        setSubmitError('Invalid Mnemonic');
+      }
+
     }
     // If any error, show error message
-    else setSubmitError(true);
+    else setSubmitError('Please fix input issues above');
   };
+
+  const filledOutInputs = inputValues.filter(({ value }) => !!value).length;
+  const allFilledOut = filledOutInputs === totalSeeds;
 
   return (
     <Wrapper>
@@ -166,8 +151,8 @@ export const EnterSeed:React.FC = () => {
       <InputSection>
         {createSeedInputs(totalSeeds)}
       </InputSection>
-      {submitError && <ErrorMessage>Please fix input issues above</ErrorMessage>}
-      <Button variant='primary' onClick={handleContinue}>Continue</Button>
+      {submitError && <ErrorMessage>{submitError}</ErrorMessage>}
+      <Button onClick={handleContinue} disabled={!allFilledOut}>Continue</Button>
     </Wrapper>
   );
 };

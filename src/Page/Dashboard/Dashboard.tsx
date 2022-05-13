@@ -1,4 +1,7 @@
-import { Button, FooterNav, Asset } from 'Components';
+import { Button, ButtonGroup, FooterNav, AssetRow, Content, Denom } from 'Components';
+import { useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { useAddress, useAccount } from 'redux/hooks';
 import styled from 'styled-components';
 import { DashboardHeader } from './DashboardHeader';
 
@@ -13,14 +16,7 @@ const Value = styled.div`
   font-weight: 300;
   line-height: 54px;
   letter-spacing: 0.02rem;
-`;
-const ButtonGroup = styled.div`
-  display: flex;
-  margin-top: 24px;
-  width: 100%;
-  button:first-of-type {
-    margin-right: 8px;
-  }
+  margin-bottom: 20px;
 `;
 const AssetsTitle = styled.div`
   margin-top: 32px;
@@ -29,7 +25,6 @@ const AssetsTitle = styled.div`
   font-family: 'Gothic A1';
   font-weight: 700;
   width: 100%;
-  border-bottom: 1px solid #3D4151;
 `;
 const AssetsContainer = styled.div`
   width: 100%;
@@ -44,24 +39,48 @@ const AssetsContainer = styled.div`
 `;
 
 export const Dashboard = () => {
+  const navigate = useNavigate();
+  const { getAddressAssets, assets } = useAddress();
+  const { activeAccountIndex, accounts } = useAccount();
+  const activeAccount = accounts[activeAccountIndex];
+  const { address } = activeAccount;
+
+  // Onload get account assets
+  useEffect(() => {
+    if (address) getAddressAssets(address);
+  }, [address, getAddressAssets]);
+
+  const calculatePortfolioValue = () => {
+    let totalValue = 0;
+    const assetValues = assets.map(({ usdPrice, amount }) => usdPrice * Number(amount));
+    assetValues.forEach((value) => { totalValue += value });
+    return totalValue;
+  };
+
+  const renderAssets = () => assets.map(({ display, displayAmount }) => (
+    <AssetRow
+      onClick={() => navigate(`/asset/${display}`)}
+      img={display}
+      name={display}
+      amount={{ count: displayAmount }}
+      key={display}
+    />
+  ));
 
   return (
-    <>
+    <Content>
       <DashboardHeader />
       <PortfolioTitle>Portfolio Value</PortfolioTitle>
-      <Value>$2,539.23</Value>
-      <ButtonGroup>
-        <Button variant='primary'>Send</Button>
-        <Button variant='primary'>Receive</Button>
+      <Value><Denom>$</Denom>{calculatePortfolioValue().toFixed(2)}</Value>
+      <ButtonGroup layout="inline" direction="row">
+        <Button layout="default" onClick={() => navigate('./send')}>Send</Button>
+        <Button layout="default" onClick={() => navigate('./receive')}>Receive</Button>
       </ButtonGroup>
       <AssetsTitle>My Assets</AssetsTitle>
       <AssetsContainer>
-        <Asset img="hash" name="hash" amount={{ value: 500, change: 13.63 }} />
-        <Asset img="usdf" name="usdf" />
-        <Asset img="etf" name="etf" />
-        <Asset img="inu" name="inu" />
+        {assets.length ? renderAssets(): 'Address has no assets...'}
       </AssetsContainer>
       <FooterNav />
-    </>
+    </Content>
   );
 };

@@ -18,10 +18,13 @@ const Svg = styled.svg<SvgProps>`
   --secondaryColor: ${({ secondaryColor }) => secondaryColor};
   width: ${({ size = '100%', width }) => width || size};
   height: ${({ size = '100%', height }) => height || size};
-  transform: ${({ flipX = false }) => flipX && `scaleX(-1)`}
-    ${({ flipY = false }) => flipY && `scaleY(-1)`}
-    ${({ spin = 0 }) => Boolean(spin) && `rotate(${spin}deg)`};
+  transform: ${({
+    flipX = false,
+    flipY = false,
+    spin = 0
+  }) => `${flipX ? 'scaleX(-1)' : ''} ${flipY ? 'scaleY(-1)' : ''} ${Boolean(spin) ? `rotate(${spin}deg)` : ''}`};
   transition: ${({ animate = false }) => animate && 'transform 300ms linear'};
+  z-index: 1;
 `;
 
 type SpriteProps = {
@@ -29,6 +32,8 @@ type SpriteProps = {
   height?: string;
   icon: string;
   width?: string;
+  onClick?: () => void;
+  viewBox?: string;
 } & SvgProps;
 
 export const Sprite = ({
@@ -37,6 +42,8 @@ export const Sprite = ({
   color = COLORS.PRIMARY_500,
   icon,
   secondaryColor = COLORS.WHITE,
+  onClick,
+  viewBox,
   ...svgIcons
 }: SpriteProps) => {
 
@@ -47,6 +54,8 @@ export const Sprite = ({
       animate={animate}
       color={color}
       secondaryColor={secondaryColor}
+      onClick={onClick}
+      {...(viewBox ? { viewBox } : {})}
     >
       <use href={`#${icon}`} />
     </Svg>

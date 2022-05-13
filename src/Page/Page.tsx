@@ -2,6 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import { Outlet } from 'react-router-dom';
 import { COLORS } from 'theme';
+import { MAX_HEIGHT, MAX_WIDTH } from 'consts';
 import bg from 'images/bg.png';
 
 interface Props {
@@ -9,6 +10,7 @@ interface Props {
   bgImage?: boolean,
   align?: string,
   justify?: string,
+  noOutlet?: boolean,
 }
 
 const PageStyled = styled.div<Props>`
@@ -19,13 +21,20 @@ const PageStyled = styled.div<Props>`
   display: flex;
   flex-direction: column;
   font-family: 'Montserrat', 'sans-serif';
-  height: 100vh;
   justify-content: ${({ justify }) => justify};
-  min-height: 100%;
-  overflow: auto;
-  padding: 42px 32px;
+  height: ${MAX_HEIGHT};
+  max-height: ${MAX_HEIGHT};
+  width: ${MAX_WIDTH};
+  max-width: ${MAX_WIDTH};
+  padding: 32px 16px 20px 16px;
   text-align: ${({ align }) => align === 'flex-start' ? 'left' : 'center'};
   z-index: 10;
+  overflow-y: scroll;
+  -ms-overflow-style: none;
+  &::-webkit-scrollbar {
+    width: 0;
+    height: 0;
+  }
 `;
 
 export const Page = ({
@@ -33,13 +42,14 @@ export const Page = ({
   bgImage,
   align = 'flex-start',
   justify = 'flex-start',
+  noOutlet = false,
 }: Props) => (
   <PageStyled
     bgImage={bgImage}
     align={align}
     justify={justify}
   >
-    <Outlet />
+    {!noOutlet ? <Outlet />: null}
     {children}
   </PageStyled>
 );

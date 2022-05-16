@@ -3,8 +3,10 @@
 
 ### Unsolved Issues
 * dApp sending back to back messages sometimes no popup is triggered causing the dApp to hang
+* When adding a new account, unable to unlock device
 
 ### Wallet Functionality
+* Re-add all protos
 * Sign for transactions
 
 ### Wallet Connect / dApps
@@ -16,6 +18,8 @@
 * Log user out once timeout reached
 * In settings, allow user to set timeout for auto-logout
 * Success page (typically used after a Notification)
+* Generic success page/message
+  - After creating an account or performing specific actions (vs just redirecting back to the landing page)
 
 ### Accounts
 * Automatically switch API urls based on current active wallet.  TP will go to test urls, PB will go to prod urls

@@ -32,7 +32,8 @@ function App() {
       const asyncStorageGet = async () => {
         const accounts = await getSavedData('accounts');
         const activeAccountId = await getSavedData('activeAccountId');
-        setInitialValues({ accounts, activeAccountId });
+        // Only save if we have data
+        if (accounts || activeAccountId) setInitialValues({ accounts, activeAccountId });
       }
       asyncStorageGet();
       // ---------------------------------------------

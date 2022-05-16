@@ -24,7 +24,7 @@ export const Unlock = ({ nextUrl }: Props) => {
   const navigate = useNavigate();
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
-  const { addAccount } = useAccount();
+  const { addAccounts } = useAccount();
   const passwordMinLength = Number(PASSWORD_MIN_LENGTH)!;
 
   const handleSubmit = async () => {
@@ -44,7 +44,7 @@ export const Unlock = ({ nextUrl }: Props) => {
         // Password was correct, build the wallets
         const localAccounts = await getAccounts();
         const activeAccountId = await getSavedData('activeAccountId');
-        addAccount({ accounts: localAccounts, activeAccountId })
+        addAccounts({ accounts: localAccounts, activeAccountId })
         // Redirect to dashboard
         navigate(nextUrl);
       }

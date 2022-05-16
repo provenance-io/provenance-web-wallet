@@ -20,6 +20,7 @@ import {
   saveKey,
   derivationPath,
   saveAccount,
+  addSavedData,
 } from 'utils';
 import backupComplete from 'images/backup-complete.svg';
 
@@ -86,7 +87,7 @@ export const RecoverPassword = ({ nextUrl }: Props) => {
   const { getAddressAssetsRaw } = useAddress();
   const {
     tempAccount,
-    addAccount,
+    addAccounts,
     clearTempAccount,
     setActiveAccountId
   } = useAccount();
@@ -125,16 +126,18 @@ export const RecoverPassword = ({ nextUrl }: Props) => {
     // Loop up to see if account holds any hash, if it does, add it, if it doesn't stop this loop.
     const hasAssetsRequest = await getAddressAssetsRaw(address);
     const hasAssets = hasAssetsRequest?.data?.length;
+    // TODO: User might want to add address #42 and it has no assets
     if (addressIndex === 0 || hasAssets) {
       // Save to local storage
       await saveAccount(newWalletData);
       // Save to redux store
-      addAccount(newWalletData);
+      addAccounts({ accounts: newWalletData });
       // Loop function, bump address index up by one
       return recoverAccountLoop(masterKey, addressIndex + 1);
     } else {
       // Set first wallet to be active
-      setActiveAccountId(0);
+      await addSavedData({ activeAccountId: 0 }); // Save browser
+      setActiveAccountId(0); // Save redux store
       return 'complete';
     }
   };

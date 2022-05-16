@@ -4,6 +4,7 @@ import { CopyValue, Button, Header, Sprite } from 'Components';
 import { useNavigate } from 'react-router-dom';
 import { DASHBOARD_URL, ICON_NAMES } from 'consts';
 import { useAccount } from 'redux/hooks';
+import { addSavedData } from 'utils';
 
 const WalletItem = styled.div<{active?: boolean}>`
   display: flex;
@@ -73,6 +74,11 @@ export const DashboardMenu:React.FC = () => {
     </WalletItem>
   ));
 
+  const handleSelectWallet = async () => {
+    await addSavedData({ activeAccountId: accountMenuTargetId }); // Save browser
+    setActiveAccountId(accountMenuTargetId); // Save redux store
+  };
+
   return (
     <>
       <Header title='Wallets' iconLeft={ICON_NAMES.CLOSE} backLocation={DASHBOARD_URL} />
@@ -80,7 +86,7 @@ export const DashboardMenu:React.FC = () => {
       {accountMenuTargetId > -1 && (
         <WalletActionsPopup onClick={() => setAccountMenuTargetId(-1)}>
           {activeAccountId !== accountMenuTargetId && (
-            <WalletAction onClick={() => setActiveAccountId(accountMenuTargetId)}>
+            <WalletAction onClick={handleSelectWallet}>
               Select Account
             </WalletAction>
           )}

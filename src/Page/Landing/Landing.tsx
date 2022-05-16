@@ -3,6 +3,7 @@ import { Button, ButtonGroup } from 'Components';
 import { useNavigate } from 'react-router-dom';
 import { getKey } from 'utils';
 import { Carousel } from './Carousel';
+import { CREATE_URL, RECOVER_URL, UNLOCK_URL } from 'consts';
 
 export const Landing: React.FC = () => {
   const navigate = useNavigate();
@@ -10,6 +11,7 @@ export const Landing: React.FC = () => {
   const [savedKey, setSavedKey] = useState('');
 
   useEffect(() => {
+    console.log('Landing | useEffect');
     const asyncGetKey = async () => {
       const key = await getKey();
       setLoading(false);
@@ -19,11 +21,11 @@ export const Landing: React.FC = () => {
   }, []);
   
   const renderLandingActions = () => savedKey ? (
-    <Button layout="default" onClick={() => navigate('/unlock')}>
+    <Button layout="default" onClick={() => navigate(UNLOCK_URL)}>
       Unlock
     </Button>
   ) : (
-    <Button layout="default" onClick={() => navigate('/create')}>
+    <Button layout="default" onClick={() => navigate(CREATE_URL)}>
       Create Wallet
     </Button>
   );
@@ -33,7 +35,7 @@ export const Landing: React.FC = () => {
       <Carousel />
       <ButtonGroup>
         {loading ? <div>Loading...</div> : renderLandingActions()}
-        <Button layout="default" variant="transparent" onClick={() => navigate('/recover')}>Recover Wallet</Button>
+        <Button layout="default" variant="transparent" onClick={() => navigate(RECOVER_URL)}>Recover Wallet</Button>
       </ButtonGroup>
     </>
   );

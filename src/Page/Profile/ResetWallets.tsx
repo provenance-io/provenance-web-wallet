@@ -2,6 +2,7 @@ import { FooterNav } from 'Components';
 import { Button, ButtonGroup } from 'Components';
 import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
+import { PROFILE_URL } from 'consts';
 
 const Container = styled.div`
   width: 100%;
@@ -40,7 +41,7 @@ export const ResetWallets = () => {
       <SectionOption>Are you sure you wish to reset all wallets?</SectionOption>
       <ButtonGroup>
         <Button layout="default" onClick={handleReset}>Reset Wallets</Button>
-        <Button layout="default" variant="transparent" onClick={() => navigate('/profile')}>Cancel</Button>
+        <Button layout="default" variant="transparent" onClick={() => navigate(PROFILE_URL)}>Cancel</Button>
       </ButtonGroup>
       <FooterNav />
     </Container>

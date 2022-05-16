@@ -4,6 +4,7 @@ import { CopyValue, Button, Header, Sprite } from 'Components';
 import { useNavigate } from 'react-router-dom';
 import { DASHBOARD_URL, ICON_NAMES } from 'consts';
 import { useAccount } from 'redux/hooks';
+import { addSavedData } from 'utils';
 
 const WalletItem = styled.div<{active?: boolean}>`
   display: flex;
@@ -61,11 +62,11 @@ const WalletAction = styled.div`
 
 export const DashboardMenu:React.FC = () => {
   const navigate = useNavigate();
-  const { activeAccountIndex, accounts, setActiveAccountIndex } = useAccount();
-  const [ accountMenuTarget, setAccountMenuTarget ] = useState(-1);
+  const { activeAccountId, accounts, setActiveAccountId } = useAccount();
+  const [ accountMenuTargetId, setAccountMenuTargetId ] = useState(-1);
 
-  const renderWallets = () => accounts.map(({ address, name }, index) => (
-    <WalletItem key={address} active={index === activeAccountIndex} onClick={() => { setAccountMenuTarget(index)} }>
+  const renderWallets = () => accounts.map(({ address, name, id }) => (
+    <WalletItem key={address} active={id === activeAccountId} onClick={() => { setAccountMenuTargetId(id!)} }>
       <WalletText>
         <AccountName>{name}</AccountName>
       </WalletText>
@@ -73,24 +74,29 @@ export const DashboardMenu:React.FC = () => {
     </WalletItem>
   ));
 
+  const handleSelectWallet = async () => {
+    await addSavedData({ activeAccountId: accountMenuTargetId }); // Save browser
+    setActiveAccountId(accountMenuTargetId); // Save redux store
+  };
+
   return (
     <>
       <Header title='Wallets' iconLeft={ICON_NAMES.CLOSE} backLocation={DASHBOARD_URL} />
       {renderWallets()}
-      {accountMenuTarget > -1 && (
-        <WalletActionsPopup onClick={() => setAccountMenuTarget(-1)}>
-          {activeAccountIndex !== accountMenuTarget && (
-            <WalletAction onClick={() => setActiveAccountIndex(accountMenuTarget)}>
+      {accountMenuTargetId > -1 && (
+        <WalletActionsPopup onClick={() => setAccountMenuTargetId(-1)}>
+          {activeAccountId !== accountMenuTargetId && (
+            <WalletAction onClick={handleSelectWallet}>
               Select Account
             </WalletAction>
           )}
           {/* TODO: User must click on text to copy, instead have user click on entire button row */}
           <WalletAction>
-            <CopyValue value={accounts[accountMenuTarget]?.address} successText="Address Copied!" noPopup>Copy Account Address</CopyValue>
+            <CopyValue value={accounts[accountMenuTargetId]?.address} successText="Address Copied!" noPopup>Copy Account Address</CopyValue>
           </WalletAction>
           <WalletAction>Rename</WalletAction>
           <WalletAction>Remove</WalletAction>
-          <WalletAction onClick={() => setAccountMenuTarget(-1)}>Close</WalletAction>
+          <WalletAction onClick={() => setAccountMenuTargetId(-1)}>Close</WalletAction>
         </WalletActionsPopup>
       )}
       <Button onClick={() => navigate('../create')} >Create Account</Button>

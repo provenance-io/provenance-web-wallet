@@ -31,7 +31,7 @@ const PageStyled = styled.div<Props>`
 export const CreateAuth = ({ children = null }: Props) => {
   const navigate = useNavigate();
   const location = useLocation();
-  const isCreateLandingPage = location.pathname === '/create';
+  const isCreateLandingPage = location.pathname === CREATE_URL;
   const { tempAccount } = useAccount();
   useEffect(() => {
     if (!tempAccount) {

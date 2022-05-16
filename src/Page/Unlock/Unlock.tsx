@@ -6,13 +6,15 @@ import {
   Content,
   BodyContent,
 } from 'Components';
-import { ICON_NAMES, PASSWORD_MIN_LENGTH } from 'consts';
+import { APP_URL, ICON_NAMES, PASSWORD_MIN_LENGTH } from 'consts';
 import { useNavigate } from 'react-router-dom';
 import {
   getKey,
   getAccounts,
   decryptKey,
   getSavedData,
+  getSettings,
+  saveSettings,
 } from 'utils';
 import { useAccount } from 'redux/hooks';
 
@@ -43,8 +45,14 @@ export const Unlock = ({ nextUrl }: Props) => {
       else {
         // Password was correct, build the wallets
         const localAccounts = await getAccounts();
-        const activeAccountIndex = await getSavedData('activeAccountIndex');
-        addAccounts({ accounts: localAccounts, activeAccountIndex })
+        const activeAccountId = await getSavedData('activeAccountId');
+        // Pull all settings
+        const now = Date.now();
+        // TODO: Keep settings defaults in consts file
+        const unlockDuration = await getSettings('unlockDuration') || 300000; // default 5min
+        saveSettings({ unlockEST: now, unlockEXP: now + unlockDuration }); // Save settings to browser
+        addAccounts({ accounts: localAccounts, activeAccountId }); // Save wallet to browser
+        
         // Redirect to dashboard
         navigate(nextUrl);
       }
@@ -55,7 +63,7 @@ export const Unlock = ({ nextUrl }: Props) => {
 
   return (
     <Content>
-      <Header iconLeft={ICON_NAMES.CLOSE} progress={100} title="Unlock Wallet" backLocation='/' />
+      <Header iconLeft={ICON_NAMES.CLOSE} progress={100} title="Unlock Wallet" backLocation={APP_URL} />
       <BodyContent>Enter your password</BodyContent>
       <Input
         id="wallet-password"

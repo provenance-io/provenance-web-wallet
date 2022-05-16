@@ -1,3 +1,4 @@
+import { TRANSACTIONS_URL } from 'consts';
 import { useNavigate } from 'react-router-dom';
 import { Message } from '.';
 
@@ -18,7 +19,7 @@ export const Confirm = () => {
 
   const handleApprove = () => {
     // TO DO: Add additional functionality
-    navigate('/transactions');
+    navigate(TRANSACTIONS_URL);
   }
 
   return (

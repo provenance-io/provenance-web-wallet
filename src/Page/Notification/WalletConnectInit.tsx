@@ -4,7 +4,7 @@ import { Sprite } from 'Components';
 import { trimString, removePendingRequest } from 'utils';
 import { ICON_NAMES, CHAINID_TESTNET } from 'consts';
 import circleIcon from 'images/circle-icon.svg';
-import { useAccount, useWalletConnect } from 'redux/hooks';
+import { useActiveAccount, useWalletConnect } from 'redux/hooks';
 import { EventPayload } from 'types';
 import { Authenticate } from './Authenticate';
 
@@ -67,10 +67,11 @@ export const WalletConnectInit:React.FC<Props> = ({ payload, closeWindow }) => {
     icons: [],
   } } = payload?.params[0];
   const { name, url, icons } = peerMeta;
-  const { accounts, activeAccountIndex } = useAccount();
   const { connector } = useWalletConnect();
-  const activeAccount = accounts[activeAccountIndex];
-
+  const activeAccount = useActiveAccount();
+  console.log('WalletConnectInit | peerMeta :', peerMeta);
+  console.log('WalletConnectInit | connector :', connector);
+  console.log('WalletConnectInit | activeAccount :', activeAccount);
   const handleApprove = async () => {
     if (connector) {
       const data = {

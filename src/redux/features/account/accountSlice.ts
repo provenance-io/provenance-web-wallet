@@ -6,27 +6,19 @@ import {
   createWalletFromMasterKey,
   bytesToBase64,
   derivationPath,
-  saveAccount,
 } from 'utils';
 import { PROVENANCE_ADDRESS_PREFIX_MAINNET, PROVENANCE_ADDRESS_PREFIX_TESTNET } from 'consts';
+import { Account } from 'types';
 
 /**
  * TYPES
  */
-interface Account {
-  name?: string,
-  publicKey?: string,
-  privateKey?: string,
-  address?: string,
-  network?: string,
-  id?: number,
-}
 interface TempAccount extends Account {
   mnemonic: string
 }
 interface State {
-  activeAccountId: number;
-  accounts: {[key: number]: Account};
+  activeAccountId?: number;
+  accounts: Account[];
   tempAccount?: TempAccount;
   initialLoad: boolean;
 }
@@ -36,7 +28,7 @@ interface State {
  */
 const initialState: State = {
   activeAccountId: -1,
-  accounts: {},
+  accounts: [],
   tempAccount: undefined,
   initialLoad: true,
 };
@@ -49,11 +41,10 @@ const accountSlice = createSlice({
   initialState,
   reducers: {
     setInitialValues: (state, { payload }) => {
-      const { accounts, activeAccountId: passedActiveAccountIndex } = payload
+      const { accounts, activeAccountId } = payload
       if (accounts) state.accounts = accounts;
       // Either use the passed in payload, or get one from the passed in accounts
-      const activeAccountId = passedActiveAccountIndex || Object.keys(accounts)[0];
-      state.activeAccountId = activeAccountId;
+      state.activeAccountId = activeAccountId || accounts[0].id;
       state.initialLoad = false;
     },
     signOut: (state) => {
@@ -62,14 +53,12 @@ const accountSlice = createSlice({
       // Reset redux store state
       state = initialState;
     },
+    // add 1 or more accounts
     addAccount: (state, { payload }) => {
-      state.accounts = { ...state.accounts, [payload.id]: payload };
-      state.activeAccountId = payload.id;
-    },
-    addAccounts: (state, { payload }) => {
-      const { accounts, activeAccountId } = payload;
-      state.accounts = { ...state.accounts, ...accounts};
-      state.activeAccountId = activeAccountId;
+      const { accounts, activeAccountId } = payload
+      state.accounts.push(accounts);
+      // Either use the passed in payload, or get one from the passed in accounts
+      state.activeAccountId = activeAccountId || accounts[0].id;
     },
     // Create multiple accounts from a single masterKey
     // createHDWallet: (state, { payload }) => {
@@ -107,36 +96,33 @@ const accountSlice = createSlice({
     // Add a single new wallet to the masterKey
     addToHDWallet: (state, { payload }) => {
       const { masterKey, name, network } = payload;
-      const accountArray = Object.keys(state.accounts).map((key: string) => state.accounts[Number(key)]);
-      const activeAccountId = accountArray.length;
       // Loop through all wallets, get the highest ID, increment, and use that as the wallet index
-      const sortedWallets = accountArray.sort((a, b) => a.id! < b.id! ? 1 : -1);
+      const sortedWallets = state.accounts.sort((a, b) => a.id! < b.id! ? 1 : -1);
       const highestId = sortedWallets[0].id || 0;
       const id = highestId + 1;
-      
       const prefix = network === 'mainnet' ? PROVENANCE_ADDRESS_PREFIX_MAINNET : PROVENANCE_ADDRESS_PREFIX_TESTNET;
-      const path = derivationPath({ address_index: Number(activeAccountId) });
-      const { address, publicKey, privateKey } = createWalletFromMasterKey(masterKey, prefix, path);
+      const path = derivationPath({ address_index: id });
+      const { address, publicKey, /* privateKey */ } = createWalletFromMasterKey(masterKey, prefix, path);
       const b64PublicKey = bytesToBase64(publicKey);
-      const b64PrivateKey = bytesToBase64(privateKey);
+      // const b64PrivateKey = bytesToBase64(privateKey);
       const newAccountData = {
         address,
         publicKey: b64PublicKey,
-        privateKey: b64PrivateKey,
+        // privateKey: b64PrivateKey,
         name,
+        network,
         id,
       };
       // Update Redux Store
-      state.accounts = { ...state.accounts, [id]: newAccountData };
-      state.activeAccountId = activeAccountId;
-      // Update Local Browser Saved Data
+      state.accounts.push(newAccountData);
+      state.activeAccountId = id;
+      // Update Local Browser Saved Data (Chrome Storage)
       addSavedData({
         connected: true,
         connectedIat: new Date().getTime(),
         accounts: state.accounts,
+        activeAccountId: id,
       })
-      saveAccount({ id, name, network });
-      addSavedData({ activeAccountId });
     },
     // updateWallet: (state, { payload }) => {
     //   const { walletIndex, ...rest } = payload;
@@ -150,7 +136,7 @@ const accountSlice = createSlice({
     //     accounts: state.accounts,
     //   })
     // },
-    setActiveAccountIndex: (state, { payload }) => {
+    setActiveAccountId: (state, { payload }) => {
       state.activeAccountId = payload;
       // Save wallet data into savedStorage
       addSavedData({
@@ -160,7 +146,7 @@ const accountSlice = createSlice({
     updateTempAccount: (state, { payload }) => {
       state.tempAccount = {...payload, ...state.tempAccount};
     },
-    cleartempAccount: (state) => {
+    clearTempAccount: (state) => {
       state.tempAccount = undefined;
     },
   },

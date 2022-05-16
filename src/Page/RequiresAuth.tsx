@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { Outlet } from 'react-router-dom';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { useAccount } from 'redux/hooks';
+import { useActiveAccount } from 'redux/hooks';
 import { APP_URL, DASHBOARD_URL, NOTIFICATION_URL, ALL_URLS } from 'consts';
 
 interface PageProps {
@@ -11,13 +11,12 @@ interface PageProps {
 export const RequiresAuth = ({ children = null }: PageProps) => {
   const location = useLocation();
   const navigate = useNavigate();
-  const { activeAccountId, accounts } = useAccount();
+  const activeAccount = useActiveAccount();
   // Is the user on the landing page?
   const isLandingPage = location.pathname === APP_URL;
   // Is there an active wallet in this session
-  const walletExists = accounts.length && accounts[activeAccountId] !== undefined;
   // User is only allowed to go into the app if they have a wallet active (unlocked) or they are on the landing page
-  const userAllowed = walletExists || isLandingPage;
+  const userAllowed = activeAccount || isLandingPage;
   // Send user to notifications page
   useEffect(() => {
     const urlSearchParams = new URLSearchParams(window?.location?.search);
@@ -31,11 +30,11 @@ export const RequiresAuth = ({ children = null }: PageProps) => {
       if (existingURL) navigate(existingURL);
     }
     else if (!userAllowed) navigate(APP_URL);
-    else if (walletExists && isLandingPage) navigate(DASHBOARD_URL);
+    else if (activeAccount && isLandingPage) navigate(DASHBOARD_URL);
   }, [
     navigate,
     userAllowed,
-    walletExists,
+    activeAccount,
     isLandingPage,
   ]);
 

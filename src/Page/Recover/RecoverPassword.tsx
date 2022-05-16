@@ -87,8 +87,8 @@ export const RecoverPassword = ({ nextUrl }: Props) => {
   const {
     tempAccount,
     addAccount,
-    cleartempAccount,
-    setActiveAccountIndex
+    clearTempAccount,
+    setActiveAccountId
   } = useAccount();
   const [walletPassword, setWalletPassword] = useState('');
   const [showAdvanced, setShowAdvanced] = useState(false);
@@ -134,7 +134,7 @@ export const RecoverPassword = ({ nextUrl }: Props) => {
       return recoverAccountLoop(masterKey, addressIndex + 1);
     } else {
       // Set first wallet to be active
-      setActiveAccountIndex(0);
+      setActiveAccountId(0);
       return 'complete';
     }
   };
@@ -160,7 +160,7 @@ export const RecoverPassword = ({ nextUrl }: Props) => {
         await saveKey(encrypted);
         setLoading(false);
         // Remove tempAccount data
-        cleartempAccount();
+        clearTempAccount();
         setSuccess(true);
       } else {
         latestError = 'Unable to locally save account, please try again later'

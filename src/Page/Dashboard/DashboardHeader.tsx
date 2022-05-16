@@ -3,7 +3,7 @@ import { ICON_NAMES, DASHBOARD_CONNECTION_DETAILS_URL } from 'consts';
 import { Sprite, CopyValue } from 'Components';
 import { useNavigate } from 'react-router-dom';
 import { COLORS } from 'theme';
-import { useAccount, useWalletConnect } from 'redux/hooks';
+import { useActiveAccount, useWalletConnect } from 'redux/hooks';
 import { trimString } from 'utils';
 
 const HeaderRow = styled.div`
@@ -47,10 +47,9 @@ const Notify = styled.span`
 
 export const DashboardHeader:React.FC = () => {
   const navigate = useNavigate();
-  const { activeAccountId, accounts } = useAccount();
   const { session, connector } = useWalletConnect();
   const { connected } = session;
-  const activeAccount = accounts[activeAccountId];
+  const activeAccount = useActiveAccount();
   const { name, address = '' } = activeAccount;
 
   // TODO: Add check for pending notifications here

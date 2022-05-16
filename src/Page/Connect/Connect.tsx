@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { Button, Sprite } from 'Components';
 import { DASHBOARD_URL, ICON_NAMES, CHAINID_TESTNET } from 'consts';
 import { useEffect } from 'react';
-import { useWalletConnect, useAccount } from 'redux/hooks';
+import { useWalletConnect, useActiveAccount } from 'redux/hooks';
 
 const Container = styled.div`
   width: 100%;
@@ -43,8 +43,7 @@ export const Connect:React.FC = () => {
   const { state } = useLocation();
   const { payload } = state as LocationState;
   const { connector } = useWalletConnect();
-  const { accounts, activeAccountId } = useAccount();
-  const activeAccount = accounts[activeAccountId];
+  const activeAccount = useActiveAccount();
 
   useEffect(() => {
     if (!connector) {

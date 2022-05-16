@@ -208,3 +208,23 @@ export const getPendingRequest = async (id?: string) => {
   // Return the requested id or all requests
   return id ? existingPendingRequests[id] : existingPendingRequests;
 };
+// ----------------------------
+// Extension Session Settings
+// ----------------------------
+interface Settings {
+  unlockEST?: number, // When was the current unlock established at
+  unlockEXP?: number, // When will the current unlock expire at
+  unlockDuration?: number, // How long is each unlock's lifespan
+}
+export const saveSettings = async (settings: Settings) => {
+  // Get existing settings
+  const existingSettings = await getSavedData('settings');
+  // Combine settings
+  const newSettings = { ...existingSettings, ...settings };
+  await addSavedData({ settings: newSettings });
+};
+export const getSetting = async (setting?: keyof Settings) => {
+  // Get existing settings
+  const existingSettings = await getSavedData('settings') || {};
+  return setting ? existingSettings[setting] : existingSettings;
+};

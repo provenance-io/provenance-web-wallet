@@ -13,6 +13,8 @@ import {
   getAccounts,
   decryptKey,
   getSavedData,
+  getSetting,
+  saveSettings,
 } from 'utils';
 import { useAccount } from 'redux/hooks';
 
@@ -44,7 +46,13 @@ export const Unlock = ({ nextUrl }: Props) => {
         // Password was correct, build the wallets
         const localAccounts = await getAccounts();
         const activeAccountId = await getSavedData('activeAccountId');
-        addAccounts({ accounts: localAccounts, activeAccountId })
+        // Pull all settings
+        const now = Date.now();
+        // TODO: Keep settings defaults in consts file
+        const unlockDuration = await getSetting('unlockDuration') || 300; // default to 300 (5min)
+        saveSettings({ unlockEST: now, unlockEXP: now + unlockDuration }); // Save settings to browser
+        addAccounts({ accounts: localAccounts, activeAccountId }); // Save wallet to browser
+        
         // Redirect to dashboard
         navigate(nextUrl);
       }

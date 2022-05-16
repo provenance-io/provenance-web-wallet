@@ -59,14 +59,14 @@ const getChromeStorage = async (keyValue?: StorageKey) => {
     return result[keyValue];
   } else return await chrome.storage.local.get();
 }
-const addChromeStorage = (newData: StorageData) => {
-  chrome.storage.local.set(newData);
+const addChromeStorage = async (newData: StorageData) => {
+  await chrome.storage.local.set(newData);
 };
-const removeChromeStorage = (key: StorageKey) => {
-  chrome.storage.local.remove(key);
+const removeChromeStorage = async (key: StorageKey) => {
+  await chrome.storage.local.remove(key);
 }
-const clearChromeStorage = () => {
-  chrome.storage.local.clear();
+const clearChromeStorage = async () => {
+  await chrome.storage.local.clear();
 };
 
 // ----------------------
@@ -81,17 +81,17 @@ export const getSavedData = async (key?: StorageKey) => {
   }
 };
 // Add to storage
-export const addSavedData = (newData: StorageData) => {
+export const addSavedData = async (newData: StorageData) => {
   if (useChromeStorage) addChromeStorage(newData);
   else addStorageData(newData);
 };
 // Clear out single value
-export const removeSavedData = (key: StorageKey) => {
+export const removeSavedData = async (key: StorageKey) => {
   if (useChromeStorage) removeChromeStorage(key);
   else removeStorageData(key);
 }
 // Clear out entire storage
-export const clearSavedData = () => {
+export const clearSavedData = async () => {
   if (useChromeStorage) clearChromeStorage();
   else clearStorageData();
 };
@@ -144,7 +144,7 @@ export const removeAccount = async (id: AccountIndex) => {
   // Save the map back to local storage
   addSavedData(existingAccounts);
 };
-export const clearAccounts = () => {
+export const clearAccounts = async () => {
   removeSavedData('accounts');
 };
 
@@ -152,10 +152,10 @@ export const clearAccounts = () => {
 // WalletConnect Data
 // ----------------------------
 // Walletconnect will always save to localstorage
-export const getWalletConnectStorage = () => {
+export const getWalletConnectStorage = async () => {
   return getStorageData(undefined, 'walletconnect');
 }
-export const clearWalletConnectStorage = () => {
+export const clearWalletConnectStorage = async () => {
   return clearStorageData('walletconnect');
 }
 
@@ -207,4 +207,24 @@ export const getPendingRequest = async (id?: string) => {
   const existingPendingRequests = await getSavedData(PENDING_REQUESTS) || {};
   // Return the requested id or all requests
   return id ? existingPendingRequests[id] : existingPendingRequests;
+};
+// ----------------------------
+// Extension Session Settings
+// ----------------------------
+interface Settings {
+  unlockEST?: number, // When was the current unlock established at
+  unlockEXP?: number, // When will the current unlock expire at
+  unlockDuration?: number, // How long is each unlock's lifespan
+}
+export const saveSettings = async (settings: Settings) => {
+  // Get existing settings
+  const existingSettings = await getSavedData('settings');
+  // Combine settings
+  const newSettings = { ...existingSettings, ...settings };
+  await addSavedData({ settings: newSettings });
+};
+export const getSetting = async (setting?: keyof Settings) => {
+  // Get existing settings
+  const existingSettings = await getSavedData('settings') || {};
+  return setting ? existingSettings[setting] : existingSettings;
 };

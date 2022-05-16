@@ -1,7 +1,7 @@
 import { Button, ButtonGroup, FooterNav, AssetRow, Content, Denom } from 'Components';
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useAddress, useAccount } from 'redux/hooks';
+import { useAddress, useActiveAccount } from 'redux/hooks';
 import styled from 'styled-components';
 import { DashboardHeader } from './DashboardHeader';
 
@@ -41,8 +41,7 @@ const AssetsContainer = styled.div`
 export const Dashboard = () => {
   const navigate = useNavigate();
   const { getAddressAssets, assets } = useAddress();
-  const { activeAccountIndex, accounts } = useAccount();
-  const activeAccount = accounts[activeAccountIndex];
+  const activeAccount = useActiveAccount();
   const { address } = activeAccount;
 
   // Onload get account assets

@@ -2,7 +2,7 @@ import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import { Button, ButtonGroup, List, Header } from 'Components';
 import { COLORS } from 'theme';
-import { ICON_NAMES } from 'consts';
+import { DASHBOARD_URL, ICON_NAMES } from 'consts';
 
 const Container = styled.div`
   width: 100%;
@@ -72,7 +72,7 @@ export const Message = ({
 
   const handleDecline = () => {
     // TODO: Add decline actions
-    navigate('/dashboard');
+    navigate(DASHBOARD_URL);
   }
 
   return (

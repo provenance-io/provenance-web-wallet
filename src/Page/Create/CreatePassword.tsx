@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { BodyContent, Button, Header, Input as InputBase, Content } from 'Components';
 import {
+  APP_URL,
   ICON_NAMES,
   PASSWORD_MIN_LENGTH,
   PROVENANCE_ADDRESS_PREFIX_MAINNET,
@@ -34,7 +35,7 @@ interface Props {
 
 export const CreatePassword = ({ nextUrl }: Props) => {
   const navigate = useNavigate();
-  const { tempAccount, addAccount } = useAccount();
+  const { tempAccount, addAccounts } = useAccount();
   const [walletPassword, setWalletPassword] = useState('');
   const [walletPasswordRepeat, setWalletPasswordRepeat] = useState('');
   const [error, setError] = useState('');
@@ -67,7 +68,7 @@ export const CreatePassword = ({ nextUrl }: Props) => {
         await addSavedData({
           connected: true,
           connectedIat: new Date().getTime(),
-          activeAccountIndex: id,
+          activeAccountId: id,
         });
         await saveAccount(newAccountData);
         // Encrypt data with provided password
@@ -75,7 +76,7 @@ export const CreatePassword = ({ nextUrl }: Props) => {
         // Add data to localStorage
         await saveKey(encrypted);
         // Add account into redux store
-        addAccount(newAccountData);
+        addAccounts({ accounts: newAccountData });
         // This is the first account in the list, index will be 0
         navigate(nextUrl);
       } else {
@@ -87,7 +88,7 @@ export const CreatePassword = ({ nextUrl }: Props) => {
 
   return (
     <Content>
-      <Header iconLeft={ICON_NAMES.CLOSE} progress={33} title="Account Password" backLocation='/' />
+      <Header iconLeft={ICON_NAMES.CLOSE} progress={33} title="Account Password" backLocation={APP_URL} />
       <BodyContent
         $css={css`
           text-align: center;

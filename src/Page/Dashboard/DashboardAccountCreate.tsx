@@ -2,7 +2,13 @@ import styled from 'styled-components';
 import { Button, Header, Input } from 'Components';
 import { ICON_NAMES, PASSWORD_MIN_LENGTH } from 'consts';
 import { useState } from 'react';
-import { getKey, decryptKey } from 'utils';
+import {
+  getKey,
+  decryptKey,
+  createHDWallet,
+  addSavedData,
+  saveAccount,
+} from 'utils';
 import { useNavigate } from 'react-router-dom';
 import { useAccount } from 'redux/hooks';
 
@@ -21,7 +27,7 @@ export const DashboardAccountCreate:React.FC<Props> = ({ nextUrl }) => {
   const navigate = useNavigate();
   const [name, setName] = useState('');
   const [walletPassword, setWalletPassword] = useState('');
-  const { addToHDWallet } = useAccount();
+  const { accounts, addAccounts } = useAccount();
   const [error, setError] = useState<string[]>([]); // [accountNameError, walletPasswordError]
   const passwordMinLength = Number(PASSWORD_MIN_LENGTH)!;
   
@@ -42,8 +48,23 @@ export const DashboardAccountCreate:React.FC<Props> = ({ nextUrl }) => {
       else {
         // TODO: Indicate if you want this account to be mainnet or testnet
         const network = 'testnet';
-        // Password was correct, add the account
-        addToHDWallet({ masterKey: masterKey, name, network })
+        // Get the id to use
+        // Loop through all wallets, get the highest ID, increment, and use that as the wallet index
+        const sortedWallets = accounts.sort((a, b) => a.id! < b.id! ? 1 : -1);
+        const highestId = sortedWallets[0].id || 0;
+        const id = highestId + 1;
+        // Password was correct, create the account
+        const newAccount = createHDWallet({ masterKey, name, id, network });
+        // Save data to browser
+        // TODO: Better save data function which will add account to all accounts
+        await addSavedData({
+          connected: true,
+          connectedIat: new Date().getTime(),
+          activeAccountId: id,
+        })
+        await saveAccount(newAccount);
+        // Save data to redux store
+        addAccounts({ accounts: newAccount, activeAccountId: id })
         // Redirect back to dashboard menu
         navigate(nextUrl);
       }

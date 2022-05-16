@@ -1,41 +1,42 @@
 import { createSlice } from '@reduxjs/toolkit';
 import { RootState } from 'redux/store';
-import {
-  addSavedData,
-  clearSavedData,
-  createWalletFromMasterKey,
-  bytesToBase64,
-  derivationPath,
-  saveAccount,
-} from 'utils';
-import { PROVENANCE_ADDRESS_PREFIX_MAINNET, PROVENANCE_ADDRESS_PREFIX_TESTNET } from 'consts';
+import { Account } from 'types';
 
 /**
  * TYPES
  */
-interface Account {
-  name?: string,
-  publicKey?: string,
-  privateKey?: string,
-  address?: string,
-  network?: string,
-  id?: number,
-}
 interface TempAccount extends Account {
-  mnemonic: string
+  mnemonic?: string
 }
 interface State {
-  activeAccountIndex: number;
+  activeAccountId?: number;
   accounts: Account[];
   tempAccount?: TempAccount;
   initialLoad: boolean;
 }
-
+interface AddAccounts {
+  payload: {
+    accounts: Account[] | Account,
+    activeAccountId?: number
+  }
+}
+interface SetInitialValues {
+  payload: {
+    accounts?: Account[],
+    activeAccountId?: number,
+  }
+}
+interface SetActiveAccountId {
+  payload: number
+}
+interface UpdateTempAccount {
+  payload: TempAccount
+}
 /**
  * STATE
  */
 const initialState: State = {
-  activeAccountIndex: -1,
+  activeAccountId: -1,
   accounts: [],
   tempAccount: undefined,
   initialLoad: true,
@@ -48,117 +49,31 @@ const accountSlice = createSlice({
   name: 'account',
   initialState,
   reducers: {
-    setInitialValues: (state, { payload }) => {
-      const { accounts, activeAccountIndex } = payload
-      if (accounts) state.accounts = accounts;
-      if (activeAccountIndex !== undefined) state.activeAccountIndex = activeAccountIndex;
+    setInitialValues: (state, { payload }: SetInitialValues) => {
+      const { accounts, activeAccountId } = payload
+      if (accounts && accounts.length) {
+        state.accounts = accounts;
+        // Either use the passed in payload, or get one from the passed in accounts
+        state.activeAccountId = activeAccountId || accounts[0].id;
+      }
       state.initialLoad = false;
     },
-    signOut: (state) => {
-      // Clear out sessionStorage
-      clearSavedData();
-      // Reset redux store state
-      state = initialState;
+    // Add 1 or more accounts
+    addAccounts: (state, { payload }: AddAccounts ) => {
+      const { accounts, activeAccountId } = payload;
+      // Make sure accounts passed in is an array
+      const accountsArray = Array.isArray(accounts) ? accounts : [accounts];
+      state.accounts.push(...accountsArray);
+      // Either use the passed in payload, or get one from the passed in accounts
+      state.activeAccountId = activeAccountId || accountsArray[0].id;
     },
-    addAccount: (state, { payload }) => {
-      state.accounts.push(payload);
-      state.activeAccountIndex = payload.id;
+    setActiveAccountId: (state, { payload }: SetActiveAccountId) => {
+      state.activeAccountId = payload;
     },
-    addAccounts: (state, { payload }) => {
-      const { accounts, activeAccountIndex } = payload;
-      state.accounts.push(...accounts);
-      state.activeAccountIndex = activeAccountIndex;
-    },
-    // Create multiple accounts from a single masterKey
-    createHDWallet: (state, { payload }) => {
-      interface AccountType {
-        id: number,
-        name: string,
-        network: string,
-      }
-      const { masterKey, localAccounts } = payload;
-      // Loop though each account to create that wallet account
-      localAccounts.forEach((account: AccountType) => {
-        const { id, name, network } = account;
-        const path = derivationPath({ address_index: Number(id) });
-        const prefix = network === 'mainnet' ? PROVENANCE_ADDRESS_PREFIX_MAINNET : PROVENANCE_ADDRESS_PREFIX_TESTNET;
-        const { address, publicKey, privateKey } = createWalletFromMasterKey(masterKey, prefix, path);
-        const b64PublicKey = bytesToBase64(publicKey);
-        const b64PrivateKey = bytesToBase64(privateKey);
-        const newAccountData = {
-          address,
-          publicKey: b64PublicKey,
-          privateKey: b64PrivateKey,
-          name,
-          network,
-          id,
-        };
-        state.accounts.push(newAccountData);
-      });
-      // Save wallet data into savedStorage
-      addSavedData({
-        connected: true,
-        connectedIat: new Date().getTime(),
-        accounts: state.accounts,
-      })
-    },
-    // Add a single new wallet to the masterKey
-    addToHDWallet: (state, { payload }) => {
-      const { masterKey, name, network } = payload;
-      const totalWallets = state.accounts.length;
-      const activeAccountIndex = totalWallets;
-      // Loop through all wallets, get the highest ID, increment, and use that as the wallet index
-      const sortedWallets = state.accounts.sort((a, b) => a.id! < b.id! ? 1 : -1);
-      const highestId = sortedWallets[0].id || 0;
-      const id = highestId + 1;
-      
-      const prefix = network === 'mainnet' ? PROVENANCE_ADDRESS_PREFIX_MAINNET : PROVENANCE_ADDRESS_PREFIX_TESTNET;
-      const path = derivationPath({ address_index: Number(activeAccountIndex) });
-      const { address, publicKey, privateKey } = createWalletFromMasterKey(masterKey, prefix, path);
-      const b64PublicKey = bytesToBase64(publicKey);
-      const b64PrivateKey = bytesToBase64(privateKey);
-      const newAccountData = {
-        address,
-        publicKey: b64PublicKey,
-        privateKey: b64PrivateKey,
-        name,
-        id,
-      };
-      // Update Redux Store
-      state.accounts.push(newAccountData);
-      state.activeAccountIndex = activeAccountIndex;
-      // Update Local Browser Saved Data
-      addSavedData({
-        connected: true,
-        connectedIat: new Date().getTime(),
-        accounts: state.accounts,
-      })
-      saveAccount({ id, name, network });
-      addSavedData({ activeAccountIndex });
-    },
-    updateWallet: (state, { payload }) => {
-      const { walletIndex, ...rest } = payload;
-      const targetWallet = state.accounts[walletIndex];
-      const updatedWallet = { ...targetWallet, ...rest };
-      state.accounts[walletIndex] = updatedWallet;
-      // Save wallet data into savedStorage
-      addSavedData({
-        connected: true,
-        connectedIat: new Date().getTime(),
-        accounts: state.accounts,
-      })
-    },
-    setActiveAccountIndex: (state, { payload }) => {
-      state.activeAccountIndex = payload;
-      // Save wallet data into savedStorage
-      addSavedData({
-        activeAccountIndex: state.activeAccountIndex,
-      });
-    },
-    updatetempAccount: (state, { payload }) => {
+    updateTempAccount: (state, { payload }: UpdateTempAccount) => {
       state.tempAccount = {...payload, ...state.tempAccount};
     },
-    cleartempAccount: (state) => {
+    clearTempAccount: (state) => {
       state.tempAccount = undefined;
     },
   },

@@ -6,7 +6,7 @@ import { Account } from 'types';
  * TYPES
  */
 interface TempAccount extends Account {
-  mnemonic: string
+  mnemonic?: string
 }
 interface State {
   activeAccountId?: number;

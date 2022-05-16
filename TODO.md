@@ -9,7 +9,6 @@
 
 ### Unsolved Issues
 * dApp sending back to back messages sometimes no popup is triggered causing the dApp to hang
-* When adding a new account, unable to unlock device
 
 ### Wallet Functionality
 * Re-add all protos
@@ -20,8 +19,6 @@
 * Correctly form/create JWT when connecting with wallet connect (just dummy data right now)
 
 ### General
-* Create logout button
-* Log user out once timeout reached
 * In settings, allow user to set timeout for auto-logout
 * Success page (typically used after a Notification)
 * Auto check mnuemonic input fields as they are entered (make sure valid word)

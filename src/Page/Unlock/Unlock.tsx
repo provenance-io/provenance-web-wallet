@@ -49,7 +49,7 @@ export const Unlock = ({ nextUrl }: Props) => {
         // Pull all settings
         const now = Date.now();
         // TODO: Keep settings defaults in consts file
-        const unlockDuration = await getSetting('unlockDuration') || 300; // default to 300 (5min)
+        const unlockDuration = await getSetting('unlockDuration') || 300000; // default 5min
         saveSettings({ unlockEST: now, unlockEXP: now + unlockDuration }); // Save settings to browser
         addAccounts({ accounts: localAccounts, activeAccountId }); // Save wallet to browser
         

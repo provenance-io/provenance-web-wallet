@@ -1,7 +1,8 @@
 import { FooterNav, Sprite } from 'Components';
 import { useNavigate } from 'react-router-dom';
-import { ICON_NAMES } from 'consts';
+import { APP_URL, ICON_NAMES } from 'consts';
 import styled from 'styled-components';
+import { saveSettings } from 'utils';
 
 const Container = styled.div`
   width: 100%;
@@ -47,6 +48,13 @@ export const Profile = () => {
     </SectionOption>
   );
 
+  const handleLockWallet = async () => {
+    // Set expiration to now
+    await saveSettings({ unlockEXP: Date.now() })
+    // Redirect user to landing page
+    navigate(APP_URL);
+  };
+
   return (
     <Container>
       <Title>Profile</Title>
@@ -56,6 +64,10 @@ export const Profile = () => {
       <SectionTitle>General</SectionTitle>
       {createOption('About Provenance Blockchain', 'https://provenance.io', true)}
       {createOption('More Information', 'https://docs.provenance.io', true)}
+      <SectionOption onClick={handleLockWallet}>
+        Lock Wallet
+        <Sprite icon={ICON_NAMES.CHEVRON} size="1.3rem" />
+      </SectionOption>
       <FooterNav />
     </Container>
   );

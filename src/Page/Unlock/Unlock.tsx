@@ -6,7 +6,7 @@ import {
   Content,
   BodyContent,
 } from 'Components';
-import { ICON_NAMES, PASSWORD_MIN_LENGTH } from 'consts';
+import { APP_URL, ICON_NAMES, PASSWORD_MIN_LENGTH } from 'consts';
 import { useNavigate } from 'react-router-dom';
 import {
   getKey,
@@ -55,7 +55,7 @@ export const Unlock = ({ nextUrl }: Props) => {
 
   return (
     <Content>
-      <Header iconLeft={ICON_NAMES.CLOSE} progress={100} title="Unlock Wallet" backLocation='/' />
+      <Header iconLeft={ICON_NAMES.CLOSE} progress={100} title="Unlock Wallet" backLocation={APP_URL} />
       <BodyContent>Enter your password</BodyContent>
       <Input
         id="wallet-password"

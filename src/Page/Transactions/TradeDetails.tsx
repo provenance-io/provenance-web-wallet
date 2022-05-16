@@ -1,3 +1,4 @@
+import { TRANSACTION_COMPLETE_URL } from 'consts';
 import { useNavigate } from 'react-router-dom';
 import { Message } from '../Confirm';
 
@@ -17,7 +18,7 @@ export const TradeDetails = () => {
 
   const handleApprove = () => {
     // TO DO: Add any messages needing to be sent to chain to approve
-    navigate('/transaction-complete');
+    navigate(TRANSACTION_COMPLETE_URL);
   }
 
   return (

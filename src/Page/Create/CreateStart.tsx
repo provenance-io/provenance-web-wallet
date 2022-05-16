@@ -7,7 +7,7 @@ import {
   Select as SelectBase,
   Content,
 } from 'Components';
-import { ICON_NAMES } from 'consts';
+import { APP_URL, ICON_NAMES } from 'consts';
 import { useNavigate } from 'react-router-dom';
 import styled, { css } from 'styled-components';
 import { useAccount } from 'redux/hooks';
@@ -53,7 +53,7 @@ export const CreateStart = ({ nextUrl }: Props) => {
 
   return (
     <Content>
-      <Header iconLeft={ICON_NAMES.CLOSE} progress={33} title="Name Your Account" backLocation='/' />
+      <Header iconLeft={ICON_NAMES.CLOSE} progress={33} title="Name Your Account" backLocation={APP_URL} />
       <BodyContent
         $css={css`
           text-align: center;

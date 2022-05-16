@@ -1,3 +1,4 @@
+import { DASHBOARD_URL } from 'consts';
 import { useNavigate } from 'react-router-dom';
 import { Message } from '../Confirm';
 
@@ -6,7 +7,7 @@ export const TransactionComplete = () => {
 
   const handleApprove = () => {
     // TO DO: Add any messages needing to be sent to chain for approval
-    navigate('/dashboard');
+    navigate(DASHBOARD_URL);
   }
 
   return (

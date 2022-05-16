@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { BodyContent, Button, Header, Input as InputBase, Content } from 'Components';
 import {
+  APP_URL,
   ICON_NAMES,
   PASSWORD_MIN_LENGTH,
   PROVENANCE_ADDRESS_PREFIX_MAINNET,
@@ -87,7 +88,7 @@ export const CreatePassword = ({ nextUrl }: Props) => {
 
   return (
     <Content>
-      <Header iconLeft={ICON_NAMES.CLOSE} progress={33} title="Account Password" backLocation='/' />
+      <Header iconLeft={ICON_NAMES.CLOSE} progress={33} title="Account Password" backLocation={APP_URL} />
       <BodyContent
         $css={css`
           text-align: center;

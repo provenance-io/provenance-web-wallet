@@ -7,6 +7,7 @@ import {
   PROVENANCE_WALLET_COIN_TYPE,
   PROVENANCE_ADDRESS_PREFIX_MAINNET,
   PROVENANCE_ADDRESS_PREFIX_TESTNET,
+  APP_URL,
 } from 'consts';
 import { useNavigate } from 'react-router-dom';
 import styled, { css } from 'styled-components';
@@ -204,7 +205,7 @@ export const RecoverPassword = ({ nextUrl }: Props) => {
       </Wrapper>
     ) : (
       <Wrapper>
-        <Header iconLeft={ICON_NAMES.CLOSE} progress={66} title="Account Password" backLocation='/' />
+        <Header iconLeft={ICON_NAMES.CLOSE} progress={66} title="Account Password" backLocation={APP_URL} />
         <BodyContent
           $css={css`
             text-align: center;

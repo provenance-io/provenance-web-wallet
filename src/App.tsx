@@ -47,7 +47,8 @@ function App() {
   }, [initialLoad, setInitialValues, setSession]);
 
   const routing = useRoutes(routes);
-  return <>{routing}</>;
+  // TODO: Create loading screen while data gets pulled in from storage
+  return <>{initialLoad ? 'LOADING...' : routing}</>;
 }
 
 export default App;

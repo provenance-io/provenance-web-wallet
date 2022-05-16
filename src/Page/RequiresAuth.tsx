@@ -3,7 +3,7 @@ import { Outlet } from 'react-router-dom';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useActiveAccount } from 'redux/hooks';
 import { APP_URL, DASHBOARD_URL, NOTIFICATION_URL, ALL_URLS } from 'consts';
-import { getSetting } from 'utils';
+import { getSettings } from 'utils';
 
 interface PageProps {
   children?: React.ReactNode;
@@ -26,7 +26,7 @@ export const RequiresAuth = ({ children = null }: PageProps) => {
     // Pull settings from storage to see if the unlock session expired (async)
     const asyncAccessCheck = async () => {
       // Get all settings
-      const { unlockEST, unlockEXP } = await getSetting();
+      const { unlockEST, unlockEXP } = await getSettings();
       // Current time
       const now = Date.now();
       // Check the unlockSession

@@ -18,6 +18,7 @@
 * Log user out once timeout reached
 * In settings, allow user to set timeout for auto-logout
 * Success page (typically used after a Notification)
+* Auto check mnuemonic input fields as they are entered (make sure valid word)
 * Generic success page/message
   - After creating an account or performing specific actions (vs just redirecting back to the landing page)
 

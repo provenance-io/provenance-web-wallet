@@ -61,11 +61,12 @@ const WalletAction = styled.div`
 
 export const DashboardMenu:React.FC = () => {
   const navigate = useNavigate();
-  const { activeAccountIndex, accounts, setActiveAccountIndex } = useAccount();
+  const { activeAccountId, accounts, setActiveAccountIndex } = useAccount();
   const [ accountMenuTarget, setAccountMenuTarget ] = useState(-1);
+  const accountArray = Object.keys(accounts).map((key: string) => accounts[Number(key)]);
 
-  const renderWallets = () => accounts.map(({ address, name }, index) => (
-    <WalletItem key={address} active={index === activeAccountIndex} onClick={() => { setAccountMenuTarget(index)} }>
+  const renderWallets = () => accountArray.map(({ address, name, id }) => (
+    <WalletItem key={address} active={id === activeAccountId} onClick={() => { setAccountMenuTarget(id!)} }>
       <WalletText>
         <AccountName>{name}</AccountName>
       </WalletText>
@@ -79,7 +80,7 @@ export const DashboardMenu:React.FC = () => {
       {renderWallets()}
       {accountMenuTarget > -1 && (
         <WalletActionsPopup onClick={() => setAccountMenuTarget(-1)}>
-          {activeAccountIndex !== accountMenuTarget && (
+          {activeAccountId !== accountMenuTarget && (
             <WalletAction onClick={() => setActiveAccountIndex(accountMenuTarget)}>
               Select Account
             </WalletAction>

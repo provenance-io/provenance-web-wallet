@@ -11,11 +11,11 @@ interface PageProps {
 export const RequiresAuth = ({ children = null }: PageProps) => {
   const location = useLocation();
   const navigate = useNavigate();
-  const { activeAccountIndex, accounts } = useAccount();
+  const { activeAccountId, accounts } = useAccount();
   // Is the user on the landing page?
   const isLandingPage = location.pathname === APP_URL;
   // Is there an active wallet in this session
-  const walletExists = accounts.length && accounts[activeAccountIndex] !== undefined;
+  const walletExists = accounts.length && accounts[activeAccountId] !== undefined;
   // User is only allowed to go into the app if they have a wallet active (unlocked) or they are on the landing page
   const userAllowed = walletExists || isLandingPage;
   // Send user to notifications page

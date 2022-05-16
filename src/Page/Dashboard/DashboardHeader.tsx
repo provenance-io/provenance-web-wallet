@@ -47,10 +47,10 @@ const Notify = styled.span`
 
 export const DashboardHeader:React.FC = () => {
   const navigate = useNavigate();
-  const { activeAccountIndex, accounts } = useAccount();
+  const { activeAccountId, accounts } = useAccount();
   const { session, connector } = useWalletConnect();
   const { connected } = session;
-  const activeAccount = accounts[activeAccountIndex];
+  const activeAccount = accounts[activeAccountId];
   const { name, address = '' } = activeAccount;
 
   // TODO: Add check for pending notifications here

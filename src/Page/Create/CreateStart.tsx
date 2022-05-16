@@ -32,7 +32,7 @@ interface Props {
 export const CreateStart = ({ nextUrl }: Props) => {
   const defaultNetwork = 'mainnet';
   const navigate = useNavigate();
-  const { updatetempAccount } = useAccount();
+  const { updateTempAccount } = useAccount();
   const [name, setName] = useState('');
   const [network, setNetwork] = useState(defaultNetwork);
   const [showAdvanced, setShowAdvanced] = useState(false);
@@ -40,7 +40,7 @@ export const CreateStart = ({ nextUrl }: Props) => {
 
   const handleContinue = () => {
     if (name) {
-      updatetempAccount({ name, mnemonic, network });
+      updateTempAccount({ name, mnemonic, network });
       // Move to next step
       navigate(nextUrl);
     }

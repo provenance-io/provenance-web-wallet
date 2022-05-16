@@ -31,8 +31,8 @@ function App() {
       // ----------------------------------------
       const asyncStorageGet = async () => {
         const accounts = await getSavedData('accounts');
-        const activeAccountIndex = await getSavedData('activeAccountIndex');
-        setInitialValues({ accounts, activeAccountIndex });
+        const activeAccountId = await getSavedData('activeAccountId');
+        setInitialValues({ accounts, activeAccountId });
       }
       asyncStorageGet();
       // ---------------------------------------------

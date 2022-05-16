@@ -35,7 +35,7 @@ interface Props {
 export const EnterSeed:React.FC<Props> = ({ nextUrl }) => {
   const totalSeeds = 24;
   const navigate = useNavigate();
-  const { updatetempAccount } = useAccount();
+  const { updateTempAccount } = useAccount();
   const createInitialInputData = () => {
     // Clone all inputValues
     const newInputValues = [];
@@ -131,7 +131,7 @@ export const EnterSeed:React.FC<Props> = ({ nextUrl }) => {
       const validMnemonic = validateMnemonic(mnemonic);
       if (validMnemonic) {
         // Add mnemonic into the temp wallet
-        updatetempAccount({ mnemonic });
+        updateTempAccount({ mnemonic });
         navigate(nextUrl);
       } else {
         setSubmitError('Invalid Mnemonic');

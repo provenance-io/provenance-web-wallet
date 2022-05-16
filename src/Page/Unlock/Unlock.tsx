@@ -43,8 +43,8 @@ export const Unlock = ({ nextUrl }: Props) => {
       else {
         // Password was correct, build the wallets
         const localAccounts = await getAccounts();
-        const activeAccountIndex = await getSavedData('activeAccountIndex');
-        addAccounts({ accounts: localAccounts, activeAccountIndex })
+        const activeAccountId = await getSavedData('activeAccountId');
+        addAccounts({ accounts: localAccounts, activeAccountId })
         // Redirect to dashboard
         navigate(nextUrl);
       }

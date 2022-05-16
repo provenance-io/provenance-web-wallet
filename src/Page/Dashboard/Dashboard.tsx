@@ -41,8 +41,8 @@ const AssetsContainer = styled.div`
 export const Dashboard = () => {
   const navigate = useNavigate();
   const { getAddressAssets, assets } = useAddress();
-  const { activeAccountIndex, accounts } = useAccount();
-  const activeAccount = accounts[activeAccountIndex];
+  const { activeAccountId, accounts } = useAccount();
+  const activeAccount = accounts[activeAccountId];
   const { address } = activeAccount;
 
   // Onload get account assets

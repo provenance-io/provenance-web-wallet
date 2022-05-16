@@ -43,8 +43,8 @@ export const Connect:React.FC = () => {
   const { state } = useLocation();
   const { payload } = state as LocationState;
   const { connector } = useWalletConnect();
-  const { accounts, activeAccountIndex } = useAccount();
-  const activeAccount = accounts[activeAccountIndex];
+  const { accounts, activeAccountId } = useAccount();
+  const activeAccount = accounts[activeAccountId];
 
   useEffect(() => {
     if (!connector) {

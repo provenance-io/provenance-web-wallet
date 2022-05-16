@@ -67,7 +67,7 @@ export const CreatePassword = ({ nextUrl }: Props) => {
         await addSavedData({
           connected: true,
           connectedIat: new Date().getTime(),
-          activeAccountIndex: id,
+          activeAccountId: id,
         });
         await saveAccount(newAccountData);
         // Encrypt data with provided password

@@ -223,7 +223,7 @@ export const saveSettings = async (settings: Settings) => {
   const newSettings = { ...existingSettings, ...settings };
   await addSavedData({ settings: newSettings });
 };
-export const getSetting = async (setting?: keyof Settings) => {
+export const getSettings = async (setting?: keyof Settings) => {
   // Get existing settings
   const existingSettings = await getSavedData('settings') || {};
   return setting ? existingSettings[setting] : existingSettings;

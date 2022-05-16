@@ -32,22 +32,21 @@ function App() {
       const asyncStorageGet = async () => {
         const accounts = await getSavedData('accounts');
         const activeAccountId = await getSavedData('activeAccountId');
+        // Restore WalletConnect session if it exists
+        const walletConnectData = await getWalletConnectStorage();
+        if (Object.keys(walletConnectData).length) {
+          setSession(walletConnectData);
+        }
         // Only save if we have data
         if (accounts || activeAccountId) setInitialValues({ accounts, activeAccountId });
       }
-      asyncStorageGet();
-      // ---------------------------------------------
-      // Restore WalletConnect session if it exists
-      // ---------------------------------------------
-      const walletConnectData = getWalletConnectStorage();
-      if (Object.keys(walletConnectData).length) {
-        setSession(walletConnectData);
-      }
+      asyncStorageGet();      
     }
   }, [initialLoad, setInitialValues, setSession]);
 
   const routing = useRoutes(routes);
-  return <>{routing}</>;
+  // TODO: Create loading screen while data gets pulled in from storage
+  return <>{initialLoad ? 'LOADING...' : routing}</>;
 }
 
 export default App;

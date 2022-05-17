@@ -4,10 +4,10 @@ import {
   ICON_NAMES,
   PASSWORD_MIN_LENGTH,
   DEFAULT_ACCOUNT_NAME,
-  PROVENANCE_WALLET_COIN_TYPE,
   PROVENANCE_ADDRESS_PREFIX_MAINNET,
   PROVENANCE_ADDRESS_PREFIX_TESTNET,
   APP_URL,
+  PROVENANCE_WALLET_COIN_TYPE,
 } from 'consts';
 import { useNavigate } from 'react-router-dom';
 import styled, { css } from 'styled-components';
@@ -83,6 +83,7 @@ interface CustomDerivationPathObject {
   account?: number,
   change?: number,
   addressIndex?: number,
+  coin?: number,
 }
 
 export const RecoverPassword = ({ nextUrl }: Props) => {
@@ -99,6 +100,7 @@ export const RecoverPassword = ({ nextUrl }: Props) => {
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
   const [customDerivationPath, setCustomDerivationPath] = useState<CustomDerivationPathObject>({
+    coin: 505,
     account: 0,
     change: 0,
     addressIndex: 0,
@@ -107,8 +109,7 @@ export const RecoverPassword = ({ nextUrl }: Props) => {
   const defaultNetwork = 'mainnet';
   const [network, setNetwork] = useState(defaultNetwork);
   const [error, setError] = useState('');
-  const defaultCoinType = PROVENANCE_WALLET_COIN_TYPE;
-  const { account, change, addressIndex } = customDerivationPath;
+  const { account, change, addressIndex, coin } = customDerivationPath;
   const passwordMinLength = Number(PASSWORD_MIN_LENGTH)!;
   const defaultAccountName = DEFAULT_ACCOUNT_NAME!;
 
@@ -199,6 +200,11 @@ export const RecoverPassword = ({ nextUrl }: Props) => {
     setCustomDerivationPath(newCustomDerivationPath);
   };
 
+  const updateNetwork = (value: string) => {
+    setNetwork(value);
+    changeCustomDerivationPath('coin', (value === 'testnet') ? '1' : `${PROVENANCE_WALLET_COIN_TYPE}`);
+  }
+
   return (
     success ? (
       <Wrapper>
@@ -247,9 +253,9 @@ export const RecoverPassword = ({ nextUrl }: Props) => {
           <AdvancedSection>
             <AdvancedTitle>HD Derivation Path</AdvancedTitle>
             <AdvancedInputArea>
-              m/44'/{defaultCoinType}'/<Input type="number" id="account" value={account !== undefined ? account : ''} onChange={(value) => changeCustomDerivationPath('account', value) } />'/<Input type="number" id="change" value={change !== undefined ? change : ''} onChange={(value) => changeCustomDerivationPath('change', value) } />/<Input type="number" id="addressIndex" value={addressIndex !== undefined ? addressIndex : ''} onChange={(value) => changeCustomDerivationPath('addressIndex', value) } />
+              m/44'/<Input type="number" id="coin" value={coin !== undefined ? coin : ''} onChange={(value) => changeCustomDerivationPath('account', value) } />'/<Input type="number" id="account" value={account !== undefined ? account : ''} onChange={(value) => changeCustomDerivationPath('account', value) } />'/<Input type="number" id="change" value={change !== undefined ? change : ''} onChange={(value) => changeCustomDerivationPath('change', value) } />/<Input type="number" id="addressIndex" value={addressIndex !== undefined ? addressIndex : ''} onChange={(value) => changeCustomDerivationPath('addressIndex', value) } />
             </AdvancedInputArea>
-            <Select label="Network" options={['mainnet', 'testnet']} value={network} onChange={setNetwork} />
+            <Select label="Network" options={['mainnet', 'testnet']} value={network} onChange={updateNetwork} />
           </AdvancedSection>
         )}
         {loading ? <div>Please Wait..</div> : <Button  onClick={handleContinue}>Continue</Button>}

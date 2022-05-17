@@ -20,8 +20,6 @@ export const PROFILE_URL = '/profile';
 export const RESET_WALLETS_URL = '/profile/reset-wallets';
 // -- TRANSACTION URLS
 export const TRANSACTIONS_URL = '/transactions';
-export const TRADE_DETAILS_URL = '/trade-details';
-export const TRANSACTION_COMPLETE_URL = '/transaction-complete';
 // -- RECOVER URLS
 export const RECOVER_URL = '/recover';
 export const RECOVER_NOTE_URL = '/recover/note';
@@ -31,8 +29,6 @@ export const RECOVER_PASSWORD_URL ='/recover/password';
 export const ACTIONS_URL = '/actions';
 // -- ASSET URLS
 export const ASSET_URL = '/asset/:assetName';
-// -- CONFIRMATION
-export const CONFIRM_URL = '/confirm';
 // -- CONNECTION
 export const CONNECT_URL = '/connect';
 // -- CREATE URLS
@@ -58,14 +54,11 @@ export const ALL_URLS = {
   PROFILE_URL,
   RESET_WALLETS_URL,
   TRANSACTIONS_URL,
-  TRADE_DETAILS_URL,
-  TRANSACTION_COMPLETE_URL,
   RECOVER_URL,
   RECOVER_NOTE_URL,
   RECOVER_SEED_URL,
   RECOVER_PASSWORD_URL,
   ASSET_URL,
-  CONFIRM_URL,
   CONNECT_URL,
   CREATE_URL,
   CREATE_SEEDPHRASE_INTRO_URL,

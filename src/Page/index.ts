@@ -1,6 +1,5 @@
 export * from './Actions';
 export * from './Asset';
-export * from './Confirm';
 export * from './Connect';
 export * from './Create';
 export * from './CreateAuth';

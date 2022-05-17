@@ -2,7 +2,7 @@ import { PROVENANCE_WALLET_COIN_TYPE } from 'consts';
 
 type DerivationType = {
   purpose?: number
-  coin_type?: string
+  coin_type?: string | number,
   account?: number
   change?: number
   address_index?: number

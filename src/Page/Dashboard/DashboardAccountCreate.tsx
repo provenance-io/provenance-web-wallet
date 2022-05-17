@@ -47,7 +47,8 @@ export const DashboardAccountCreate:React.FC<Props> = ({ nextUrl }) => {
       if (!masterKey) newError[1] = 'Invalid password';
       else {
         // TODO: Indicate if you want this account to be mainnet or testnet
-        const network = 'testnet';
+        // const network = 'testnet';
+        const network = 'mainnet';
         // Get the id to use
         // Loop through all wallets, get the highest ID, increment, and use that as the wallet index
         const sortedWallets = accounts.sort((a, b) => a.id! < b.id! ? 1 : -1);

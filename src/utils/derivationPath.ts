@@ -16,6 +16,8 @@ export const derivationPath = (data?: DerivationType) => {
     change = 0,
     address_index = 0,
   } = data || {};
+  // Testnet is hardened, mainnet is not.
+  const isHardened = coin_type === PROVENANCE_WALLET_COIN_TYPE ? '' : "'";
 
-  return `m/${purpose}'/${coin_type}'/${account}'/${change}/${address_index}`;
+  return `m/${purpose}'/${coin_type}'/${account}'/${change}/${address_index}${isHardened}`;
 }

@@ -24,8 +24,6 @@ import {
   ResetWallets,
   Seedphrase,
   SeedphraseIntro,
-  TradeDetails,
-  TransactionComplete,
   Transactions,
   Unlock,
   UnlockAuth,
@@ -55,7 +53,6 @@ import {
   RECOVER_SEED_URL,
   RECOVER_URL,
   RESET_WALLETS_URL,
-  TRADE_DETAILS_URL,
   TRANSACTIONS_URL,
   UNLOCK_URL,
 } from 'consts';
@@ -104,13 +101,6 @@ export const routes = [
         element: <Page />,
         children: [
           { index: true, element: <Transactions /> },
-        ],
-      },
-      {
-        path: TRADE_DETAILS_URL,
-        element: <Page />,
-        children: [
-          { index: true, element: <TradeDetails /> },
         ],
       },
       // PROFILE

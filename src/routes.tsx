@@ -1,7 +1,6 @@
 import {
   Actions,
   Asset,
-  Confirm,
   Connect,
   CreateAuth,
   CreateComplete,
@@ -36,7 +35,6 @@ import {
   ACTIONS_URL,
   APP_URL,
   ASSET_URL,
-  CONFIRM_URL,
   CONNECT_URL,
   CREATE_COMPLETE_URL,
   CREATE_PASSWORD_URL,
@@ -58,7 +56,6 @@ import {
   RECOVER_URL,
   RESET_WALLETS_URL,
   TRADE_DETAILS_URL,
-  TRANSACTION_COMPLETE_URL,
   TRANSACTIONS_URL,
   UNLOCK_URL,
 } from 'consts';
@@ -116,13 +113,6 @@ export const routes = [
           { index: true, element: <TradeDetails /> },
         ],
       },
-      {
-        path: TRANSACTION_COMPLETE_URL,
-        element: <Page bgImage/>,
-        children: [
-          { index: true, element: <TransactionComplete /> },
-        ],
-      },
       // PROFILE
       {
         path: PROFILE_URL,
@@ -137,14 +127,6 @@ export const routes = [
         element: <Page />,
         children: [
           { index: true, element: <ResetWallets /> },
-        ],
-      },
-      // CONFIRMATION
-      {
-        path: CONFIRM_URL,
-        element: <Page />,
-        children: [
-          { index: true, element: <Confirm /> },
         ],
       },
       // WALLETCONNECT CONNECTION

@@ -12,6 +12,7 @@
   - Doesn't always happen, hard to recreate
 
 ### Wallet Functionality
+* Don't require authentication if the wallet is unlocked
 * Re-add all protos
 * Sign for transactions
 

@@ -1,9 +1,13 @@
 #!/usr/bin/env bash
 
-# Transpile protos to js & ts files
+# Generate js clients for third party protos
+# Ref: https://github.com/grpc/grpc-web/tree/master/net/grpc/gateway/examples/helloworld#generate-protobuf-messages-and-client-service-stub
 
 echo "Starting protoc gRPC generator"
 set -eo pipefail
+
+echo "Ensuring directory structure"
+mkdir -p third_party/proto third_party/build src/proto
 
 echo "Cleaning build"
 rm -rf third_party/build/*

@@ -21,6 +21,8 @@ import {
   saveKey,
   derivationPath,
   saveAccount,
+  getSettings,
+  saveSettings,
   addSavedData,
 } from 'utils';
 import backupComplete from 'images/backup-complete.svg';
@@ -165,6 +167,15 @@ export const RecoverPassword = ({ nextUrl }: Props) => {
         setLoading(false);
         // Remove tempAccount data
         clearTempAccount();
+        // Save settings for connectionEST
+        // TODO: Keep settings defaults in consts file
+        const unlockDuration = await getSettings('unlockDuration') || 300000; // default 5min
+        const now = Date.now();
+        const exp = now + unlockDuration;
+        await saveSettings({
+          unlockEST: now,
+          unlockEXP: exp,
+        });
         setSuccess(true);
       } else {
         latestError = 'Unable to locally save account, please try again later'

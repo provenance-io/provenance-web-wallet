@@ -11,7 +11,6 @@ export const Landing: React.FC = () => {
   const [savedKey, setSavedKey] = useState('');
 
   useEffect(() => {
-    console.log('Landing | useEffect');
     const asyncGetKey = async () => {
       const key = await getKey();
       setLoading(false);

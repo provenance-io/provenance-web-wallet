@@ -18,6 +18,8 @@ import {
   bytesToBase64,
   addSavedData,
   saveAccount,
+  getSettings,
+  saveSettings,
 } from 'utils';
 
 const Error = styled.div`
@@ -78,6 +80,14 @@ export const CreatePassword = ({ nextUrl }: Props) => {
         // Add account into redux store
         addAccounts({ accounts: newAccountData });
         // This is the first account in the list, index will be 0
+        // Save settings for connectionEST
+        // TODO: Keep settings defaults in consts file
+        const unlockDuration = await getSettings('unlockDuration') || 300000; // default 5min
+        const now = Date.now();
+        await saveSettings({
+          unlockEST: now,
+          unlockEXP: now + unlockDuration,
+        });
         navigate(nextUrl);
       } else {
         latestError = 'Unable to locally save account, please try again later'

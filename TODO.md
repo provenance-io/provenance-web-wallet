@@ -8,7 +8,8 @@
   - If not possible, need "init" function which will run on app startup, pulling all data in from browser, also event listeners
 
 ### Unsolved Issues
-* dApp sending back to back messages sometimes no popup is triggered causing the dApp to hang
+* dApp request message sign and no popup is triggered from background.js
+  - Doesn't always happen, hard to recreate
 
 ### Wallet Functionality
 * Re-add all protos
@@ -27,6 +28,7 @@
 * Instead of "Please Wait" messages, show a full page spinning loader (can later add additional text)
 
 ### Accounts
+* Creating/Recover account advanced options, mainnet = 505, testnet = 1 on HD path
 * Automatically switch API urls based on current active wallet.  TP will go to test urls, PB will go to prod urls
 * When creating the first account, the name will be for the Wallet.  Wallet => Seed
 * Split accounts by wallet name in dashboard menu

@@ -5,7 +5,7 @@ import { routes } from "routes";
 import { getSavedData, getWalletConnectStorage, removeAllPendingRequests } from 'utils';
 
 function App() {
-  const { initialLoad, setInitialValues } = useAccount();
+  const { initialLoad, setInitialLoad, setInitialValues } = useAccount();
   const { setSession, connector, killSession } = useWalletConnect();
 
   // TODO: Need to find a better place for these listeners
@@ -32,6 +32,7 @@ function App() {
       const asyncStorageGet = async () => {
         const accounts = await getSavedData('accounts');
         const activeAccountId = await getSavedData('activeAccountId');
+        console.log('App.tsx | useEffect | asyncStorageGet | accounts, activeAccountId', accounts, activeAccountId);
         // Restore WalletConnect session if it exists
         const walletConnectData = await getWalletConnectStorage();
         if (Object.keys(walletConnectData).length) {
@@ -39,10 +40,12 @@ function App() {
         }
         // Only save if we have data
         if (accounts || activeAccountId) setInitialValues({ accounts, activeAccountId });
+        // No longer loading
+        setInitialLoad(false);
       }
       asyncStorageGet();      
     }
-  }, [initialLoad, setInitialValues, setSession]);
+  }, [initialLoad, setInitialValues, setSession, setInitialLoad]);
 
   const routing = useRoutes(routes);
   // TODO: Create loading screen while data gets pulled in from storage

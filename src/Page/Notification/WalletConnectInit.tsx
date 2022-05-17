@@ -69,9 +69,6 @@ export const WalletConnectInit:React.FC<Props> = ({ payload, closeWindow }) => {
   const { name, url, icons } = peerMeta;
   const { connector } = useWalletConnect();
   const activeAccount = useActiveAccount();
-  console.log('WalletConnectInit | peerMeta :', peerMeta);
-  console.log('WalletConnectInit | connector :', connector);
-  console.log('WalletConnectInit | activeAccount :', activeAccount);
   const handleApprove = async () => {
     if (connector) {
       const data = {

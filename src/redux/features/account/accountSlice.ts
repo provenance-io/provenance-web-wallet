@@ -49,6 +49,9 @@ const accountSlice = createSlice({
   name: 'account',
   initialState,
   reducers: {
+    setInitialLoad: (state, { payload }) => {
+      state.initialLoad = payload;
+    },
     setInitialValues: (state, { payload }: SetInitialValues) => {
       const { accounts, activeAccountId } = payload
       if (accounts && accounts.length) {
@@ -56,7 +59,6 @@ const accountSlice = createSlice({
         // Either use the passed in payload, or get one from the passed in accounts
         state.activeAccountId = activeAccountId || accounts[0].id;
       }
-      state.initialLoad = false;
     },
     // Add 1 or more accounts
     addAccounts: (state, { payload }: AddAccounts ) => {

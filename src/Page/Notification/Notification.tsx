@@ -46,11 +46,13 @@ export const Notification:React.FC = () => {
 
   // On load, create the walletConnect event listeners
   useEffect(() => {
+    console.log('Notification.tsx | useEffect | creating wc events | connector: ', connector);
     // Connector must exist to create events
     if (connector) {
       // Loop through each notification type and create event listener
       WC_NOTIFICATION_TYPES.forEach(NOTE_TYPE => {
         connector.on(NOTE_TYPE, async (error, payload) => {
+          
           setNotificationType(NOTE_TYPE);
           // Save the request locally
           // - If the user closes the window/popup or doesn't notice it in the background it can be retreived

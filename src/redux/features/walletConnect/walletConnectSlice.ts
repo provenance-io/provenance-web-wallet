@@ -67,6 +67,7 @@ const walletConnectSlice = createSlice({
       }
     },
     killSession: (state) => {
+      if (state.connector) state.connector.killSession();
       Object.assign(state, initialState);
     },
   },

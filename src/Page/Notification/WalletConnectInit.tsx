@@ -1,8 +1,8 @@
 import { useState } from 'react';
 import styled from 'styled-components';
 import { Sprite } from 'Components';
-import { trimString, removePendingRequest } from 'utils';
-import { ICON_NAMES, CHAINID_TESTNET } from 'consts';
+import { trimString, removePendingRequest, saveSettings } from 'utils';
+import { ICON_NAMES, CHAINID_TESTNET, WC_CONNECTION_TIMEOUT } from 'consts';
 import circleIcon from 'images/circle-icon.svg';
 import { useActiveAccount, useWalletConnect } from 'redux/hooks';
 import { EventPayload } from 'types';
@@ -87,6 +87,13 @@ export const WalletConnectInit:React.FC<Props> = ({ payload, closeWindow }) => {
         }],
       };
       await connector.approveSession(data as any);
+      // Save connection time into storage (settings/walletconnect)
+      const now = Date.now();
+      await saveSettings({ walletconnect: {
+        connectionEST: now,
+        connectionEXP: now + WC_CONNECTION_TIMEOUT,
+        connectionDuration: WC_CONNECTION_TIMEOUT,
+      }});
       // Close the popup
       closeWindow();
     }

@@ -4,7 +4,8 @@ import { Button, Content, Header } from 'Components';
 import { useNavigate } from 'react-router';
 import { useEffect } from 'react';
 import { DASHBOARD_URL, ICON_NAMES } from 'consts';
-import { removeAllPendingRequests } from 'utils';
+import { getSettings, removeAllPendingRequests } from 'utils';
+import { format } from 'date-fns';
 
 const DataRow = styled.div`
   border-top: 2px solid #2C2F3A;
@@ -28,6 +29,11 @@ export const DashboardConnectionDetails:React.FC = () => {
   const { session, connector, killSession } = useWalletConnect();
   const { connected } = session;
   const navigate = useNavigate();
+
+  const getConnectionEXP = async () => {
+    const { connectionEXP } = await getSettings('walletconnect') || {};
+    return connectionEXP ? format(new Date(connectionEXP), 'h:m:s mmm dd') : 'N/A';
+  };
 
   // If we are not connected or there is no connector go back to the dashboard
   useEffect(() => {
@@ -68,6 +74,10 @@ export const DashboardConnectionDetails:React.FC = () => {
       <DataRow>
         <DataContent>Accounts</DataContent>
         <DataContent>{renderConnectedAccounts()}</DataContent>
+      </DataRow>
+      <DataRow>
+        <DataContent>Connection Expires</DataContent>
+        <DataContent>{getConnectionEXP()}</DataContent>
       </DataRow>
       <Button onClick={handleDisconnect}>Disconnect</Button>
     </Content>

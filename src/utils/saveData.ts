@@ -6,11 +6,41 @@ const useChromeStorage = !!window?.chrome?.storage;
 const localSaveName = LOCAL_SAVE_NAME || 'provenance-web-wallet';
 
 // ----------------------
+// Types
+// ----------------------
+interface Account {
+  name?: string,
+  id: number,
+  network?: string,
+  address?: string,
+  publicKey?: string,
+}
+type AccountIndex = number;
+interface Settings {
+  unlockEST?: number, // When was the current unlock established at
+  unlockEXP?: number, // When will the current unlock expire at
+  unlockDuration?: number, // How long is each unlock's lifespan
+  walletconnect?: { // WalletConnect session data
+    connectionEST?: number, // When did we connect with walletconnect
+    connectionEXP?: number, // When are we predicted to expire (actions refresh EST time)
+    connectionDuration?: number, // How long from EST to EXP
+  }
+}
+interface PendingRequest {};
+type StorageData = {} | [];
+interface StorageItems {
+  accounts?: Account[],
+  activeAccountId?: AccountIndex,
+  key?: string,
+  settings?: Settings,
+  pendingRequests?: PendingRequest[],
+  totalPendingRequests?: number,
+};
+type StorageItemKey = keyof StorageItems;
+// ----------------------
 // Session/Local Storage
 // ----------------------
-type StorageData = {} | [];
-type StorageKey = string;
-const getStorageData = (key?: StorageKey, savedName = localSaveName) => {
+const getStorageData = (key?: StorageItemKey, savedName = localSaveName) => {
   const windowData = window.localStorage;
   // Look for the item in the current localStorage, if found, add to results
   const rawData = windowData.getItem(savedName) || '{}';
@@ -31,7 +61,7 @@ const addStorageData = (newData: StorageData) => {
   // Save
   windowData.setItem(localSaveName, stringFinalData);
 };
-const removeStorageData = (key: StorageKey, customLocalSaveName = localSaveName) => {
+const removeStorageData = (key: StorageItemKey, customLocalSaveName = localSaveName) => {
   const windowData = window.localStorage;
   // Pull from storage
   const rawData = windowData.getItem(customLocalSaveName) || '{}';
@@ -53,7 +83,7 @@ const clearStorageData = (customLocalSaveName = localSaveName) => {
 // ----------------------
 // Chrome Storage
 // ----------------------
-const getChromeStorage = async (keyValue?: StorageKey) => {
+const getChromeStorage = async (keyValue?: StorageItemKey) => {
   if (keyValue) {
     const result = await chrome.storage.local.get(keyValue);
     return result[keyValue];
@@ -62,7 +92,7 @@ const getChromeStorage = async (keyValue?: StorageKey) => {
 const addChromeStorage = async (newData: StorageData) => {
   await chrome.storage.local.set(newData);
 };
-const removeChromeStorage = async (key: StorageKey) => {
+const removeChromeStorage = async (key: StorageItemKey) => {
   await chrome.storage.local.remove(key);
 }
 const clearChromeStorage = async () => {
@@ -74,7 +104,7 @@ const clearChromeStorage = async () => {
 // (Will automatically use browser default or chrome storage)
 // ----------------------
 // Get one or more values from storage
-export const getSavedData = async (key?: StorageKey) => {
+export const getSavedData = async (key?: StorageItemKey) => {
   if (useChromeStorage) return await getChromeStorage(key);
   else {
     return getStorageData(key);
@@ -86,7 +116,7 @@ export const addSavedData = async (newData: StorageData) => {
   else addStorageData(newData);
 };
 // Clear out single value
-export const removeSavedData = async (key: StorageKey) => {
+export const removeSavedData = async (key: StorageItemKey) => {
   if (useChromeStorage) removeChromeStorage(key);
   else removeStorageData(key);
 }
@@ -108,14 +138,7 @@ export const clearKey = async () => {
 // ----------------------------
 // Account Name map storage
 // ----------------------------
-type Account = {
-  name?: string,
-  id: number,
-  network?: string,
-  address?: string,
-  publicKey?: string,
-}
-type AccountIndex = number;
+
 
 export const saveAccount = async ({
   id,
@@ -211,11 +234,6 @@ export const getPendingRequest = async (id?: string) => {
 // ----------------------------
 // Extension Session Settings
 // ----------------------------
-interface Settings {
-  unlockEST?: number, // When was the current unlock established at
-  unlockEXP?: number, // When will the current unlock expire at
-  unlockDuration?: number, // How long is each unlock's lifespan
-}
 export const saveSettings = async (settings: Settings) => {
   // Get existing settings
   const existingSettings = await getSavedData('settings');

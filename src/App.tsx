@@ -2,7 +2,13 @@ import { useEffect } from 'react';
 import { useRoutes } from "react-router-dom";
 import { useAccount, useWalletConnect } from 'redux/hooks';
 import { routes } from "routes";
-import { getSavedData, getWalletConnectStorage, removeAllPendingRequests } from 'utils';
+import {
+  getSavedData,
+  getWalletConnectStorage,
+  removeAllPendingRequests,
+  saveSettings,
+  getSettings,
+} from 'utils';
 
 function App() {
   const { initialLoad, setInitialLoad, setInitialValues } = useAccount();
@@ -15,11 +21,13 @@ function App() {
       connector.on('disconnect', async (error, payload) => {
         // Remove all pending requests
         await removeAllPendingRequests();
+        // Remove walletconnect session data from storage/settings
+        await saveSettings({ walletconnect: {} });
         // Kill the session from walletconnect in redux store
         killSession();
       });
     }
-  });
+  }, [connector, killSession]);
 
   // If this is the initialLoad, get and set the storage wallet values
   // This happens everytime the popup is opened and closed
@@ -32,11 +40,16 @@ function App() {
       const asyncStorageGet = async () => {
         const accounts = await getSavedData('accounts');
         const activeAccountId = await getSavedData('activeAccountId');
-        console.log('App.tsx | useEffect | asyncStorageGet | accounts, activeAccountId', accounts, activeAccountId);
         // Restore WalletConnect session if it exists
         const walletConnectData = await getWalletConnectStorage();
         if (Object.keys(walletConnectData).length) {
+          // We have an existing walletconnect session
           setSession(walletConnectData);
+          // Make sure the session isn't expired
+          const now = Date.now();
+          const { connectionEXP } = await getSettings('walletconnect') || {};
+          // No exp set, or now is past the exp time
+          if (!connectionEXP || now >= connectionEXP) killSession();
         }
         // Only save if we have data
         if (accounts || activeAccountId) setInitialValues({ accounts, activeAccountId });
@@ -45,7 +58,13 @@ function App() {
       }
       asyncStorageGet();      
     }
-  }, [initialLoad, setInitialValues, setSession, setInitialLoad]);
+  }, [
+    initialLoad,
+    setInitialValues,
+    setSession,
+    setInitialLoad,
+    killSession,
+  ]);
 
   const routing = useRoutes(routes);
   // TODO: Create loading screen while data gets pulled in from storage

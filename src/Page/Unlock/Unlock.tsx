@@ -10,13 +10,10 @@ import { APP_URL, ICON_NAMES, PASSWORD_MIN_LENGTH } from 'consts';
 import { useNavigate } from 'react-router-dom';
 import {
   getKey,
-  getAccounts,
   decryptKey,
-  getSavedData,
   getSettings,
   saveSettings,
 } from 'utils';
-import { useAccount } from 'redux/hooks';
 
 interface Props {
   nextUrl: string;
@@ -26,7 +23,6 @@ export const Unlock = ({ nextUrl }: Props) => {
   const navigate = useNavigate();
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
-  const { addAccounts } = useAccount();
   const passwordMinLength = Number(PASSWORD_MIN_LENGTH)!;
 
   const handleSubmit = async () => {
@@ -43,16 +39,11 @@ export const Unlock = ({ nextUrl }: Props) => {
       const masterKey = decryptKey(localKey, password);
       if (!masterKey) newError = 'Invalid password';
       else {
-        // Password was correct, build the wallets
-        const localAccounts = await getAccounts();
-        const activeAccountId = await getSavedData('activeAccountId');
         // Pull all settings
         const now = Date.now();
         // TODO: Keep settings defaults in consts file
         const unlockDuration = await getSettings('unlockDuration') || 300000; // default 5min
         saveSettings({ unlockEST: now, unlockEXP: now + unlockDuration }); // Save settings to browser
-        addAccounts({ accounts: localAccounts, activeAccountId }); // Save wallet to browser
-        
         // Redirect to dashboard
         navigate(nextUrl);
       }

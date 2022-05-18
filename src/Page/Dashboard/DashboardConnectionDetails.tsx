@@ -34,7 +34,7 @@ export const DashboardConnectionDetails:React.FC = () => {
   useEffect(() => {
     const asyncGetConnectionEXP = async () => {
       const { connectionEXP } = await getSettings('walletconnect') || {};
-      setWcExpiration(connectionEXP ? format(new Date(connectionEXP), 'h:m:s mmm dd') : 'N/A');
+      setWcExpiration(connectionEXP ? format(new Date(connectionEXP), 'MMM dd, h:ma') : 'N/A');
     };
 
     asyncGetConnectionEXP();
@@ -77,7 +77,7 @@ export const DashboardConnectionDetails:React.FC = () => {
         <DataContent>{session?.bridge || 'N/A'}</DataContent>
       </DataRow>
       <DataRow>
-        <DataContent>Accounts</DataContent>
+        <DataContent>Account</DataContent>
         <DataContent>{renderConnectedAccounts()}</DataContent>
       </DataRow>
       <DataRow>

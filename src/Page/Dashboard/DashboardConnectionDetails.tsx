@@ -2,7 +2,7 @@ import styled from 'styled-components';
 import { useWalletConnect } from 'redux/hooks';
 import { Button, Content, Header } from 'Components';
 import { useNavigate } from 'react-router';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { DASHBOARD_URL, ICON_NAMES } from 'consts';
 import { getSettings, removeAllPendingRequests } from 'utils';
 import { format } from 'date-fns';
@@ -27,13 +27,18 @@ const DataContent = styled.div`
 
 export const DashboardConnectionDetails:React.FC = () => {
   const { session, connector, killSession } = useWalletConnect();
+  const [wcExpiration, setWcExpiration] = useState('N/A');
   const { connected } = session;
   const navigate = useNavigate();
 
-  const getConnectionEXP = async () => {
-    const { connectionEXP } = await getSettings('walletconnect') || {};
-    return connectionEXP ? format(new Date(connectionEXP), 'h:m:s mmm dd') : 'N/A';
-  };
+  useEffect(() => {
+    const asyncGetConnectionEXP = async () => {
+      const { connectionEXP } = await getSettings('walletconnect') || {};
+      setWcExpiration(connectionEXP ? format(new Date(connectionEXP), 'h:m:s mmm dd') : 'N/A');
+    };
+
+    asyncGetConnectionEXP();
+  }, []);
 
   // If we are not connected or there is no connector go back to the dashboard
   useEffect(() => {
@@ -77,7 +82,7 @@ export const DashboardConnectionDetails:React.FC = () => {
       </DataRow>
       <DataRow>
         <DataContent>Connection Expires</DataContent>
-        <DataContent>{getConnectionEXP()}</DataContent>
+        <DataContent>{wcExpiration}</DataContent>
       </DataRow>
       <Button onClick={handleDisconnect}>Disconnect</Button>
     </Content>

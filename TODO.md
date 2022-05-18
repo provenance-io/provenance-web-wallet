@@ -1,6 +1,19 @@
 # TODO
 ## To do shortlist
 
+### Bugs
+* Allow notifications without "unlocking".  "Unlock" should only be when manually opening the extension and seeing balances.
+  - We have to authenticate before we are allowed to sign or connect anyway, so this prevents double password entry
+* dApp request message sign and no popup is triggered from background.js
+  - Doesn't always happen, hard to recreate
+* Creating new account through dashboard defaults to mainnet
+  - We no longer have the seedphrase
+    - We cannot change HD path values (Ex: m/44/1/0/0 => m/44/1/0/1, m/44/1/0/2, m/44/1/0/3, etc)
+    - Once we make the first account/wallet as mainnet they rest will automatically match
+  - Allow importing an account (new seed phrase) and naming
+  - Split root accounts (unique seed phrases) in dashboard menu (indicate mainnet vs testnet)
+  - When importing a new account, check to make sure the first address created is unique, or else don't import
+
 ### Main TODO Item:
 * Cleanup how we pull/save data
   - Redux store is a combination of multiple stores (walletConnect, accounts, etc)
@@ -8,8 +21,7 @@
   - If not possible, need "init" function which will run on app startup, pulling all data in from browser, also event listeners
 
 ### Unsolved Issues
-* dApp request message sign and no popup is triggered from background.js
-  - Doesn't always happen, hard to recreate
+
 
 ### Wallet Functionality
 * Don't require authentication if the wallet is unlocked

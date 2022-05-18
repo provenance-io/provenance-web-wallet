@@ -2,6 +2,8 @@
 ## To do shortlist
 
 ### Bugs
+* [IN_PROGRESS] Walletconnect session should expire in 30 mins of inactivity
+  - Timers created, need to 'bump' exp time whenever interacting with dApp.
 * Allow notifications without "unlocking".  "Unlock" should only be when manually opening the extension and seeing balances.
   - We have to authenticate before we are allowed to sign or connect anyway, so this prevents double password entry
 * dApp request message sign and no popup is triggered from background.js
@@ -19,9 +21,6 @@
   - Redux store is a combination of multiple stores (walletConnect, accounts, etc)
   - Each redux store should initialize itself by pulling from browser storage (if possible since async...)
   - If not possible, need "init" function which will run on app startup, pulling all data in from browser, also event listeners
-
-### Unsolved Issues
-
 
 ### Wallet Functionality
 * Don't require authentication if the wallet is unlocked

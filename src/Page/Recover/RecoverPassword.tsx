@@ -8,24 +8,24 @@ import {
   PROVENANCE_ADDRESS_PREFIX_TESTNET,
   APP_URL,
   PROVENANCE_WALLET_COIN_TYPE,
+  DEFAULT_NETWORK,
+  MAINNET_NETWORK,
+  TESTNET_NETWORK,
+  TESTNET_WALLET_COIN_TYPE,
 } from 'consts';
 import { useNavigate } from 'react-router-dom';
 import styled, { css } from 'styled-components';
-import { useAccount, useAddress } from 'redux/hooks';
+import { useAccount, useAddress, useSettings } from 'redux/hooks';
 import { BIP32Interface } from 'bip32';
 import {
   encryptKey,
   createMasterKeyFromMnemonic,
   bytesToBase64,
   createWalletFromMasterKey,
-  saveKey,
   derivationPath,
-  saveAccount,
-  getSettings,
-  saveSettings,
-  addSavedData,
 } from 'utils';
 import backupComplete from 'images/backup-complete.svg';
+import { CustomDerivationPathObject } from 'types';
 
 const Wrapper = styled.div`
   padding: 42px 16px;
@@ -79,22 +79,18 @@ interface Props {
   nextUrl: string;
 }
 
-interface CustomDerivationPathObject {
-  account?: number,
-  change?: number,
-  addressIndex?: number,
-  coin_type?: number,
-}
-
 export const RecoverPassword = ({ nextUrl }: Props) => {
+  // Hooks
   const navigate = useNavigate();
-  const { getAddressAssetsRaw } = useAddress();
+  const { getAddressAssetsCount } = useAddress();
   const {
     tempAccount,
-    addAccounts,
     clearTempAccount,
-    setActiveAccountId
+    addAccount,
+    saveAccountData,
   } = useAccount();
+  const { unlockDuration, saveSettingsData } = useSettings();
+  // Local Component States
   const [walletPassword, setWalletPassword] = useState('');
   const [showAdvanced, setShowAdvanced] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -106,19 +102,15 @@ export const RecoverPassword = ({ nextUrl }: Props) => {
     addressIndex: 0,
   });
   const [walletPasswordRepeat, setWalletPasswordRepeat] = useState('');
-  const defaultNetwork = 'mainnet';
-  const [network, setNetwork] = useState(defaultNetwork);
+  const [network, setNetwork] = useState(DEFAULT_NETWORK);
   const [error, setError] = useState('');
-  const { account, change, addressIndex, coin_type } = customDerivationPath;
-  const passwordMinLength = Number(PASSWORD_MIN_LENGTH)!;
-  const defaultAccountName = DEFAULT_ACCOUNT_NAME!;
 
   const recoverAccountLoop = async (masterKey: BIP32Interface, addressIndex: number = 0, accountName?: string): Promise<string> => {
     const path = derivationPath({ ...customDerivationPath, address_index: addressIndex });
-    const prefix = network === 'mainnet' ? PROVENANCE_ADDRESS_PREFIX_MAINNET : PROVENANCE_ADDRESS_PREFIX_TESTNET;
+    const prefix = network === MAINNET_NETWORK ? PROVENANCE_ADDRESS_PREFIX_MAINNET : PROVENANCE_ADDRESS_PREFIX_TESTNET;
     const { address, publicKey } = createWalletFromMasterKey(masterKey, prefix, path);
     const b64PublicKey = bytesToBase64(publicKey);
-    const name = accountName || `${defaultAccountName}${addressIndex + 1}`;
+    const name = accountName || `${DEFAULT_ACCOUNT_NAME}${addressIndex + 1}`;
     // Save data to redux store and clear out tempAccount data
     const newWalletData = {
       address,
@@ -128,52 +120,49 @@ export const RecoverPassword = ({ nextUrl }: Props) => {
       id: addressIndex,
     };
     // Loop up to see if account holds any hash, if it does, add it, if it doesn't stop this loop.
-    const hasAssetsRequest = await getAddressAssetsRaw(address);
-    const hasAssets = hasAssetsRequest?.data?.length;
+    const hasAssets = await getAddressAssetsCount(address);
     // TODO: User might want to add address #42 and it has no assets
     if (addressIndex === 0 || hasAssets) {
-      // Save to local storage
-      await saveAccount(newWalletData);
-      // Save to redux store
-      addAccounts({ accounts: newWalletData });
+      // Save to chrome and redux storage
+      addAccount(newWalletData);
       // Loop function, bump address index up by one
       return recoverAccountLoop(masterKey, addressIndex + 1);
     } else {
-      // Set first wallet to be active
-      await addSavedData({ activeAccountId: 0 }); // Save browser
-      setActiveAccountId(0); // Save redux store
       return 'complete';
     }
   };
 
   const handleContinue = async () => {
     let latestError = '';
-    const derivationMissing = (account === undefined || change === undefined || addressIndex === undefined);
+    const { account, change, addressIndex, coin_type } = customDerivationPath;
+    const derivationMissing = (
+      account === undefined ||
+      change === undefined ||
+      addressIndex === undefined ||
+      coin_type === undefined
+    );
     if (showAdvanced && derivationMissing) latestError = 'Missing derivation path value(s).'
     if (walletPassword !== walletPasswordRepeat) latestError = 'Passwords must match';
     if (!walletPassword || !walletPasswordRepeat) latestError = 'Please confirm your password.';
-    if (walletPassword.length < passwordMinLength) latestError = `Password must be a minimum of ${passwordMinLength} characters.`;
+    if (walletPassword.length < PASSWORD_MIN_LENGTH) latestError = `Password must be a minimum of ${PASSWORD_MIN_LENGTH} characters.`;
     if (!latestError) {
       if (tempAccount?.mnemonic) {
         // Generate master keyt and get data about wallet
         const masterKey = createMasterKeyFromMnemonic(tempAccount.mnemonic);
-        // const finalDerivationPath = showAdvanced ? derivationPath({ account, change, address_index: addressIndex }) : undefined;
         setLoading(true);
         // Loop over the account to add sub-accounts if they exist
         await recoverAccountLoop(masterKey, 0, tempAccount.name);
         // Encrypt data with provided password
-        const encrypted = encryptKey(masterKey, walletPassword);
-        // Add data to localStorage
-        await saveKey(encrypted);
+        const key = encryptKey(masterKey, walletPassword);
+        // Add data to chrome and redux storage
+        saveAccountData({ key, activeAccountId: 0 })
         setLoading(false);
         // Remove tempAccount data
         clearTempAccount();
         // Save settings for connectionEST
-        // TODO: Keep settings defaults in consts file
-        const unlockDuration = await getSettings('unlockDuration') || 300000; // default 5min
         const now = Date.now();
-        const exp = now + unlockDuration;
-        await saveSettings({
+        const exp = now + unlockDuration!;
+        saveSettingsData({
           unlockEST: now,
           unlockEXP: exp,
         });
@@ -189,7 +178,7 @@ export const RecoverPassword = ({ nextUrl }: Props) => {
     if (showAdvanced) {
       setCustomDerivationPath({});
       setShowAdvanced(false);
-      setNetwork(defaultNetwork);
+      setNetwork(DEFAULT_NETWORK);
     }
     else setShowAdvanced(true);
   }
@@ -202,9 +191,10 @@ export const RecoverPassword = ({ nextUrl }: Props) => {
 
   const updateNetwork = (value: string) => {
     setNetwork(value);
-    changeCustomDerivationPath('coin_type', (value === 'testnet') ? '1' : `${PROVENANCE_WALLET_COIN_TYPE}`);
+    changeCustomDerivationPath('coin_type', (value === TESTNET_NETWORK) ? `${TESTNET_WALLET_COIN_TYPE}` : `${PROVENANCE_WALLET_COIN_TYPE}`);
   }
 
+  const { account, change, addressIndex, coin_type } = customDerivationPath;
   return (
     success ? (
       <Wrapper>
@@ -255,7 +245,7 @@ export const RecoverPassword = ({ nextUrl }: Props) => {
             <AdvancedInputArea>
               m/44'/<Input type="number" id="coin" value={coin_type !== undefined ? coin_type : ''} onChange={(value) => changeCustomDerivationPath('account', value) } />'/<Input type="number" id="account" value={account !== undefined ? account : ''} onChange={(value) => changeCustomDerivationPath('account', value) } />'/<Input type="number" id="change" value={change !== undefined ? change : ''} onChange={(value) => changeCustomDerivationPath('change', value) } />/<Input type="number" id="addressIndex" value={addressIndex !== undefined ? addressIndex : ''} onChange={(value) => changeCustomDerivationPath('addressIndex', value) } />
             </AdvancedInputArea>
-            <Select label="Network" options={['mainnet', 'testnet']} value={network} onChange={updateNetwork} />
+            <Select label="Network" options={[MAINNET_NETWORK, TESTNET_NETWORK]} value={network} onChange={updateNetwork} />
           </AdvancedSection>
         )}
         {loading ? <div>Please Wait..</div> : <Button  onClick={handleContinue}>Continue</Button>}

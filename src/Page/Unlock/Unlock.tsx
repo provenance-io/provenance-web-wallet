@@ -8,12 +8,8 @@ import {
 } from 'Components';
 import { APP_URL, ICON_NAMES, PASSWORD_MIN_LENGTH } from 'consts';
 import { useNavigate } from 'react-router-dom';
-import {
-  getKey,
-  decryptKey,
-  getSettings,
-  saveSettings,
-} from 'utils';
+import { decryptKey } from 'utils';
+import { useAccount, useSettings } from 'redux/hooks';
 
 interface Props {
   nextUrl: string;
@@ -23,27 +19,25 @@ export const Unlock = ({ nextUrl }: Props) => {
   const navigate = useNavigate();
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
-  const passwordMinLength = Number(PASSWORD_MIN_LENGTH)!;
+  const { unlockDuration, saveSettingsData } = useSettings();
+  const { key } = useAccount();
 
   const handleSubmit = async () => {
     // Clear out any previous error
     setError('');
     let newError = '';
     // Make sure password is at least 5 characters
-    if (password.length < passwordMinLength) newError = `Password must be a minimum of ${passwordMinLength} characters.`;
+    if (password.length < PASSWORD_MIN_LENGTH) newError = `Password must be a minimum of ${PASSWORD_MIN_LENGTH} characters.`;
     if (!password) newError = 'Enter a password';
     // No error so far
     if (!newError) {
-      const localKey = await getKey();
       // Attempt to decrypt the key with the provided password
-      const masterKey = decryptKey(localKey, password);
+      const masterKey = decryptKey(key, password);
       if (!masterKey) newError = 'Invalid password';
       else {
-        // Pull all settings
+        // Save unlock settings to chrome and redux storage
         const now = Date.now();
-        // TODO: Keep settings defaults in consts file
-        const unlockDuration = await getSettings('unlockDuration') || 300000; // default 5min
-        saveSettings({ unlockEST: now, unlockEXP: now + unlockDuration }); // Save settings to browser
+        saveSettingsData({ unlockEST: now, unlockEXP: now + unlockDuration! });
         // Redirect to dashboard
         navigate(nextUrl);
       }

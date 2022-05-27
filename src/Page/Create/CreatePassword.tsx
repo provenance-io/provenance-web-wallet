@@ -9,17 +9,12 @@ import {
 } from 'consts';
 import { useNavigate } from 'react-router-dom';
 import styled, { css } from 'styled-components';
-import { useAccount } from 'redux/hooks';
+import { useAccount, useSettings } from 'redux/hooks';
 import {
   encryptKey,
   createMasterKeyFromMnemonic,
   createWalletFromMasterKey,
-  saveKey,
   bytesToBase64,
-  addSavedData,
-  saveAccount,
-  getSettings,
-  saveSettings,
 } from 'utils';
 
 const Error = styled.div`
@@ -37,7 +32,8 @@ interface Props {
 
 export const CreatePassword = ({ nextUrl }: Props) => {
   const navigate = useNavigate();
-  const { tempAccount, addAccounts } = useAccount();
+  const { tempAccount, addAccount, saveAccountData } = useAccount();
+  const { unlockDuration, saveSettingsData } = useSettings();
   const [walletPassword, setWalletPassword] = useState('');
   const [walletPasswordRepeat, setWalletPasswordRepeat] = useState('');
   const [error, setError] = useState('');
@@ -64,30 +60,17 @@ export const CreatePassword = ({ nextUrl }: Props) => {
           network: tempAccount.network,
           id,
         };
-        // ---------------------------------------------
-        // Save new account data into browser storage
-        // ---------------------------------------------
-        await addSavedData({
-          connected: true,
-          connectedIat: new Date().getTime(),
-          activeAccountId: id,
-        });
-        await saveAccount(newAccountData);
-        // Encrypt data with provided password
-        const encrypted = encryptKey(masterKey, walletPassword);
-        // Add data to localStorage
-        await saveKey(encrypted);
-        // Add account into redux store
-        addAccounts({ accounts: newAccountData });
-        // This is the first account in the list, index will be 0
-        // Save settings for connectionEST
-        // TODO: Keep settings defaults in consts file
-        const unlockDuration = await getSettings('unlockDuration') || 300000; // default 5min
+        // -------------------------------------------------------
+        // Save new account data into browser / redux storage
+        // -------------------------------------------------------
+        const key = encryptKey(masterKey, walletPassword);
+        // TODO: Maybe create function to do both of these instead of having two
+        // Save account data overwrites all existing data
+        saveAccountData({ activeAccountId: id, key });
+        // Use addAccount to "merge" into existing data
+        addAccount(newAccountData);
         const now = Date.now();
-        await saveSettings({
-          unlockEST: now,
-          unlockEXP: now + unlockDuration,
-        });
+        saveSettingsData({ unlockEST: now, unlockEXP: now + unlockDuration! });
         navigate(nextUrl);
       } else {
         latestError = 'Unable to locally save account, please try again later'

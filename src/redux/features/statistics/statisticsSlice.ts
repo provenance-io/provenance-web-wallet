@@ -71,4 +71,4 @@ export default statisticsSlice.reducer;
  * SELECTORS
  */
 
-export const selectStatistics = (state: RootState) => state.statistics;
+export const selectStatistics = (state: RootState) => state.api_statistics;

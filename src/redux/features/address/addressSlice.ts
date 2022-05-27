@@ -86,10 +86,12 @@ const GET_ADDRESS_TX_ALL = 'GET_ADDRESS_TX_ALL';
 /**
  * SPECIAL ASYNC ACTIONS
  */
-const getAddressAssetsRaw = (addr: string) =>
-  api({
+const getAddressAssetsCount = async (addr: string):Promise<number> => {
+  const result = await api({
     url: `${getServiceMobileApi(addr, ADDRESS_URL)}/${addr}/assets`,
   });
+  return result?.data?.length || 0;
+}
 
 /**
  * ASYNC ACTIONS
@@ -121,7 +123,7 @@ export const getAddressTxAll = createAsyncThunk(
 export const addressActions = { getAddressAssets, getAddressTx, getAddressTxAll };
 
 export const noDispatchActions = {
-  getAddressAssetsRaw,
+  getAddressAssetsCount,
 };
 
 /**
@@ -188,4 +190,4 @@ export default addressSlice.reducer;
 /**
  * SELECTORS
  */
-export const selectAddress = (state: RootState) => state.address;
+export const selectAddress = (state: RootState) => state.api_address;

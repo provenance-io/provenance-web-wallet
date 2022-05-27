@@ -2,10 +2,9 @@
 ## To do shortlist
 
 ### Bugs
-* [IN_PROGRESS] Walletconnect session should expire in 30 mins of inactivity
-  - Timers created, need to 'bump' exp time whenever interacting with dApp.
-* Allow notifications without "unlocking".  "Unlock" should only be when manually opening the extension and seeing balances.
-  - We have to authenticate before we are allowed to sign or connect anyway, so this prevents double password entry
+* Pending requests id being set as undefined (unable to erase)
+* Whenever you enter a password to authenticate for an action, bump the timeout of the unlock delay since the user provided authentication
+  - Bad UX: Authenticate to connect, then click extension and have to "unlock" right after.
 * dApp request message sign and no popup is triggered from background.js
   - Doesn't always happen, hard to recreate
 * Creating new account through dashboard defaults to mainnet
@@ -23,7 +22,6 @@
   - If not possible, need "init" function which will run on app startup, pulling all data in from browser, also event listeners
 
 ### Wallet Functionality
-* Don't require authentication if the wallet is unlocked
 * Re-add all protos
 * Sign for transactions
 

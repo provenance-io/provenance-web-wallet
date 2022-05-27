@@ -1,8 +1,8 @@
 import { useState } from 'react';
 import styled from 'styled-components';
 import { Sprite } from 'Components';
-import { trimString, removePendingRequest, saveSettings } from 'utils';
-import { ICON_NAMES, CHAINID_TESTNET, WC_CONNECTION_TIMEOUT } from 'consts';
+import { trimString } from 'utils';
+import { ICON_NAMES, CHAINID_TESTNET } from 'consts';
 import circleIcon from 'images/circle-icon.svg';
 import { useActiveAccount, useWalletConnect } from 'redux/hooks';
 import { EventPayload } from 'types';
@@ -67,7 +67,7 @@ export const WalletConnectInit:React.FC<Props> = ({ payload, closeWindow }) => {
     icons: [],
   } } = payload?.params[0];
   const { name, url, icons } = peerMeta;
-  const { connector } = useWalletConnect();
+  const { connector, saveWalletconnectData, connectionDuration } = useWalletConnect();
   const activeAccount = useActiveAccount();
   const handleApprove = async () => {
     if (connector) {
@@ -89,11 +89,10 @@ export const WalletConnectInit:React.FC<Props> = ({ payload, closeWindow }) => {
       await connector.approveSession(data as any);
       // Save connection time into storage (settings/walletconnect)
       const now = Date.now();
-      await saveSettings({ walletconnect: {
+      saveWalletconnectData({
         connectionEST: now,
-        connectionEXP: now + WC_CONNECTION_TIMEOUT,
-        connectionDuration: WC_CONNECTION_TIMEOUT,
-      }});
+        connectionEXP: now + connectionDuration,
+      });
       // Close the popup
       closeWindow();
     }
@@ -101,13 +100,6 @@ export const WalletConnectInit:React.FC<Props> = ({ payload, closeWindow }) => {
   const handleDecline = async () => {
     if (connector) {
       await connector.rejectSession({ message: 'Connection rejected by user' });
-      // Close the popup
-      closeWindow();
-    }
-    else {
-      // No connector, this session is long gone, just kill it
-      const pendingId = `${payload.date}_${payload.id}`;
-      await removePendingRequest(pendingId);
       // Close the popup
       closeWindow();
     }

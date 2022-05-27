@@ -7,7 +7,6 @@ import { List } from 'Components';
 import { useEffect, useState } from 'react';
 import { format } from 'date-fns';
 import { signBytes } from 'utils';
-import { removePendingRequest } from 'utils';
 
 const SignContainer = styled.div`
   padding-bottom: 300px;
@@ -35,11 +34,17 @@ interface ParsedParams {
 }
 
 export const SignRequest:React.FC<Props> = ({ payload, closeWindow }) => {
-  const { connector } = useWalletConnect();
+  const {
+    connector,
+    connectionEXP,
+    connectionDuration,
+    saveWalletconnectData,
+    removePendingRequest,
+  } = useWalletConnect();
   const [parsedParams, setParsedParams] = useState<ParsedParams>({});
   const [encodedMessage, setEncodedMessage] = useState('');
   const [privateKey, setPrivateKey] = useState<Uint8Array>();
-    
+
   // Onload, pull out and parse payload params
   useEffect(() => {
     const { params } = payload;
@@ -52,6 +57,16 @@ export const SignRequest:React.FC<Props> = ({ payload, closeWindow }) => {
       payload: decodedMessage,
     })
   }, [payload]);
+
+  // Connection to the dApp is on a timer, whenever the user interacts with the dApp (approve/deny) reset the timer
+  const bumpWalletConnectTimeout = () => {
+    // Only bump/update the time if all connection values exist
+    if (connectionEXP && connectionDuration) {
+      const now = Date.now();
+      const newConnectionEXP = now + connectionDuration;
+      saveWalletconnectData({ connectionEXP: newConnectionEXP });
+    }
+  };
 
   const handleApprove = async () => {
     if (connector && privateKey && encodedMessage) {
@@ -67,7 +82,8 @@ export const SignRequest:React.FC<Props> = ({ payload, closeWindow }) => {
         result,
       });
       const pendingId = `${payload.date}_${payload.id}`;
-      await removePendingRequest(pendingId);
+      removePendingRequest(pendingId);
+      bumpWalletConnectTimeout();
       closeWindow();
     }
   }
@@ -79,8 +95,8 @@ export const SignRequest:React.FC<Props> = ({ payload, closeWindow }) => {
         jsonrpc: payload.jsonrpc,
       });
       const pendingId = `${payload.date}_${payload.id}`;
-      await removePendingRequest(pendingId);
-      // Close the popup
+      removePendingRequest(pendingId);
+      bumpWalletConnectTimeout();
       closeWindow();
     }
   }

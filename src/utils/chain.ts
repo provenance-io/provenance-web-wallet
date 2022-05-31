@@ -1,5 +1,5 @@
 // CONSTANTS/VARIABLES
-import { PROVENANCE_ADDRESS_PREFIX_MAINNET, PROVENANCE_ADDRESS_PREFIX_TESTNET, PROVENANCE_WALLET_COIN_TYPE } from 'consts';
+import { PROVENANCE_ADDRESS_PREFIX_MAINNET } from 'consts';
 // LOCAL HELPER FUNCTIONS
 import { derivationPath } from 'utils';
 // CHAIN HELPER FUNCTIONS
@@ -114,27 +114,3 @@ export const createWallet = (privateKeyString: string): Wallet => {
     throw new Error('Failed to create account from private key');
   }
 }
-
-interface HDWalletType {
-  masterKey: BIP32Interface | string,
-  name: string,
-  network: string,
-  id: number,
-}
-
-export const createHDWallet = ({ masterKey, name, network, id }: HDWalletType) => {
-  const prefix = network === 'mainnet' ? PROVENANCE_ADDRESS_PREFIX_MAINNET : PROVENANCE_ADDRESS_PREFIX_TESTNET;
-  const coin_type = network === 'mainnet' ? PROVENANCE_WALLET_COIN_TYPE : '1';
-  const path = derivationPath({ address_index: id, coin_type });
-  const { address, publicKey, /* privateKey */ } = createWalletFromMasterKey(masterKey, prefix, path);
-  const b64PublicKey = bytesToBase64(publicKey);
-  // const b64PrivateKey = bytesToBase64(privateKey);
-  return {
-    address,
-    publicKey: b64PublicKey,
-    // privateKey: b64PrivateKey,
-    name,
-    network,
-    id,
-  };
-};

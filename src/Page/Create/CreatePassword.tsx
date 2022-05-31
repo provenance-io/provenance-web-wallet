@@ -6,6 +6,8 @@ import {
   PASSWORD_MIN_LENGTH,
   PROVENANCE_ADDRESS_PREFIX_MAINNET,
   PROVENANCE_ADDRESS_PREFIX_TESTNET,
+  PROVENANCE_WALLET_COIN_TYPE,
+  TESTNET_WALLET_COIN_TYPE,
 } from 'consts';
 import { useNavigate } from 'react-router-dom';
 import styled, { css } from 'styled-components';
@@ -15,6 +17,7 @@ import {
   createMasterKeyFromMnemonic,
   createWalletFromMasterKey,
   bytesToBase64,
+  derivationPath,
 } from 'utils';
 
 const Error = styled.div`
@@ -49,7 +52,8 @@ export const CreatePassword = ({ nextUrl }: Props) => {
         // Generate master keyt and get data about wallet
         const masterKey = createMasterKeyFromMnemonic(tempAccount.mnemonic);
         const prefix = tempAccount.network === 'mainnet' ? PROVENANCE_ADDRESS_PREFIX_MAINNET : PROVENANCE_ADDRESS_PREFIX_TESTNET;
-        const { address, publicKey } = createWalletFromMasterKey(masterKey, prefix);
+        const path = derivationPath({ coin_type: tempAccount.network === 'mainnet' ? PROVENANCE_WALLET_COIN_TYPE : TESTNET_WALLET_COIN_TYPE });
+        const { address, publicKey } = createWalletFromMasterKey(masterKey, prefix, path);
         const b64PublicKey = bytesToBase64(publicKey);
         // Save data to redux store and clear out tempAccount data
         const id = 0;

@@ -106,7 +106,14 @@ export const VerifySeedphrase = ({ nextUrl }: Props) => {
   return (
     <Content padBottom='80px'>
       <Header progress={66} title="Verify Passphrase" />
-
+      {createButtonGroups()}
+      <Checkbox
+        checked={termsAgree}
+        onChange={(isChecked: boolean) => {
+          setTermsAgree(isChecked);
+        }}
+        label="I agree that I'm solely responsible for my wallet and cannot recover the passphrase if lost."
+      />
       {errorMsg && (
         <BodyContent
           $css={css`
@@ -117,15 +124,6 @@ export const VerifySeedphrase = ({ nextUrl }: Props) => {
           {errorMsg}
         </BodyContent>
       )}
-
-      {createButtonGroups()}
-      <Checkbox
-        checked={termsAgree}
-        onChange={(isChecked: boolean) => {
-          setTermsAgree(isChecked);
-        }}
-        label="I agree that I'm solely responsible for my wallet and cannot recover the passphrase if lost."
-      />
       <Button onClick={handleContinue} variant="primary">
         Continue
       </Button>

@@ -4,13 +4,6 @@
 ### Bugs
 * dApp request message sign and no popup is triggered from background.js
   - Doesn't always happen, hard to recreate
-* Creating new account through dashboard defaults to mainnet
-  - We no longer have the seedphrase
-    - We cannot change HD path values (Ex: m/44/1/0/0 => m/44/1/0/1, m/44/1/0/2, m/44/1/0/3, etc)
-    - Once we make the first account/wallet as mainnet they rest will automatically match
-  - Allow importing an account (new seed phrase) and naming
-  - Split root accounts (unique seed phrases) in dashboard menu (indicate mainnet vs testnet)
-  - When importing a new account, check to make sure the first address created is unique, or else don't import
 
 ### Wallet Functionality
 * Sign for transactions
@@ -29,9 +22,9 @@
 * Instead of "Please Wait" messages, show a full page spinning loader (can later add additional text)
 * Allow pressing "enter" on an input to automatically submit (accessability)
 * Need testing built into app (all the flows: create, recovery, etc)
+* Clean up account creation, recovery, and addition function, all use the same code and are excessive.  Create more helper functions, especially for advanced options.
 
 ### Accounts
-* Creating/Recover account advanced options, mainnet = 505, testnet = 1 on HD path
 * Automatically switch API urls based on current active wallet.  TP will go to test urls, PB will go to prod urls
 * When creating the first account, the name will be for the Wallet.  Wallet => Seed
 * Split accounts by wallet name in dashboard menu

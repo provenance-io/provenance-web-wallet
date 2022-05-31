@@ -2,11 +2,11 @@ import { useMemo } from 'react';
 import { bindActionCreators } from 'redux';
 import { useAppDispatch, useAppSelector } from './useStore';
 import {
-  genericActions as actionsList,
-  selectGeneric as selector,
-} from '../features/generic/genericSlice';
+  selectSettings as selector,
+  settingsActions as actionsList,
+} from '../features/settings/settingsSlice';
 
-export const useGeneric = () => {
+export const useSettings = () => {
   const dispatch = useAppDispatch();
   const state = useAppSelector(selector);
   const actions = useMemo(

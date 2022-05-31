@@ -1,13 +1,11 @@
 import styled from 'styled-components';
 import { FooterNav, Content, Sprite } from 'Components';
-import { useEffect, useState } from 'react';
-import { getPendingRequest, getPendingRequestCount } from 'utils';
-import { SavedPendingRequests } from 'types';
 import { format } from 'date-fns';
 import { ICON_NAMES, NOTIFICATION_URL } from 'consts';
 import { COLORS } from 'theme';
 import circleIcon from 'images/circle-icon.svg';
 import { useNavigate } from 'react-router';
+import { useWalletConnect } from 'redux/hooks';
 
 const Title = styled.div`
   font-weight: 600;
@@ -71,20 +69,8 @@ const RequestArrow = styled.div`
 `;
 
 export const Actions:React.FC = () => {
-  const [pendingRequests, setPendingRequests] = useState<SavedPendingRequests>({});
-  const [totalPendingRequests, setTotalPendingRequests] = useState(0);
   const navigate = useNavigate();
-
-  useEffect(() => {
-    const asyncGetPendingRequests = async () => {
-      const allPendingRequests = await getPendingRequest();
-      const savedTotalPendingRequests = await getPendingRequestCount();
-      setPendingRequests(allPendingRequests);
-      setTotalPendingRequests(savedTotalPendingRequests);
-    };
-
-    asyncGetPendingRequests();
-  }, []);
+  const { pendingRequests, totalPendingRequests } = useWalletConnect();
 
   const getMethodDisplayName = (rawName: string) => {
     switch (rawName) {

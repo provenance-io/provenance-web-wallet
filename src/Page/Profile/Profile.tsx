@@ -2,7 +2,7 @@ import { FooterNav, Sprite } from 'Components';
 import { useNavigate } from 'react-router-dom';
 import { APP_URL, ICON_NAMES } from 'consts';
 import styled from 'styled-components';
-import { saveSettings } from 'utils';
+import { useSettings } from 'redux/hooks';
 
 const Container = styled.div`
   width: 100%;
@@ -40,6 +40,7 @@ const SectionOption = styled.div`
 
 export const Profile = () => {
   const navigate = useNavigate();
+  const { saveSettingsData } = useSettings();
 
   const createOption = (name: string, url: string, external?: boolean) => (
     <SectionOption onClick={() => external ? window.location.replace(url) : navigate(url)}>
@@ -50,7 +51,7 @@ export const Profile = () => {
 
   const handleLockWallet = async () => {
     // Set expiration to now
-    await saveSettings({ unlockEXP: Date.now() })
+    await saveSettingsData({ unlockEXP: Date.now() })
     // Redirect user to landing page
     navigate(APP_URL);
   };

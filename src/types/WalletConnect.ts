@@ -70,3 +70,11 @@ export interface IWalletConnectSession {
   peerId?: string;
   peerMeta?: IClientMeta | null;
 }
+
+export interface WalletConnectStorage { // WalletConnect session data
+  connectionEST?: number, // When did we connect with walletconnect
+  connectionEXP?: number, // When are we predicted to expire (actions refresh EST time)
+  connectionDuration?: number, // How long from EST to EXP
+  pendingRequests?: SavedPendingRequests,
+  totalPendingRequests?: number,
+}

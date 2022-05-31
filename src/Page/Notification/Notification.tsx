@@ -6,7 +6,6 @@ import { EventPayload } from 'types';
 import { Content } from 'Components';
 import { WalletConnectInit } from './WalletConnectInit';
 import { SignRequest } from './SignRequest';
-import { getPendingRequest, addPendingRequest, removeAllPendingRequests } from 'utils';
 
 type ExtensionTypes = 'extension' | 'browser' | '';
 
@@ -16,7 +15,13 @@ export const Notification:React.FC = () => {
   const [extensionType, setExtensionType] = useState<ExtensionTypes>('');
   const [searchParams, setSearchParams] = useSearchParams();
   const navigate = useNavigate();
-  const { createConnector, connector, setSession } = useWalletConnect();
+  const {
+    createConnector,
+    connector,
+    pendingRequests,
+    saveWalletconnectData,
+    addPendingRequest,
+  } = useWalletConnect();
   const wcUriParam = searchParams.get('wc')
   // On load, attempt to detect the way the extension loaded
   useEffect(() => {
@@ -32,27 +37,22 @@ export const Notification:React.FC = () => {
   // Also check url search params for wc session or pending requests
   useEffect(() => {
     const pendingRequestId = searchParams.get('pid');
-    const asyncPayloadFetch = async (id: string) => {
-      const targetPendingRequest: EventPayload = await getPendingRequest(id);
-      if (targetPendingRequest) {
-        setEventPayload(targetPendingRequest);
-        if (targetPendingRequest?.method) setNotificationType(targetPendingRequest.method);
-      }
-    }
     if (pendingRequestId) {
-      asyncPayloadFetch(pendingRequestId);
+        const targetPendingRequest: EventPayload = pendingRequests[pendingRequestId];
+        if (targetPendingRequest) {
+          setEventPayload(targetPendingRequest);
+          if (targetPendingRequest?.method) setNotificationType(targetPendingRequest.method);
+        }
     }
-  }, [searchParams, wcUriParam, setSession]);
+  }, [searchParams, pendingRequests]);
 
   // On load, create the walletConnect event listeners
   useEffect(() => {
-    console.log('Notification.tsx | useEffect | creating wc events | connector: ', connector);
     // Connector must exist to create events
     if (connector) {
       // Loop through each notification type and create event listener
       WC_NOTIFICATION_TYPES.forEach(NOTE_TYPE => {
-        connector.on(NOTE_TYPE, async (error, payload) => {
-          
+        connector.on(NOTE_TYPE, (error, payload) => {
           setNotificationType(NOTE_TYPE);
           // Save the request locally
           // - If the user closes the window/popup or doesn't notice it in the background it can be retreived
@@ -60,16 +60,18 @@ export const Notification:React.FC = () => {
           //    - Opening extension directly (which should be showing a "1" notification in the icon)
           const { id } = payload;
           // Get the current date to timestamp request
-          const date = Date.now();
-          const finalPayload = { ...payload, date };
-          setEventPayload(finalPayload);
+          // const date = Date.now();
+          // const finalPayload = { ...payload, date };
+          // setEventPayload(finalPayload);
+          setEventPayload(payload);
           // Only add 'provenance_sign' and 'provenance_sendTransaction' to pendingRequest list
           if (NOTE_TYPE === 'provenance_sign' || NOTE_TYPE === 'provenance_sendTransaction') {
-            const pendingId = `${date}_${id}`;
-            await addPendingRequest(pendingId, finalPayload);
+            // Add current date to the pending request data
+            const newPendingRequestData = { id, pendingRequest: { ...payload, date: Date.now() } };
+            addPendingRequest(newPendingRequestData);
           }
-          // If we get a disconnect, just remove everything
-          if (NOTE_TYPE === 'disconnect') await removeAllPendingRequests();
+          // If we get a disconnect, remove all pending requests
+          if (NOTE_TYPE === 'disconnect') saveWalletconnectData({ pendingRequests: {}, totalPendingRequests: 0 });
         });
       });
 
@@ -80,11 +82,8 @@ export const Notification:React.FC = () => {
         });
       }
     }
-  }, [
-    connector,
-    wcUriParam,
-    navigate,
-  ]);
+  }, [connector, saveWalletconnectData, addPendingRequest]
+  );
 
   // Listen for a new walletConnect URI.  When one is passed, create a new connector
   useEffect(() => {

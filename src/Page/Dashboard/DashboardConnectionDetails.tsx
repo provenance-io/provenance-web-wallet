@@ -2,9 +2,9 @@ import styled from 'styled-components';
 import { useWalletConnect } from 'redux/hooks';
 import { Button, Content, Header } from 'Components';
 import { useNavigate } from 'react-router';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { DASHBOARD_URL, ICON_NAMES } from 'consts';
-import { removeAllPendingRequests } from 'utils';
+import { format } from 'date-fns';
 
 const DataRow = styled.div`
   border-top: 2px solid #2C2F3A;
@@ -25,25 +25,31 @@ const DataContent = styled.div`
 `;
 
 export const DashboardConnectionDetails:React.FC = () => {
-  const { session, connector, killSession } = useWalletConnect();
+  const {
+    session,
+    connector,
+    connectionEST,
+    connectionEXP,
+    walletconnectDisconnect,
+  } = useWalletConnect();
+  const [formattedEXP, setFormattedEXP] = useState('N/A');
+  const [formattedEST, setFormattedEST] = useState('N/A');
   const { connected } = session;
   const navigate = useNavigate();
+
+  useEffect(() => {
+    setFormattedEXP(connectionEXP ? format(new Date(connectionEXP), 'MMM dd, h:mm:ssa') : 'N/A');
+    setFormattedEST(connectionEST ? format(new Date(connectionEST), 'MMM dd, h:mm:ssa') : 'N/A');
+
+  }, [connectionEST, connectionEXP]);
 
   // If we are not connected or there is no connector go back to the dashboard
   useEffect(() => {
     if (!connector || !connected) navigate(DASHBOARD_URL);
   }, [navigate, connector, connected]);
 
-  const handleDisconnect = async () => {
-    if (connector && connector.peerId) {
-      // Kill wc session
-      await connector.killSession();
-    }
-    // Remove wc data from redux store
-    killSession();
-    // Remove all pendingActions on a disconnect
-    await removeAllPendingRequests();
-    navigate(DASHBOARD_URL);
+  const handleDisconnect = () => {
+    walletconnectDisconnect();
   };
 
   const renderConnectedAccounts = () => (session && session.accounts) ?
@@ -66,8 +72,16 @@ export const DashboardConnectionDetails:React.FC = () => {
         <DataContent>{session?.bridge || 'N/A'}</DataContent>
       </DataRow>
       <DataRow>
-        <DataContent>Accounts</DataContent>
+        <DataContent>Account</DataContent>
         <DataContent>{renderConnectedAccounts()}</DataContent>
+      </DataRow>
+      <DataRow>
+        <DataContent>Connection Est.</DataContent>
+        <DataContent>{formattedEST}</DataContent>
+      </DataRow>
+      <DataRow>
+        <DataContent>Connection Exp.</DataContent>
+        <DataContent>{formattedEXP}</DataContent>
       </DataRow>
       <Button onClick={handleDisconnect}>Disconnect</Button>
     </Content>

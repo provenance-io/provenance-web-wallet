@@ -123,4 +123,4 @@ export default pricingSlice.reducer;
  * SELECTORS
  */
 
-export const selectPricing = (state: RootState) => state.pricing;
+export const selectPricing = (state: RootState) => state.api_pricing;

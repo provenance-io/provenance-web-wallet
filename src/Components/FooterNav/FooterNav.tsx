@@ -2,8 +2,7 @@ import { ACTIONS_URL, DASHBOARD_URL, ICON_NAMES, PROFILE_URL, TRANSACTIONS_URL }
 import { Sprite } from 'Components';
 import { useNavigate, useLocation } from 'react-router-dom';
 import styled from 'styled-components';
-import { getPendingRequestCount } from 'utils';
-import { useEffect, useState } from 'react';
+import { useWalletConnect } from 'redux/hooks';
 
 const Footer = styled.footer`
   position: fixed;
@@ -51,19 +50,9 @@ const Notification = styled.div`
 `;
 
 export const FooterNav: React.FC = () => {
-  const [totalPendingRequests, setTotalPendingRequests] = useState(0);
   const location = useLocation();
   const navigate = useNavigate();
-
-  useEffect(() => {
-    // On load, see how many pending requests we have
-    // TODO: This needs to be saved in the redux state instead and updated on load instead of pulled from storage
-    const asyncPendingRequestCheck = async () => {
-      const pendingRequestCount = await getPendingRequestCount();
-      setTotalPendingRequests(pendingRequestCount);
-    };
-    asyncPendingRequestCheck();
-  }, [])
+  const { totalPendingRequests } = useWalletConnect();
 
   return (
     <Footer>

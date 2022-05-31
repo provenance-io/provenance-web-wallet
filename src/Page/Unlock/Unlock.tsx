@@ -35,7 +35,7 @@ export const Unlock = ({ nextUrl }: Props) => {
       const masterKey = decryptKey(key, password);
       if (!masterKey) newError = 'Invalid password';
       else {
-        // Save unlock settings to chrome and redux storage
+        // Bump the unlock duration
         const now = Date.now();
         await saveSettingsData({ unlockEST: now, unlockEXP: now + unlockDuration! });
         // Redirect to dashboard

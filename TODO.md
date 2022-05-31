@@ -2,8 +2,6 @@
 ## To do shortlist
 
 ### Bugs
-* Whenever you enter a password to authenticate for an action, bump the timeout of the unlock delay since the user provided authentication
-  - Bad UX: Authenticate to connect, then click extension and have to "unlock" right after.
 * dApp request message sign and no popup is triggered from background.js
   - Doesn't always happen, hard to recreate
 * Creating new account through dashboard defaults to mainnet
@@ -30,6 +28,7 @@
   - After creating an account or performing specific actions (vs just redirecting back to the landing page)
 * Instead of "Please Wait" messages, show a full page spinning loader (can later add additional text)
 * Allow pressing "enter" on an input to automatically submit (accessability)
+* Need testing built into app (all the flows: create, recovery, etc)
 
 ### Accounts
 * Creating/Recover account advanced options, mainnet = 505, testnet = 1 on HD path

@@ -89,7 +89,7 @@ export const WalletConnectInit:React.FC<Props> = ({ payload, closeWindow }) => {
       await connector.approveSession(data as any);
       // Save connection time into storage (settings/walletconnect)
       const now = Date.now();
-      saveWalletconnectData({
+      await saveWalletconnectData({
         connectionEST: now,
         connectionEXP: now + connectionDuration,
       });

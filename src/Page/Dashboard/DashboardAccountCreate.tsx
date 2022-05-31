@@ -54,8 +54,8 @@ export const DashboardAccountCreate:React.FC<Props> = ({ nextUrl }) => {
         const newAccount = createHDWallet({ masterKey, name, id, network });
         // Save data to redux and chrome storage
         // TODO: This should just be a single function to add into accounts and potentially change activeAccountId (or even key)
-        addAccount(newAccount);
-        saveAccountData({ activeAccountId: id });
+        await addAccount(newAccount);
+        await saveAccountData({ activeAccountId: id });
         // Redirect back to dashboard menu
         navigate(nextUrl);
       }

@@ -37,7 +37,7 @@ export const Unlock = ({ nextUrl }: Props) => {
       else {
         // Save unlock settings to chrome and redux storage
         const now = Date.now();
-        saveSettingsData({ unlockEST: now, unlockEXP: now + unlockDuration! });
+        await saveSettingsData({ unlockEST: now, unlockEXP: now + unlockDuration! });
         // Redirect to dashboard
         navigate(nextUrl);
       }

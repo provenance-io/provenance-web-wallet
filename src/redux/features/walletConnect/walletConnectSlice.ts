@@ -93,7 +93,7 @@ export const pullInitialWCData = createAsyncThunk(PULL_INITIAL_WCCONNECTION_DATA
   return { connectionEST, connectionEXP, session, pendingRequests, totalPendingRequests };
 })
 // Save walletconnect data into the chrome store (local storage is managed third party, don't save into it, only pull)
-export const saveWalletconnectData =  createAsyncThunk(SAVE_WALLETCONNECT_DATA, async (data: WalletconnectChromeSave) => {
+export const saveWalletconnectData = createAsyncThunk(SAVE_WALLETCONNECT_DATA, async (data: WalletconnectChromeSave) => {
   // Get existing saved data (to merge into)
   const existingData = await getSavedData('walletconnect');
   const newData = { ...existingData, ...data };
@@ -120,7 +120,7 @@ export const addPendingRequest = createAsyncThunk(ADD_PENDING_REQUESTS, async (d
   // Return new combined values to update redux store
   return { pendingRequests, totalPendingRequests };
 });
-export const removePendingRequest = createAsyncThunk(REMOVE_PENDING_REQUESTS, async (id: string) => {
+export const removePendingRequest = createAsyncThunk(REMOVE_PENDING_REQUESTS, async (id: number) => {
   // Pull all walletconnect data
   const existingData = await getSavedData('walletconnect');
   // Get existing pendingRequests
@@ -136,7 +136,7 @@ export const removePendingRequest = createAsyncThunk(REMOVE_PENDING_REQUESTS, as
   return { pendingRequests, totalPendingRequests };
 });
 // Save walletconnect data into the chrome store (local storage is managed third party, don't save into it, only pull)
-export const walletconnectDisconnect =  createAsyncThunk(WALLETCONNECT_DISCONNECT, async () => {
+export const walletconnectDisconnect = createAsyncThunk(WALLETCONNECT_DISCONNECT, async () => {
   // Save initial values as chrome storage
   await addSavedData({ walletconnect: {
     connectionEST: initialState.connectionEST,
@@ -146,7 +146,6 @@ export const walletconnectDisconnect =  createAsyncThunk(WALLETCONNECT_DISCONNEC
   } });
   return;
 });
-
 
 /**
  * SLICE

@@ -59,12 +59,12 @@ export const SignRequest:React.FC<Props> = ({ payload, closeWindow }) => {
   }, [payload]);
 
   // Connection to the dApp is on a timer, whenever the user interacts with the dApp (approve/deny) reset the timer
-  const bumpWalletConnectTimeout = () => {
+  const bumpWalletConnectTimeout = async () => {
     // Only bump/update the time if all connection values exist
     if (connectionEXP && connectionDuration) {
       const now = Date.now();
       const newConnectionEXP = now + connectionDuration;
-      saveWalletconnectData({ connectionEXP: newConnectionEXP });
+      await saveWalletconnectData({ connectionEXP: newConnectionEXP });
     }
   };
 
@@ -81,9 +81,8 @@ export const SignRequest:React.FC<Props> = ({ payload, closeWindow }) => {
         jsonrpc: payload.jsonrpc,
         result,
       });
-      const pendingId = `${payload.date}_${payload.id}`;
-      removePendingRequest(pendingId);
-      bumpWalletConnectTimeout();
+      await removePendingRequest(payload.id);
+      await bumpWalletConnectTimeout();
       closeWindow();
     }
   }
@@ -94,9 +93,8 @@ export const SignRequest:React.FC<Props> = ({ payload, closeWindow }) => {
         id: payload.id,
         jsonrpc: payload.jsonrpc,
       });
-      const pendingId = `${payload.date}_${payload.id}`;
-      removePendingRequest(pendingId);
-      bumpWalletConnectTimeout();
+      await removePendingRequest(payload.id);
+      await bumpWalletConnectTimeout();
       closeWindow();
     }
   }

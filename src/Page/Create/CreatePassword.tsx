@@ -66,11 +66,11 @@ export const CreatePassword = ({ nextUrl }: Props) => {
         const key = encryptKey(masterKey, walletPassword);
         // TODO: Maybe create function to do both of these instead of having two
         // Save account data overwrites all existing data
-        saveAccountData({ activeAccountId: id, key });
+        await saveAccountData({ activeAccountId: id, key });
         // Use addAccount to "merge" into existing data
-        addAccount(newAccountData);
+        await addAccount(newAccountData);
         const now = Date.now();
-        saveSettingsData({ unlockEST: now, unlockEXP: now + unlockDuration! });
+        await saveSettingsData({ unlockEST: now, unlockEXP: now + unlockDuration! });
         navigate(nextUrl);
       } else {
         latestError = 'Unable to locally save account, please try again later'

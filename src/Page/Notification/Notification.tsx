@@ -58,7 +58,7 @@ export const Notification:React.FC = () => {
           // - If the user closes the window/popup or doesn't notice it in the background it can be retreived
           //    - Clicking QR Code modal connect button again
           //    - Opening extension directly (which should be showing a "1" notification in the icon)
-          const { id, date } = payload;
+          const { id } = payload;
           // Get the current date to timestamp request
           // const date = Date.now();
           // const finalPayload = { ...payload, date };
@@ -66,8 +66,8 @@ export const Notification:React.FC = () => {
           setEventPayload(payload);
           // Only add 'provenance_sign' and 'provenance_sendTransaction' to pendingRequest list
           if (NOTE_TYPE === 'provenance_sign' || NOTE_TYPE === 'provenance_sendTransaction') {
-            const pendingId = `${date}_${id}`;
-            const newPendingRequestData = { id: pendingId, pendingRequest: payload };
+            // Add current date to the pending request data
+            const newPendingRequestData = { id, pendingRequest: { ...payload, date: Date.now() } };
             addPendingRequest(newPendingRequestData);
           }
           // If we get a disconnect, remove all pending requests

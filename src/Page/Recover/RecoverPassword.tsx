@@ -124,7 +124,7 @@ export const RecoverPassword = ({ nextUrl }: Props) => {
     // TODO: User might want to add address #42 and it has no assets
     if (addressIndex === 0 || hasAssets) {
       // Save to chrome and redux storage
-      addAccount(newWalletData);
+      await addAccount(newWalletData);
       // Loop function, bump address index up by one
       return recoverAccountLoop(masterKey, addressIndex + 1);
     } else {
@@ -155,14 +155,14 @@ export const RecoverPassword = ({ nextUrl }: Props) => {
         // Encrypt data with provided password
         const key = encryptKey(masterKey, walletPassword);
         // Add data to chrome and redux storage
-        saveAccountData({ key, activeAccountId: 0 })
+        await saveAccountData({ key, activeAccountId: 0 })
         setLoading(false);
         // Remove tempAccount data
         clearTempAccount();
         // Save settings for connectionEST
         const now = Date.now();
         const exp = now + unlockDuration!;
-        saveSettingsData({
+        await saveSettingsData({
           unlockEST: now,
           unlockEXP: exp,
         });

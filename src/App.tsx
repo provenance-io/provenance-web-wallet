@@ -43,7 +43,6 @@ function App() {
     walletconnectDisconnect,
   ]);
 
-  // TODO: Need to find a better place for these listeners
   useEffect(() => {
     // If we have a connector, listen for the disconnect event
     if (connector) connector.on('disconnect', async () => { walletconnectDisconnect() });
@@ -55,6 +54,7 @@ function App() {
     if (initialLoad) {
       // No longer initial load
       setInitialLoad(false);
+      // Note: All of these pull data functions are async
       // Pull account data from chrome storage (accounts, activeAccountId, key)
       pullInitialAccountData();
       // Pull all settings from chrome storage (unlockEST, unlockEXP, unlockDuration)

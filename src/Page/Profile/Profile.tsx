@@ -49,9 +49,9 @@ export const Profile = () => {
     </SectionOption>
   );
 
-  const handleLockWallet = () => {
+  const handleLockWallet = async () => {
     // Set expiration to now
-    saveSettingsData({ unlockEXP: Date.now() })
+    await saveSettingsData({ unlockEXP: Date.now() })
     // Redirect user to landing page
     navigate(APP_URL);
   };

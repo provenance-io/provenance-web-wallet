@@ -21,7 +21,8 @@ export const RequiresAuth = ({ children = null }: PageProps) => {
     const urlSearchParams = new URLSearchParams(window?.location?.search);
     const walletConnectURI = urlSearchParams.get('wc');
     const redirectToURL = urlSearchParams.get('redirectTo');
-    const redirectToNotificationsPage = walletConnectURI || (redirectToURL && ALL_URLS[redirectToURL as keyof typeof ALL_URLS] === 'NOTIFICATION_URL');
+    // Determine if we're being sent to the notifications page (walletconnect session or manual redirect) 
+    const redirectToNotificationsPage: boolean = !!walletConnectURI || !!(redirectToURL && redirectToURL === 'NOTIFICATION_URL');
     // Check the users credentials/access before auto-redirecting them as needed
     // Current time
     const now = Date.now();

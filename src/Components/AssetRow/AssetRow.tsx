@@ -40,6 +40,7 @@ const AssetArrow = styled.div`
 interface Props {
   img: string,
   name: string,
+  displayName?: string,
   onClick?: () => void,
   amount?: {
     count: string,
@@ -48,7 +49,7 @@ interface Props {
   },
 }
 
-export const AssetRow:React.FC<Props> = ({ img, name, amount, onClick }) => {
+export const AssetRow:React.FC<Props> = ({ img, name, displayName = '', amount, onClick }) => {
 
   const renderAmount = () => {
     if (!amount) return 'Buy • Mar 31';
@@ -60,7 +61,7 @@ export const AssetRow:React.FC<Props> = ({ img, name, amount, onClick }) => {
     <AssetItem onClick={onClick}>
       <AssetImg src={`/images/assets/${img}.svg`} />
       <AssetDetails>
-        <AssetName>{name}</AssetName>
+        <AssetName>{displayName || name}</AssetName>
         <AssetAmount>{renderAmount()}</AssetAmount>
       </AssetDetails>
       <AssetArrow>

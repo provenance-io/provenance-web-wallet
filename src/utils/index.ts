@@ -12,3 +12,4 @@ export * from './derivationPath';
 export * from './chain';
 export * from './saveData';
 export * from './getServiceMobileApi';
+export * from './camelToSentence';

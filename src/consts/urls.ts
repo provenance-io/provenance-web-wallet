@@ -20,6 +20,7 @@ export const PROFILE_URL = '/profile';
 export const RESET_WALLETS_URL = '/profile/reset-wallets';
 // -- TRANSACTION URLS
 export const TRANSACTIONS_URL = '/transactions';
+export const TRADE_DETAILS_URL = '/transactions/:transactionHash';
 // -- RECOVER URLS
 export const RECOVER_URL = '/recover';
 export const RECOVER_NOTE_URL = '/recover/note';
@@ -54,6 +55,7 @@ export const ALL_URLS = {
   PROFILE_URL,
   RESET_WALLETS_URL,
   TRANSACTIONS_URL,
+  TRADE_DETAILS_URL,
   RECOVER_URL,
   RECOVER_NOTE_URL,
   RECOVER_SEED_URL,

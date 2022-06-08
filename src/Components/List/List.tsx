@@ -1,12 +1,16 @@
 import styled from 'styled-components';
-import { capitalize } from 'utils';
+import { capitalize, camelToSentence, trimString } from 'utils';
 import { COLORS } from 'theme';
+import { CopyValue } from 'Components/CopyValue';
 
 const ListRow = styled.div`
   border-top: 1px solid ${COLORS.NEUTRAL_600};
   padding: 16px 8px;
   display: flex;
   justify-content: space-between;
+  &:first-of-type {
+    border-top: none;
+  }
 `;
 const ListContent = styled.div`
   font-size: 1.4rem;
@@ -21,10 +25,9 @@ const ListContent = styled.div`
   }
 `;
 
-
 interface ListProps {
   message: {
-    [key: string]: string;
+    [key: string]: string | number | undefined;
   };
 }
 
@@ -32,10 +35,34 @@ export const List = ({
   message,
 }: ListProps) => {
 
+  let copy = false;
+
+  const getItem = (item: string, message: ListProps["message"]) => {
+    copy = false;
+    switch (item) {
+      case 'hash':
+        return trimString(String(message[item]), 14, 7);
+      case 'signer': {
+        return (
+          <CopyValue value={String(message[item])}>
+            {trimString(String(message[item]), 14, 7)}
+          </CopyValue>
+        );
+      }
+      case 'feeAmount':
+        return `${(Number(message[item])/1e9).toFixed(2)} hash`;
+      case 'status':
+      case 'type':
+        return capitalize(String(message[item]));
+      default:
+        return message[item];
+    }
+  }
+
   const createList = Object.keys(message).map(item => (
     <ListRow key={item}>
-      <ListContent>{capitalize(item)}</ListContent>
-      <ListContent>{message[item]}</ListContent>
+      <ListContent>{camelToSentence(item)}</ListContent>
+      <ListContent>{getItem(item, message)}</ListContent>
     </ListRow>
   ));
 

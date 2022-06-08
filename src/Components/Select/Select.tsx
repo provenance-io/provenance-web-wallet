@@ -24,7 +24,7 @@ const SelectStyled = styled.select`
 const DropdownIcon = styled.div`
   position: absolute;
   right: 10px;
-  top: 34px;
+  top: 24px;
   user-select: none;
   pointer-events: none;
 `;

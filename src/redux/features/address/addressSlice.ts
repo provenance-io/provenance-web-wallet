@@ -17,6 +17,7 @@ interface InitialState {
 
   allTransactions: Array<{
     block: number;
+    denom?: string;
     feeAmount: string;
     hash: string;
     signer: string;

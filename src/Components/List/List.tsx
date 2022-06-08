@@ -35,8 +35,6 @@ export const List = ({
   message,
 }: ListProps) => {
 
-  let copy = false;
-
   const getItem = (item: string, message: ListProps["message"]) => {
     switch (item) {
       case 'hash':

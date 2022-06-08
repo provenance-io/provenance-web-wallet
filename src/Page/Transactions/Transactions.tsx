@@ -86,40 +86,32 @@ export const Transactions = () => {
     };
     // All Assets and Specific Transactions
     if (selectedAsset === 'All Assets' && selectedTxType !== 'AllTransactions') {
-      allTransactions.map(transaction => {
+      allTransactions.forEach(transaction => {
         if (transaction.status === selectedTxType.toLowerCase()) {
           transactionData.push(transaction);
-        }
-        else {
-          return undefined;
         };
       })
     };
     // Specific Assets and All Transactions
     if (selectedAsset !== 'All Assets' && selectedTxType === 'All Transactions') {
-      allTransactions.map(transaction => {
+      allTransactions.forEach(transaction => {
         if (transaction.denom === selectedAsset.toLowerCase()) {
           transactionData.push(transaction);
-        }
-        else {
-          return undefined;
         };
       })
     };
     // Specific Assets and Specific Transactions
     if (selectedAsset !== 'All Assets' && selectedTxType !== 'All Transactions') {
-      allTransactions.map(transaction => {
+      allTransactions.forEach(transaction => {
         if (transaction.denom === selectedAsset.toLowerCase() && transaction.status === selectedTxType.toLowerCase()) {
           transactionData.push(transaction);
-        }
-        else {
-          return undefined;
         };
       })
     }
     return transactionData;
   };
 
+  // TODO: Add a message if transactionData is empty. Will add once filters are provided
   return (
     <Container>
       <Title>Transactions</Title>

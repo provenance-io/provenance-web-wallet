@@ -1,7 +1,7 @@
 import { useParams } from 'react-router-dom';
 import { Header, List } from 'Components';
 import styled from 'styled-components';
-import { useAddress, useActiveAccount } from 'redux/hooks';
+import { useAddress } from 'redux/hooks';
 import { TRANSACTIONS_URL, ICON_NAMES } from 'consts';
 
 const Container = styled.div`
@@ -15,28 +15,19 @@ const Container = styled.div`
     margin: 10px 0;
   }
 `;
-const Title = styled.div`
-  font-weight: 700;
-  font-family: 'Gothic A1';
-  letter-spacing: 0.04em;
-  line-height: 22px;
-  font-size: 14px;
-  text-align: center;
-  margin-bottom: 20px;
-`;
 
-export const TradeDetails:React.FC = () => {
+export const TransactionDetails:React.FC = () => {
 
   // TODO: Update to search by transaction hash when endpoints are updated
 
   const { transactionHash } = useParams();
-  const activeAccount = useActiveAccount();
-  const { address } = activeAccount;
+  //const activeAccount = useActiveAccount();
+  //const { address } = activeAccount;
   const {
     allTransactions,
-    getAddressTxAll,
+    //getAddressTxAll,
     transactions,
-    getAddressTx,
+    //getAddressTx,
   } = useAddress();
 
   console.log(transactionHash);
@@ -49,7 +40,7 @@ export const TradeDetails:React.FC = () => {
 
   return (
     <Container>
-      <Header iconLeft={ICON_NAMES.CLOSE} title="Trade Details" backLocation={TRANSACTIONS_URL} />
+      <Header iconLeft={ICON_NAMES.CLOSE} title="Transaction Details" backLocation={TRANSACTIONS_URL} />
       {console.log(message)}
       <List message={message} />
     </Container>

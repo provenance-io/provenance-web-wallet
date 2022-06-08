@@ -38,7 +38,6 @@ export const List = ({
   let copy = false;
 
   const getItem = (item: string, message: ListProps["message"]) => {
-    copy = false;
     switch (item) {
       case 'hash':
         return trimString(String(message[item]), 14, 7);

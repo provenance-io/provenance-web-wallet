@@ -25,7 +25,7 @@ import {
   Seedphrase,
   SeedphraseIntro,
   Transactions,
-  TradeDetails,
+  TransactionDetails,
   Unlock,
   UnlockAuth,
   VerifySeedphrase,
@@ -103,7 +103,7 @@ export const routes = [
         element: <Page />,
         children: [
           { index: true, element: <Transactions /> },
-          { path: TRADE_DETAILS_URL, element: <TradeDetails /> },
+          { path: TRADE_DETAILS_URL, element: <TransactionDetails /> },
         ],
       },
       // PROFILE

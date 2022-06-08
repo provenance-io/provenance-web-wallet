@@ -4,7 +4,7 @@ import { FooterNav, Select, AssetRow, Loading } from 'Components';
 import styled from 'styled-components';
 import { useAddress, useActiveAccount } from 'redux/hooks';
 import { transactionOptions, imgOptions } from 'consts';
-import { capitalize, trimString, hashFormat } from 'utils';
+import { capitalize, trimString } from 'utils';
 
 const Container = styled.div`
   text-align: center;
@@ -90,6 +90,9 @@ export const Transactions = () => {
         if (transaction.status === selectedTxType.toLowerCase()) {
           transactionData.push(transaction);
         }
+        else {
+          return undefined;
+        };
       })
     };
     // Specific Assets and All Transactions
@@ -97,6 +100,9 @@ export const Transactions = () => {
       allTransactions.map(transaction => {
         if (transaction.denom === selectedAsset.toLowerCase()) {
           transactionData.push(transaction);
+        }
+        else {
+          return undefined;
         };
       })
     };
@@ -105,6 +111,9 @@ export const Transactions = () => {
       allTransactions.map(transaction => {
         if (transaction.denom === selectedAsset.toLowerCase() && transaction.status === selectedTxType.toLowerCase()) {
           transactionData.push(transaction);
+        }
+        else {
+          return undefined;
         };
       })
     }
@@ -113,7 +122,7 @@ export const Transactions = () => {
 
   return (
     <Container>
-      <Title>Transaction Details</Title>
+      <Title>Transactions</Title>
       <Select onChange={setSelectedAsset} options={assetOptions} value={selectedAsset} />
       <Select onChange={setSelectedTxType} options={transactionOptions} value={selectedTxType} />
       {assetsLoading || allTransactionsLoading ? <Loading /> :

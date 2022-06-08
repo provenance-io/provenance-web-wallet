@@ -10,7 +10,7 @@ export * from './Page';
 export * from './Profile';
 export * from './Recover';
 export * from './RequiresAuth';
-export * from './TradeDetails';
+export * from './TransactionDetails';
 export * from './Transactions';
 export * from './Unlock';
 export * from './UnlockAuth';

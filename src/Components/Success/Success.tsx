@@ -8,13 +8,13 @@ import {
  } from 'consts';
 import bg from 'images/bg.png';
 
-const Div = styled.div<{ height: string }>`
+const Div = styled.div`
   background: ${COLORS.BACKGROUND_1} url(${bg}) no-repeat;
   position: absolute;
   top: 0;
   left: 0;
-  min-height: ${({ height }) => height ? height : '628px'};
-  min-width: 375px;
+  height: 100%;
+  width: 100%;
   justify-content: center;
   text-align: center;
   align-content: center;
@@ -84,7 +84,7 @@ export const Success = ({
   console.log("Totally running this");
 
   return (
-    <Div height={height}>
+    <Div>
       <Content>
         <Title>{title.toUpperCase()}</Title>
         {subTitle && <SubTitle>{subTitle}</SubTitle>}

@@ -132,7 +132,6 @@ export const SignRequest:React.FC<Props> = ({ payload, closeWindow }) => {
           title='Transaction Complete' 
           subTitle='Signing request has been approved' 
           onClick={closeWindow}
-          height="600px"
         /> 
       }
     </>

@@ -123,7 +123,6 @@ export const Notification:React.FC = () => {
             title='Wallet Connected!' 
             subTitle='You are now connected to your Provenance Wallet' 
             onClick={closeWindow}
-            height="600px"
           />
         );
       default: return null;

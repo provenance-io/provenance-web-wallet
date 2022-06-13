@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { BodyContent, Button, Header, Input, Select } from 'Components';
+import { BodyContent, Button, Header, Input, Select, Success } from 'Components';
 import {
   ICON_NAMES,
   PASSWORD_MIN_LENGTH,
@@ -13,7 +13,6 @@ import {
   TESTNET_NETWORK,
   TESTNET_WALLET_COIN_TYPE,
 } from 'consts';
-import { useNavigate } from 'react-router-dom';
 import styled, { css } from 'styled-components';
 import { useAccount, useAddress, useSettings } from 'redux/hooks';
 import { BIP32Interface } from 'bip32';
@@ -24,7 +23,6 @@ import {
   createWalletFromMasterKey,
   derivationPath,
 } from 'utils';
-import backupComplete from 'images/backup-complete.svg';
 import { CustomDerivationPathObject } from 'types';
 
 const Wrapper = styled.div`
@@ -69,11 +67,6 @@ const AdvancedInputArea = styled.div`
     margin: 0;
   }
 `;
-const Image = styled.img`
-  width: 160px;
-  display: flex;
-  margin: 50px auto;
-`;
 
 interface Props {
   nextUrl: string;
@@ -81,7 +74,6 @@ interface Props {
 
 export const RecoverPassword = ({ nextUrl }: Props) => {
   // Hooks
-  const navigate = useNavigate();
   const { getAddressAssetsCount } = useAddress();
   const {
     tempAccount,
@@ -197,19 +189,7 @@ export const RecoverPassword = ({ nextUrl }: Props) => {
   const { account, change, addressIndex, coin_type } = customDerivationPath;
   return (
     success ? (
-      <Wrapper>
-        <Header progress={100} title="Account(s) Recovered" />
-        <Image src={backupComplete} />
-        <BodyContent
-          $css={css`
-            text-align: center;
-            margin-bottom: 32px;
-          `}
-        >
-          Your accounts were successfully recovered!
-        </BodyContent>
-        <Button onClick={() => navigate(nextUrl)} >Continue</Button>
-      </Wrapper>
+      <Success title='account(s) recovered' subTitle='Your accounts were successfully recovered!' />
     ) : (
       <Wrapper>
         <Header iconLeft={ICON_NAMES.CLOSE} progress={66} title="Account Password" backLocation={APP_URL} />

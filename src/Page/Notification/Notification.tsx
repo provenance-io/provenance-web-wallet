@@ -3,7 +3,7 @@ import { ACTIONS_URL, WC_NOTIFICATION_TYPES } from 'consts';
 import { useEffect, useState } from 'react';
 import { useWalletConnect } from 'redux/hooks';
 import { EventPayload } from 'types';
-import { Content } from 'Components';
+import { Content, Success } from 'Components';
 import { WalletConnectInit } from './WalletConnectInit';
 import { SignRequest } from './SignRequest';
 
@@ -54,6 +54,8 @@ export const Notification:React.FC = () => {
       WC_NOTIFICATION_TYPES.forEach(NOTE_TYPE => {
         connector.on(NOTE_TYPE, (error, payload) => {
           setNotificationType(NOTE_TYPE);
+          console.log(NOTE_TYPE);
+          console.log(payload);
           // Save the request locally
           // - If the user closes the window/popup or doesn't notice it in the background it can be retreived
           //    - Clicking QR Code modal connect button again
@@ -114,6 +116,16 @@ export const Notification:React.FC = () => {
       case 'session_request': return <WalletConnectInit payload={eventPayload} closeWindow={closeWindow} />
       case 'provenance_sendTransaction': // fallthrough
       case 'provenance_sign': return <SignRequest payload={eventPayload} closeWindow={closeWindow} />;
+      // Upon successful connection, return success message
+      case 'connect': 
+        return (
+          <Success 
+            title='Wallet Connected!' 
+            subTitle='You are now connected to your Provenance Wallet' 
+            onClick={closeWindow}
+            height="600px"
+          />
+        );
       default: return null;
     }
   };

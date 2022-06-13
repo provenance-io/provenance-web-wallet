@@ -1,6 +1,6 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import styled from 'styled-components';
-import { Sprite } from 'Components';
+import { Sprite, Success } from 'Components';
 import { trimString } from 'utils';
 import { ICON_NAMES, CHAINID_TESTNET } from 'consts';
 import circleIcon from 'images/circle-icon.svg';
@@ -61,6 +61,7 @@ interface Props {
 
 export const WalletConnectInit:React.FC<Props> = ({ payload, closeWindow }) => {
   const [useFallbackIcon, setUseFallbackIcon] = useState(false);
+
   const { peerMeta = {
     name: 'N/A',
     url: 'N/A',
@@ -94,7 +95,7 @@ export const WalletConnectInit:React.FC<Props> = ({ payload, closeWindow }) => {
         connectionEXP: now + connectionDuration,
       });
       // Close the popup
-      closeWindow();
+      //closeWindow();
     }
   }
   const handleDecline = async () => {

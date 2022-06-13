@@ -8,12 +8,12 @@ import {
  } from 'consts';
 import bg from 'images/bg.png';
 
-const Div = styled.div`
+const Div = styled.div<{ height: string }>`
   background: ${COLORS.BACKGROUND_1} url(${bg}) no-repeat;
   position: absolute;
   top: 0;
   left: 0;
-  min-height: 628px;
+  min-height: ${({ height }) => height ? height : '628px'};
   min-width: 375px;
   justify-content: center;
   text-align: center;
@@ -68,18 +68,23 @@ const Sprite = styled(BaseSprite)`
 interface SuccessProps {
   title: string;
   subTitle?: string;
+  onClick?: () => void;
   goTo?: string;
+  height?: string;
 }
 
 export const Success = ({
   title,
   subTitle = '',
+  onClick,
   goTo = DASHBOARD_URL,
+  height = '',
 }: SuccessProps) => {
   const navigate = useNavigate();
+  console.log("Totally running this");
 
   return (
-    <Div>
+    <Div height={height}>
       <Content>
         <Title>{title.toUpperCase()}</Title>
         {subTitle && <SubTitle>{subTitle}</SubTitle>}
@@ -87,7 +92,7 @@ export const Success = ({
           <Sprite icon={ICON_NAMES.CHECK} color={COLORS.POSITIVE_250} size='4rem'/>
         </Circle>
       </Content>
-      <Button onClick={() => navigate(goTo)}>Continue</Button>
+      <Button onClick={onClick ? onClick : () => navigate(goTo)}>Continue</Button>
     </Div>
   );
 };

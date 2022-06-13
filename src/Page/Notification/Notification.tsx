@@ -54,8 +54,6 @@ export const Notification:React.FC = () => {
       WC_NOTIFICATION_TYPES.forEach(NOTE_TYPE => {
         connector.on(NOTE_TYPE, (error, payload) => {
           setNotificationType(NOTE_TYPE);
-          console.log(NOTE_TYPE);
-          console.log(payload);
           // Save the request locally
           // - If the user closes the window/popup or doesn't notice it in the background it can be retreived
           //    - Clicking QR Code modal connect button again
@@ -65,6 +63,7 @@ export const Notification:React.FC = () => {
           // const date = Date.now();
           // const finalPayload = { ...payload, date };
           // setEventPayload(finalPayload);
+          console.log(payload);
           setEventPayload(payload);
           // Only add 'provenance_sign' and 'provenance_sendTransaction' to pendingRequest list
           if (NOTE_TYPE === 'provenance_sign' || NOTE_TYPE === 'provenance_sendTransaction') {
@@ -120,8 +119,8 @@ export const Notification:React.FC = () => {
       case 'connect': 
         return (
           <Success 
-            title='Wallet Connected!' 
-            subTitle='You are now connected to your Provenance Wallet' 
+            title='Connected!' 
+            subTitle={`You are now connected${eventPayload.params[0].peerMeta?.name ? ` to ${eventPayload.params[0].peerMeta?.name}` : '. Click continue to close this window'}`}
             onClick={closeWindow}
           />
         );

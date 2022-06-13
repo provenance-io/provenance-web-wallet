@@ -56,6 +56,7 @@ const Title = styled.div`
 const SubTitle = styled(Title)`
   font-weight: 400;
   font-family: 'Gothic A1', sans-serif;
+  margin: 0 5px 10px 5px;
   letter-spacing: 0.04em;
   font-size: 14px;
   line-height: 160%;
@@ -81,7 +82,6 @@ export const Success = ({
   height = '',
 }: SuccessProps) => {
   const navigate = useNavigate();
-  console.log("Totally running this");
 
   return (
     <Div>

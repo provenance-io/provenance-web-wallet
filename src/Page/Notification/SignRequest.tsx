@@ -116,7 +116,7 @@ export const SignRequest:React.FC<Props> = ({ payload, closeWindow }) => {
 
   return (
     <>
-      {!success && 
+      {!success ? (
         <SignContainer>
           <Title>Sign Request</Title>
           <List message={ListItems} />
@@ -126,14 +126,13 @@ export const SignRequest:React.FC<Props> = ({ payload, closeWindow }) => {
             handleAuth={handleAuth}
           />
         </SignContainer>
-      }
-      {success && 
+      ) : (
         <Success 
           title='Transaction Complete' 
           subTitle='Signing request has been approved' 
           onClick={closeWindow}
         /> 
-      }
+      )}
     </>
   );
 };

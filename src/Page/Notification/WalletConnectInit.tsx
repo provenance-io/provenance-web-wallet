@@ -94,8 +94,6 @@ export const WalletConnectInit:React.FC<Props> = ({ payload, closeWindow }) => {
         connectionEST: now,
         connectionEXP: now + connectionDuration,
       });
-      // Close the popup
-      //closeWindow();
     }
   }
   const handleDecline = async () => {

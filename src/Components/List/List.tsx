@@ -47,7 +47,7 @@ export const List = ({
         );
       }
       case 'feeAmount':
-        return `${hashFormat('hash', Number(message[item]))} hash`;
+        return `${hashFormat('hash', message[item] as string)} hash`;
       case 'status':
       case 'type':
         return capitalize(String(message[item]));

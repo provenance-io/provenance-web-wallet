@@ -33,6 +33,11 @@ const AssetsContainer = styled.div`
   }
 `;
 
+const NoTransactions = styled.div`
+  text-align: left;
+  font-size: 1.4rem;
+`;
+
 export const Transactions = () => {
   const navigate = useNavigate();
   const [selectedAsset, setSelectedAsset] = useState('All Assets');
@@ -53,14 +58,10 @@ export const Transactions = () => {
   // Grab data if needed
   useEffect(() => {
     if (address) {
-      if (assets.length === 0) {
-        getAddressAssets(address);
-      };
-      if (allTransactions.length === 0) {
-        getAddressTxAll(address);
-      };
+      getAddressAssets(address);
+      getAddressTxAll(address);
     };
-  });
+  }, [getAddressTxAll, getAddressAssets, address]);
 
   // Set asset options
   const assetOptions = ['All Assets'].concat(assets.map(item => item.denom));
@@ -119,15 +120,18 @@ export const Transactions = () => {
       <Select onChange={setSelectedTxType} options={transactionOptions} value={selectedTxType} />
       {assetsLoading || allTransactionsLoading ? <Loading /> :
         <AssetsContainer>
-          {getTransactionData().map(transaction => (
-            <AssetRow 
-              img={getImg(transaction.denom)}
-              name={transaction.hash} 
-              displayName={trimString(transaction?.denom === 'nhash' ? 'hash' : transaction.denom || capitalize(transaction.type), 21, 10)} 
-              amount={{ count: `fee: ${(hashFormat('hash', Number(transaction.feeAmount))).toFixed(2)} hash` }}
-              onClick={() => navigate(`./${transaction.hash}`)}
-            />
-          ))}
+          {allTransactions.length === 0 ? 
+            <NoTransactions>No transaction information available. Please try again or change accounts</NoTransactions>
+            :
+            getTransactionData().map(transaction => (
+              <AssetRow 
+                img={getImg(transaction.denom)}
+                name={transaction.hash} 
+                displayName={trimString(transaction?.denom === 'nhash' ? 'hash' : transaction.denom || capitalize(transaction.type), 21, 10)} 
+                amount={{ count: `fee: ${(hashFormat('hash', transaction.feeAmount)).toFixed(2)} hash` }}
+                onClick={() => navigate(`./${transaction.hash}`)}
+              />
+            ))}
         </AssetsContainer>
       }
       <FooterNav />

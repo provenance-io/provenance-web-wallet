@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import { capitalize, camelToSentence, trimString } from 'utils';
+import { capitalize, camelToSentence, trimString, hashFormat } from 'utils';
 import { COLORS } from 'theme';
 import { CopyValue } from 'Components/CopyValue';
 
@@ -47,7 +47,7 @@ export const List = ({
         );
       }
       case 'feeAmount':
-        return `${(Number(message[item])/1e9).toFixed(2)} hash`;
+        return `${hashFormat('hash', Number(message[item]))} hash`;
       case 'status':
       case 'type':
         return capitalize(String(message[item]));

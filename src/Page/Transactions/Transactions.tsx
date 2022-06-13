@@ -4,7 +4,7 @@ import { FooterNav, Select, AssetRow, Loading } from 'Components';
 import styled from 'styled-components';
 import { useAddress, useActiveAccount } from 'redux/hooks';
 import { transactionOptions, imgOptions } from 'consts';
-import { capitalize, trimString } from 'utils';
+import { capitalize, trimString, hashFormat } from 'utils';
 
 const Container = styled.div`
   text-align: center;
@@ -124,7 +124,7 @@ export const Transactions = () => {
               img={getImg(transaction.denom)}
               name={transaction.hash} 
               displayName={trimString(transaction?.denom === 'nhash' ? 'hash' : transaction.denom || capitalize(transaction.type), 21, 10)} 
-              amount={{ count: `fee: ${Number(transaction.feeAmount)/1e9} hash` }}
+              amount={{ count: `fee: ${(hashFormat('hash', Number(transaction.feeAmount))).toFixed(2)} hash` }}
               onClick={() => navigate(`./${transaction.hash}`)}
             />
           ))}

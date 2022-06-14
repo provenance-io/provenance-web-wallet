@@ -3,7 +3,7 @@ import { ACTIONS_URL, WC_NOTIFICATION_TYPES } from 'consts';
 import { useEffect, useState } from 'react';
 import { useWalletConnect } from 'redux/hooks';
 import { EventPayload } from 'types';
-import { Content } from 'Components';
+import { Content, Success } from 'Components';
 import { WalletConnectInit } from './WalletConnectInit';
 import { SignRequest } from './SignRequest';
 
@@ -63,6 +63,7 @@ export const Notification:React.FC = () => {
           // const date = Date.now();
           // const finalPayload = { ...payload, date };
           // setEventPayload(finalPayload);
+          console.log(payload);
           setEventPayload(payload);
           // Only add 'provenance_sign' and 'provenance_sendTransaction' to pendingRequest list
           if (NOTE_TYPE === 'provenance_sign' || NOTE_TYPE === 'provenance_sendTransaction') {
@@ -114,6 +115,15 @@ export const Notification:React.FC = () => {
       case 'session_request': return <WalletConnectInit payload={eventPayload} closeWindow={closeWindow} />
       case 'provenance_sendTransaction': // fallthrough
       case 'provenance_sign': return <SignRequest payload={eventPayload} closeWindow={closeWindow} />;
+      // Upon successful connection, return success message
+      case 'connect': 
+        return (
+          <Success 
+            title='Connected!' 
+            subTitle={`You are now connected${eventPayload.params[0].peerMeta?.name ? ` to ${eventPayload.params[0].peerMeta?.name}` : '. Click continue to close this window'}`}
+            onClick={closeWindow}
+          />
+        );
       default: return null;
     }
   };

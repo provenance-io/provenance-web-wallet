@@ -1,7 +1,6 @@
 import styled from 'styled-components';
-import { capitalize, camelToSentence, trimString, hashFormat } from 'utils';
+import { camelToSentence, } from 'utils';
 import { COLORS } from 'theme';
-import { CopyValue } from 'Components/CopyValue';
 
 const ListRow = styled.div`
   border-top: 1px solid ${COLORS.NEUTRAL_600};
@@ -27,7 +26,7 @@ const ListContent = styled.div`
 
 interface ListProps {
   message: {
-    [key: string]: string | number | undefined;
+    [key: string]: string | number | JSX.Element | undefined;
   };
 }
 
@@ -35,31 +34,10 @@ export const List = ({
   message,
 }: ListProps) => {
 
-  const getItem = (item: string, message: ListProps["message"]) => {
-    switch (item) {
-      case 'hash':
-        return trimString(String(message[item]), 14, 7);
-      case 'signer': {
-        return (
-          <CopyValue value={String(message[item])}>
-            {trimString(String(message[item]), 14, 7)}
-          </CopyValue>
-        );
-      }
-      case 'feeAmount':
-        return `${hashFormat('hash', message[item] as string)} hash`;
-      case 'status':
-      case 'type':
-        return capitalize(String(message[item]));
-      default:
-        return message[item];
-    }
-  }
-
   const createList = Object.keys(message).map(item => (
     <ListRow key={item}>
       <ListContent>{camelToSentence(item)}</ListContent>
-      <ListContent>{getItem(item, message)}</ListContent>
+      <ListContent>{message[item]}</ListContent>
     </ListRow>
   ));
 

@@ -79,7 +79,7 @@
     "build:devTools": "env-cmd -e default,staging react-scripts build && npm run reduxDev",
     "build:protos": "./scripts/build_protos.sh",
     "reduxDev": "redux-devtools",
-    "test": "env-cmd -e e2e react-scripts test",
+    "test": "env-cmd -e e2e react-scripts test --watch --verbose",
     "eject": "react-scripts eject"
   },
   "eslintConfig": {

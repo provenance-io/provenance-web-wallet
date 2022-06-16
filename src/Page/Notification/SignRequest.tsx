@@ -31,6 +31,7 @@ interface ParsedParams {
   address?: string,
   description?: string,
   payload?: string,
+  date?: number,
 }
 
 export const SignRequest:React.FC<Props> = ({ payload, closeWindow }) => {
@@ -105,7 +106,7 @@ export const SignRequest:React.FC<Props> = ({ payload, closeWindow }) => {
   const ListItems = {
     platform: connector?.peerMeta?.name || 'N/A',
     address: parsedParams?.address || 'N/A',
-    created: payload?.date ? format(new Date(payload.date), 'MMM d, h:mm a') : 'N/A',
+    created: parsedParams?.date ? format(new Date(parsedParams.date), 'MMM d, h:mm a') : 'N/A',
     'message type': 'provenance_sign',
     description: parsedParams?.description || 'N/A',
     payload: parsedParams?.payload || 'N/A',

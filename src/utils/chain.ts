@@ -2,7 +2,6 @@
 import {
   PROVENANCE_ADDRESS_PREFIX_MAINNET,
   PROVENANCE_ADDRESS_PREFIX_TESTNET,
-  DEFAULT_HD_PATH,
   MNEMONIC_WORD_COUNT,
   TESTNET_WALLET_COIN_TYPE,
 } from 'consts';
@@ -60,8 +59,9 @@ const createAddress = (publicKey: Bytes, prefix: string = PROVENANCE_ADDRESS_PRE
   return bech32Encode(prefix, words);
 }
 
-const createKeyPairFromMasterKey = (masterKey: BIP32Interface, path: string, showBuffer?: boolean): KeyPair & { privateKeyBuffer?: Buffer } => {
-  const buffer = masterKey.derivePath(path).privateKey;
+const createKeyPairFromMasterKey = (masterKey: BIP32Interface, hdPath?: string ): KeyPair => {
+  // If it's a root hd path or master node just return the private key without deriving
+  const buffer = hdPath && hdPath !== 'm' ? masterKey.derivePath(hdPath).privateKey : masterKey.privateKey;
   if (!buffer) {
     throw new Error('could not derive private key');
   }
@@ -71,24 +71,29 @@ const createKeyPairFromMasterKey = (masterKey: BIP32Interface, path: string, sho
   return {
     privateKey,
     publicKey,
-    ...(showBuffer ? {privateKeyBuffer: buffer} : {}),
   };
+}
+
+interface CreateWalletProps {
+  privateKeyB64: string,
+  publicKeyB64: string,
+  privateKey: Uint8Array,
+  publicKey: Uint8Array,
 }
 
 export const createWalletFromMasterKey = (
   masterKey: BIP32Interface | string,
-  prefix: string = PROVENANCE_ADDRESS_PREFIX_MAINNET!,
-  path: string = DEFAULT_HD_PATH
-): Wallet => {
+  hdPath?: string,
+):CreateWalletProps => {
   let finalMasterKey = masterKey;
   if (typeof masterKey === 'string') finalMasterKey = bip32FromB58(masterKey);
-  const { privateKey, publicKey } = createKeyPairFromMasterKey(finalMasterKey as BIP32Interface, path);
-  const address = createAddress(publicKey, prefix);
+  const { privateKey, publicKey } = createKeyPairFromMasterKey(finalMasterKey as BIP32Interface, hdPath);
 
   return {
+    privateKeyB64: bytesToBase64(privateKey),
+    publicKeyB64: bytesToBase64(publicKey),
     privateKey,
     publicKey,
-    address,
   };
 }
 

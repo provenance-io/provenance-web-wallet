@@ -36,12 +36,10 @@ export const SeedphraseInput:React.FC<Props> = ({ nextUrl, previousUrl }) => {
   const [submitError, setSubmitError] = useState<string>('');
 
   const updateInput = (index: number, value: string) => {
-    console.log('updateInput() | index, value:', index, value);
     // Clone all inputValues
     const newInputValues = [...inputValues];
     // Check to see if the value entered is an entire pasted mnemonic
     const wholeMnemonic = isMnemonic(value, MNEMONIC_WORD_COUNT) ? value : '';
-    console.log('updateInput() | wholeMnemonic: ', wholeMnemonic);
     // Entire mnemonic was pasted in
     if (wholeMnemonic) {
       // Loop through each input and change the value to match the pasted mnemonic
@@ -54,7 +52,6 @@ export const SeedphraseInput:React.FC<Props> = ({ nextUrl, previousUrl }) => {
       newInputValues[index].value = value;
       newInputValues[index].error = isMnemonic(value) ? '' : 'Invalid Word';
     }
-    console.log('updateInput() | newInputValues :', newInputValues);
     // Update target inputValue
     setInputValues(newInputValues);
   };

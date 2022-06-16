@@ -8,6 +8,7 @@ import {
   getHDPathData,
   createRootAccount,
   createChildAccount,
+  createWalletFromMasterKey,
 } from 'utils';
 
 // --------------------------------------------------
@@ -58,7 +59,24 @@ describe('Using each account level b64 masterKey, create child account', () => {
     };
   });
 });
-
+// ---------------------------------------------------------------
+// Using each account masterKey, get other account information
+// ---------------------------------------------------------------
+describe('Using each account masterKey, get other account information', () => {
+  Object.keys(allAccountLevels).forEach(accountLevel => {
+    const targetAccount = allAccountLevels[accountLevel];
+    const {
+      publicKey: knownPublicKey,
+      privateKey: knownPrivateKey,
+      masterKey: knownMasterKey,
+    } = targetAccount;
+    const { publicKeyB64, privateKeyB64 } = createWalletFromMasterKey(knownMasterKey);
+    test(`${accountLevel} level masterKey creates valid account information`, () => {
+      expect(privateKeyB64).toBe(knownPrivateKey);
+      expect(publicKeyB64).toBe(knownPublicKey);
+    })
+  }
+)});
 
 // ------------------------
 // Test HD Path rendering

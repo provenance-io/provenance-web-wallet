@@ -59,26 +59,26 @@ export const DashboardAccountCreate:React.FC<Props> = ({ nextUrl }) => {
       else {
         // Password was correct, create the account
         // TEMP: Need proper prefix and this file needs to use HD path setup
-        const { address, publicKey } = createWalletFromMasterKey(masterKey, 'pb', HDPath);
+        const { publicKey } = createWalletFromMasterKey(masterKey);
         // const b64PublicKey = bytesToBase64(publicKey);
         // Save data to redux store and clear out tempAccount data
         const newAccountData = {
           // publicKey: b64PublicKey,
-          address,
+          // address,
           name,
           network: 'mainnet',
         };
-        // Check to make sure this account doesn't already exist
-        if (!accounts.find(account => account.address === address)) {
-          // Save data to redux and chrome storage
-          // TODO: This should just be a single function to add into accounts and potentially change activeAccountId (or even key)
-          await saveAccountData({ activeAccountId: address });
-        } else {
-          // This account already exists, show generic error
-          const newErrors = [...error];
-          newErrors[3] = 'Account is already added/exists'
-          setError(newErrors);
-        }
+        // // Check to make sure this account doesn't already exist
+        // if (!accounts.find(account => account.address === address)) {
+        //   // Save data to redux and chrome storage
+        //   // TODO: This should just be a single function to add into accounts and potentially change activeAccountId (or even key)
+        //   await saveAccountData({ activeAccountId: address });
+        // } else {
+        //   // This account already exists, show generic error
+        //   const newErrors = [...error];
+        //   newErrors[3] = 'Account is already added/exists'
+        //   setError(newErrors);
+        // }
         // Redirect back to dashboard menu
         navigate(nextUrl);
       }

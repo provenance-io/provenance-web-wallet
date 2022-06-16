@@ -7,11 +7,16 @@
     - Other fields in the HD path will need to be grey'd out (non changable)
 * New Account flow needs custom "Process" amount since each flowType (add, create, recover) has a different amount of steps
   - This process amount will be set in the routes
+  - Process lives in the Header component
 * Fix buttons on dashboard
 * Create error message component (not alert)
+  - Continuously remaking the same component in app
 * Remove unused code and functions (mainly from chain.ts)
+* Fix scroll bars in notification popup (window.create())
 
 ### Bugs
+* dApp connection request takes two clicks to cause popup to open 
+  - Look into the setting of localStorage, value changes, no popup, on second click, value exists, popup opens
 * dApp request message sign and no popup is triggered from background.js
   - Doesn't always happen, hard to recreate
 

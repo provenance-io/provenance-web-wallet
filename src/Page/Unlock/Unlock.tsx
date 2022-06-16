@@ -9,7 +9,7 @@ import {
 import { APP_URL, ICON_NAMES, PASSWORD_MIN_LENGTH } from 'consts';
 import { useNavigate } from 'react-router-dom';
 import { decryptKey } from 'utils';
-import { useAccount, useSettings } from 'redux/hooks';
+import { useActiveAccount, useSettings } from 'redux/hooks';
 
 interface Props {
   nextUrl: string;
@@ -20,7 +20,7 @@ export const Unlock = ({ nextUrl }: Props) => {
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const { unlockDuration, saveSettingsData } = useSettings();
-  const { key } = useAccount();
+  const { masterKey: key } = useActiveAccount();
 
   const handleSubmit = async () => {
     // Clear out any previous error
@@ -32,7 +32,7 @@ export const Unlock = ({ nextUrl }: Props) => {
     // No error so far
     if (!newError) {
       // Attempt to decrypt the key with the provided password
-      const masterKey = decryptKey(key, password);
+      const masterKey = decryptKey(key!, password);
       if (!masterKey) newError = 'Invalid password';
       else {
         // Bump the unlock duration

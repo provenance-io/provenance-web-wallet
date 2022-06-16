@@ -3,12 +3,14 @@ import { ICON_NAMES } from 'consts';
 import styled from 'styled-components';
 import { COLORS } from 'theme/colors';
 
-const CheckboxContainer = styled.div`
-  margin: 20px 0;
-  display: flex;
-  align-items: flex-start;
+interface StyledProps {
+  disabled?: boolean,
+}
+
+const CheckboxContainer = styled.div<StyledProps>`
+  cursor: ${({ disabled }) => disabled ? 'not-allowed' : 'pointer' };
 `;
-const StyledCheckbox = styled.div`
+const StyledCheckbox = styled.div<StyledProps>`
   height: 20px;
   width: 20px;
   border: 1px solid #498AFD;
@@ -17,10 +19,14 @@ const StyledCheckbox = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-top: 10px;
   flex-shrink: 0;
   svg {
     position: absolute;
+    z-index: 1;
+  }
+  &:disabled {
+    user-select: none;
+    cursor: not-allowed;
   }
 `;
 const Label = styled.label`
@@ -33,15 +39,23 @@ const Label = styled.label`
 `;
 
 interface Props {
-  checked: boolean,
+  checked?: boolean,
   onChange: (e: any) => void,
   label?: string,
+  className?: string,
+  disabled?: boolean,
 }
 
-export const Checkbox:React.FC<Props> = ({ checked = false, onChange, label }) => {
+export const Checkbox:React.FC<Props> = ({ checked, onChange, label, className, disabled }) => {
+  const handleClick = () => {
+    if (!disabled) {
+      onChange(!checked);
+    }
+  };
+
   return (
-    <CheckboxContainer>
-      <StyledCheckbox onClick={() => onChange(!checked)}>
+    <CheckboxContainer className={className} disabled={disabled}>
+      <StyledCheckbox onClick={handleClick} disabled={disabled}>
         {checked && <Sprite icon={ICON_NAMES.CHECK} size="1.2rem" color="#498AFD" />}
       </StyledCheckbox>
       {label && <Label>{label}</Label>}

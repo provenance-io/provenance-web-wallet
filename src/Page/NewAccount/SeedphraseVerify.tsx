@@ -1,13 +1,25 @@
 import { useEffect, useState } from 'react';
-import { BodyContent, Checkbox, Button, Header, Content } from 'Components';
-import { css } from 'styled-components';
-import { VerifyButtonGroup } from './VerifyButtonGroup';
-import { COLORS } from 'theme';
+import {
+  Checkbox as CheckboxBase,
+  Button,
+  Header,
+  Content,
+  Typo,
+} from 'Components';
+import styled from 'styled-components';
+import { SeedphraseVerifyGroup } from './SeedphraseVerifyGroup';
 import { useAccount } from 'redux/hooks';
 import { useNavigate } from 'react-router-dom';
 
+const Checkbox = styled(CheckboxBase)`
+  margin: 20px 0;
+  display: flex;
+  align-items: flex-start;
+`;
+
 interface Props {
   nextUrl: string;
+  previousUrl: string;
 }
 
 // TODO: Would like to rewrite this functino... straight copied it from stack overflow
@@ -36,7 +48,7 @@ const groupArrays = (arr: string[] = [], size: number = 3) =>
     }
   }, []);
 
-export const VerifySeedphrase = ({ nextUrl }: Props) => {
+export const SeedphraseVerify = ({ nextUrl, previousUrl }: Props) => {
   const [correct, setCorrect] = useState<boolean[]>([]);
   const [errorMsg, setErrorMsg] = useState('');
   const [termsAgree, setTermsAgree] = useState(false);
@@ -75,10 +87,12 @@ export const VerifySeedphrase = ({ nextUrl }: Props) => {
     }
   }, [mnemonicArray, verifyWords, mnemonic]);
 
-  const handleContinue = () => {
-    if (!termsAgree) {
+  const handleContinue = (event:React.MouseEvent) => {
+    // Pressing the shift + option keys will override any verification
+    const verificationBypass = event.shiftKey && event.altKey;
+    if (!verificationBypass && !termsAgree) {
       setErrorMsg('You must agree to the terms of your account passphrase.');
-    } else if (correct.some((c) => !c)) {
+    } else if (!verificationBypass && correct.some((c) => !c)) {
       setErrorMsg('You selected incorrect choices. Please try again');
     } else {
       setErrorMsg('');
@@ -93,7 +107,7 @@ export const VerifySeedphrase = ({ nextUrl }: Props) => {
 
     return verifyWords?.map((wordArr, index) => {
       return (
-        <VerifyButtonGroup
+        <SeedphraseVerifyGroup
           key={wordArr.data.join('')}
           mnemonicArray={mnemonicArray}
           setCorrect={(correct) => handleCorrect(index, correct)}
@@ -104,8 +118,8 @@ export const VerifySeedphrase = ({ nextUrl }: Props) => {
   };
 
   return (
-    <Content padBottom='80px'>
-      <Header progress={66} title="Verify Passphrase" />
+    <Content padBottom='120px'>
+      <Header progress={66} title="Verify Passphrase" backLocation={previousUrl} />
       {createButtonGroups()}
       <Checkbox
         checked={termsAgree}
@@ -115,14 +129,9 @@ export const VerifySeedphrase = ({ nextUrl }: Props) => {
         label="I agree that I'm solely responsible for my wallet and cannot recover the passphrase if lost."
       />
       {errorMsg && (
-        <BodyContent
-          $css={css`
-            color: ${COLORS.NEGATIVE_200};
-            text-align: center;
-          `}
-        >
+        <Typo type='error'>
           {errorMsg}
-        </BodyContent>
+        </Typo>
       )}
       <Button onClick={handleContinue} variant="primary">
         Continue

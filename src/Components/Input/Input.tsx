@@ -26,6 +26,7 @@ const Label = styled.label`
   font-size: 1.4rem;
   font-weight: 500;
   line-height: 2.24rem;
+  text-transform: capitalize;
 `;
 
 const InputEl = styled.input<{error?: string}>`

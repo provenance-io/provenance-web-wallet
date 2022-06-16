@@ -33,7 +33,7 @@ const WalletActionsPopup = styled.div`
   left: 0;
   background: rgba(0, 0, 0, 0.4);
   height: 100%;
-  width: 100%;
+  width:inherit;
   z-index: 100;
   display: flex;
   flex-direction: column;
@@ -62,10 +62,10 @@ const WalletAction = styled.div`
 export const DashboardMenu:React.FC = () => {
   const navigate = useNavigate();
   const { activeAccountId, accounts, saveAccountData } = useAccount();
-  const [ accountMenuTargetId, setAccountMenuTargetId ] = useState(-1);
+  const [ accountMenuTargetId, setAccountMenuTargetId ] = useState('');
 
-  const renderWallets = () => accounts.map(({ address, name, id }) => (
-    <WalletItem key={address} active={id === activeAccountId} onClick={() => { setAccountMenuTargetId(id!)} }>
+  const renderWallets = () => accounts.map(({ address, name }) => (
+    <WalletItem key={address} active={address === activeAccountId} onClick={() => { setAccountMenuTargetId(address!)} }>
       <WalletText>
         <AccountName>{name}</AccountName>
       </WalletText>
@@ -82,8 +82,8 @@ export const DashboardMenu:React.FC = () => {
     <>
       <Header title='Wallets' iconLeft={ICON_NAMES.CLOSE} backLocation={DASHBOARD_URL} />
       {renderWallets()}
-      {accountMenuTargetId > -1 && (
-        <WalletActionsPopup onClick={() => setAccountMenuTargetId(-1)}>
+      {accountMenuTargetId && (
+        <WalletActionsPopup onClick={() => setAccountMenuTargetId('')}>
           {activeAccountId !== accountMenuTargetId && (
             <WalletAction onClick={handleSelectWallet}>
               Select Account
@@ -91,11 +91,11 @@ export const DashboardMenu:React.FC = () => {
           )}
           {/* TODO: User must click on text to copy, instead have user click on entire button row */}
           <WalletAction>
-            <CopyValue value={accounts[accountMenuTargetId]?.address} successText="Address Copied!" noPopup>Copy Account Address</CopyValue>
+            <CopyValue value={accounts.find(account => account.address === accountMenuTargetId)?.address} successText="Address Copied!" noPopup>Copy Account Address</CopyValue>
           </WalletAction>
           <WalletAction>Rename</WalletAction>
           <WalletAction>Remove</WalletAction>
-          <WalletAction onClick={() => setAccountMenuTargetId(-1)}>Close</WalletAction>
+          <WalletAction onClick={() => setAccountMenuTargetId('')}>Close</WalletAction>
         </WalletActionsPopup>
       )}
       <Button onClick={() => navigate('../create')} >Create Account</Button>

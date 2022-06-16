@@ -5,3 +5,5 @@ export const TESTNET_WALLET_COIN_TYPE = 1;
 export const MAINNET_NETWORK = 'mainnet';
 export const TESTNET_NETWORK = 'testnet';
 export const DEFAULT_NETWORK = MAINNET_NETWORK;
+export const DEFAULT_HD_PATH = `m/44'/${PROVENANCE_WALLET_COIN_TYPE}'/0'`; // m/44'/505'/0' (account level)
+export const MNEMONIC_WORD_COUNT = 24;

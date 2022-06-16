@@ -1,7 +1,7 @@
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
-import { combineCss, Sprite } from 'Components';
-import { COLORS, FONTS } from 'theme';
+import { Sprite, Typo } from 'Components';
+import { COLORS } from 'theme';
 import { ICON_NAMES } from 'consts';
 import React from 'react';
 
@@ -17,21 +17,10 @@ const Content = styled.div<{excludeBackButton: boolean}>`
   display: grid;
   grid-template-columns: ${({ excludeBackButton }) => excludeBackButton ? '1fe' : '1.4rem 1fr 1.4rem' };
   align-items: center;
+  text-transform: capitalize;
 `;
 
-const Title = styled.span`
-  color: ${COLORS.WHITE};
-  ${FONTS.PRIMARY_FONT};
-  font-size: 1.4rem;
-  font-weight: 700;
-  letter-spacing: 0.04rem;
-  line-height: 2.24rem;
-  text-align: center;
-`;
-
-const ProgressBar = styled.div<{
-  progress?: number;
-}>`
+const ProgressBar = styled.div<{progress?: number}>`
   position: relative;
   height: 3px;
   width: 100%;
@@ -43,7 +32,7 @@ const ProgressBar = styled.div<{
     position: absolute;
     left: 0;
     height: 100%;
-    width: ${({ progress }) => progress}%;
+    ${({ progress }) => progress && `width: ${progress}%;`}
     border-radius: 8px;
     background-color: ${COLORS.SECONDARY_400};
   }
@@ -62,8 +51,6 @@ const LinkOrButton = styled.button`
   color: inherit;
   background: none;
   cursor: pointer;
-
-  ${combineCss()}
 `;
 
 const BackButton = ({ children, backLocation }: { children: React.ReactNode, backLocation?: string }) => {
@@ -90,7 +77,7 @@ export const Header = ({ iconLeft = ICON_NAMES.ARROW, progress, title, marginBot
             <Sprite size="1.4rem" icon={iconLeft} />
           </BackButton>
         )}
-        {title && <Title>{title}</Title>}
+        {title && <Typo type="subhead">{title}</Typo>}
       </Content>
       {progress !== undefined && <ProgressBar progress={progress} />}
     </Wrapper>

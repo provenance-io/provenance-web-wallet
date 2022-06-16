@@ -1,59 +1,24 @@
 import styled from 'styled-components';
-import { Button, Header, Input, Select } from 'Components';
+import { Button, Header, Input, AdvancedSettings } from 'Components';
 import {
   ICON_NAMES,
-  MAINNET_NETWORK,
   PASSWORD_MIN_LENGTH,
-  DEFAULT_NETWORK,
-  TESTNET_NETWORK,
-  TESTNET_WALLET_COIN_TYPE,
-  PROVENANCE_WALLET_COIN_TYPE,
-  PROVENANCE_ADDRESS_PREFIX_MAINNET,
-  PROVENANCE_ADDRESS_PREFIX_TESTNET,
+  DEFAULT_HD_PATH,
 } from 'consts';
 import { useState } from 'react';
 import {
   decryptKey,
-  derivationPath,
   createWalletFromMasterKey,
-  bytesToBase64,
+  // bytesToBase64,
 } from 'utils';
 import { useNavigate } from 'react-router-dom';
-import { useAccount } from 'redux/hooks';
+import { useAccount, useActiveAccount } from 'redux/hooks';
 import { CustomDerivationPathObject } from 'types';
 
 const Wrapper = styled.div`
   width: 100%;
   label {
     margin-top: 20px;
-  }
-`;
-const AdvancedSection = styled.div`
-  padding-bottom: 40px;
-`;
-const AdvancedTextButton = styled.div`
-  color: #357EFD;
-  font-weight: bold;
-  margin-top: 20px;
-  cursor: pointer;
-  user-select: none;
-`;
-const AdvancedTitle = styled.div`
-  font-size: 1.5rem;
-  margin: 10px 0;
-`;
-const AdvancedInputArea = styled.div`
-  display: flex;
-  max-width: 100%;
-  font-family: 'Courier New', Courier, monospace;
-  align-items: center;
-  font-size: 1.6rem;
-  color: orange;
-  font-weight: bold;
-  input {
-    width: 60px;
-    padding: 0 0 0 10px;
-    margin: 0;
   }
 `;
 const Error = styled.div`
@@ -69,41 +34,13 @@ interface Props {
 export const DashboardAccountCreate:React.FC<Props> = ({ nextUrl }) => {  
   const navigate = useNavigate();
   const [name, setName] = useState('');
+  const [HDPath, setHDPath] = useState(DEFAULT_HD_PATH);
   const [walletPassword, setWalletPassword] = useState('');
-  const [showAdvanced, setShowAdvanced] = useState(false);
-  const [network, setNetwork] = useState(DEFAULT_NETWORK);
-  const { accounts, key, addAccount, saveAccountData } = useAccount();
+  const { accounts, addAccount, saveAccountData } = useAccount();
+  const { masterKey: key } = useActiveAccount();
   // Loop through all wallets, get the highest ID, increment, and use that as the wallet index
-  const sortedWallets = [...accounts].sort((a, b) => a.id! < b.id! ? 1 : -1);
-  const highestId = sortedWallets[0].id || 0;
-  const [customDerivationPath, setCustomDerivationPath] = useState<CustomDerivationPathObject>({
-    coin_type: 505,
-    account: 0,
-    change: 0,
-    addressIndex: highestId + 1,
-  });
   const [error, setError] = useState<string[]>([]); // [accountNameError, walletPasswordError, genericError]
   const passwordMinLength = Number(PASSWORD_MIN_LENGTH)!;
-  
-  const toggleShowAdvanced = () => {
-    if (showAdvanced) {
-      setCustomDerivationPath({});
-      setShowAdvanced(false);
-      setNetwork(DEFAULT_NETWORK);
-    }
-    else setShowAdvanced(true);
-  }
-
-  const changeCustomDerivationPath = (target: keyof CustomDerivationPathObject, value: string) => {
-    const newCustomDerivationPath = {...customDerivationPath};
-    newCustomDerivationPath[target] = Number(value);
-    setCustomDerivationPath(newCustomDerivationPath);
-  };
-
-  const updateNetwork = (value: string) => {
-    setNetwork(value);
-    changeCustomDerivationPath('coin_type', (value === TESTNET_NETWORK) ? `${TESTNET_WALLET_COIN_TYPE}` : `${PROVENANCE_WALLET_COIN_TYPE}`);
-  }
 
   const handleCreateAccount = async () => {
     let newError = [];
@@ -120,34 +57,22 @@ export const DashboardAccountCreate:React.FC<Props> = ({ nextUrl }) => {
       const masterKey = decryptKey(key, walletPassword);
       if (!masterKey) newError[1] = 'Invalid password';
       else {
-        // Get the id to use
-        // If advanced is toggled, use the addressIndex in the HD path or else get the highest current account and go up one
-        const id = showAdvanced ? customDerivationPath.addressIndex : highestId + 1;
-        console.log('id :', id);
-        const prefix = network === MAINNET_NETWORK ? PROVENANCE_ADDRESS_PREFIX_MAINNET : PROVENANCE_ADDRESS_PREFIX_TESTNET;
-        console.log('prefix :', prefix);
-        const path = showAdvanced ?
-          derivationPath({ ...customDerivationPath, address_index: id }) :
-          derivationPath({ address_index: id });
-        console.log('path :', path);
         // Password was correct, create the account
-        const { address, publicKey } = createWalletFromMasterKey(masterKey, prefix, path);
-        const b64PublicKey = bytesToBase64(publicKey);
+        // TEMP: Need proper prefix and this file needs to use HD path setup
+        const { address, publicKey } = createWalletFromMasterKey(masterKey, 'pb', HDPath);
+        // const b64PublicKey = bytesToBase64(publicKey);
         // Save data to redux store and clear out tempAccount data
         const newAccountData = {
-          publicKey: b64PublicKey,
+          // publicKey: b64PublicKey,
           address,
           name,
-          network,
-          id,
+          network: 'mainnet',
         };
-        console.log('newAccountData :', newAccountData);
         // Check to make sure this account doesn't already exist
-        if (!accounts[id!]) {
+        if (!accounts.find(account => account.address === address)) {
           // Save data to redux and chrome storage
           // TODO: This should just be a single function to add into accounts and potentially change activeAccountId (or even key)
-          await addAccount(newAccountData);
-          await saveAccountData({ activeAccountId: id });
+          await saveAccountData({ activeAccountId: address });
         } else {
           // This account already exists, show generic error
           const newErrors = [...error];
@@ -161,8 +86,6 @@ export const DashboardAccountCreate:React.FC<Props> = ({ nextUrl }) => {
     // Update error(s)
     setError(newError);
   };
-
-  const { account, change, addressIndex, coin_type } = customDerivationPath;
 
   return (
     <Wrapper>
@@ -184,17 +107,8 @@ export const DashboardAccountCreate:React.FC<Props> = ({ nextUrl }) => {
         error={error[1]}
         type="password"
       />
-      <AdvancedTextButton onClick={toggleShowAdvanced}>Advanced Settings ({showAdvanced ? 'Enabled' : 'Disabled'})</AdvancedTextButton>
-        {showAdvanced && (
-          <AdvancedSection>
-            <AdvancedTitle>HD Derivation Path</AdvancedTitle>
-            <AdvancedInputArea>
-              m/44'/<Input type="number" id="coin" value={coin_type !== undefined ? coin_type : ''} onChange={(value) => changeCustomDerivationPath('account', value) } />'/<Input type="number" id="account" value={account !== undefined ? account : ''} onChange={(value) => changeCustomDerivationPath('account', value) } />'/<Input type="number" id="change" value={change !== undefined ? change : ''} onChange={(value) => changeCustomDerivationPath('change', value) } />/<Input type="number" id="addressIndex" value={addressIndex !== undefined ? addressIndex : ''} onChange={(value) => changeCustomDerivationPath('addressIndex', value) } />
-            </AdvancedInputArea>
-            <Select label="Network" options={[MAINNET_NETWORK, TESTNET_NETWORK]} value={network} onChange={updateNetwork} />
-          </AdvancedSection>
-        )}
       {error[3] && <Error>{error[3]}</Error>}
+      <AdvancedSettings setResults={(newHDPath) => {setHDPath(newHDPath)}} />
       <Button onClick={handleCreateAccount}>Create</Button>
     </Wrapper>
   );

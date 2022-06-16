@@ -39,6 +39,8 @@ export const GlobalStyles = createGlobalStyle<{
     max-height: ${MAX_HEIGHT};
     height: ${MAX_HEIGHT};
     width: ${MAX_WIDTH};
+    background: black;
+    overflow-y: scroll;
   }
 
   *, *:before, *:after {

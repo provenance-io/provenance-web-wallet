@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Input, Button, ButtonGroup } from 'Components';
 import { PASSWORD_MIN_LENGTH } from 'consts';
 import { decryptKey, createWalletFromMasterKey } from 'utils';
-import { useAccount, useSettings } from 'redux/hooks';
+import { useActiveAccount, useSettings } from 'redux/hooks';
 
 interface Props {
   handleApprove: () => void,
@@ -15,7 +15,7 @@ export const Authenticate:React.FC<Props> = ({ handleApprove, handleDecline, han
   const [walletPassword, setWalletPassword] = useState('');
   const [authenticated, setAuthenticated] = useState(false);
   const [passwordError, setPasswordError] = useState('');
-  const { key } = useAccount();
+  const { masterKey: key } = useActiveAccount();
   const { unlockDuration, saveSettingsData } = useSettings();
 
   const handleAuthAccount = async () => {

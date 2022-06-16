@@ -1,44 +1,50 @@
 # TODO
 ## To do shortlist
 
+### Current branch todos
+* Finish Add Account [ACTIVE]
+  - When this account tries to create an additional account, it must be lower in the HD path
+    - Other fields in the HD path will need to be grey'd out (non changable)
+* New Account flow needs custom "Process" amount since each flowType (add, create, recover) has a different amount of steps
+  - This process amount will be set in the routes
+* Fix buttons on dashboard
+* Create error message component (not alert)
+* Remove unused code and functions (mainly from chain.ts)
+
 ### Bugs
 * dApp request message sign and no popup is triggered from background.js
   - Doesn't always happen, hard to recreate
 
-### Wallet Functionality
-* Sign for transactions
+### Missing Core Functionality
+* Sign for transactions/send hash
 
-### Wallet Connect / dApps
+### Wallet Connect / dApp Enhancements
 * When connecting into a dApp, user should be able to select target account to connect (and set active)
 * Correctly form/create JWT when connecting with wallet connect (just dummy data right now)
 
+### Settings
+* Allow user to set timeout for auto-logout
+* Allow removing all wallets/clearing out account
+  - Require them to type ~"Remove all Data"
+
 ### General
-* In settings, allow user to set timeout for auto-logout
-* Success page (typically used after a Notification)
-  - After connecting to a dApp say "success" instead of just closing
+* General styling updates - lots of pages need a once over to match designs and asthetic
+* Create more typography components, try not to have any styled components by pulling out to shared versions
 * Auto check mnuemonic input fields as they are entered (make sure valid word)
-* Generic success page/message
-  - After creating an account or performing specific actions (vs just redirecting back to the landing page)
 * Instead of "Please Wait" messages, show a full page spinning loader (can later add additional text)
 * Allow pressing "enter" on an input to automatically submit (accessability)
+  - Will need additional accessability features (tab index, titles, etc)
 * Need testing built into app (all the flows: create, recovery, etc)
-* Clean up account creation, recovery, and addition function, all use the same code and are excessive.  Create more helper functions, especially for advanced options.
+* Ability to remove wallet from dashboard menu (only allowed if 2+ wallets exist)
 
 ### Accounts
 * Automatically switch API urls based on current active wallet.  TP will go to test urls, PB will go to prod urls
-* When creating the first account, the name will be for the Wallet.  Wallet => Seed
-* Split accounts by wallet name in dashboard menu
 * Allow importing new wallets and display in dashboard menu (under new wallet names)
-
-### App
-* Update/Finish transactions page
-* Update all settings, get them to function correctly
-* Ability to reset/remove all wallets (Are we sure we want this functionality?)
-* Ability so Send/Receive from the dashboard page
+  - Split accounts by wallet in dashboard menu
 
 ### Extra
 * Secret dev menu?
   - Log saved variables
   - Auto Faucet to add hash to tp address
 * Metrics/Logging
-  - Track errors, performance, etc.
+  - Anon track errors, performance, etc.

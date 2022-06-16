@@ -17,6 +17,8 @@ const Wrapper = styled.div<StyledProps>`
     position: fixed;
     bottom: 0;
     left: 0;
+    width:inherit;
+    z-index: 20;
   `}
   button {
     ${({ direction }) => direction === 'column' && `

@@ -1,12 +1,14 @@
 
 export type AccountLevel = 'root' | 'purpose' | 'coinType' | 'account' | 'change' | 'addressIndex';
+export type AccountNetwork = 'testnet' | 'mainnet';
+export type AccountPrefix = 'pb' | 'tp';
 
 export interface Account {
   name?: string,
   publicKey?: string,
   privateKey?: string,
   address?: string,
-  network?: 'testnet' | 'mainnet',
+  network?: AccountNetwork,
   accountLevel?: AccountLevel,
   masterKey?: string,
   hdPath?: string,
@@ -33,6 +35,10 @@ interface HDPathItem {
   hardened: boolean,
   display: string,
 }
+interface HDPathNetwork {
+  value: AccountNetwork,
+  prefix: AccountPrefix,
+}
 export interface HDPathData {
   accountLevel: AccountLevel,
   root?: HDPathItem,
@@ -41,4 +47,5 @@ export interface HDPathData {
   account?: HDPathItem,
   change?: HDPathItem,
   addressIndex?: HDPathItem,
+  network: HDPathNetwork,
 }

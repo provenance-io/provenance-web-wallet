@@ -11,7 +11,7 @@ import {
 import { ICON_NAMES, DEFAULT_HD_PATH } from 'consts';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
-import { useAccount, useSettings, useWalletConnect } from 'redux/hooks';
+import { useAccount, useActiveAccount, useSettings, useWalletConnect } from 'redux/hooks';
 
 const Typo = styled(BaseTypo)`
   margin-bottom: 36px;
@@ -31,6 +31,7 @@ export const NewAccountName = ({ previousUrl, nextUrl, flowType }: Props) => {
   const { updateTempAccount, accounts, resetAccountData } = useAccount();
   const { resetSettingsData } = useSettings();
   const { resetWalletConnectData } = useWalletConnect();
+  const { accountLevel: parentAccountLevel, name: parentAccountName, hdPath: parentHdPath } = useActiveAccount();
 
   // const accountType: 'wallet' | 'account' = flowType === 'create' ? 'wallet' : 'account';
   const accountType: 'wallet' | 'account' = flowType === 'create' ? 'account' : 'account';
@@ -50,6 +51,7 @@ export const NewAccountName = ({ previousUrl, nextUrl, flowType }: Props) => {
         await resetWalletConnectData();
         await resetAccountData();
       }
+      // We get the HDPath from 3 places: -AdvancedSettings, -DEFAULT_HD_PATH, -ParentAccountHdPath
       updateTempAccount({ name, hdPath: HDPath });
       // Move to next step
       navigate(nextUrl);
@@ -57,29 +59,49 @@ export const NewAccountName = ({ previousUrl, nextUrl, flowType }: Props) => {
     setError(newError);
   };
 
+  const renderAddressIndexError = () => (
+    <>
+      <Alert type="error" title="Error">
+        Unable to create additional account with account "{parentAccountName}". "{parentAccountName}" is an "addressIndex" level account.
+      </Alert>
+      <Button onClick={() => {navigate(previousUrl);}}>Back</Button>
+  </>
+  );
+  const renderRecoverClearWarning = () => (
+    <Alert type="warning" title="Warning">
+      Continuing will remove all accounts and keys from this wallet. They cannot be recovered without a seed phase.
+    </Alert>
+  );
+
   // TODO: If the user closes this, we need to clear out the temp account information
+
+  // If an 'addressIndex' is trying to add an account, don't let it -- not possible.
+  const createAccountDisabled = (flowType === 'add' && parentAccountLevel === 'addressIndex');
+  const recoverClearWallet = (flowType === 'recover' && !!accounts.length);
 
   return (
     <Content>
       <Header iconLeft={ICON_NAMES.CLOSE} progress={33} title={`Name Your ${accountType}`} backLocation={previousUrl} />
-      {flowType === 'recover' && !!accounts.length && (
-        <Alert type="warning" title="Warning">
-          Continuing will remove all accounts and keys from this wallet. They cannot be recovered without a seed phase.
-        </Alert>
+      {createAccountDisabled ? renderAddressIndexError() : (
+        <>
+          {recoverClearWallet && renderRecoverClearWarning()}
+          <Typo type="body">
+            Name this {accountType} to easily identify it while using the Provenance Blockchain Wallet.
+          </Typo>
+          {flowType === 'add' && <Typo type="headline2">This is flowtype 'ADD'</Typo>}
+          <Input
+            id={`${accountType}Name`}
+            label={`${accountType} Name`}
+            placeholder={`Enter ${accountType} name`}
+            value={name}
+            onChange={setName}
+            error={error}
+          />
+          <AdvancedSettings setResults={(newHDPath) => {setHDPath(newHDPath)}} parentHdPath={parentHdPath} />
+          <Button onClick={handleContinue}>Continue</Button>
+        </>
       )}
-      <Typo type="body">
-        Name this {accountType} to easily identify it while using the Provenance Blockchain Wallet.
-      </Typo>
-      <Input
-        id={`${accountType}Name`}
-        label={`${accountType} Name`}
-        placeholder={`Enter ${accountType} name`}
-        value={name}
-        onChange={setName}
-        error={error}
-      />
-      <AdvancedSettings setResults={(newHDPath) => {setHDPath(newHDPath)}} />
-      <Button onClick={handleContinue}>Continue</Button>
+      
     </Content>
   );
 };

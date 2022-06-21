@@ -4,6 +4,8 @@ import {
   PROVENANCE_ADDRESS_PREFIX_TESTNET,
   MNEMONIC_WORD_COUNT,
   TESTNET_WALLET_COIN_TYPE,
+  TESTNET_NETWORK,
+  MAINNET_NETWORK,
 } from 'consts';
 // CHAIN HELPER FUNCTIONS
 import {
@@ -19,7 +21,7 @@ import { createHash } from 'crypto';
 // TYPESCRIPT TYPES
 import type { Bech32String, Bytes } from '@tendermint/types';
 import type { Wallet, KeyPair } from '@tendermint/sig';
-import { Account, HDPathData, AccountLevel } from 'types';
+import { Account, HDPathData, AccountLevel, AccountPrefix } from 'types';
 
 export const validateMnemonic = bip39vm;
 
@@ -120,7 +122,11 @@ export const createWallet = (privateKeyString: string): Wallet => {
 
 export const getHDPathData = (hdPath?: string): HDPathData => {
   // If there is no hdPath, or just 'm' is passed in return root account HD path data
-  if (!hdPath || hdPath === 'm') return { accountLevel: 'root', root: { value: 'm', display: 'm', hardened: false }};
+  if (!hdPath || hdPath === 'm') return {
+    accountLevel: 'root',
+    root: { value: 'm', display: 'm', hardened: false },
+    network: { prefix: PROVENANCE_ADDRESS_PREFIX_MAINNET, value: MAINNET_NETWORK}
+  };
   // Full path example: "m/44'/1'/0'/0'/0'"
   // Path values: root/purpose/coin_type/account/change/address_index
   const pathValues = ['root', 'purpose', 'coinType', 'account', 'change', 'addressIndex'];
@@ -138,40 +144,43 @@ export const getHDPathData = (hdPath?: string): HDPathData => {
     }
   })
   finalData.accountLevel = pathValues[splitPath.length -1] as AccountLevel;
+  // Default prefix is mainnet
+  let prefix = PROVENANCE_ADDRESS_PREFIX_MAINNET as AccountPrefix;
+  // Check for testnet prefix
+  if (finalData.coinType?.value && finalData.coinType.value === TESTNET_WALLET_COIN_TYPE) prefix = PROVENANCE_ADDRESS_PREFIX_TESTNET as AccountPrefix;
+  // Determine the network based on the prefix
+  const network = prefix === PROVENANCE_ADDRESS_PREFIX_TESTNET ? TESTNET_NETWORK : MAINNET_NETWORK;
+  finalData.network = {
+    prefix,
+    value: network,
+  }
   return finalData;
 }
 
-export const createChildAccount = (parentAccount:Account, childPath?: string):Account => {
+export const createChildAccount = (parentMasterKeyB58: string, parentHdPath: string, childHdPath?: string):Account => {
   // Pull data to use out of the parent account
-  const { masterKey: parentMasterKeyB58, hdPath: parentPath } = parentAccount;
   // MasterKey must exist to create child account
   if (!parentMasterKeyB58) throw new Error ('Parent account missing master key');
   // Convert parentMasterKey from B58STRING to BIP32INTERFACE
   const parentMasterKey = bip32FromB58(parentMasterKeyB58);
   // Determine if the requested path involves the root level
-  const isRoot = !childPath || childPath.includes('m');
-  const noDerive = !childPath || childPath === 'm';
+  const isRoot = !childHdPath || childHdPath.includes('m');
+  const noDerive = !childHdPath || childHdPath === 'm';
   // We can't use a path of 'm', must derive from at least 'purpose'
   // When we have a path of '' or 'm', just use the parentMasterKey (nothing to derive)
-  const childMasterKey = noDerive ? parentMasterKey : parentMasterKey.derivePath(childPath!);
+  const childMasterKey = noDerive ? parentMasterKey : parentMasterKey.derivePath(childHdPath!);
   // Pull out private/public keys from childMasterKey
   const privateKey = childMasterKey.privateKey;
   if (!privateKey) throw new Error('Could not derive private key');
   const publicKey = childMasterKey.publicKey;
   if (!publicKey) throw new Error('Could not derive public key');
   // Get HDPath data | If this includes 'm', it's a root account and we don't combine
-  const fullPath = isRoot ? `${childPath}` : `${parentPath}/${childPath}`;
-  const { coinType, accountLevel } = getHDPathData(fullPath);
-  // Default prefix is mainnet
-  let prefix = PROVENANCE_ADDRESS_PREFIX_MAINNET;
-  // Check for testnet prefix
-  if (coinType?.value && coinType.value === TESTNET_WALLET_COIN_TYPE) prefix = PROVENANCE_ADDRESS_PREFIX_TESTNET;
-  // Determine the network based on the prefix
-  const network = prefix === PROVENANCE_ADDRESS_PREFIX_TESTNET ? 'testnet' : 'mainnet';
+  const fullPath = isRoot ? `${childHdPath}` : `${parentHdPath}/${childHdPath}`;
+  const { accountLevel, network } = getHDPathData(fullPath);
   // Convert private/public keys to B64strings
   const privateKeyB64 = bytesToBase64(bufferToBytes(privateKey));
   const publicKeyB64 = bytesToBase64(bufferToBytes(publicKey));
-  const address = createAddress(bufferToBytes(publicKey), prefix);
+  const address = createAddress(bufferToBytes(publicKey), network.prefix);
   // Convert childMasterKey to B58 for storage
   const childMasterKeyB58 = childMasterKey.toBase58();
 
@@ -182,13 +191,14 @@ export const createChildAccount = (parentAccount:Account, childPath?: string):Ac
     masterKey: childMasterKeyB58,
     accountLevel,
     hdPath: fullPath,
-    network,
+    network: network.value,
   };
 };
 
-export const createRootAccount = (mnemonic: string, rootPath?: string):Account => {
+export const createRootAccount = (mnemonic: string, childPath?: string):Account => {
   const rootMasterKey = createMasterKeyFromMnemonic(mnemonic);
-  const rootAccount = { masterKey: rootMasterKey.toBase58(), hdPath: 'm' };
+  const rootMasterKeyB64 = rootMasterKey.toBase58();
+  const rootHdPath = 'm';
 
-  return createChildAccount(rootAccount, rootPath);
+  return createChildAccount(rootMasterKeyB64, rootHdPath, childPath);
 };

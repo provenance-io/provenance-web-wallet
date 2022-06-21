@@ -68,6 +68,7 @@ const hdPathDataAddressIndex = {
   account: { display: "0'", value: 0, hardened: true },
   change: { display: "0'", value: 0, hardened: true },
   addressIndex: { display: "0'", value: 0, hardened: true },
+  network: { value: 'testnet', prefix: 'tp' },
 };
 const hdPathDataChange = {
   accountLevel: 'change',
@@ -76,6 +77,7 @@ const hdPathDataChange = {
   coinType: { display: "1'", value: 1, hardened: true },
   account: { display: "0'", value: 0, hardened: true },
   change: { display: "0'", value: 0, hardened: true },
+  network: { value: 'testnet', prefix: 'tp' },
 };
 const hdPathDataAccount = {
   accountLevel: 'account',
@@ -83,21 +85,25 @@ const hdPathDataAccount = {
   purpose: { display: "44'", value: 44, hardened: true },
   coinType: { display: "1'", value: 1, hardened: true },
   account: { display: "0'", value: 0, hardened: true },
+  network: { value: 'testnet', prefix: 'tp' },
 };
 const hdPathDataCoinType = {
   accountLevel: 'coinType',
   root: { display: 'm', value: 'm', hardened: false },
   purpose: { display: "44'", value: 44, hardened: true },
   coinType: { display: "1'", value: 1, hardened: true },
+  network: { value: 'testnet', prefix: 'tp' },
 };
 const hdPathDataPurpose = {
   accountLevel: 'purpose',
   root: { display: 'm', value: 'm', hardened: false },
   purpose: { display: "44'", value: 44, hardened: true },
+  network: { value: 'mainnet', prefix: 'pb' },
 };
 const hdPathDataRoot = {
   accountLevel: 'root',
   root: { display: 'm', value: 'm', hardened: false },
+  network: { value: 'mainnet', prefix: 'pb' },
 };
 export const allHDPathData = {
   root: hdPathDataRoot,

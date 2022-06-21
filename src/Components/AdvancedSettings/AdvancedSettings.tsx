@@ -10,7 +10,8 @@ import {
 import { Pill as PillBase } from 'Components/Pill';
 import { Checkbox as BaseCheckbox } from 'Components/Checkbox';
 import { COLORS } from 'theme';
-import { AccountLevel } from 'types';
+import { AccountLevel, HDPathData } from 'types';
+import { getHDPathData } from 'utils';
 
 interface StyledProps {
   disabled?: boolean,
@@ -109,6 +110,7 @@ interface HDPathItem {
   display?: string,
   value?: string | null,
   hardened?: boolean,
+  disabled?: boolean,
 }
 type HDPathLevels = 'purpose' | 'coinType' | 'account' | 'change' | 'addressIndex';
 type HDPathArrayType = HDPathLevels[];
@@ -122,25 +124,83 @@ interface HDPathShape {
 type NetworkType = typeof TESTNET_NETWORK | typeof MAINNET_NETWORK;
 interface Props {
   setResults: (hdPath: string) => void,
+  parentHdPath?: string,
 }
 
-export const AdvancedSettings:React.FC<Props> = ({ setResults }) => {
+export const AdvancedSettings:React.FC<Props> = ({ setResults, parentHdPath }) => {
   const [showAdvanced, setShowAdvanced] = useState(false);
-  const getDefaultHDPath = (network: NetworkType = DEFAULT_NETWORK): HDPathShape => ({
-    purpose: { display: 'Purpose', value: '44', hardened: true },
-    coinType: { display: 'Coin Type', value: `${network === MAINNET_NETWORK ? PROVENANCE_WALLET_COIN_TYPE : TESTNET_WALLET_COIN_TYPE}`, hardened: true },
-    account: { display: 'Account', value: '0', hardened: true },
-    change: { display: 'Change', value: null, hardened: false },
-    addressIndex: { display: 'Address Index', value: null, hardened: false },
-  })
+  // Get the parent HDPath values to prefill/disable certain nodes
+  const getDefaultHDPath = (network: NetworkType = DEFAULT_NETWORK): HDPathShape => {
+    // If a parentHdPath is provided, we need to use it and limit what the user can edit/change
+    const parentHdData = parentHdPath ? getHDPathData(parentHdPath) : {} as HDPathData;
+    const defaultHdData = {
+      purpose: { value: '44', hardened: true, disabled: false },
+      coinType: { value: network === MAINNET_NETWORK ? PROVENANCE_WALLET_COIN_TYPE : TESTNET_WALLET_COIN_TYPE, hardened: true, disabled: false },
+      account: { value: '0', hardened: true, disabled: false },
+      change: { value: null, hardened: false, disabled: false },
+      addressIndex: { value: null, hardened: false, disabled: false },
+    };
+    // Use parentHdPath when available, else use the default path
+    const finalHdData = {
+      purpose: parentHdData?.purpose || defaultHdData.purpose,
+      coinType: parentHdData?.coinType || defaultHdData.coinType,
+      account: parentHdData?.account || defaultHdData.account,
+      change: parentHdData?.change || defaultHdData.change,
+      addressIndex: parentHdData?.addressIndex || defaultHdData.addressIndex,
+    }
+    console.log('parentHdData :', parentHdData);
+    console.log('defaultHdData :', defaultHdData);
+    console.log('finalHdData :', finalHdData);
+    return({
+      purpose: {
+        display: 'Purpose',
+        value: finalHdData.purpose.value ? `${finalHdData.purpose.value}` : null,
+        hardened: finalHdData.purpose.hardened,
+        disabled: !!finalHdData?.purpose.value,
+      },
+      coinType: {
+        display: 'Coin Type',
+        value: finalHdData.coinType.value ? `${finalHdData.coinType.value}` : null,
+        hardened: finalHdData.coinType.hardened,
+        disabled: !!finalHdData?.coinType.value,
+      },
+      account: {
+        display: 'Account',
+        value: finalHdData.account.value ? `${finalHdData.account.value}` : null,
+        hardened: finalHdData.account.hardened,
+        disabled: !!finalHdData?.account.value,
+      },
+      change: {
+        display: 'Change',
+        value: finalHdData.change.value ? `${finalHdData.change.value}` : null,
+        hardened: finalHdData.change.hardened,
+        disabled: !!finalHdData?.change.value,
+      },
+      addressIndex: {
+        display: 'Address Index',
+        value: finalHdData.addressIndex.value ? `${finalHdData.addressIndex.value}` : null,
+        hardened: finalHdData.addressIndex.hardened,
+      },
+    })
+  }
+  // const getDefaultHDPath = (network: NetworkType = DEFAULT_NETWORK): HDPathShape => ({
+  //   purpose: { display: 'Purpose', value: '44', hardened: true },
+  //   coinType: { display: 'Coin Type', value: `${network === MAINNET_NETWORK ? PROVENANCE_WALLET_COIN_TYPE : TESTNET_WALLET_COIN_TYPE}`, hardened: true },
+  //   account: { display: 'Account', value: '0', hardened: true },
+  //   change: { display: 'Change', value: null, hardened: false },
+  //   addressIndex: { display: 'Address Index', value: null, hardened: false },
+  // })
   const buildFullHDPath = (newHDPath: HDPathShape) => {
     const { purpose, account, change, coinType, addressIndex } = newHDPath;
+    console.log('buildFullHdPath() | newHDPath: ', newHDPath);
     const ifExists = (item: HDPathItem) => item.value !== null ? `/${item.value}${item.hardened ? "'" : ''}`:'';
 
     return `m${ifExists(purpose)}${ifExists(coinType)}${ifExists(account)}${ifExists(change)}${ifExists(addressIndex)}`;
   };
   const [HDPath, setHDPath] = useState<HDPathShape>(getDefaultHDPath(DEFAULT_NETWORK));
+  console.log('HDPath: ', HDPath);
   const [finalHDPath, setFinalHDPath] = useState(buildFullHDPath(HDPath));
+  console.log('finalHDPath :', finalHDPath);
   const allHDTypeRows:HDPathArrayType = ['purpose', 'coinType', 'account', 'change', 'addressIndex'];
   const activeNetwork = 
     HDPath.coinType.value === `${PROVENANCE_WALLET_COIN_TYPE}` ? MAINNET_NETWORK :
@@ -206,21 +266,19 @@ export const AdvancedSettings:React.FC<Props> = ({ setResults }) => {
   };
 
   const buildHDTypeRow = (type: HDPathLevels, index: number): JSX.Element => {
-    const { display, value, hardened } = HDPath[type];
-    let isDisabled = false;
+    const { display, value, hardened, disabled } = HDPath[type];
+    const previousHDType: AccountLevel = allHDTypeRows[index - 1];
+    const { value: previousValue } = HDPath[previousHDType];
     let title = display;
-    // Skip checking first value 'purpose'
-    if (index > 0) {
-      // Previous row value (check to see if this row is disabled - previous row must have value)
-      const previousHDType: AccountLevel = allHDTypeRows[index - 1];
-      const { value: previousValue, display: previousDisplay } = HDPath[previousHDType];
-      isDisabled = previousValue === null;
-      if (isDisabled) title = `${previousDisplay} is required`;
-    }
+    // Either field is flat out disabled, or previous value is null (other than purpose)
+    const isDisabled = disabled || (index > 0 && previousValue === null);
     const useValue = value === null ? '' : value;
+    console.log('value :', value);
+    console.log('previousValue :', previousValue);
+    console.log('useValue :', useValue);
     
     return (
-      <LineInput key={type} disabled={isDisabled} title={title}>
+      <LineInput key={type} disabled={isDisabled} title={isDisabled ? 'Field disabled' : title}>
         <LineInputTitle>{display}</LineInputTitle>
         <ValueInput
           value={useValue}

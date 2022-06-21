@@ -42,14 +42,14 @@ describe('Using each account level b64 masterKey, create child account', () => {
     if (accountLevel !== 'addressIndex') {
       test(`${accountLevel} level parent account creates addressIndex level child account`, () => {
         // Get known values from the addressIndexLevelData
-        const targetAccount = allAccountLevels[accountLevel]
+        const {hdPathNewAccount: childHdPath, hdPath: parentHdPath, masterKey: parentMasterKey} = allAccountLevels[accountLevel]
         const {
           address: knownAddress,
           publicKey: knownPublicKey,
           privateKey: knownPrivateKey,
           masterKey: knownMasterKey,
         } = allAccountLevels.addressIndex;
-        const { address, publicKey, privateKey, masterKey } = createChildAccount(targetAccount, targetAccount.hdPathNewAccount);
+        const { address, publicKey, privateKey, masterKey } = createChildAccount(parentMasterKey, parentHdPath, childHdPath);
         // Expect all the values to look like the addressIndex account (which is "m/44'/1'/0'/0'/0'")
         expect(address).toBe(knownAddress);
         expect(privateKey).toBe(knownPrivateKey);

@@ -2,7 +2,7 @@ import styled from 'styled-components';
 import { useState } from 'react';
 import { CopyValue, Button, Header, Sprite } from 'Components';
 import { useNavigate } from 'react-router-dom';
-import { DASHBOARD_URL, ICON_NAMES } from 'consts';
+import { DASHBOARD_URL, ICON_NAMES, NEW_ACCOUNT_ADD_URL } from 'consts';
 import { useAccount } from 'redux/hooks';
 
 const WalletItem = styled.div<{active?: boolean}>`
@@ -98,7 +98,7 @@ export const DashboardMenu:React.FC = () => {
           <WalletAction onClick={() => setAccountMenuTargetId('')}>Close</WalletAction>
         </WalletActionsPopup>
       )}
-      <Button onClick={() => navigate('../create')} >Create Account</Button>
+      <Button onClick={() => navigate(NEW_ACCOUNT_ADD_URL)} >Create Account</Button>
     </>
   );
 };

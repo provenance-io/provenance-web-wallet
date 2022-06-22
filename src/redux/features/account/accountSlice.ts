@@ -7,7 +7,9 @@ import { getSavedData, addSavedData, removeSavedData } from 'utils';
  * TYPES
  */
 interface TempAccount extends Account {
-  mnemonic?: string
+  mnemonic?: string,
+  parentMasterKey?: string,
+  parentHdPath?: string,
 }
 interface ChromeInitialState {
   activeAccountId?: string;

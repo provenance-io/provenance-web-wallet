@@ -3,7 +3,7 @@ import { Button, Header, Input, AdvancedSettings } from 'Components';
 import {
   ICON_NAMES,
   PASSWORD_MIN_LENGTH,
-  DEFAULT_HD_PATH,
+  DEFAULT_MAINNET_HD_PATH,
 } from 'consts';
 import { useState } from 'react';
 import {
@@ -34,7 +34,7 @@ interface Props {
 export const DashboardAccountCreate:React.FC<Props> = ({ nextUrl }) => {  
   const navigate = useNavigate();
   const [name, setName] = useState('');
-  const [HDPath, setHDPath] = useState(DEFAULT_HD_PATH);
+  const [HDPath, setHDPath] = useState(DEFAULT_MAINNET_HD_PATH);
   const [walletPassword, setWalletPassword] = useState('');
   const { accounts, addAccount, saveAccountData } = useAccount();
   const { masterKey: key } = useActiveAccount();
@@ -108,7 +108,7 @@ export const DashboardAccountCreate:React.FC<Props> = ({ nextUrl }) => {
         type="password"
       />
       {error[3] && <Error>{error[3]}</Error>}
-      <AdvancedSettings setResults={(newHDPath) => {setHDPath(newHDPath)}} />
+      {/* <AdvancedSettings setResults={(newHDPath) => {setHDPath(newHDPath)}} /> */}
       <Button onClick={handleCreateAccount}>Create</Button>
     </Wrapper>
   );

@@ -30,7 +30,7 @@ export interface CustomDerivationPathObject {
   coin_type?: number,
 }
 
-interface HDPathItem {
+export interface HDPathItem {
   value: number | string,
   hardened: boolean,
   display: string,

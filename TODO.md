@@ -2,16 +2,15 @@
 ## To do shortlist
 
 ### Current branch todos
-* Finish Add Account [ACTIVE] (Last left off: AdvancedSettings.tsx)
-  - Is creating an account allowed?
-    - accountLevel is 'accountAddress'
-      - Let user know they cannot make a new account from this account and send them back to the dashboard menu
-    - accountLevel is not 'accountAddress'
-      - Default HDPath:
-        - Take existing HDPath of active account, run 'createChild' chain function
+* Finish Add Account [IN_PROGRESS]
+  - Default flow (Advanced Settings Disabled) [IN_PROGRESS]
+    - If default settings used, create child hd path going all the way down to account index
+      - Prefill change as '0'
+      - Need to create account nesting since this is going to get messy once a user wants to create multiple accounts from a parent account
+        - Checking to see if address index values exist already
+    - Buildout new account from child hd path
+      - Take existing HDPath of active account, run 'createChild' chain function
         - Continue through standard flow
-      - Custom HDPath
-        - Current account HDPath fields grey'd out (non changable)
 * New Account flow needs custom "Process" amount since each flowType (add, create, recover) has a different amount of steps
   - This process amount will be set in the routes
   - Process lives in the Header component

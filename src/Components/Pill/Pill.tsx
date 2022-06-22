@@ -3,6 +3,7 @@ import { COLORS } from 'theme';
 
 interface StyledProps {
   active?: boolean,
+  disabled?: boolean,
 };
 
 const PillContainer = styled.div`
@@ -25,6 +26,10 @@ const PillHalf = styled.div<StyledProps>`
     margin-left: 1px;
     border-radius: 0 5px 5px 0;
   }
+  ${({ disabled }) => disabled && `
+    filter: saturate(0);
+    cursor: not-allowed;
+  `}
 `;
 interface HalfProps {
   text: string,
@@ -38,12 +43,21 @@ interface Props {
     left: HalfProps,
     right: HalfProps,
   }
+  disabled?: boolean,
 }
 
-export const Pill:React.FC<Props> = ({ className, data }) => {
+export const Pill:React.FC<Props> = ({ className, data, disabled }) => {
   
   const buildHalf = (side: 'left' | 'right') => (
-    <PillHalf key={side} active={data[side].active} title={data[side].title} onClick={data[side].onClick}>{data[side].text}</PillHalf>
+    <PillHalf
+      key={side}
+      active={data[side].active}
+      title={data[side].title}
+      onClick={disabled ? () => {} : data[side].onClick}
+      disabled={disabled}
+    >
+      {data[side].text}
+    </PillHalf>
   );
   const buildPills = () => [buildHalf('left'), buildHalf('right')];
 

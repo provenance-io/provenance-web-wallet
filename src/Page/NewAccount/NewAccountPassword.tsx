@@ -16,7 +16,10 @@ import { useAccount, useSettings } from 'redux/hooks';
 import {
   encryptKey,
   createRootAccount,
+  createChildAccount,
+  decryptKey,
 } from 'utils';
+import { Account } from 'types';
 
 const Error = styled.div`
   color: #ED6E74;
@@ -64,23 +67,27 @@ export const NewAccountPassword = ({ nextUrl, previousUrl, flowType }: Props) =>
     if (!password || password.length < passwordMinLength) latestErrors[0] = `Password must be a minimum of ${passwordMinLength} characters.`;
     // If there are no errors, continue
     if (!latestErrors.length) {
-      // Create main root account based on the HD path
-      const {
-        masterKey: rootMasterKey,
-        address,
-        publicKey,
-        network,
-        accountLevel,
-      } = createRootAccount(tempAccount!.mnemonic!, tempAccount!.hdPath!);
-      const masterKey = encryptKey(rootMasterKey!, password);
+      let fullNewAccountData = {} as Account;
+      // Are we creating a new account or adding an account to a parent? (check for tempaccount parentMasterKey & parentHdPath)
+      if (!!tempAccount?.parentMasterKey && !!tempAccount?.parentHdPath) {
+        // Take the password entered and decode the parent masterKey for use
+        const decodedParentMasterKey = decryptKey(tempAccount.parentMasterKey, password);
+        fullNewAccountData = createChildAccount(decodedParentMasterKey, tempAccount.parentHdPath, tempAccount.hdPath);
+      } else {
+        // Create main root account based on the HD path
+        fullNewAccountData = createRootAccount(tempAccount!.mnemonic!, tempAccount!.hdPath!);
+      }
+      const { masterKey, publicKey, address, network, hdPath, accountLevel } = fullNewAccountData;
+      const encryptedMasterKey = encryptKey(masterKey!, password);
       // Save data to redux store and clear out tempAccount data
       const newAccountData = {
         publicKey,
         address,
         name: tempAccount!.name,
-        network: network,
-        masterKey,
+        network,
+        masterKey: encryptedMasterKey,
         accountLevel,
+        hdPath,
       };
       // -------------------------------------------------------
       // Save new account data into browser / redux storage
@@ -97,7 +104,9 @@ export const NewAccountPassword = ({ nextUrl, previousUrl, flowType }: Props) =>
     <Content>
       <Header iconLeft={ICON_NAMES.CLOSE} progress={80} title="Wallet Password" backLocation={previousUrl} />
       <Typo type='body'>
-        Enter a wallet password. This password will be used for permissions, authentication, and unlocking. This password is only stored locally.
+        {flowType === 'add' ?
+        'Current wallet password. Your password is required to add additional accounts.' :
+        'Enter a wallet password. This password will be used for permissions, authentication, and unlocking. This password is only stored locally.'}
       </Typo>
 
       <Input

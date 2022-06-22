@@ -4,6 +4,10 @@
   "private": true,
   "license": "Apache-2.0",
   "homepage": "/",
+  "engines" : { 
+    "npm" : ">=6.0.0",
+    "node" : ">=16.0.0"
+  },
   "dependencies": {
     "@reduxjs/toolkit": "^1.7.2",
     "@tendermint/belt": "0.3.0",
@@ -79,8 +83,7 @@
     "build:devTools": "env-cmd -e default,staging react-scripts build && npm run reduxDev",
     "build:protos": "./scripts/build_protos.sh",
     "reduxDev": "redux-devtools",
-    "test": "env-cmd -e e2e react-scripts test --watch --verbose",
-    "eject": "react-scripts eject"
+    "test": "env-cmd -e e2e react-scripts test --watch --verbose"
   },
   "eslintConfig": {
     "extends": [

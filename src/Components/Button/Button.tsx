@@ -111,11 +111,12 @@ export type Props = {
   onClick?: (event:React.MouseEvent) => void;
   variant?: 'default' | 'primary' | 'secondary' | 'transparent';
   layout?: 'default' | 'float';
-  disabled?: boolean
+  disabled?: boolean,
+  title?: string,
 };
 
-export const Button = ({ children, variant = 'primary', layout = 'float', onClick, disabled = false, ...rest }: Props) => (
-  <ButtonWrapper variant={variant} layout={layout}>
+export const Button = ({ title, children, variant = 'primary', layout = 'float', onClick, disabled = false, ...rest }: Props) => (
+  <ButtonWrapper variant={variant} layout={layout} title={title}>
     <StyledButton variant={variant} layout={layout} onClick={onClick} {...rest} disabled={disabled} >
       {children}
     </StyledButton>

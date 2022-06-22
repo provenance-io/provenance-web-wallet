@@ -195,6 +195,9 @@ export const createChildAccount = (parentMasterKeyB58: string, parentHdPath: str
   };
 };
 
+// TODO: Change these function to be more simple
+// Something like: 'createAccountFromMnemonic' and 'createChildAccountFromParentAccount'
+// Needs to describe what it's doing in the name a bit better.
 export const createRootAccount = (mnemonic: string, childPath?: string):Account => {
   const rootMasterKey = createMasterKeyFromMnemonic(mnemonic);
   const rootMasterKeyB64 = rootMasterKey.toBase58();

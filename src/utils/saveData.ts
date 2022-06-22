@@ -1,4 +1,3 @@
-import { LOCAL_SAVE_NAME } from 'consts';
 import {
   AccountStorage,
   Settings,
@@ -19,7 +18,7 @@ type ChromeStorageKeys = string | string[];
 // -------------------------------------------------------------
 // Session/Local Storage (used for 3rd party walletconnect)
 // -------------------------------------------------------------
-export const getStorageData = (key?: StorageItemKey, savedName = LOCAL_SAVE_NAME!) => {
+export const getStorageData = (savedName: string, key?: StorageItemKey) => {
   const windowData = window.localStorage;
   // Look for the item in the current localStorage, if found, add to results
   const rawData = windowData.getItem(savedName) || '{}';

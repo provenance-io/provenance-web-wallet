@@ -8,13 +8,24 @@ import {
   AdvancedSettings,
   Alert,
 } from 'Components';
-import { ICON_NAMES, DEFAULT_HD_PATH } from 'consts';
+import { ICON_NAMES, DEFAULT_MAINNET_HD_PATH } from 'consts';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import { useAccount, useActiveAccount, useSettings, useWalletConnect } from 'redux/hooks';
 
+interface StyledProps {
+  enabled?: boolean,
+}
+
 const Typo = styled(BaseTypo)`
   margin-bottom: 36px;
+`;
+const AdvancedTextButton = styled.div<StyledProps>`
+  color: ${({ enabled }) => enabled ? '#357EFD' : '#AAAAAA' };
+  font-weight: bold;
+  margin: 20px 0;
+  cursor: pointer;
+  user-select: none;
 `;
 
 interface Props {
@@ -26,15 +37,20 @@ interface Props {
 export const NewAccountName = ({ previousUrl, nextUrl, flowType }: Props) => {
   const [name, setName] = useState('');
   const [error, setError] = useState('');
-  const [HDPath, setHDPath] = useState(DEFAULT_HD_PATH);
+  const [hdPath, setHdPath] = useState(DEFAULT_MAINNET_HD_PATH);
+  const [continueDisabled, setContinueDisabled] = useState(false);
+  const [showAdvanced, setShowAdvanced] = useState(false);
   const navigate = useNavigate();
   const { updateTempAccount, accounts, resetAccountData } = useAccount();
   const { resetSettingsData } = useSettings();
   const { resetWalletConnectData } = useWalletConnect();
-  const { accountLevel: parentAccountLevel, name: parentAccountName, hdPath: parentHdPath } = useActiveAccount();
-
+  const { accountLevel: parentAccountLevel, name: parentAccountName, hdPath: parentHdPath, masterKey: parentMasterKey } = useActiveAccount();
+  // Shorthand flowtypes
+  const flowTypeAdd = flowType === 'add';
+  const flowTypeRecover = flowType === 'recover';
+  const flowTypeCreate = flowType === 'create';
   // const accountType: 'wallet' | 'account' = flowType === 'create' ? 'wallet' : 'account';
-  const accountType: 'wallet' | 'account' = flowType === 'create' ? 'account' : 'account';
+  const accountType: 'wallet' | 'account' = flowTypeCreate ? 'account' : 'account';
 
   const handleContinue = async () => {
     const validLength = name.length > 2 && name.length < 16;
@@ -45,14 +61,19 @@ export const NewAccountName = ({ previousUrl, nextUrl, flowType }: Props) => {
     if (!name) newError = `Please enter ${accountType === 'account' ? 'an account' : 'a wallet'} name.`;
     if (!newError) {
       // If we are in the recovery page, nuke all existing data
-      if (flowType === 'recover') {
+      if (flowTypeRecover) {
         // Reset all data in chrome storage and redux store
         await resetSettingsData();
         await resetWalletConnectData();
         await resetAccountData();
       }
       // We get the HDPath from 3 places: -AdvancedSettings, -DEFAULT_HD_PATH, -ParentAccountHdPath
-      updateTempAccount({ name, hdPath: HDPath });
+      updateTempAccount({
+        name,
+        hdPath,
+        ...(parentHdPath && { parentHdPath }),
+        ...(parentMasterKey && { parentMasterKey })
+      });
       // Move to next step
       navigate(nextUrl);
     }
@@ -73,11 +94,24 @@ export const NewAccountName = ({ previousUrl, nextUrl, flowType }: Props) => {
     </Alert>
   );
 
+  const toggleShowAdvanced = () => {
+    if (showAdvanced) {
+      // Restore path to default
+      setHdPath(DEFAULT_MAINNET_HD_PATH);
+      // Reset continue button status
+      setContinueDisabled(false);
+      // Close menu
+      setShowAdvanced(false);
+    }
+    // Open the advanced menu
+    else setShowAdvanced(true);
+  }
+
   // TODO: If the user closes this, we need to clear out the temp account information
 
   // If an 'addressIndex' is trying to add an account, don't let it -- not possible.
-  const createAccountDisabled = (flowType === 'add' && parentAccountLevel === 'addressIndex');
-  const recoverClearWallet = (flowType === 'recover' && !!accounts.length);
+  const createAccountDisabled = (flowTypeAdd && parentAccountLevel === 'addressIndex');
+  const recoverClearWallet = (flowTypeRecover && !!accounts.length);
 
   return (
     <Content>
@@ -88,7 +122,6 @@ export const NewAccountName = ({ previousUrl, nextUrl, flowType }: Props) => {
           <Typo type="body">
             Name this {accountType} to easily identify it while using the Provenance Blockchain Wallet.
           </Typo>
-          {flowType === 'add' && <Typo type="headline2">This is flowtype 'ADD'</Typo>}
           <Input
             id={`${accountType}Name`}
             label={`${accountType} Name`}
@@ -97,11 +130,16 @@ export const NewAccountName = ({ previousUrl, nextUrl, flowType }: Props) => {
             onChange={setName}
             error={error}
           />
-          <AdvancedSettings setResults={(newHDPath) => {setHDPath(newHDPath)}} parentHdPath={parentHdPath} />
-          <Button onClick={handleContinue}>Continue</Button>
+          <AdvancedTextButton enabled={showAdvanced} onClick={toggleShowAdvanced}>Advanced Settings ({showAdvanced ? 'Enabled' : 'Disabled'})</AdvancedTextButton>
+          {showAdvanced && <AdvancedSettings
+            setResults={(newHdPath) => {setHdPath(newHdPath)}}
+            parentHdPath={flowTypeAdd ? parentHdPath : undefined}
+            setContinueDisabled={setContinueDisabled}
+          />
+          }
+          <Button onClick={handleContinue} disabled={continueDisabled} title={`${continueDisabled ? 'Required HD Path value missing' : ''}`}>Continue</Button>
         </>
       )}
-      
     </Content>
   );
 };

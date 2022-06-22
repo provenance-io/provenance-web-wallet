@@ -91,7 +91,7 @@ export const pullInitialWCData = createAsyncThunk(PULL_INITIAL_WCCONNECTION_DATA
     connectionEXP = initialState.connectionEXP,
   } = await getSavedData('walletconnect') || {};
   // Local storage
-  const session = await getStorageData(undefined, 'walletconnect');
+  const session = await getStorageData('walletconnect');
   // After attemting to pull chrome saved data, populate any potentially missing chrome storage values
   await addSavedData({
     walletconnect: {

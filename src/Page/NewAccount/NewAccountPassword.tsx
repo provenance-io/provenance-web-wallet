@@ -22,11 +22,6 @@ import {
 } from 'utils';
 import { Account } from 'types';
 
-const Error = styled.div`
-  color: #ED6E74;
-  margin-top: 20px;
-  font-size: 1.3rem;
-`;
 const Input = styled(InputBase)`
   margin-bottom: 30px;
 `;
@@ -131,7 +126,7 @@ export const NewAccountPassword = ({ nextUrl, previousUrl, flowType }: Props) =>
         />
       )}
       
-      {errors[3] && <Error>{errors[3]}</Error>}
+      {errors[3] && <Typo type="error" marginTop="20px">{errors[3]}</Typo>}
       <BottomFloat>
         <Button onClick={handleContinue}>Continue</Button>
       </BottomFloat>

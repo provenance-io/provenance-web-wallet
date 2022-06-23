@@ -5,10 +5,8 @@
 * New Account flow needs custom "Process" amount since each flowType (add, create, recover) has a different amount of steps
   - This process amount will be set in the routes
   - Process lives in the Header component
-* Fix buttons on dashboard [IN_PROGRESS]
-* Create error message component (not alert)
-  - Continuously remaking the same component in app
-* Fix scroll bars in notification popup (window.create())
+* Update all ButtonGroup components to use BottomFloat instead
+* Fix scroll bars in notification popup (window.create()) [IN_PROGRESS]
 
 ### Bugs
 * Random error after/during unlock 'Error: Missing or invalid topic field'

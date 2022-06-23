@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
 import { useState } from 'react';
-import { Button, Header, Input, Content, BottomFloat } from 'Components';
+import { Button, Header, Input, Content, BottomFloat, Typo } from 'Components';
 import { isMnemonic, validateMnemonic } from 'utils';
 import { useAccount } from 'redux/hooks';
 import { MNEMONIC_WORD_COUNT } from 'consts';
@@ -13,11 +13,6 @@ const InputSection = styled.div`
   input {
     margin-bottom: 32px;
   }
-`;
-const Error = styled.div`
-  color: #ED6E74;
-  margin-top: 20px;
-  font-size: 1.3rem;
 `;
 
 interface InputData {
@@ -100,7 +95,7 @@ export const SeedphraseInput:React.FC<Props> = ({ nextUrl, previousUrl }) => {
       <InputSection>
         {createSeedInputs()}
       </InputSection>
-      {submitError && <Error>{submitError}</Error>}
+      {submitError && <Typo type="error" marginTop="20px">{submitError}</Typo>}
       <BottomFloat>
         <Button onClick={handleContinue} disabled={!allInputsValid()}>Continue</Button>
       </BottomFloat>

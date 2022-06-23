@@ -3,7 +3,7 @@ import {
   Button,
   Header,
   Input,
-  Typo as BaseTypo,
+  Typo,
   Content,
   AdvancedSettings,
   Alert,
@@ -19,9 +19,6 @@ interface StyledProps {
   enabled?: boolean,
 }
 
-const Typo = styled(BaseTypo)`
-  margin-bottom: 36px;
-`;
 const AdvancedTextButton = styled.div<StyledProps>`
   color: ${({ enabled }) => enabled ? '#357EFD' : '#AAAAAA' };
   font-weight: bold;
@@ -128,7 +125,7 @@ export const NewAccountName = ({ previousUrl, nextUrl, flowType }: Props) => {
       {createAccountDisabled ? renderAddressIndexError() : (
         <>
           {recoverClearWallet && renderRecoverClearWarning()}
-          <Typo type="body">
+          <Typo type="body" marginBottom="36px">
             Name this {accountType} to easily identify it while using the Provenance Blockchain Wallet.
           </Typo>
           <Input

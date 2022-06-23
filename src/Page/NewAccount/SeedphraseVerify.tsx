@@ -130,9 +130,7 @@ export const SeedphraseVerify = ({ nextUrl, previousUrl }: Props) => {
         label="I agree that I'm solely responsible for my wallet and cannot recover the passphrase if lost."
       />
       {errorMsg && (
-        <Typo type='error'>
-          {errorMsg}
-        </Typo>
+        <Typo type='error'>{errorMsg}</Typo>
       )}
       <BottomFloat>
         <Button onClick={handleContinue} variant="primary">Continue</Button>

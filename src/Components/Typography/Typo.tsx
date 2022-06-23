@@ -3,6 +3,8 @@ import styled from 'styled-components';
 
 interface StyledProps {
   align: 'left' | 'right' | 'center';
+  marginTop?: string,
+  marginBottom?: string,
 }
 
 const BodyStyle = styled.p<StyledProps>`
@@ -13,6 +15,8 @@ const BodyStyle = styled.p<StyledProps>`
   font-size: 1.4rem;
   text-align: ${({ align }) => align };
   color: #FFFFFF;
+  ${({ marginTop }) => !!marginTop && `margin-top: ${marginTop};` }
+  ${({ marginBottom }) => !!marginBottom && `margin-bottom: ${marginBottom};` }
 `;
 const ErrorStyle = styled(BodyStyle)`
   color: #ED6E74;
@@ -25,6 +29,8 @@ const SubheadStyle = styled.p<StyledProps>`
   letter-spacing: 0.04em;
   text-align: ${({ align }) => align };
   color: #FFFFFF;
+  ${({ marginTop }) => !!marginTop && `margin-top: ${marginTop};` }
+  ${({ marginBottom }) => !!marginBottom && `margin-bottom: ${marginBottom};` }
 `;
 const Headline2Style = styled.p<StyledProps>`
   font-family: 'Montserrat', 'sans-serif';
@@ -35,6 +41,8 @@ const Headline2Style = styled.p<StyledProps>`
   text-align: ${({ align }) => align };
   color: #FFFFFF;
   text-transform: uppercase;
+  ${({ marginTop }) => !!marginTop && `margin-top: ${marginTop};` }
+  ${({ marginBottom }) => !!marginBottom && `margin-bottom: ${marginBottom};` }
 `;
 
 type TypoType = 'body' | 'subhead' | 'headline2' | 'error';
@@ -43,6 +51,8 @@ interface Props {
   children: React.ReactNode;
   align?: 'left' | 'right' | 'center';
   type: TypoType;
+  marginTop?: string,
+  marginBottom?: string,
 }
 
 export const Typo:React.FC<Props> = ({
@@ -50,8 +60,10 @@ export const Typo:React.FC<Props> = ({
   children,
   align = 'center',
   type,
+  marginTop,
+  marginBottom,
 }) => {
-  const allProps = { className, align, type };
+  const allProps = { className, align, type, marginTop, marginBottom };
   const getStyledType = () => {
     switch (type) {
       case 'body': return <BodyStyle {...allProps}>{children}</BodyStyle>

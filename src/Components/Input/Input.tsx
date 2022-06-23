@@ -50,7 +50,7 @@ const InputEl = styled.input<{error?: string}>`
   }
 `;
 
-const Error = styled.div`
+const InputError = styled.div`
   color: ${COLORS.NEGATIVE_300};
   font-size: 1.2rem;
   column-gap: 1px;
@@ -69,7 +69,7 @@ export const Input = ({
 }: InputProps) => (
   <InputGroup>
     {label && <Label htmlFor={id}>{label}</Label>}
-    {error && <Error>{error}</Error>}
+    {error && <InputError>{error}</InputError>}
     <InputEl
       id={id}
       type={type}

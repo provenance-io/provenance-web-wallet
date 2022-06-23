@@ -5,6 +5,7 @@ import {
   Input,
   Content,
   BodyContent,
+  BottomFloat,
 } from 'Components';
 import { APP_URL, ICON_NAMES, PASSWORD_MIN_LENGTH } from 'consts';
 import { useNavigate } from 'react-router-dom';
@@ -59,7 +60,9 @@ export const Unlock = ({ nextUrl }: Props) => {
         onChange={setPassword}
         error={error}
       />
-      <Button onClick={handleSubmit} >Continue</Button>
+      <BottomFloat>
+        <Button onClick={handleSubmit}>Continue</Button>
+      </BottomFloat>
     </Content>
   );
 };

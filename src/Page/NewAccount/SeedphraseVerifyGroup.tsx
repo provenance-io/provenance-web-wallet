@@ -45,7 +45,6 @@ export const SeedphraseVerifyGroup = ({ mnemonicArray, setCorrect, wordArr }: Pr
             key={word}
             variant={selected === word ? 'secondary' : 'default'}
             onClick={() => setSelected(word)}
-            layout="default"
           >
             {word}
           </Button>

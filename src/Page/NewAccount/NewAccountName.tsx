@@ -7,6 +7,7 @@ import {
   Content,
   AdvancedSettings,
   Alert,
+  BottomFloat,
 } from 'Components';
 import { ICON_NAMES, DEFAULT_MAINNET_HD_PATH } from 'consts';
 import { useNavigate } from 'react-router-dom';
@@ -91,7 +92,9 @@ export const NewAccountName = ({ previousUrl, nextUrl, flowType }: Props) => {
       <Alert type="error" title="Error">
         Unable to create additional account with account "{parentAccountName}". "{parentAccountName}" is an "addressIndex" level account.
       </Alert>
-      <Button onClick={() => {navigate(previousUrl);}}>Back</Button>
+      <BottomFloat>
+        <Button onClick={() => {navigate(previousUrl);}}>Back</Button>
+      </BottomFloat>
   </>
   );
   const renderRecoverClearWarning = () => (
@@ -143,7 +146,9 @@ export const NewAccountName = ({ previousUrl, nextUrl, flowType }: Props) => {
             setContinueDisabled={setContinueDisabled}
           />
           }
-          <Button onClick={handleContinue} disabled={continueDisabled} title={`${continueDisabled ? 'Required HD Path value missing' : ''}`}>Continue</Button>
+          <BottomFloat>
+            <Button onClick={handleContinue} disabled={continueDisabled} title={`${continueDisabled ? 'Required HD Path value missing' : ''}`}>Continue</Button>
+          </BottomFloat>
         </>
       )}
     </Content>

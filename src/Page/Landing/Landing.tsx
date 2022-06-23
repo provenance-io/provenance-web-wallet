@@ -9,11 +9,11 @@ export const Landing: React.FC = () => {
   const { masterKey } = useActiveAccount();
   
   const renderLandingActions = () => masterKey ? (
-    <Button layout="default" onClick={() => navigate(UNLOCK_URL)}>
+    <Button onClick={() => navigate(UNLOCK_URL)}>
       Unlock
     </Button>
   ) : (
-    <Button layout="default" onClick={() => navigate(NEW_ACCOUNT_CREATE_URL)}>
+    <Button onClick={() => navigate(NEW_ACCOUNT_CREATE_URL)}>
       Create Wallet
     </Button>
   );
@@ -23,7 +23,7 @@ export const Landing: React.FC = () => {
       <Carousel />
       <ButtonGroup>
         {renderLandingActions()}
-        <Button layout="default" variant="transparent" onClick={() => navigate(NEW_ACCOUNT_RECOVER_URL)}>Recover Wallet</Button>
+        <Button variant="transparent" onClick={() => navigate(NEW_ACCOUNT_RECOVER_URL)}>Recover Wallet</Button>
       </ButtonGroup>
     </>
   );

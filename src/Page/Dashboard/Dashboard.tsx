@@ -72,8 +72,8 @@ export const Dashboard = () => {
       <PortfolioTitle>Portfolio Value</PortfolioTitle>
       <Value><Denom>$</Denom>{calculatePortfolioValue().toFixed(2)}</Value>
       <ButtonGroup layout="inline" direction="row">
-        <Button layout="default" onClick={() => navigate('./send')}>Send</Button>
-        <Button layout="default" onClick={() => navigate('./receive')}>Receive</Button>
+        <Button layout="row" onClick={() => navigate('./send')}>Send</Button>
+        <Button layout="row" onClick={() => navigate('./receive')}>Receive</Button>
       </ButtonGroup>
       <AssetsTitle>My Assets</AssetsTitle>
       <AssetsContainer>

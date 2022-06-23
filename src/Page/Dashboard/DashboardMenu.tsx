@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 import { useState } from 'react';
-import { CopyValue, Button, Header, Sprite } from 'Components';
+import { CopyValue, Button, Header, Sprite, BottomFloat } from 'Components';
 import { useNavigate } from 'react-router-dom';
 import { DASHBOARD_URL, ICON_NAMES, NEW_ACCOUNT_ADD_URL } from 'consts';
 import { useAccount } from 'redux/hooks';
@@ -98,7 +98,9 @@ export const DashboardMenu:React.FC = () => {
           <WalletAction onClick={() => setAccountMenuTargetId('')}>Close</WalletAction>
         </WalletActionsPopup>
       )}
-      <Button onClick={() => navigate(NEW_ACCOUNT_ADD_URL)} >Create Account</Button>
+      <BottomFloat>
+        <Button onClick={() => navigate(NEW_ACCOUNT_ADD_URL)} >Create Account</Button>
+      </BottomFloat>
     </>
   );
 };

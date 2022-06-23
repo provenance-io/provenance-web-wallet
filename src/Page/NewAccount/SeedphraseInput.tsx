@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
 import { useState } from 'react';
-import { Button, Header, Input, Content } from 'Components';
+import { Button, Header, Input, Content, BottomFloat } from 'Components';
 import { isMnemonic, validateMnemonic } from 'utils';
 import { useAccount } from 'redux/hooks';
 import { MNEMONIC_WORD_COUNT } from 'consts';
@@ -101,7 +101,9 @@ export const SeedphraseInput:React.FC<Props> = ({ nextUrl, previousUrl }) => {
         {createSeedInputs()}
       </InputSection>
       {submitError && <Error>{submitError}</Error>}
-      <Button onClick={handleContinue} disabled={!allInputsValid()}>Continue</Button>
+      <BottomFloat>
+        <Button onClick={handleContinue} disabled={!allInputsValid()}>Continue</Button>
+      </BottomFloat>
     </Content>
   );
 };

@@ -40,8 +40,8 @@ export const ResetWallets = () => {
       <Title>Reset Wallets</Title>
       <SectionOption>Are you sure you wish to reset all wallets?</SectionOption>
       <ButtonGroup>
-        <Button layout="default" onClick={handleReset}>Reset Wallets</Button>
-        <Button layout="default" variant="transparent" onClick={() => navigate(PROFILE_URL)}>Cancel</Button>
+        <Button onClick={handleReset}>Reset Wallets</Button>
+        <Button variant="transparent" onClick={() => navigate(PROFILE_URL)}>Cancel</Button>
       </ButtonGroup>
       <FooterNav />
     </Container>

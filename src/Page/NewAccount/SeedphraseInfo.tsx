@@ -5,6 +5,7 @@ import {
   ImageContainer,
   Content,
   Typo,
+  BottomFloat,
 } from 'Components';
 import passphraseImg from 'images/passphrase-intro.png';
 import recoverImg from 'images/recover-intro.svg';
@@ -33,7 +34,9 @@ export const SeedphraseInfo = ({ previousUrl, nextUrl, flowType }: Props) => {
       <Typo type="body">{pageBody}</Typo>
       <ImageContainer size="140px" centered src={imageSrc} alt="Secure your account" />
       {!!warning && <Typo type="error">{warning}</Typo>}
-      <Button onClick={() => navigate(nextUrl)}>Continue</Button>
+      <BottomFloat>
+        <Button onClick={() => navigate(nextUrl)}>Continue</Button>
+      </BottomFloat>
     </Content>
   );
 };

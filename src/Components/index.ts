@@ -2,6 +2,7 @@ export * from './AdvancedSettings';
 export * from './Alert';
 export * from './AssetDropdown';
 export * from './AssetRow';
+export * from './BottomFloat';
 export * from './Button';
 export * from './Chart';
 export * from './Checkbox';

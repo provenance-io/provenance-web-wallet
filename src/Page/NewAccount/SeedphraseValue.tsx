@@ -6,6 +6,7 @@ import {
   Button,
   Header,
   Content,
+  BottomFloat,
 } from 'Components';
 import { COLORS } from 'theme';
 import { useAccount } from 'redux/hooks';
@@ -75,8 +76,9 @@ export const SeedphraseValue = ({ nextUrl, previousUrl }: Props) => {
         ))}
       </MnuemonicList>
       ) : 'Loading...'}
-      
-      <Button onClick={handleContinue}>Continue</Button>
+      <BottomFloat>
+        <Button onClick={handleContinue}>Continue</Button>
+      </BottomFloat>
     </Content>
   );
 };

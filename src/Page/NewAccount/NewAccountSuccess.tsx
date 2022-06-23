@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import { Button, Header, Typo, Content } from 'Components';
+import { Button, Header, Typo, Content, BottomFloat } from 'Components';
 import { useNavigate } from 'react-router-dom';
 import { useAccount } from 'redux/hooks';
 import backupComplete from 'images/backup-complete.svg';
@@ -49,7 +49,9 @@ export const NewAccountSuccess = ({ nextUrl, flowType }: Props) => {
       <Header progress={100} title={title} iconLeft='none' />
       <Image src={backupComplete} />
       <Typo type='body'>{message}</Typo>
-      <Button onClick={handleContinue}>Continue</Button>
+      <BottomFloat>
+        <Button onClick={handleContinue}>Continue</Button>
+      </BottomFloat>
     </Content>
   );
 };

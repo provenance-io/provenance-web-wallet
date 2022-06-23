@@ -8,10 +8,9 @@ interface Props {
   handleApprove: () => void,
   handleDecline: () => void,
   handleAuth?: (privateKey: Uint8Array) => void,
-  background?: string,
 }
 
-export const Authenticate:React.FC<Props> = ({ handleApprove, handleDecline, handleAuth, background }) => {
+export const Authenticate:React.FC<Props> = ({ handleApprove, handleDecline, handleAuth }) => {
   const [walletPassword, setWalletPassword] = useState('');
   const [authenticated, setAuthenticated] = useState(false);
   const [passwordError, setPasswordError] = useState('');
@@ -49,12 +48,12 @@ export const Authenticate:React.FC<Props> = ({ handleApprove, handleDecline, han
 
   return (
     authenticated ? (
-      <ButtonGroup background={background}>
-        <Button layout="default" onClick={handleApprove}>Approve</Button>
-        <Button layout="default" variant='transparent' onClick={handleDecline}>Reject</Button>
+      <ButtonGroup>
+        <Button onClick={handleApprove}>Approve</Button>
+        <Button variant='transparent' onClick={handleDecline}>Reject</Button>
       </ButtonGroup>
     ) : (
-      <ButtonGroup background={background}>
+      <ButtonGroup>
         <Input
           placeholder="Enter Wallet Password"
           id="Wallet-Pasword"
@@ -63,8 +62,8 @@ export const Authenticate:React.FC<Props> = ({ handleApprove, handleDecline, han
           error={passwordError}
           type="password"
         />
-        <Button layout="default" onClick={handleAuthAccount}>Authenticate</Button>
-        <Button layout="default" variant='transparent' onClick={handleDecline}>Reject</Button>
+        <Button onClick={handleAuthAccount}>Authenticate</Button>
+        <Button variant='transparent' onClick={handleDecline}>Reject</Button>
       </ButtonGroup>
     )
   );

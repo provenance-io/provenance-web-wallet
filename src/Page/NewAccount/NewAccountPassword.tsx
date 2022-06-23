@@ -5,6 +5,7 @@ import {
   Input as InputBase,
   Content,
   Typo,
+  BottomFloat,
 } from 'Components';
 import {
   ICON_NAMES,
@@ -131,7 +132,9 @@ export const NewAccountPassword = ({ nextUrl, previousUrl, flowType }: Props) =>
       )}
       
       {errors[3] && <Error>{errors[3]}</Error>}
-      <Button onClick={handleContinue}>Continue</Button>
+      <BottomFloat>
+        <Button onClick={handleContinue}>Continue</Button>
+      </BottomFloat>
     </Content>
   );
 };

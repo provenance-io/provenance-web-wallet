@@ -5,6 +5,7 @@ import {
   Header,
   Content,
   Typo,
+  BottomFloat,
 } from 'Components';
 import styled from 'styled-components';
 import { SeedphraseVerifyGroup } from './SeedphraseVerifyGroup';
@@ -133,9 +134,9 @@ export const SeedphraseVerify = ({ nextUrl, previousUrl }: Props) => {
           {errorMsg}
         </Typo>
       )}
-      <Button onClick={handleContinue} variant="primary">
-        Continue
-      </Button>
+      <BottomFloat>
+        <Button onClick={handleContinue} variant="primary">Continue</Button>
+      </BottomFloat>
     </Content>
   );
 };

@@ -59,20 +59,13 @@ const variations: {
 
 type StyledButtonProps = {
   variant: 'default' | 'primary' | 'secondary' | 'transparent';
-  layout: 'default' | 'float';
+  layout: 'column' | 'row';
 };
 
 const ButtonWrapper = styled.div<StyledButtonProps>`
-  ${({ layout }) => layout === 'float' && `
-    position: fixed;
-    bottom: 0;
-    left: 0;
+  ${({ layout }) => layout === 'row' && `
     padding: 32px 16px;
-    background: linear-gradient(0deg,rgba(26,28,35,1) 70%, rgba(26,28,35,0) 100%);
-    width: 100%;
-    max-width: 100%;
-    z-index: 20;
-    pointer-events:none;
+    flex-grow: 1;
   ` }
 `;
 
@@ -110,12 +103,12 @@ export type Props = {
   children: React.ReactNode;
   onClick?: (event:React.MouseEvent) => void;
   variant?: 'default' | 'primary' | 'secondary' | 'transparent';
-  layout?: 'default' | 'float';
+  layout?: 'column' | 'row';
   disabled?: boolean,
   title?: string,
 };
 
-export const Button = ({ title, children, variant = 'primary', layout = 'float', onClick, disabled = false, ...rest }: Props) => (
+export const Button = ({ title, children, variant = 'primary', layout = 'column', onClick, disabled = false, ...rest }: Props) => (
   <ButtonWrapper variant={variant} layout={layout} title={title}>
     <StyledButton variant={variant} layout={layout} onClick={onClick} {...rest} disabled={disabled} >
       {children}

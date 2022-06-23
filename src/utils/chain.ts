@@ -16,11 +16,11 @@ import {
 import { fromSeed as bip32FromSeed, BIP32Interface, fromBase58 as bip32FromB58 } from 'bip32';
 import { toWords as bech32ToWords, encode as bech32Encode } from 'bech32';
 import { publicKeyCreate as secp256k1PublicKeyCreate, ecdsaSign as secp256k1EcdsaSign } from 'secp256k1';
-import { bufferToBytes, base64ToBytes, bytesToBase64 } from '@tendermint/belt';
+import { bufferToBytes, bytesToBase64 } from '@tendermint/belt';
 import { createHash } from 'crypto';
 // TYPESCRIPT TYPES
 import type { Bech32String, Bytes } from '@tendermint/types';
-import type { Wallet, KeyPair } from '@tendermint/sig';
+import type { KeyPair } from '@tendermint/sig';
 import { Account, HDPathData, AccountLevel, AccountPrefix } from 'types';
 
 export const validateMnemonic = bip39vm;
@@ -102,22 +102,6 @@ export const createWalletFromMasterKey = (
 const createMasterKeyFromMnemonic = (mnemonic: string): BIP32Interface => {
   const seed = bip39mts(mnemonic);
   return bip32FromSeed(seed);
-}
-
-export const createWallet = (privateKeyString: string): Wallet => {
-  try {
-    const privateKey = base64ToBytes(privateKeyString);
-    const publicKey = secp256k1PublicKeyCreate(privateKey);
-    const address = createAddress(publicKey);
-
-    return {
-      privateKey,
-      publicKey,
-      address,
-    };
-  } catch (e) {
-    throw new Error('Failed to create account from private key');
-  }
 }
 
 export const getHDPathData = (hdPath?: string): HDPathData => {

@@ -11,7 +11,6 @@ export const APP_URL = '/';
 // -- DASHBOARD URLS
 export const DASHBOARD_URL = '/dashboard';
 export const DASHBOARD_MENU_URL = '/dashboard/menu';
-export const DASHBOARD_ACCOUNT_CREATE_URL = '/dashboard/create';
 export const DASHBOARD_SEND_URL = '/dashboard/send';
 export const DASHBOARD_RECEIVE_URL = '/dashboard/receive';
 export const DASHBOARD_CONNECTION_DETAILS_URL = '/dashboard/connection';
@@ -73,7 +72,6 @@ export const ALL_URLS = {
   CREATE_ACCOUNT_SEED_VALUE_URL,
   CREATE_ACCOUNT_SEED_VERIFY_URL,
   CREATE_ACCOUNT_SUCCESS_URL,
-  DASHBOARD_ACCOUNT_CREATE_URL,
   DASHBOARD_CONNECTION_DETAILS_URL,
   DASHBOARD_MENU_URL,
   DASHBOARD_RECEIVE_URL,

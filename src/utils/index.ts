@@ -13,3 +13,4 @@ export * from './percentChange';
 export * from './queryParams';
 export * from './saveData';
 export * from './trimString';
+export * from './completeHdPath';

@@ -2,22 +2,12 @@
 ## To do shortlist
 
 ### Current branch todos
-* Finish Add Account [IN_PROGRESS]
-  - Default flow (Advanced Settings Disabled) [IN_PROGRESS]
-    - If default settings used, create child hd path going all the way down to account index
-      - Prefill change as '0'
-      - Need to create account nesting since this is going to get messy once a user wants to create multiple accounts from a parent account
-        - Checking to see if address index values exist already
-    - Buildout new account from child hd path
-      - Take existing HDPath of active account, run 'createChild' chain function
-        - Continue through standard flow
 * New Account flow needs custom "Process" amount since each flowType (add, create, recover) has a different amount of steps
   - This process amount will be set in the routes
   - Process lives in the Header component
-* Fix buttons on dashboard
+* Fix buttons on dashboard [IN_PROGRESS]
 * Create error message component (not alert)
   - Continuously remaking the same component in app
-* Remove unused code and functions (mainly from chain.ts)
 * Fix scroll bars in notification popup (window.create())
 
 ### Bugs

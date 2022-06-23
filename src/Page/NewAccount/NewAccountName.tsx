@@ -12,6 +12,7 @@ import { ICON_NAMES, DEFAULT_MAINNET_HD_PATH } from 'consts';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import { useAccount, useActiveAccount, useSettings, useWalletConnect } from 'redux/hooks';
+import { completeHdPath } from 'utils';
 
 interface StyledProps {
   enabled?: boolean,
@@ -35,20 +36,25 @@ interface Props {
 }
 
 export const NewAccountName = ({ previousUrl, nextUrl, flowType }: Props) => {
+  // Shorthand flowtypes
+  const flowTypeAdd = flowType === 'add';
+  const flowTypeRecover = flowType === 'recover';
+  const flowTypeCreate = flowType === 'create';
+  const { accountLevel: parentAccountLevel, name: parentAccountName, hdPath: parentHdPath, masterKey: parentMasterKey } = useActiveAccount();
+  // When we are adding an account, we need to write the HD path all the way down to addressIndex and account for the parent path
+  // TODO: completeHdPath can set a custom addressIndex, determine if an addressIndex already exists (loop through all accounts) and auto increment that value by 1 as needed.
+  const defaultHdPath = flowTypeAdd ? completeHdPath(parentHdPath!, "0'", true) : DEFAULT_MAINNET_HD_PATH;
+  console.log('defaultHdPath :', defaultHdPath);
+
   const [name, setName] = useState('');
   const [error, setError] = useState('');
-  const [hdPath, setHdPath] = useState(DEFAULT_MAINNET_HD_PATH);
+  const [hdPath, setHdPath] = useState(defaultHdPath);
   const [continueDisabled, setContinueDisabled] = useState(false);
   const [showAdvanced, setShowAdvanced] = useState(false);
   const navigate = useNavigate();
   const { updateTempAccount, accounts, resetAccountData } = useAccount();
   const { resetSettingsData } = useSettings();
   const { resetWalletConnectData } = useWalletConnect();
-  const { accountLevel: parentAccountLevel, name: parentAccountName, hdPath: parentHdPath, masterKey: parentMasterKey } = useActiveAccount();
-  // Shorthand flowtypes
-  const flowTypeAdd = flowType === 'add';
-  const flowTypeRecover = flowType === 'recover';
-  const flowTypeCreate = flowType === 'create';
   // const accountType: 'wallet' | 'account' = flowType === 'create' ? 'wallet' : 'account';
   const accountType: 'wallet' | 'account' = flowTypeCreate ? 'account' : 'account';
 
@@ -71,8 +77,8 @@ export const NewAccountName = ({ previousUrl, nextUrl, flowType }: Props) => {
       updateTempAccount({
         name,
         hdPath,
-        ...(parentHdPath && { parentHdPath }),
-        ...(parentMasterKey && { parentMasterKey })
+        ...((flowTypeAdd && parentHdPath) && { parentHdPath }),
+        ...((flowTypeAdd && parentMasterKey) && { parentMasterKey })
       });
       // Move to next step
       navigate(nextUrl);
@@ -97,7 +103,7 @@ export const NewAccountName = ({ previousUrl, nextUrl, flowType }: Props) => {
   const toggleShowAdvanced = () => {
     if (showAdvanced) {
       // Restore path to default
-      setHdPath(DEFAULT_MAINNET_HD_PATH);
+      setHdPath(defaultHdPath);
       // Reset continue button status
       setContinueDisabled(false);
       // Close menu

@@ -39,9 +39,9 @@ const variations: {
     },
     secondary: {
       active: COLORS.SECONDARY_700,
-      border: COLORS.SECONDARY_400,
+      border: COLORS.SECONDARY_700,
       default: COLORS.SECONDARY_700,
-      hover: COLORS.SECONDARY_700,
+      hover: COLORS.SECONDARY_750,
       hoverBorder: COLORS.SECONDARY_700,
       color: COLORS.WHITE,
       disabled: COLORS.NEUTRAL_400,

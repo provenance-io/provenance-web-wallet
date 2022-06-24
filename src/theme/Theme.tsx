@@ -40,7 +40,6 @@ export const GlobalStyles = createGlobalStyle<{
     height: ${MAX_HEIGHT};
     width: ${MAX_WIDTH};
     background: black;
-    overflow-y: scroll;
   }
 
   *, *:before, *:after {

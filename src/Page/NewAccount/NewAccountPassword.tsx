@@ -30,9 +30,10 @@ interface Props {
   nextUrl: string;
   previousUrl: string;
   flowType: 'create' | 'add' | 'recover';
+  progress: number,
 }
 
-export const NewAccountPassword = ({ nextUrl, previousUrl, flowType }: Props) => {
+export const NewAccountPassword = ({ nextUrl, previousUrl, flowType, progress }: Props) => {
   const navigate = useNavigate();
   const { tempAccount, addAccount } = useAccount();
   const { bumpUnlockDuration } = useSettings();
@@ -98,7 +99,7 @@ export const NewAccountPassword = ({ nextUrl, previousUrl, flowType }: Props) =>
 
   return (
     <Content>
-      <Header iconLeft={ICON_NAMES.CLOSE} progress={80} title="Wallet Password" backLocation={previousUrl} />
+      <Header iconLeft={ICON_NAMES.CLOSE} progress={progress} title="Wallet Password" backLocation={previousUrl} />
       <Typo type='body'>
         {flowType === 'add' ?
         'Current wallet password. Your password is required to add additional accounts.' :

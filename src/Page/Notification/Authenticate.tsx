@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Input, Button, ButtonGroup } from 'Components';
+import { Input, Button, ButtonGroup, BottomFloat } from 'Components';
 import { PASSWORD_MIN_LENGTH } from 'consts';
 import { decryptKey, createWalletFromMasterKey } from 'utils';
 import { useActiveAccount, useSettings } from 'redux/hooks';
@@ -48,23 +48,27 @@ export const Authenticate:React.FC<Props> = ({ handleApprove, handleDecline, han
 
   return (
     authenticated ? (
-      <ButtonGroup>
-        <Button onClick={handleApprove}>Approve</Button>
-        <Button variant='transparent' onClick={handleDecline}>Reject</Button>
-      </ButtonGroup>
+      <BottomFloat>
+        <ButtonGroup>
+          <Button onClick={handleApprove}>Approve</Button>
+          <Button variant='transparent' onClick={handleDecline}>Reject</Button>
+        </ButtonGroup>
+      </BottomFloat>
     ) : (
-      <ButtonGroup>
-        <Input
-          placeholder="Enter Wallet Password"
-          id="Wallet-Pasword"
-          value={walletPassword}
-          onChange={setWalletPassword}
-          error={passwordError}
-          type="password"
-        />
-        <Button onClick={handleAuthAccount}>Authenticate</Button>
-        <Button variant='transparent' onClick={handleDecline}>Reject</Button>
-      </ButtonGroup>
+      <BottomFloat>
+        <ButtonGroup>
+          <Input
+            placeholder="Enter Wallet Password"
+            id="Wallet-Pasword"
+            value={walletPassword}
+            onChange={setWalletPassword}
+            error={passwordError}
+            type="password"
+          />
+          <Button onClick={handleAuthAccount}>Authenticate</Button>
+          <Button variant='transparent' onClick={handleDecline}>Reject</Button>
+        </ButtonGroup>
+      </BottomFloat>
     )
   );
 };

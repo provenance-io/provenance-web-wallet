@@ -22,9 +22,10 @@ interface InputData {
 interface Props {
   nextUrl: string,
   previousUrl: string,
+  progress: number,
 }
 
-export const SeedphraseInput:React.FC<Props> = ({ nextUrl, previousUrl }) => {
+export const SeedphraseInput:React.FC<Props> = ({ nextUrl, previousUrl, progress }) => {
   const navigate = useNavigate();
   const { updateTempAccount } = useAccount();
   const [inputValues, setInputValues] = useState<InputData[]>(Array.from({ length: MNEMONIC_WORD_COUNT}, () => ({ value: '', error: ''})));
@@ -56,8 +57,8 @@ export const SeedphraseInput:React.FC<Props> = ({ nextUrl, previousUrl }) => {
     return (
       <Input
         id={`${displayNum}`}
-        label={`Seedphrase ${displayNum}`}
-        key={`Seedphrase ${displayNum}`}
+        label={`Word ${displayNum}`}
+        key={`Word ${displayNum}`}
         value={value}
         onChange={(newValue: string) => updateInput(index, newValue)}
         error={error}
@@ -91,7 +92,7 @@ export const SeedphraseInput:React.FC<Props> = ({ nextUrl, previousUrl }) => {
 
   return (
     <Content>
-      <Header title="Enter Recovery Seedphrase" progress={60} backLocation={previousUrl} />
+      <Header title="Enter Recovery Seedphrase" progress={progress} backLocation={previousUrl} />
       <InputSection>
         {createSeedInputs()}
       </InputSection>

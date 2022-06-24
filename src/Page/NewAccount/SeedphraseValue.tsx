@@ -39,9 +39,10 @@ const MnuemonicItem = styled.p`
 interface Props {
   nextUrl: string;
   previousUrl: string;
+  progress: number;
 }
 
-export const SeedphraseValue = ({ nextUrl, previousUrl }: Props) => {
+export const SeedphraseValue = ({ nextUrl, previousUrl, progress }: Props) => {
   const navigate = useNavigate();
   const { tempAccount, updateTempAccount } = useAccount();
   
@@ -62,7 +63,7 @@ export const SeedphraseValue = ({ nextUrl, previousUrl }: Props) => {
 
   return (
     <Content padBottom='80px'>
-      <Header progress={66} title="Recovery Seed Phrase" backLocation={previousUrl} />
+      <Header progress={progress} title="Recovery Seed Phrase" backLocation={previousUrl} />
       <Typo type="body">
         Make sure to record these words in the correct order, using the corresponding
         numbers.

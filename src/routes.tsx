@@ -132,18 +132,18 @@ export const routes = [
     path: NEW_ACCOUNT_RECOVER_URL,
     element: <NewAccountAuth flowType='recover' />,
     children: [
-      { index: true, element: <NewAccountName previousUrl={APP_URL} nextUrl={RECOVER_ACCOUNT_SEED_INFO_URL} flowType='recover' /> },
+      { index: true, element: <NewAccountName progress={20} previousUrl={APP_URL} nextUrl={RECOVER_ACCOUNT_SEED_INFO_URL} flowType='recover' /> },
       {
         path: RECOVER_ACCOUNT_SEED_INFO_URL,
-        element: <SeedphraseInfo previousUrl={NEW_ACCOUNT_RECOVER_URL} nextUrl={RECOVER_ACCOUNT_SEED_INPUT_URL} flowType='recover' />,
+        element: <SeedphraseInfo progress={40} previousUrl={NEW_ACCOUNT_RECOVER_URL} nextUrl={RECOVER_ACCOUNT_SEED_INPUT_URL} flowType='recover' />,
       },
       {
         path: RECOVER_ACCOUNT_SEED_INPUT_URL,
-        element: <SeedphraseInput previousUrl={RECOVER_ACCOUNT_SEED_INFO_URL} nextUrl={RECOVER_ACCOUNT_PASSWORD_URL} />,
+        element: <SeedphraseInput progress={60} previousUrl={RECOVER_ACCOUNT_SEED_INFO_URL} nextUrl={RECOVER_ACCOUNT_PASSWORD_URL} />,
       },
       {
         path: RECOVER_ACCOUNT_PASSWORD_URL,
-        element: <NewAccountPassword previousUrl={RECOVER_ACCOUNT_SEED_INPUT_URL} nextUrl={RECOVER_ACCOUNT_SUCCESS_URL} flowType='recover' />,
+        element: <NewAccountPassword progress={80} previousUrl={RECOVER_ACCOUNT_SEED_INPUT_URL} nextUrl={RECOVER_ACCOUNT_SUCCESS_URL} flowType='recover' />,
       },
       {
         path: RECOVER_ACCOUNT_SUCCESS_URL,
@@ -156,22 +156,22 @@ export const routes = [
     path: NEW_ACCOUNT_CREATE_URL,
     element: <NewAccountAuth flowType='create' />,
     children: [
-      { index: true, element: <NewAccountName previousUrl={APP_URL} nextUrl={CREATE_ACCOUNT_SEED_INFO_URL} flowType='create' /> },
+      { index: true, element: <NewAccountName progress={16} previousUrl={APP_URL} nextUrl={CREATE_ACCOUNT_SEED_INFO_URL} flowType='create' /> },
       {
         path: CREATE_ACCOUNT_SEED_INFO_URL,
-        element: <SeedphraseInfo previousUrl={NEW_ACCOUNT_CREATE_URL} nextUrl={CREATE_ACCOUNT_SEED_VALUE_URL} flowType='create' />,
+        element: <SeedphraseInfo progress={32} previousUrl={NEW_ACCOUNT_CREATE_URL} nextUrl={CREATE_ACCOUNT_SEED_VALUE_URL} flowType='create' />,
       },
       {
         path: CREATE_ACCOUNT_SEED_VALUE_URL,
-        element: <SeedphraseValue previousUrl={CREATE_ACCOUNT_SEED_INFO_URL} nextUrl={CREATE_ACCOUNT_SEED_VERIFY_URL} />,
+        element: <SeedphraseValue progress={48} previousUrl={CREATE_ACCOUNT_SEED_INFO_URL} nextUrl={CREATE_ACCOUNT_SEED_VERIFY_URL} />,
       },
       {
         path: CREATE_ACCOUNT_SEED_VERIFY_URL,
-        element: <SeedphraseVerify previousUrl={CREATE_ACCOUNT_SEED_VALUE_URL} nextUrl={CREATE_ACCOUNT_PASSWORD_URL} />,
+        element: <SeedphraseVerify progress={64} previousUrl={CREATE_ACCOUNT_SEED_VALUE_URL} nextUrl={CREATE_ACCOUNT_PASSWORD_URL} />,
       },
       {
         path: CREATE_ACCOUNT_PASSWORD_URL,
-        element: <NewAccountPassword previousUrl={CREATE_ACCOUNT_SEED_VERIFY_URL} nextUrl={CREATE_ACCOUNT_SUCCESS_URL} flowType='create' />,
+        element: <NewAccountPassword progress={80} previousUrl={CREATE_ACCOUNT_SEED_VERIFY_URL} nextUrl={CREATE_ACCOUNT_SUCCESS_URL} flowType='create' />,
       },
       {
         path: CREATE_ACCOUNT_SUCCESS_URL,
@@ -184,10 +184,10 @@ export const routes = [
     path: NEW_ACCOUNT_ADD_URL,
     element: <NewAccountAuth flowType='add' />,
     children: [
-      { index: true, element: <NewAccountName previousUrl={DASHBOARD_MENU_URL} nextUrl={ADD_ACCOUNT_PASSWORD_URL} flowType='add' /> },
+      { index: true, element: <NewAccountName progress={33} previousUrl={DASHBOARD_MENU_URL} nextUrl={ADD_ACCOUNT_PASSWORD_URL} flowType='add' /> },
       {
         path: ADD_ACCOUNT_PASSWORD_URL,
-        element: <NewAccountPassword previousUrl={NEW_ACCOUNT_ADD_URL} nextUrl={ADD_ACCOUNT_SUCCESS_URL} flowType='add' />,
+        element: <NewAccountPassword progress={66} previousUrl={NEW_ACCOUNT_ADD_URL} nextUrl={ADD_ACCOUNT_SUCCESS_URL} flowType='add' />,
       },
       {
         path: ADD_ACCOUNT_SUCCESS_URL,

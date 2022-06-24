@@ -21,6 +21,7 @@ const Checkbox = styled(CheckboxBase)`
 interface Props {
   nextUrl: string;
   previousUrl: string;
+  progress: number;
 }
 
 // TODO: Would like to rewrite this functino... straight copied it from stack overflow
@@ -49,7 +50,7 @@ const groupArrays = (arr: string[] = [], size: number = 3) =>
     }
   }, []);
 
-export const SeedphraseVerify = ({ nextUrl, previousUrl }: Props) => {
+export const SeedphraseVerify = ({ nextUrl, previousUrl, progress }: Props) => {
   const [correct, setCorrect] = useState<boolean[]>([]);
   const [errorMsg, setErrorMsg] = useState('');
   const [termsAgree, setTermsAgree] = useState(false);
@@ -120,7 +121,7 @@ export const SeedphraseVerify = ({ nextUrl, previousUrl }: Props) => {
 
   return (
     <Content padBottom='120px'>
-      <Header progress={66} title="Verify Passphrase" backLocation={previousUrl} />
+      <Header progress={progress} title="Verify Passphrase" backLocation={previousUrl} />
       {createButtonGroups()}
       <Checkbox
         checked={termsAgree}

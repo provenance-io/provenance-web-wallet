@@ -1,4 +1,4 @@
-import { Button, ButtonGroup } from 'Components';
+import { BottomFloat, Button, ButtonGroup } from 'Components';
 import { useNavigate } from 'react-router-dom';
 import { Carousel } from './Carousel';
 import { NEW_ACCOUNT_CREATE_URL, NEW_ACCOUNT_RECOVER_URL, UNLOCK_URL } from 'consts';
@@ -21,10 +21,12 @@ export const Landing: React.FC = () => {
   return (
     <>
       <Carousel />
-      <ButtonGroup>
-        {renderLandingActions()}
-        <Button variant="transparent" onClick={() => navigate(NEW_ACCOUNT_RECOVER_URL)}>Recover Wallet</Button>
-      </ButtonGroup>
+      <BottomFloat>
+        <ButtonGroup>
+          {renderLandingActions()}
+          <Button variant="transparent" onClick={() => navigate(NEW_ACCOUNT_RECOVER_URL)}>Recover Wallet</Button>
+        </ButtonGroup>
+      </BottomFloat>
     </>
   );
 };

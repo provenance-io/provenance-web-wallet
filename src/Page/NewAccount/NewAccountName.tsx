@@ -31,9 +31,10 @@ interface Props {
   nextUrl: string;
   previousUrl: string;
   flowType: 'create' | 'add' | 'recover';
+  progress: number;
 }
 
-export const NewAccountName = ({ previousUrl, nextUrl, flowType }: Props) => {
+export const NewAccountName = ({ previousUrl, nextUrl, flowType, progress }: Props) => {
   // Shorthand flowtypes
   const flowTypeAdd = flowType === 'add';
   const flowTypeRecover = flowType === 'recover';
@@ -121,7 +122,7 @@ export const NewAccountName = ({ previousUrl, nextUrl, flowType }: Props) => {
 
   return (
     <Content>
-      <Header iconLeft={ICON_NAMES.CLOSE} progress={33} title={`Name Your ${accountType}`} backLocation={previousUrl} />
+      <Header iconLeft={ICON_NAMES.CLOSE} progress={progress} title={`Name Your ${accountType}`} backLocation={previousUrl} />
       {createAccountDisabled ? renderAddressIndexError() : (
         <>
           {recoverClearWallet && renderRecoverClearWarning()}

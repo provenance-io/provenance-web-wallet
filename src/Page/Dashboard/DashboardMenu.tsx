@@ -80,7 +80,7 @@ export const DashboardMenu:React.FC = () => {
 
   return (
     <>
-      <Header title='Wallets' iconLeft={ICON_NAMES.CLOSE} backLocation={DASHBOARD_URL} />
+      <Header title='Accounts' iconLeft={ICON_NAMES.CLOSE} backLocation={DASHBOARD_URL} />
       {renderWallets()}
       {accountMenuTargetId && (
         <WalletActionsPopup onClick={() => setAccountMenuTargetId('')}>

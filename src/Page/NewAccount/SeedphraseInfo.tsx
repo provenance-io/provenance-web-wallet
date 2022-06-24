@@ -14,9 +14,10 @@ interface Props {
   nextUrl: string;
   previousUrl: string;
   flowType: 'create' | 'add' | 'recover';
+  progress: number
 }
 
-export const SeedphraseInfo = ({ previousUrl, nextUrl, flowType }: Props) => {
+export const SeedphraseInfo = ({ previousUrl, nextUrl, flowType, progress }: Props) => {
   const navigate = useNavigate();
   const isRecovery = flowType === 'recover';
   const imageSrc = isRecovery ? recoverImg : passphraseImg;
@@ -29,7 +30,7 @@ export const SeedphraseInfo = ({ previousUrl, nextUrl, flowType }: Props) => {
 
   return (
     <Content>
-      <Header progress={66} title={headerTitle} backLocation={previousUrl} />
+      <Header progress={progress} title={headerTitle} backLocation={previousUrl} />
       <Typo type="headline2">{pageTitle}</Typo>
       <Typo type="body">{pageBody}</Typo>
       <ImageContainer size="140px" centered src={imageSrc} alt="Secure your account" />

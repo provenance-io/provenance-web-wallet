@@ -3,14 +3,16 @@ import { COLORS } from 'theme/colors';
 
 interface InputProps {
   id: string;
-  label?: string;
+  label?: string
   disabled?: boolean,
   type?: string;
   placeholder?: string;
-  value?: string | number,
-  error?: string,
+  value?: string | number;
+  error?: string;
   children?: React.ReactNode;
-  onChange?: (e: any) => void
+  autoFocus?: boolean;
+  onChange?: (e: any) => void;
+  onKeyDown?: (e: any) => void;
 }
 
 const InputGroup = styled.div`
@@ -64,7 +66,9 @@ export const Input = ({
   error,
   disabled,
   onChange,
+  onKeyDown,
   children,
+  autoFocus,
   ...rest
 }: InputProps) => (
   <InputGroup>
@@ -75,9 +79,11 @@ export const Input = ({
       type={type}
       value={value}
       onChange={(event) => (event?.target && onChange) && onChange(event.target.value)}
+      onKeyDown={(event) => { if(onKeyDown) onKeyDown(event); }}
       error={error}
       disabled={disabled}
       autoComplete="off"
+      autoFocus={autoFocus}
       {...rest}
     />
     {children}

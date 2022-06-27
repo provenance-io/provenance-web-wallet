@@ -21,6 +21,9 @@ import {
   SeedphraseInput,
   SeedphraseValue,
   SeedphraseVerify,
+  SendAmount,
+  SendComplete,
+  SendReview,
   Transactions,
   Unlock,
   UnlockAuth,
@@ -52,6 +55,9 @@ import {
   RECOVER_ACCOUNT_SEED_INPUT_URL,
   RECOVER_ACCOUNT_SUCCESS_URL,
   RESET_WALLETS_URL,
+  SEND_COMPLETE_URL,
+  SEND_REVIEW_URL,
+  SEND_URL,
   TRANSACTIONS_URL,
   UNLOCK_URL,
 } from 'consts';
@@ -123,6 +129,16 @@ export const routes = [
         element: <Page bgImage/>,
         children: [
           { index: true, element: <Connect /> },
+        ],
+      },
+      // SEND
+      {
+        path: SEND_URL,
+        element: <Page />,
+        children: [
+          { index: true, element: <SendAmount /> },
+          { path: SEND_COMPLETE_URL, element: <SendComplete /> },
+          { path: SEND_REVIEW_URL, element: <SendReview /> },
         ],
       },
     ],

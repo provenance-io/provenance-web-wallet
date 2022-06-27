@@ -2,6 +2,7 @@ syntax = "proto3";
 package provenance.marker.v1;
 
 import "gogoproto/gogo.proto";
+import "cosmos/bank/v1beta1/bank.proto";
 import "cosmos/base/v1beta1/coin.proto";
 import "provenance/marker/v1/marker.proto";
 import "provenance/marker/v1/accessgrant.proto";
@@ -20,7 +21,7 @@ message AddMarkerProposal {
   string description = 2;
 
   cosmos.base.v1beta1.Coin amount = 3
-      [(gogoproto.nullable) = false, (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Coin"];
+  [(gogoproto.nullable) = false, (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Coin"];
   string               manager                  = 4;
   MarkerStatus         status                   = 5;
   MarkerType           marker_type              = 6;
@@ -38,8 +39,8 @@ message SupplyIncreaseProposal {
   string                   title       = 1;
   string                   description = 2;
   cosmos.base.v1beta1.Coin amount      = 3
-      [(gogoproto.nullable) = false, (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Coin"];
-  string target_adddress = 4; // an optional target address for the minted coin from this request
+  [(gogoproto.nullable) = false, (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Coin"];
+  string target_address = 4; // an optional target address for the minted coin from this request
 }
 
 // SupplyDecreaseProposal defines a governance proposal to administer a marker and decrease the total supply through
@@ -51,7 +52,7 @@ message SupplyDecreaseProposal {
   string                   title       = 1;
   string                   description = 2;
   cosmos.base.v1beta1.Coin amount      = 3
-      [(gogoproto.nullable) = false, (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Coin"];
+  [(gogoproto.nullable) = false, (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Coin"];
 }
 
 // SetAdministratorProposal defines a governance proposal to administer a marker and set administrators with specific
@@ -87,4 +88,27 @@ message ChangeStatusProposal {
   string       description = 2;
   string       denom       = 3;
   MarkerStatus new_status  = 4;
+}
+
+// WithdrawEscrowProposal defines a governance proposal to withdraw escrow coins from a marker
+message WithdrawEscrowProposal {
+  option (gogoproto.equal)            = true;
+  option (gogoproto.goproto_stringer) = false;
+
+  string   title                           = 1;
+  string   description                     = 2;
+  string   denom                           = 3;
+  repeated cosmos.base.v1beta1.Coin amount = 4
+  [(gogoproto.nullable) = false, (gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.Coins"];
+  string target_address = 5;
+}
+
+// SetDenomMetadataProposal defines a governance proposal to set the metadata for a denom
+message SetDenomMetadataProposal {
+  option (gogoproto.goproto_stringer) = false;
+
+  string                       title       = 1;
+  string                       description = 2;
+  cosmos.bank.v1beta1.Metadata metadata    = 3
+  [(gogoproto.nullable) = false, (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/x/bank/types.Metadata"];
 }

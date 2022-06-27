@@ -36,6 +36,7 @@
     "styled-normalize": "8.0.7"
   },
   "devDependencies": {
+    "@grpc/grpc-js": "^1.6.7",
     "@redux-devtools/cli": "1.0.7",
     "@tendermint/types": "0.1.2",
     "@testing-library/jest-dom": "^4.2.4",
@@ -62,6 +63,7 @@
     "eslint-config-prettier": "8.3.0",
     "file-loader": "6.2.0",
     "grpc_tools_node_protoc_ts": "5.3.2",
+    "grpc-web": "1.2.0",
     "husky": "4.3.0",
     "json-schema-to-typescript": "10.1.5",
     "prettier": "2.5.1",
@@ -82,6 +84,7 @@
     "build": "env-cmd -e default,production react-scripts build",
     "build:devTools": "env-cmd -e default,staging react-scripts build && npm run reduxDev",
     "build:protos": "./scripts/build_protos.sh",
+    "build:schemas": "json2ts -i third_party/schema -o src/types/schema/",
     "reduxDev": "redux-devtools",
     "test": "env-cmd -e e2e react-scripts test --watch --verbose"
   },

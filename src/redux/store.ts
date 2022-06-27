@@ -6,6 +6,7 @@ import statisticsReducer from './features/statistics/statisticsSlice';
 import accountReducer from './features/account/accountSlice';
 import walletConnectReducer from './features/walletConnect/walletConnectSlice';
 import settingsReducer from './features/settings/settingsSlice';
+import messageReducer from './features/message/messageSlice';
 
 export const store = configureStore({
   ...(process.env.REACT_APP_ENV === "staging") && {enhancers: [devToolsEnhancer({ realtime: true, port: 8000 })]},
@@ -17,6 +18,7 @@ export const store = configureStore({
     account: accountReducer,
     walletConnect: walletConnectReducer,
     settings: settingsReducer,
+    message: messageReducer,
   },
   middleware: (getDefaultMiddleware) => getDefaultMiddleware({
     serializableCheck: false,

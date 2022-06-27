@@ -5,5 +5,6 @@ export * from './useStore';
 export * from './useAccount';
 export * from './useWalletConnect';
 export * from './useSettings';
+export * from './useMessage';
 // Custom Hooks
 export * from './useActiveAccount';

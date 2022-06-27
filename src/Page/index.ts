@@ -9,6 +9,7 @@ export * from './Notification';
 export * from './Page';
 export * from './Profile';
 export * from './RequiresAuth';
+export * from './Send';
 export * from './Transactions';
 export * from './Unlock';
 export * from './UnlockAuth';

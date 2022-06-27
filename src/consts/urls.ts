@@ -5,6 +5,8 @@ export const ADDRESS_URL = '/address';
 export const PRICING_URL = `${SERVICE_MOBILE_WALLET_MAINNET}/pricing`;
 export const STATISTICS_URL = `${SERVICE_MOBILE_WALLET_MAINNET}/statistics`;
 export const MARKER_URL = `${PRICING_URL}/marker`;
+export const GRPC_CLIENT_ADDRESS_TESTNET = 'https://wallet.test.figure.tech/proxy';
+export const GRPC_CLIENT_ADDRESS_MAINNET = 'https://wallet.figure.tech/proxy';
 // INNER-APP PATH URLS
 // -- MAIN URLS
 export const APP_URL = '/';
@@ -53,6 +55,10 @@ export const RECOVER_ACCOUNT_SEED_INFO_URL = `${NEW_ACCOUNT_RECOVER_URL}${NEW_AC
 export const RECOVER_ACCOUNT_SEED_INPUT_URL = `${NEW_ACCOUNT_RECOVER_URL}${NEW_ACCOUNT_SEED_INPUT}`;
 export const RECOVER_ACCOUNT_PASSWORD_URL = `${NEW_ACCOUNT_RECOVER_URL}${NEW_ACCOUNT_PASSWORD}`;
 export const RECOVER_ACCOUNT_SUCCESS_URL = `${NEW_ACCOUNT_RECOVER_URL}${NEW_ACCOUNT_SUCCESS}`;
+// -- SEND URLS
+export const SEND_URL = '/send';
+export const SEND_REVIEW_URL = '/send/review';
+export const SEND_COMPLETE_URL = '/send/complete';
 
 // -- UNLOCK URLS
 export const UNLOCK_URL = '/unlock';

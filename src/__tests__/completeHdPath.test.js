@@ -23,9 +23,9 @@ const testItems = [
 // -------------------------------------------------------------------
 // Test various HDPaths to properly finish them to default values
 // -------------------------------------------------------------------
-describe('Finish a series of hdPaths to full addressIndex length', () => {
+describe('Finish a series of hdPaths to full or partial child addressIndex length', () => {
   testItems.forEach(({ partialHdPath, addressIndex, expectedResult, child }) => {
-    test(`complete hdPath: "${partialHdPath}"`, () => {
+    test(`${child ? `partial child hdPath: "${partialHdPath}"` : `complete hdPath: "${partialHdPath}"`}`, () => {
       expect(completeHdPath(partialHdPath, addressIndex, child)).toBe(expectedResult);
     })
   });

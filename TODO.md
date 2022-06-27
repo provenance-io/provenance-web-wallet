@@ -1,13 +1,12 @@
 # TODO
 ## To do shortlist
 
-## This Branch
-* - Move create sub account to account menu
-* - Create Account button will use create new account (wallet) flow (on dashboard)
-* - Import Account button on dashboard menu, follow recovery flow
-* - Dashboard menu, show address pb...1234
+## Next Branch Issues (priority)
+* - Dashboard Menu
+  - Create account button (new account with seedphrase)
+  - Import Account button (new account import seedphrase)
 * - Dashboard menu - child accounts indented (tree)
-* - potentially advanced settings "reset defaults" for mainnet / testnet
+* - Advanced settings - "reset defaults" for mainnet / testnet
 * - Unlock page nuke option (to see create account again or auto start create account)
 
 ### Bugs

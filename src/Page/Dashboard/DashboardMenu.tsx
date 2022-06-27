@@ -140,8 +140,8 @@ export const DashboardMenu:React.FC = () => {
       )}
       <BottomFloat>
         <ButtonGroup>
-          <Button onClick={() => navigate(NEW_ACCOUNT_ADD_URL)} >Create New Account</Button>
-          <Button variant='secondary' onClick={() => navigate(NEW_ACCOUNT_ADD_URL)} >Import Account</Button>
+          <Button onClick={() => navigate(NEW_ACCOUNT_ADD_URL)} disabled title="Temporarily Disabled">Create New Account</Button>
+          <Button variant='secondary' onClick={() => navigate(NEW_ACCOUNT_ADD_URL)} disabled title="Temporarily Disabled">Import Account</Button>
         </ButtonGroup>
       </BottomFloat>
     </>

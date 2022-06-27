@@ -4,7 +4,7 @@ import { DEFAULT_MAINNET_HD_PATH } from 'consts';
 
 // Complete a partial hd path all the way down to account index
 // Allow user to pass in addressIndex (as string, which will allow them to harden/unharded if needed)
-export const completeHdPath = (partialHdPath: string, addressIndex: string = "0'", child?: boolean): string => {
+export const completeHdPath = (partialHdPath: string, addressIndex?: string, child?: boolean): string => {
   // partialHdPath: m/44'/505'/0' => finalHdPath: m/44'/505'/0'/0'/0'
   // If we are looking for a child, we are going to return the difference: eg: partialHdPath: m/44'/505'/0' => finalHdPath: 0'/0'
   // Full hdPath to addressIndex length is 6
@@ -14,8 +14,9 @@ export const completeHdPath = (partialHdPath: string, addressIndex: string = "0'
   const partialLength = partialHdPathArray.length;
   // Already full length (or some wierd long length - just return what they passed in)
   if (partialLength >= fullHdPathLength) return partialHdPath;
-  const defaultMainnetPathArray = DEFAULT_MAINNET_HD_PATH.split('/');
-  const defaultLength = defaultMainnetPathArray.length;
+  // Get the default mainnet path
+  const defaultMainnetPathArray = DEFAULT_MAINNET_HD_PATH.split('/'); // m/44'/505'/0'/0'/0'
+  const defaultLength = defaultMainnetPathArray.length; // 6 (fullHdPathLength)
   // Copy the partial path array to make edits to it
   let completedHdPathArray = partialHdPathArray;
   // If the partial length is less than the default length, we need to use default fill in values from DEFAULT_MAINNET_HD_PATH
@@ -27,12 +28,8 @@ export const completeHdPath = (partialHdPath: string, addressIndex: string = "0'
       if (partialValue === undefined || partialValue === '' || partialValue === null) completedHdPathArray[index] = defaultValue;
     });
   }
-  // Possible remaining missing items (after cross-checking over default) can only be 'change' and 'addressIndex'.  Add those as needed
-  // Change is position (4) - Change default is "0'"
-  if (completedHdPathArray[4] === undefined) completedHdPathArray[4] = "0'";
-  // AddressIndex is position (5) - AddressIndex default is "0'", but user might pass in their own value
-  const fillInAddressIndexValue = (addressIndex !== undefined) ? addressIndex : "0'";
-  if (completedHdPathArray[5] === undefined) completedHdPathArray[5] = fillInAddressIndexValue;
+  // If a user passed in an addressIndex, use it in the addressIndex slot
+  if (addressIndex) completedHdPathArray[5] = addressIndex;
   // When a child path is requested, we need to only return the difference
   if (child) {
     // partialHdPath: m/44'/505'/0', completedHdPath: m/44'/505'/0'/0'/0', childHdPath: 0'/0'

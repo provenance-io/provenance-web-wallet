@@ -39,7 +39,7 @@ const notificationPopupEvent = function(request, sender, sendResponse) {
 
 const asyncGetStorage = async () => {
   const { walletconnect } = await chrome.storage.local.get('walletconnect') || {};
-  const { totalPendingRequests = 0 } = walletconnect;
+  const totalPendingRequests = walletconnect?.totalPendingRequests || 0;
   // Update the badge based on the existing number of requests
   chrome.action.setBadgeText({text: `${totalPendingRequests || ''}`});
   chrome.action.setBadgeBackgroundColor({ color: [255, 0, 0, 255] });
@@ -51,9 +51,8 @@ asyncGetStorage();
 // ----------------------------------------
 const asyncSetup = async () => {
   const { account } = await chrome.storage.local.get('account') || {};
-  const { key } = account;
   // Only set up listeners if user has created an extension wallet
-  if (key) {
+  if (account?.accounts.length) {
     chrome.runtime.onMessageExternal.addListener(notificationPopupEvent);
   }
 }

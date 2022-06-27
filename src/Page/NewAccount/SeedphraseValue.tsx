@@ -1,13 +1,16 @@
+import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import styled, { css } from 'styled-components';
+import styled from 'styled-components';
 import {
-  BodyContent,
+  Typo,
   Button,
   Header,
   Content,
+  BottomFloat,
 } from 'Components';
 import { COLORS } from 'theme';
 import { useAccount } from 'redux/hooks';
+import { createMnemonic } from 'utils';
 
 const MnuemonicList = styled.div`
   display: flex;
@@ -35,36 +38,48 @@ const MnuemonicItem = styled.p`
 
 interface Props {
   nextUrl: string;
+  previousUrl: string;
+  progress: number;
 }
 
-export const Seedphrase = ({ nextUrl }: Props) => {
+export const SeedphraseValue = ({ nextUrl, previousUrl, progress }: Props) => {
   const navigate = useNavigate();
-  const { tempAccount } = useAccount();
-  const mnemonic = tempAccount?.mnemonic || '';
+  const { tempAccount, updateTempAccount } = useAccount();
+  
+  // On load, create the new mnemonic if it hasn't already been made
+  useEffect(() => {
+    // No mnemonic has been generated for this temporary account
+    if (!tempAccount?.mnemonic) {
+      // Create new mnemonic
+      const mnemonic = createMnemonic();
+      // Save mnemonic to the temporary account
+      updateTempAccount({ mnemonic });
+    }
+  }, [updateTempAccount, tempAccount]);
+
   const handleContinue = () => {
     navigate(nextUrl);
   };
 
   return (
-    <Content>
-      <Header progress={66} title="Recovery Passphrase" />
-      <BodyContent
-        $css={css`
-          margin-top: 8px 0 24px 0;
-          text-align: center;
-        `}
-      >
+    <Content padBottom='80px'>
+      <Header progress={progress} title="Recovery Seed Phrase" backLocation={previousUrl} />
+      <Typo type="body">
         Make sure to record these words in the correct order, using the corresponding
         numbers.
-      </BodyContent>
-      <MnuemonicList>
-        {mnemonic?.split(' ').map((word, index) => (
+      </Typo>
+      {tempAccount?.mnemonic ? (
+        <MnuemonicList>
+        {tempAccount.mnemonic.split(' ').map((word, index) => (
           <MnuemonicItem key={index}>
             <ListItemNumber as="span">{index + 1}</ListItemNumber> {word}
           </MnuemonicItem>
         ))}
       </MnuemonicList>
-      <Button onClick={handleContinue} >Continue</Button>
+      ) : 'Loading...'}
+      <BottomFloat>
+        <Button onClick={handleContinue}>Continue</Button>
+      </BottomFloat>
     </Content>
   );
 };

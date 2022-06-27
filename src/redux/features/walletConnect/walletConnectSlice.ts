@@ -2,21 +2,23 @@ import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { RootState } from 'redux/store';
 import WalletConnectClient from "@walletconnect/client";
 import { IWalletConnectSession, SavedPendingRequests } from 'types';
-import { getSavedData, getStorageData, addSavedData } from 'utils';
+import { getSavedData, getStorageData, addSavedData, removeSavedData } from 'utils';
 import { WC_CONNECTION_TIMEOUT } from 'consts';
 
 /**
  * TYPES
  */
-interface State {
-  connector: WalletConnectClient | null,
-  session: IWalletConnectSession,
+interface ChromeInitialState {
   connectionDuration: number,
   connectionEST: number,
   connectionEXP: number,
   pendingRequests: SavedPendingRequests,
   totalPendingRequests: number,
   connectionTimer: number,
+}
+type State = ChromeInitialState & {
+  connector: WalletConnectClient | null,
+  session: IWalletConnectSession,
 }
 interface WalletconnectChromeSave {
   connectionEST?: number,
@@ -28,7 +30,16 @@ interface WalletconnectChromeSave {
 /**
  * STATE
  */
+const chromeInitialState: ChromeInitialState = {
+  connectionDuration: WC_CONNECTION_TIMEOUT,
+  connectionEST: 0,
+  connectionEXP: 0,
+  pendingRequests: {},
+  totalPendingRequests: 0,
+  connectionTimer: 0,
+}
 const initialState: State = {
+  ...chromeInitialState,
   connector: null,
   session: {
     accounts: [],
@@ -42,13 +53,7 @@ const initialState: State = {
     key: '',
     peerId: '',
     peerMeta: null,
-  },
-  connectionDuration: WC_CONNECTION_TIMEOUT,
-  connectionEST: 0,
-  connectionEXP: 0,
-  pendingRequests: {},
-  totalPendingRequests: 0,
-  connectionTimer: 0,
+  }
 };
 
 /**
@@ -59,6 +64,7 @@ const initialState: State = {
  const WALLETCONNECT_DISCONNECT = 'WALLETCONNECT_DISCONNECT';
  const ADD_PENDING_REQUESTS = 'ADD_PENDING_REQUESTS';
  const REMOVE_PENDING_REQUESTS = 'REMOVE_PENDING_REQUESTS';
+ const RESET_WALLETCONNECT_DATA = 'RESET_WALLETCONNECT_DATA';
 
 /**
  * ASYNC ACTIONS
@@ -68,7 +74,13 @@ const updateChromeBadge = async (totalPendingRequests: number) => {
   await chrome.action.setBadgeText({text: totalPendingRequests ? `${totalPendingRequests}` : ''});
   await chrome.action.setBadgeBackgroundColor({ color: [255, 0, 0, 255] });
 };
-
+// Remove all existing values from chrome storage
+export const resetWalletConnectData = createAsyncThunk(RESET_WALLETCONNECT_DATA, async () => {
+  // Remove all existing values from chrome storage
+  await removeSavedData('walletconnect');
+  // Reset initial chrome state values
+  await addSavedData({ walletconnect: chromeInitialState})
+});
 // Pull walletconnect connection data from chrome storage and local storage
 export const pullInitialWCData = createAsyncThunk(PULL_INITIAL_WCCONNECTION_DATA, async () => {
   // Chrome storage (Default missing values to initialState values)
@@ -79,7 +91,7 @@ export const pullInitialWCData = createAsyncThunk(PULL_INITIAL_WCCONNECTION_DATA
     connectionEXP = initialState.connectionEXP,
   } = await getSavedData('walletconnect') || {};
   // Local storage
-  const session = await getStorageData(undefined, 'walletconnect');
+  const session = await getStorageData('walletconnect');
   // After attemting to pull chrome saved data, populate any potentially missing chrome storage values
   await addSavedData({
     walletconnect: {
@@ -155,6 +167,8 @@ const walletConnectSlice = createSlice({
   initialState,
   extraReducers: (builder) => {
     builder
+    // Reset redux store to initial values
+    .addCase(resetWalletConnectData.fulfilled, (state) => { state = initialState })
     .addCase(pullInitialWCData.fulfilled, (state, { payload }) => {
       const {
         connectionEST,
@@ -247,6 +261,7 @@ export const walletConnectActions = {
   walletconnectDisconnect,
   addPendingRequest,
   removePendingRequest,
+  resetWalletConnectData,
 };
 
 /**

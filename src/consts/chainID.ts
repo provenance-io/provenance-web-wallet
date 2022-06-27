@@ -1,7 +1,0 @@
-export const CHAINID_MAINNET = process.env.REACT_APP_CHAINID_MAINNET;
-export const CHAINID_TESTNET = process.env.REACT_APP_CHAINID_TESTNET;
-export const PROVENANCE_WALLET_COIN_TYPE = process.env.REACT_APP_PROVENANCE_WALLET_COIN_TYPE;
-export const TESTNET_WALLET_COIN_TYPE = 1;
-export const MAINNET_NETWORK = 'mainnet';
-export const TESTNET_NETWORK = 'testnet';
-export const DEFAULT_NETWORK = MAINNET_NETWORK;

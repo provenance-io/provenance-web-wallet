@@ -1,6 +1,6 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { RootState } from 'redux/store';
-import { getSavedData, addSavedData } from 'utils';
+import { getSavedData, addSavedData, removeSavedData } from 'utils';
 import { DEFAULT_UNLOCK_DURATION } from 'consts';
 import { Settings } from 'types';
 
@@ -23,10 +23,19 @@ const initialState: State = {
  */
   const PULL_INITIAL_SETTINGS_DATA = 'PULL_INITIAL_SETTINGS_DATA';
   const SAVE_SETTINGS_DATA = 'SAVE_SETTINGS_DATA';
+  const RESET_SETTINGS_DATA = 'RESET_SETTINGS_DATA';
+  const BUMP_UNLOCK_DURATION = 'BUMP_UNLOCK_DURATION';
 
 /**
  * ASYNC ACTIONS
  */
+// Remove all existing values from chrome storage
+export const resetSettingsData = createAsyncThunk(RESET_SETTINGS_DATA, async () => {
+  // Remove all existing values from chrome storage
+  await removeSavedData('settings');
+  // Reset initial chrome state values
+  return await addSavedData({ settings: initialState })
+});
 // Pull settings data from chrome storage
  export const pullInitialSettingsData = createAsyncThunk(PULL_INITIAL_SETTINGS_DATA, async () => {
   // Pull all settings data
@@ -46,7 +55,7 @@ const initialState: State = {
   return { unlockEST, unlockEXP, unlockDuration };
 })
 // Save settings data into the chrome store
-export const saveSettingsData =  createAsyncThunk(SAVE_SETTINGS_DATA, async (data: Settings) => {
+export const saveSettingsData = createAsyncThunk(SAVE_SETTINGS_DATA, async (data: Settings) => {
   // Get existing saved data (to merge into)
   const existingData = await getSavedData('settings');
   const newData = { ...existingData, ...data };
@@ -54,6 +63,22 @@ export const saveSettingsData =  createAsyncThunk(SAVE_SETTINGS_DATA, async (dat
   await addSavedData({ settings: newData });
   // Return new combined values to update redux store
   return newData;
+});
+// Bump the unlock duration due to an action
+export const bumpUnlockDuration = createAsyncThunk(BUMP_UNLOCK_DURATION, async () => {
+  // Get existing saved data (to merge into)
+  const existingData = await getSavedData('settings');
+  // Get existing unlock duration
+  const { unlockDuration } = existingData;
+  // Current time
+  const now = Date.now();
+  // Determine when the unlock will expire (note: -1 means never)
+  const unlockEXP = unlockDuration === -1 ? -1 : now + unlockDuration!;
+  const unlockEST = now;
+  // Save updated unlock data (and add back all other existing data)
+  const newData = { ...existingData, unlockEST, unlockEXP };
+  await addSavedData({ settings: newData });
+  return { unlockEST, unlockEXP };
 });
 
 /**
@@ -64,6 +89,8 @@ const settingsSlice = createSlice({
   initialState,
   extraReducers: (builder) => {
     builder
+    // Reset redux store to initial values
+    .addCase(resetSettingsData.fulfilled, (state) => { state = initialState })
     .addCase(pullInitialSettingsData.fulfilled, (state, { payload }) => {
       const { unlockEST, unlockEXP, unlockDuration } = payload;
       state.unlockEST = unlockEST;
@@ -76,6 +103,11 @@ const settingsSlice = createSlice({
       if (unlockEXP) state.unlockEXP = unlockEXP;
       if (unlockDuration) state.unlockDuration = unlockDuration;
     })
+    .addCase(bumpUnlockDuration.fulfilled, (state, { payload }) => {
+      const { unlockEST, unlockEXP } = payload;
+      state.unlockEST = unlockEST;
+      state.unlockEXP = unlockEXP;
+    })
   },
   reducers: {},
 });
@@ -83,7 +115,13 @@ const settingsSlice = createSlice({
 /**
  * ACTIONS
  */
-export const settingsActions = { ...settingsSlice.actions, pullInitialSettingsData, saveSettingsData };
+export const settingsActions = {
+  ...settingsSlice.actions,
+  pullInitialSettingsData,
+  saveSettingsData,
+  resetSettingsData,
+  bumpUnlockDuration,
+};
 
 /**
  * SELECTORS

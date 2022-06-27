@@ -18,6 +18,7 @@ const Footer = styled.footer`
   z-index: 100;
   box-sizing: border-box;
   justify-content: space-between;
+  width:inherit;
 `;
 const NavItem = styled.div<{ active?: boolean }>`
   font-size: 1.2rem;

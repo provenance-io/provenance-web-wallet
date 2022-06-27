@@ -69,9 +69,11 @@ interface Props {
 export const AssetDropdown: React.FC<Props> = ({
   className,
   assets,
-  activeDenom = assets[0].denom,
+  activeDenom = assets[0]?.denom,
   onChange,
 }) => {
+  console.log('AssetDropdown | assets: ', assets);
+  console.log('AssetDropdown | activeDenom: ', activeDenom);
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const handleAssetClick = (asset: Asset) => {
     // If open, close.  If closed, open.

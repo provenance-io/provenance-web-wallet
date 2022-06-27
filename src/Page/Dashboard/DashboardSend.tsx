@@ -99,7 +99,7 @@ export const DashboardSend: React.FC = () => {
     <Wrapper>
       <Header title="Send" iconLeft={ICON_NAMES.CLOSE} />
       <SectionTitle>Select Asset</SectionTitle>
-      <AssetDropdown assets={assets} activeDenom={coin?.denom} onChange={setCoin} />
+      {assets.length && <AssetDropdown assets={assets} activeDenom={coin?.denom} onChange={setCoin} />}
       <SectionTitle>Send to Address</SectionTitle>
       <Input
         placeholder="Enter or select address below"

@@ -97,6 +97,7 @@ export const buildMessage = (
         .setDelegatorAddress(delegatorAddress)
         .setValidatorAddress(validatorAddress);
       if (amount) {
+        console.log('amount: ', amount)
         msgDelegate.setAmount(
           new Coin().setAmount(`${amount.amount}`).setDenom(amount.denom)
         );
@@ -110,6 +111,7 @@ export const buildMessage = (
       const msgSend = new MsgSend()
         .setFromAddress(fromAddress)
         .setToAddress(toAddress);
+      console.log('amountList: ', amountList)
       amountList.forEach(({ denom, amount }) => {
         msgSend.addAmount(new Coin().setAmount(`${amount}`).setDenom(denom));
       });
@@ -169,6 +171,7 @@ export const SendAmount = () => {
     gasEstimate: number
   ): AuthInfo => {
     const feeCoin = new Coin();
+    console.log('buildAuthInfo | feeDenom: ', feeDenom);
     feeCoin.setDenom(feeDenom);
     feeCoin.setAmount(feeEstimate.toString());
     const fee = new Fee();
@@ -295,7 +298,7 @@ export const SendAmount = () => {
               console.log(calculateTxFeeRequest);
       })();
     }
-  }, [address, coin?.denom, coinAddress, coinAmount, publicKey]);
+  }, [address, coin?.denom, coinAddress, coinAmount, publicKey, buildCalculateTxFeeRequest]);
 
   const validateAndNavigate = () => {
     if (!coinAmount) {

@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import { Button, Header, Input, Select, Success } from 'Components';
+import { Button, Header, Input, Select } from 'Components';
 import {
   ICON_NAMES,
   MAINNET_NETWORK,
@@ -18,6 +18,7 @@ import {
   createWalletFromMasterKey,
   bytesToBase64,
 } from 'utils';
+import { useNavigate } from 'react-router-dom';
 import { useAccount } from 'redux/hooks';
 import { CustomDerivationPathObject } from 'types';
 
@@ -66,8 +67,8 @@ interface Props {
 }
 
 export const DashboardAccountCreate:React.FC<Props> = ({ nextUrl }) => {  
+  const navigate = useNavigate();
   const [name, setName] = useState('');
-  const [success, setSuccess] = useState(false);
   const [walletPassword, setWalletPassword] = useState('');
   const [showAdvanced, setShowAdvanced] = useState(false);
   const [network, setNetwork] = useState(DEFAULT_NETWORK);
@@ -153,8 +154,8 @@ export const DashboardAccountCreate:React.FC<Props> = ({ nextUrl }) => {
           newErrors[3] = 'Account is already added/exists'
           setError(newErrors);
         }
-        // Show success message
-        setSuccess(true);
+        // Redirect back to dashboard menu
+        navigate(nextUrl);
       }
     }
     // Update error(s)
@@ -164,8 +165,7 @@ export const DashboardAccountCreate:React.FC<Props> = ({ nextUrl }) => {
   const { account, change, addressIndex, coin_type } = customDerivationPath;
 
   return (
-    <>
-    {!success && <Wrapper>
+    <Wrapper>
       <Header title='Create New Account' iconLeft={ICON_NAMES.CLOSE} />
       <Input
         label="Account Name"
@@ -196,8 +196,6 @@ export const DashboardAccountCreate:React.FC<Props> = ({ nextUrl }) => {
         )}
       {error[3] && <Error>{error[3]}</Error>}
       <Button onClick={handleCreateAccount}>Create</Button>
-    </Wrapper>}
-    {success && <Success title='account created' subTitle='Account creation was successful' />}
-    </>
+    </Wrapper>
   );
 };

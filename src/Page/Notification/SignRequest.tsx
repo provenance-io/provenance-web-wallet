@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { convertHexToUtf8, convertHexToBuffer, convertArrayBufferToHex } from "@walletconnect/utils";
 import { Authenticate } from './Authenticate';
 import { useWalletConnect } from 'redux/hooks';
-import { List, Success } from 'Components';
+import { List } from 'Components';
 import { useEffect, useState } from 'react';
 import { format } from 'date-fns';
 import { signBytes } from 'utils';
@@ -44,9 +44,6 @@ export const SignRequest:React.FC<Props> = ({ payload, closeWindow }) => {
   const [parsedParams, setParsedParams] = useState<ParsedParams>({});
   const [encodedMessage, setEncodedMessage] = useState('');
   const [privateKey, setPrivateKey] = useState<Uint8Array>();
-  // Track success. Signing does not generate a message from wallet, so need to set and render locally.
-  // Other messages (like connect) can be rendered from Notifications.tsx
-  const [success, setSuccess] = useState(false);
 
   // Onload, pull out and parse payload params
   useEffect(() => {
@@ -86,7 +83,7 @@ export const SignRequest:React.FC<Props> = ({ payload, closeWindow }) => {
       });
       await removePendingRequest(payload.id);
       await bumpWalletConnectTimeout();
-      setSuccess(true);
+      closeWindow();
     }
   }
   const handleDecline = async () => {
@@ -115,24 +112,14 @@ export const SignRequest:React.FC<Props> = ({ payload, closeWindow }) => {
   };
 
   return (
-    <>
-      {!success ? (
-        <SignContainer>
-          <Title>Sign Request</Title>
-          <List message={ListItems} />
-          <Authenticate
-            handleApprove={handleApprove}
-            handleDecline={handleDecline}
-            handleAuth={handleAuth}
-          />
-        </SignContainer>
-      ) : (
-        <Success 
-          title='Transaction Complete' 
-          subTitle='Signing request has been approved' 
-          onClick={closeWindow}
-        /> 
-      )}
-    </>
+    <SignContainer>
+      <Title>Sign Request</Title>
+      <List message={ListItems} />
+      <Authenticate
+        handleApprove={handleApprove}
+        handleDecline={handleDecline}
+        handleAuth={handleAuth}
+      />
+    </SignContainer>
   );
 };

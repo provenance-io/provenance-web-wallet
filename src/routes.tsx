@@ -187,7 +187,7 @@ export const routes = [
     children: [
       { index: true, element: <Notification /> },
     ],
-  },
+  }
   // { path: FOUR_OH_FOUR_URL, element: <NotFound /> },
   // { path: '*', element: <Navigate to={FOUR_OH_FOUR_URL} /> },
 ];

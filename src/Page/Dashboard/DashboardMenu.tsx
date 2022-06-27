@@ -88,8 +88,6 @@ export const DashboardMenu:React.FC = () => {
   const navigate = useNavigate();
   const { activeAccountId, accounts, saveAccountData } = useAccount();
   const [ accountMenuTargetId, setAccountMenuTargetId ] = useState('');
-  console.log('accounts :', accounts);
-  console.log('accountMenuTargetId :', accountMenuTargetId);
   const menuTargetAccount = accountMenuTargetId ? accounts.find(account => account.address === accountMenuTargetId) : { address: '', accountLevel: ''};
   const { address: menuTargetAddress, accountLevel: menuTargetAccountLevel } = menuTargetAccount!;
 

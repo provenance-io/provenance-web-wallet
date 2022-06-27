@@ -43,7 +43,6 @@ export const NewAccountName = ({ previousUrl, nextUrl, flowType, progress }: Pro
   // When we are adding an account, we need to write the HD path all the way down to addressIndex and account for the parent path
   // TODO: completeHdPath can set a custom addressIndex, determine if an addressIndex already exists (loop through all accounts) and auto increment that value by 1 as needed.
   const defaultHdPath = flowTypeAdd ? completeHdPath(parentHdPath!, "0'", true) : DEFAULT_MAINNET_HD_PATH;
-  console.log('defaultHdPath :', defaultHdPath);
 
   const [name, setName] = useState('');
   const [error, setError] = useState('');

@@ -1,9 +1,12 @@
 import styled from 'styled-components';
 import { useState } from 'react';
-import { CopyValue, Button, Header, Sprite } from 'Components';
+import { CopyValue, Button, Header, Sprite, BottomFloat, ButtonGroup } from 'Components';
 import { useNavigate } from 'react-router-dom';
-import { DASHBOARD_URL, ICON_NAMES } from 'consts';
+import { DASHBOARD_URL, ICON_NAMES, MAINNET_NETWORK, NEW_ACCOUNT_ADD_URL } from 'consts';
 import { useAccount } from 'redux/hooks';
+import { trimString } from 'utils';
+import { AccountNetwork } from 'types';
+import { COLORS } from 'theme';
 
 const WalletItem = styled.div<{active?: boolean}>`
   display: flex;
@@ -19,13 +22,27 @@ const WalletItem = styled.div<{active?: boolean}>`
     background: ${({ active }) => active ? '#12615F' : '#3D3F4B' };
   }
 `;
-const WalletText = styled.div`
+const WalletInfo = styled.div`
+  display: flex;
   font-family: 'Gothic A1', sans-serif;
   line-height: 2.2rem;
+  flex-grow: 1;
+  justify-content: space-between;
+  align-items: center;
 `;
+const WalletText = styled.div``;
 const AccountName = styled.div`
   font-size: 1.4rem;
   font-weight: 700;
+  line-height: 1.4rem;
+`;
+const AccountAddress = styled.div`
+  font-size: 1.2rem;
+  color: #AAAAAA;
+  line-height: 1.2rem;
+`;
+const WalletSubMenuIcon = styled.div`
+  margin-left: 20px;
 `;
 const WalletActionsPopup = styled.div`
   position: fixed;
@@ -33,7 +50,7 @@ const WalletActionsPopup = styled.div`
   left: 0;
   background: rgba(0, 0, 0, 0.4);
   height: 100%;
-  width: 100%;
+  width:inherit;
   z-index: 100;
   display: flex;
   flex-direction: column;
@@ -59,17 +76,33 @@ const WalletAction = styled.div`
   }
 `;
 
+const Pill = styled.div<{ network: AccountNetwork}>`
+  font-size: 1rem;
+  background: ${({ network }) => network === MAINNET_NETWORK ? COLORS.SECONDARY_750 : COLORS.PRIMARY_600 };
+  border-radius: 6px;
+  padding: 0px 10px;
+  margin-left: 20px;
+`;
+
 export const DashboardMenu:React.FC = () => {
   const navigate = useNavigate();
   const { activeAccountId, accounts, saveAccountData } = useAccount();
-  const [ accountMenuTargetId, setAccountMenuTargetId ] = useState(-1);
+  const [ accountMenuTargetId, setAccountMenuTargetId ] = useState('');
+  const menuTargetAccount = accountMenuTargetId ? accounts.find(account => account.address === accountMenuTargetId) : { address: '', accountLevel: ''};
+  const { address: menuTargetAddress, accountLevel: menuTargetAccountLevel } = menuTargetAccount!;
 
-  const renderWallets = () => accounts.map(({ address, name, id }) => (
-    <WalletItem key={address} active={id === activeAccountId} onClick={() => { setAccountMenuTargetId(id!)} }>
-      <WalletText>
-        <AccountName>{name}</AccountName>
-      </WalletText>
-      <Sprite icon={ICON_NAMES.MENU} size="2.2rem" />
+  const renderWallets = () => accounts.map(({ address, name, network }) => (
+    <WalletItem key={address} active={address === activeAccountId} onClick={() => { setAccountMenuTargetId(address!)} }>
+      <WalletInfo>
+        <WalletText>
+          <AccountName>{name}</AccountName>
+          <AccountAddress>{trimString(address!, 7, 3)}</AccountAddress>
+        </WalletText>
+        <Pill network={network!}>{network}</Pill>
+      </WalletInfo>
+      <WalletSubMenuIcon>
+        <Sprite icon={ICON_NAMES.MENU} size="2.2rem" />
+      </WalletSubMenuIcon>
     </WalletItem>
   ));
 
@@ -80,10 +113,10 @@ export const DashboardMenu:React.FC = () => {
 
   return (
     <>
-      <Header title='Wallets' iconLeft={ICON_NAMES.CLOSE} backLocation={DASHBOARD_URL} />
+      <Header title='Accounts' iconLeft={ICON_NAMES.CLOSE} backLocation={DASHBOARD_URL} />
       {renderWallets()}
-      {accountMenuTargetId > -1 && (
-        <WalletActionsPopup onClick={() => setAccountMenuTargetId(-1)}>
+      {accountMenuTargetId && (
+        <WalletActionsPopup onClick={() => setAccountMenuTargetId('')}>
           {activeAccountId !== accountMenuTargetId && (
             <WalletAction onClick={handleSelectWallet}>
               Select Account
@@ -91,14 +124,24 @@ export const DashboardMenu:React.FC = () => {
           )}
           {/* TODO: User must click on text to copy, instead have user click on entire button row */}
           <WalletAction>
-            <CopyValue value={accounts[accountMenuTargetId]?.address} successText="Address Copied!" noPopup>Copy Account Address</CopyValue>
+            <CopyValue value={menuTargetAddress} successText="Address Copied!" noPopup>Copy Account Address</CopyValue>
           </WalletAction>
+          {menuTargetAccountLevel !== 'addressIndex' && (
+            <WalletAction onClick={() => navigate(NEW_ACCOUNT_ADD_URL)}>
+              Create Sub Account
+            </WalletAction>
+          )}
           <WalletAction>Rename</WalletAction>
           <WalletAction>Remove</WalletAction>
-          <WalletAction onClick={() => setAccountMenuTargetId(-1)}>Close</WalletAction>
+          <WalletAction onClick={() => setAccountMenuTargetId('')}>Close</WalletAction>
         </WalletActionsPopup>
       )}
-      <Button onClick={() => navigate('../create')} >Create Account</Button>
+      <BottomFloat>
+        <ButtonGroup>
+          <Button onClick={() => navigate(NEW_ACCOUNT_ADD_URL)} disabled title="Temporarily Disabled">Create New Account</Button>
+          <Button variant='secondary' onClick={() => navigate(NEW_ACCOUNT_ADD_URL)} disabled title="Temporarily Disabled">Import Account</Button>
+        </ButtonGroup>
+      </BottomFloat>
     </>
   );
 };

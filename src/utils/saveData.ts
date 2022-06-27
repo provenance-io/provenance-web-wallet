@@ -1,12 +1,8 @@
-import { LOCAL_SAVE_NAME } from 'consts';
 import {
   AccountStorage,
   Settings,
   WalletConnectStorage,
 } from 'types';
-
-// Determine storage type for app
-const useChromeStorage = !!window?.chrome?.storage;
 
 // ----------------------
 // Types
@@ -18,29 +14,17 @@ interface StorageItems {
   walletconnect?: WalletConnectStorage,
 };
 type StorageItemKey = keyof StorageItems;
-// ----------------------
-// Session/Local Storage
-// ----------------------
-export const getStorageData = (key?: StorageItemKey, savedName = LOCAL_SAVE_NAME!) => {
+type ChromeStorageKeys = string | string[];
+// -------------------------------------------------------------
+// Session/Local Storage (used for 3rd party walletconnect)
+// -------------------------------------------------------------
+export const getStorageData = (savedName: string, key?: StorageItemKey) => {
   const windowData = window.localStorage;
   // Look for the item in the current localStorage, if found, add to results
   const rawData = windowData.getItem(savedName) || '{}';
   const data = JSON.parse(rawData);
   // If no specific key is passed, just return the entire object
   return key ? data[key] : data;
-};
-const addStorageData = (newData: StorageData) => {
-  const windowData = window.localStorage;
-  // Pull from storage
-  const rawData = windowData.getItem(LOCAL_SAVE_NAME!) || '{}';
-  // Parse to edit
-  const data = JSON.parse(rawData);
-  // Update key/value
-  const finalData = {...data, ...newData};
-  // Stringify to save
-  const stringFinalData = JSON.stringify(finalData);
-  // Save
-  windowData.setItem(LOCAL_SAVE_NAME!, stringFinalData);
 };
 
 // ----------------------
@@ -55,20 +39,22 @@ const getChromeStorage = async (keyValue?: StorageItemKey) => {
 const addChromeStorage = async (newData: StorageData) => {
   await chrome.storage.local.set(newData);
 };
+const removeChromeStorage = async (keys: ChromeStorageKeys) => {
+  await chrome.storage.local.remove(keys);
+};
 
 // ----------------------
 // Storage Functions
-// (Will automatically use browser default or chrome storage)
 // ----------------------
 // Get one or more values from storage
 export const getSavedData = async (key?: StorageItemKey) => {
-  if (useChromeStorage) return await getChromeStorage(key);
-  else {
-    return getStorageData(key);
-  }
+  return await getChromeStorage(key);
 };
 // Add to storage
 export const addSavedData = async (newData: StorageData) => {
-  if (useChromeStorage) await addChromeStorage(newData);
-  else addStorageData(newData);
+  await addChromeStorage(newData);
+};
+// Remove stored item(s)
+export const removeSavedData = async (keys: ChromeStorageKeys) => {
+  removeChromeStorage(keys);
 };

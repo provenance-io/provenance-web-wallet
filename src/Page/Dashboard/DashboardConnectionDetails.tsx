@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 import { useWalletConnect } from 'redux/hooks';
-import { Button, Content, Header } from 'Components';
+import { BottomFloat, Button, Content, Header } from 'Components';
 import { useNavigate } from 'react-router';
 import { useEffect, useState } from 'react';
 import { DASHBOARD_URL, ICON_NAMES } from 'consts';
@@ -83,7 +83,9 @@ export const DashboardConnectionDetails:React.FC = () => {
         <DataContent>Connection Exp.</DataContent>
         <DataContent>{formattedEXP}</DataContent>
       </DataRow>
-      <Button onClick={handleDisconnect}>Disconnect</Button>
+      <BottomFloat>
+        <Button onClick={handleDisconnect}>Disconnect</Button>
+      </BottomFloat>
     </Content>
   )
 };

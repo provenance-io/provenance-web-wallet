@@ -11,7 +11,7 @@ interface Props {
   };
 }
 
-export const VerifyButtonGroup = ({ mnemonicArray, setCorrect, wordArr }: Props) => {
+export const SeedphraseVerifyGroup = ({ mnemonicArray, setCorrect, wordArr }: Props) => {
   const [selected, setSelected] = useState('');
   const [answer] = useState({
     word: wordArr.data[wordArr.index],
@@ -45,7 +45,6 @@ export const VerifyButtonGroup = ({ mnemonicArray, setCorrect, wordArr }: Props)
             key={word}
             variant={selected === word ? 'secondary' : 'default'}
             onClick={() => setSelected(word)}
-            layout="default"
           >
             {word}
           </Button>

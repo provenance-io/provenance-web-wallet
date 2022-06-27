@@ -1,5 +1,4 @@
 import React from 'react';
-import { StyledButton as BaseStyledButton } from '../Styled';
 import styled from 'styled-components';
 import { COLORS } from 'theme';
 
@@ -40,9 +39,9 @@ const variations: {
     },
     secondary: {
       active: COLORS.SECONDARY_700,
-      border: COLORS.SECONDARY_400,
+      border: COLORS.SECONDARY_700,
       default: COLORS.SECONDARY_700,
-      hover: COLORS.SECONDARY_700,
+      hover: COLORS.SECONDARY_750,
       hoverBorder: COLORS.SECONDARY_700,
       color: COLORS.WHITE,
       disabled: COLORS.NEUTRAL_400,
@@ -60,13 +59,19 @@ const variations: {
 
 type StyledButtonProps = {
   variant: 'default' | 'primary' | 'secondary' | 'transparent';
-  layout: 'default' | 'float';
+  layout: 'column' | 'row';
 };
 
-const StyledButton = styled(BaseStyledButton)<StyledButtonProps>`
+const ButtonWrapper = styled.div<StyledButtonProps>`
+  ${({ layout }) => layout === 'row' && `
+    padding: 32px 16px;
+    flex-grow: 1;
+  ` }
+`;
+
+const StyledButton = styled.button<StyledButtonProps>`
   padding: 14px 0;
   width: 100%;
-  max-width: 100vw;
   border: none;
   border-radius: 4px;
   color: ${({ variant }) => variations[variant].color};
@@ -75,14 +80,8 @@ const StyledButton = styled(BaseStyledButton)<StyledButtonProps>`
   border: 2px solid ${({ variant }) => variations[variant].border};
   background-color: ${({ variant }) => variations[variant].default};
   cursor: pointer;
+  pointer-events:auto;
   font-family: 'Gothic A1', sans-serif;
-  ${({ layout }) => layout === 'float' && `
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    margin: 32px 16px;
-    max-width: 343px;
-  ` }
   &:hover,
   &:focus {
     border-color: ${({ variant }) => variations[variant].hoverBorder};
@@ -102,14 +101,17 @@ const StyledButton = styled(BaseStyledButton)<StyledButtonProps>`
 
 export type Props = {
   children: React.ReactNode;
-  onClick?: () => void;
+  onClick?: (event:React.MouseEvent) => void;
   variant?: 'default' | 'primary' | 'secondary' | 'transparent';
-  layout?: 'default' | 'float';
-  disabled?: boolean
+  layout?: 'column' | 'row';
+  disabled?: boolean,
+  title?: string,
 };
 
-export const Button = ({ children, variant = 'primary', layout = 'float', disabled = false, ...rest }: Props) => (
-  <StyledButton variant={variant} layout={layout} {...rest} disabled={disabled}>
-    {children}
-  </StyledButton>
+export const Button = ({ title, children, variant = 'primary', layout = 'column', onClick, disabled = false, ...rest }: Props) => (
+  <ButtonWrapper variant={variant} layout={layout} title={title}>
+    <StyledButton variant={variant} layout={layout} onClick={onClick} {...rest} disabled={disabled} >
+      {children}
+    </StyledButton>
+  </ButtonWrapper>
 );

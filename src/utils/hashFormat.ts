@@ -1,5 +1,5 @@
 // TODO: There's no way this is accurate or safe to use, replace this
-export const hashFormat = (type = 'nhash', value: number) => {
+export const hashFormat = (type = 'nhash', value: number | string) => {
   const valueString = `${value}`;
   const exponential = 10000000000;
   const floatAmount = 15;

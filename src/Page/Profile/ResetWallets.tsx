@@ -1,4 +1,4 @@
-import { FooterNav } from 'Components';
+import { BottomFloat, FooterNav } from 'Components';
 import { Button, ButtonGroup } from 'Components';
 import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
@@ -39,10 +39,12 @@ export const ResetWallets = () => {
     <Container>
       <Title>Reset Wallets</Title>
       <SectionOption>Are you sure you wish to reset all wallets?</SectionOption>
-      <ButtonGroup>
-        <Button layout="default" onClick={handleReset}>Reset Wallets</Button>
-        <Button layout="default" variant="transparent" onClick={() => navigate(PROFILE_URL)}>Cancel</Button>
-      </ButtonGroup>
+      <BottomFloat>
+        <ButtonGroup>
+          <Button onClick={handleReset}>Reset Wallets</Button>
+          <Button variant="transparent" onClick={() => navigate(PROFILE_URL)}>Cancel</Button>
+        </ButtonGroup>
+      </BottomFloat>
       <FooterNav />
     </Container>
   );

@@ -1,19 +1,22 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { RootState } from 'redux/store';
 import { Account, AccountStorage } from 'types';
-import { getSavedData, addSavedData } from 'utils';
+import { getSavedData, addSavedData, removeSavedData } from 'utils';
 
 /**
  * TYPES
  */
 interface TempAccount extends Account {
-  mnemonic?: string
+  mnemonic?: string,
+  parentMasterKey?: string,
+  parentHdPath?: string,
 }
-interface State {
-  activeAccountId?: number;
+interface ChromeInitialState {
+  activeAccountId?: string;
   accounts: Account[];
+}
+type State = ChromeInitialState & {
   tempAccount?: TempAccount;
-  key: string,
 }
 interface UpdateTempAccount {
   payload: TempAccount
@@ -21,38 +24,45 @@ interface UpdateTempAccount {
 /**
  * STATE
  */
-const initialState: State = {
-  activeAccountId: -1,
+const chromeInitialState: ChromeInitialState = {
+  activeAccountId: '',
   accounts: [],
+}
+const initialState: State = {
+  ...chromeInitialState,
   tempAccount: undefined,
-  key: '',
 };
 
 /**
  * ASYNC ACTION TYPES
  */
-  const PULL_INITIAL_ACCOUNT_DATA = 'PULL_INITIAL_ACCOUNT_DATA';
-  const SAVE_ACCOUNT_DATA = 'SAVE_ACCOUNT_DATA';
-  const ADD_ACCOUNT = 'ADD_ACCOUNT';
+const RESET_ACCOUNT_DATA = 'RESET_ACCOUNT_DATA';
+const PULL_INITIAL_ACCOUNT_DATA = 'PULL_INITIAL_ACCOUNT_DATA';
+const SAVE_ACCOUNT_DATA = 'SAVE_ACCOUNT_DATA';
+const ADD_ACCOUNT = 'ADD_ACCOUNT';
 
  /**
  * ASYNC ACTIONS
  */
+export const resetAccountData = createAsyncThunk(RESET_ACCOUNT_DATA, async () => {
+  // Remove all existing values from chrome storage
+  await removeSavedData('account');
+  // Reset initial chrome state values
+  return await addSavedData({ account: chromeInitialState})
+});
 export const pullInitialAccountData = createAsyncThunk(PULL_INITIAL_ACCOUNT_DATA, async () => {
   const {
     accounts = initialState.accounts,
     activeAccountId = initialState.activeAccountId,
-    key = initialState.key,
   } = await getSavedData('account') || {};
   // After attemting to pull chrome saved data, populate any potentially missing chrome storage values
   await addSavedData({
     account: {
       accounts,
       activeAccountId,
-      key,
     }
   });
-  return { accounts, activeAccountId, key };
+  return { accounts, activeAccountId };
 })
 // Save account data into the chrome store (will override existing values, ex accounts array)
 export const saveAccountData =  createAsyncThunk(SAVE_ACCOUNT_DATA, async (data: AccountStorage) => {
@@ -72,19 +82,18 @@ export const addAccount =  createAsyncThunk(ADD_ACCOUNT, async (account: Account
   // Get the existing accounts array
   const { accounts } = existingData;
   // Check to make sure this account doesn't already exist in the existing accounts array
-  const accountAlreadyExists = accounts.filter(({ id }:Account) => account.id === id).length;
+  const accountAlreadyExists = accounts.find((existingAccount:Account) => account.address === existingAccount.address);
   // We want to merge the newly passed accounts with the existing accounts (both arrays)
   if (!accountAlreadyExists) {
     accounts.push(account);
-    const newAccountData = { ...existingData, accounts };
+    const newAccountData = { accounts, activeAccountId: account.address };
     // Save to chrome storage
     await addSavedData({ account: newAccountData });
     // Return new combined values to update redux store
-    return accounts;
+    return newAccountData;
   }
   return '';
 });
-// TODO: Might need to start storing keys in an array with ids, then each account will reference a keyId when locking/unlocking
 
 /**
  * SLICE
@@ -94,23 +103,25 @@ const accountSlice = createSlice({
   initialState,
   extraReducers: (builder) => {
     builder
+    // Reset redux store to initial values
+    .addCase(resetAccountData.fulfilled, (state) => { state = initialState })
     .addCase(pullInitialAccountData.fulfilled, (state, { payload }) => {
-      const { accounts, activeAccountId, key } = payload;
+      const { accounts, activeAccountId } = payload;
       state.accounts = accounts;
       state.activeAccountId = activeAccountId;
-      state.key = key;
     })
-    .addCase(addAccount.fulfilled, (state, { payload: accounts }) => {
+    .addCase(addAccount.fulfilled, (state, { payload }) => {
       // We won't be adding an account if it already existed in the accounts array (see async func above)
-      if (accounts) {
+      if (payload) {
+        const { accounts, activeAccountId } = payload;
         state.accounts = accounts;
+        state.activeAccountId = activeAccountId;
       }
     })
     .addCase(saveAccountData.fulfilled, (state, { payload }) => {
-      const { accounts, activeAccountId, key } = payload;
+      const { accounts, activeAccountId } = payload;
       if (accounts) state.accounts = accounts;
       if (activeAccountId !== undefined) state.activeAccountId = activeAccountId;
-      if (key) state.key = key;
     })
   },
   reducers: {
@@ -126,7 +137,13 @@ const accountSlice = createSlice({
 /**
  * ACTIONS
  */
-export const accountActions = { ...accountSlice.actions, pullInitialAccountData, saveAccountData, addAccount };
+export const accountActions = {
+  ...accountSlice.actions,
+  pullInitialAccountData,
+  saveAccountData,
+  addAccount,
+  resetAccountData,
+};
 
 /**
  * SELECTORS

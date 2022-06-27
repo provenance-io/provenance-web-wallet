@@ -1,11 +1,5 @@
 import { useState } from 'react';
-import {
-  Button,
-  Header,
-  Input,
-  Content,
-  BodyContent,
-} from 'Components';
+import { Button, Header, Input, Content, BodyContent } from 'Components';
 import { APP_URL, ICON_NAMES, PASSWORD_MIN_LENGTH } from 'consts';
 import { useNavigate } from 'react-router-dom';
 import { decryptKey } from 'utils';
@@ -27,7 +21,8 @@ export const Unlock = ({ nextUrl }: Props) => {
     setError('');
     let newError = '';
     // Make sure password is at least 5 characters
-    if (password.length < PASSWORD_MIN_LENGTH) newError = `Password must be a minimum of ${PASSWORD_MIN_LENGTH} characters.`;
+    if (password.length < PASSWORD_MIN_LENGTH)
+      newError = `Password must be a minimum of ${PASSWORD_MIN_LENGTH} characters.`;
     if (!password) newError = 'Enter a password';
     // No error so far
     if (!newError) {
@@ -48,18 +43,25 @@ export const Unlock = ({ nextUrl }: Props) => {
 
   return (
     <Content>
-      <Header iconLeft={ICON_NAMES.CLOSE} progress={100} title="Unlock Wallet" backLocation={APP_URL} />
+      <Header
+        iconLeft={ICON_NAMES.CLOSE}
+        progress={100}
+        title="Unlock Wallet"
+        backLocation={APP_URL}
+      />
       <BodyContent>Enter your password</BodyContent>
       <Input
+        autoFocus
         id="wallet-password"
         label="Password"
         type="password"
         placeholder="Enter Password"
         value={password}
         onChange={setPassword}
+        onKeyDown={({ key }) => key === 'Enter' && handleSubmit()}
         error={error}
       />
-      <Button onClick={handleSubmit} >Continue</Button>
+      <Button onClick={handleSubmit}>Continue</Button>
     </Content>
   );
 };

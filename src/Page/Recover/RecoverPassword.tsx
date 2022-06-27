@@ -37,7 +37,7 @@ const Wrapper = styled.div`
   }
 `;
 const Error = styled.div`
-  color: #ED6E74;
+  color: #ed6e74;
   margin-top: 20px;
   font-size: 1.3rem;
 `;
@@ -45,7 +45,7 @@ const AdvancedSection = styled.div`
   padding-bottom: 40px;
 `;
 const AdvancedTextButton = styled.div`
-  color: #357EFD;
+  color: #357efd;
   font-weight: bold;
   margin-top: 20px;
   cursor: pointer;
@@ -83,32 +83,43 @@ export const RecoverPassword = ({ nextUrl }: Props) => {
   // Hooks
   const navigate = useNavigate();
   const { getAddressAssetsCount } = useAddress();
-  const {
-    tempAccount,
-    clearTempAccount,
-    addAccount,
-    saveAccountData,
-  } = useAccount();
+  const { tempAccount, clearTempAccount, addAccount, saveAccountData } =
+    useAccount();
   const { unlockDuration, saveSettingsData } = useSettings();
   // Local Component States
   const [walletPassword, setWalletPassword] = useState('');
   const [showAdvanced, setShowAdvanced] = useState(false);
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
-  const [customDerivationPath, setCustomDerivationPath] = useState<CustomDerivationPathObject>({
-    coin_type: 505,
-    account: 0,
-    change: 0,
-    addressIndex: 0,
-  });
+  const [customDerivationPath, setCustomDerivationPath] =
+    useState<CustomDerivationPathObject>({
+      coin_type: 505,
+      account: 0,
+      change: 0,
+      addressIndex: 0,
+    });
   const [walletPasswordRepeat, setWalletPasswordRepeat] = useState('');
   const [network, setNetwork] = useState(DEFAULT_NETWORK);
   const [error, setError] = useState('');
 
-  const recoverAccountLoop = async (masterKey: BIP32Interface, addressIndex: number = 0, accountName?: string): Promise<string> => {
-    const path = derivationPath({ ...customDerivationPath, address_index: addressIndex });
-    const prefix = network === MAINNET_NETWORK ? PROVENANCE_ADDRESS_PREFIX_MAINNET : PROVENANCE_ADDRESS_PREFIX_TESTNET;
-    const { address, publicKey } = createWalletFromMasterKey(masterKey, prefix, path);
+  const recoverAccountLoop = async (
+    masterKey: BIP32Interface,
+    addressIndex: number = 0,
+    accountName?: string
+  ): Promise<string> => {
+    const path = derivationPath({
+      ...customDerivationPath,
+      address_index: addressIndex,
+    });
+    const prefix =
+      network === MAINNET_NETWORK
+        ? PROVENANCE_ADDRESS_PREFIX_MAINNET
+        : PROVENANCE_ADDRESS_PREFIX_TESTNET;
+    const { address, publicKey } = createWalletFromMasterKey(
+      masterKey,
+      prefix,
+      path
+    );
     const b64PublicKey = bytesToBase64(publicKey);
     const name = accountName || `${DEFAULT_ACCOUNT_NAME}${addressIndex + 1}`;
     // Save data to redux store and clear out tempAccount data
@@ -135,16 +146,19 @@ export const RecoverPassword = ({ nextUrl }: Props) => {
   const handleContinue = async () => {
     let latestError = '';
     const { account, change, addressIndex, coin_type } = customDerivationPath;
-    const derivationMissing = (
+    const derivationMissing =
       account === undefined ||
       change === undefined ||
       addressIndex === undefined ||
-      coin_type === undefined
-    );
-    if (showAdvanced && derivationMissing) latestError = 'Missing derivation path value(s).'
-    if (walletPassword !== walletPasswordRepeat) latestError = 'Passwords must match';
-    if (!walletPassword || !walletPasswordRepeat) latestError = 'Please confirm your password.';
-    if (walletPassword.length < PASSWORD_MIN_LENGTH) latestError = `Password must be a minimum of ${PASSWORD_MIN_LENGTH} characters.`;
+      coin_type === undefined;
+    if (showAdvanced && derivationMissing)
+      latestError = 'Missing derivation path value(s).';
+    if (walletPassword !== walletPasswordRepeat)
+      latestError = 'Passwords must match';
+    if (!walletPassword || !walletPasswordRepeat)
+      latestError = 'Please confirm your password.';
+    if (walletPassword.length < PASSWORD_MIN_LENGTH)
+      latestError = `Password must be a minimum of ${PASSWORD_MIN_LENGTH} characters.`;
     if (!latestError) {
       if (tempAccount?.mnemonic) {
         // Generate master keyt and get data about wallet
@@ -155,7 +169,7 @@ export const RecoverPassword = ({ nextUrl }: Props) => {
         // Encrypt data with provided password
         const key = encryptKey(masterKey, walletPassword);
         // Add data to chrome and redux storage
-        await saveAccountData({ key, activeAccountId: 0 })
+        await saveAccountData({ key, activeAccountId: 0 });
         setLoading(false);
         // Remove tempAccount data
         clearTempAccount();
@@ -168,7 +182,7 @@ export const RecoverPassword = ({ nextUrl }: Props) => {
         });
         setSuccess(true);
       } else {
-        latestError = 'Unable to locally save account, please try again later'
+        latestError = 'Unable to locally save account, please try again later';
       }
     }
     setError(latestError);
@@ -179,77 +193,127 @@ export const RecoverPassword = ({ nextUrl }: Props) => {
       setCustomDerivationPath({});
       setShowAdvanced(false);
       setNetwork(DEFAULT_NETWORK);
-    }
-    else setShowAdvanced(true);
-  }
+    } else setShowAdvanced(true);
+  };
 
-  const changeCustomDerivationPath = (target: keyof CustomDerivationPathObject, value: string) => {
-    const newCustomDerivationPath = {...customDerivationPath};
+  const changeCustomDerivationPath = (
+    target: keyof CustomDerivationPathObject,
+    value: string
+  ) => {
+    const newCustomDerivationPath = { ...customDerivationPath };
     newCustomDerivationPath[target] = Number(value);
     setCustomDerivationPath(newCustomDerivationPath);
   };
 
   const updateNetwork = (value: string) => {
     setNetwork(value);
-    changeCustomDerivationPath('coin_type', (value === TESTNET_NETWORK) ? `${TESTNET_WALLET_COIN_TYPE}` : `${PROVENANCE_WALLET_COIN_TYPE}`);
-  }
+    changeCustomDerivationPath(
+      'coin_type',
+      value === TESTNET_NETWORK
+        ? `${TESTNET_WALLET_COIN_TYPE}`
+        : `${PROVENANCE_WALLET_COIN_TYPE}`
+    );
+  };
 
   const { account, change, addressIndex, coin_type } = customDerivationPath;
-  return (
-    success ? (
-      <Wrapper>
-        <Header progress={100} title="Account(s) Recovered" />
-        <Image src={backupComplete} />
-        <BodyContent
-          $css={css`
-            text-align: center;
-            margin-bottom: 32px;
-          `}
-        >
-          Your accounts were successfully recovered!
-        </BodyContent>
-        <Button onClick={() => navigate(nextUrl)} >Continue</Button>
-      </Wrapper>
-    ) : (
-      <Wrapper>
-        <Header iconLeft={ICON_NAMES.CLOSE} progress={66} title="Account Password" backLocation={APP_URL} />
-        <BodyContent
-          $css={css`
-            text-align: center;
-          `}
-        >
-          Enter an account password.  This password will be used to connect to this wallet, it is only stored locally to decrypt the created wallet.
-        </BodyContent>
+  return success ? (
+    <Wrapper>
+      <Header progress={100} title="Account(s) Recovered" />
+      <Image src={backupComplete} />
+      <BodyContent
+        $css={css`
+          text-align: center;
+          margin-bottom: 32px;
+        `}
+      >
+        Your accounts were successfully recovered!
+      </BodyContent>
+      <Button onClick={() => navigate(nextUrl)}>Continue</Button>
+    </Wrapper>
+  ) : (
+    <Wrapper>
+      <Header
+        iconLeft={ICON_NAMES.CLOSE}
+        progress={66}
+        title="Account Password"
+        backLocation={APP_URL}
+      />
+      <BodyContent
+        $css={css`
+          text-align: center;
+        `}
+      >
+        Enter an account password. This password will be used to connect to this
+        wallet, it is only stored locally to decrypt the created wallet.
+      </BodyContent>
 
-        <Input
-          id="account-password"
-          label="Account Password"
-          type="password"
-          placeholder="Account Password"
-          value={walletPassword}
-          onChange={setWalletPassword}
-        />
-        <Input
-          id="account-password-repeat"
-          label="Confirm Account Password"
-          type="password"
-          placeholder="Confirm Account Password"
-          value={walletPasswordRepeat}
-          onChange={setWalletPasswordRepeat}
-        />
-        {error && <Error>{error}</Error>}
-        <AdvancedTextButton onClick={toggleShowAdvanced}>Advanced Settings ({showAdvanced ? 'Enabled' : 'Disabled'})</AdvancedTextButton>
-        {showAdvanced && (
-          <AdvancedSection>
-            <AdvancedTitle>HD Derivation Path</AdvancedTitle>
-            <AdvancedInputArea>
-              m/44'/<Input type="number" id="coin" value={coin_type !== undefined ? coin_type : ''} onChange={(value) => changeCustomDerivationPath('account', value) } />'/<Input type="number" id="account" value={account !== undefined ? account : ''} onChange={(value) => changeCustomDerivationPath('account', value) } />'/<Input type="number" id="change" value={change !== undefined ? change : ''} onChange={(value) => changeCustomDerivationPath('change', value) } />/<Input type="number" id="addressIndex" value={addressIndex !== undefined ? addressIndex : ''} onChange={(value) => changeCustomDerivationPath('addressIndex', value) } />
-            </AdvancedInputArea>
-            <Select label="Network" options={[MAINNET_NETWORK, TESTNET_NETWORK]} value={network} onChange={updateNetwork} />
-          </AdvancedSection>
-        )}
-        {loading ? <div>Please Wait..</div> : <Button  onClick={handleContinue}>Continue</Button>}
-      </Wrapper>
-    )
+      <Input
+        autoFocus
+        id="account-password"
+        label="Account Password"
+        type="password"
+        placeholder="Account Password"
+        value={walletPassword}
+        onChange={setWalletPassword}
+      />
+      <Input
+        id="account-password-repeat"
+        label="Confirm Account Password"
+        type="password"
+        placeholder="Confirm Account Password"
+        value={walletPasswordRepeat}
+        onChange={setWalletPasswordRepeat}
+      />
+      {error && <Error>{error}</Error>}
+      <AdvancedTextButton onClick={toggleShowAdvanced}>
+        Advanced Settings ({showAdvanced ? 'Enabled' : 'Disabled'})
+      </AdvancedTextButton>
+      {showAdvanced && (
+        <AdvancedSection>
+          <AdvancedTitle>HD Derivation Path</AdvancedTitle>
+          <AdvancedInputArea>
+            m/44'/
+            <Input
+              type="number"
+              id="coin"
+              value={coin_type !== undefined ? coin_type : ''}
+              onChange={(value) => changeCustomDerivationPath('account', value)}
+            />
+            '/
+            <Input
+              type="number"
+              id="account"
+              value={account !== undefined ? account : ''}
+              onChange={(value) => changeCustomDerivationPath('account', value)}
+            />
+            '/
+            <Input
+              type="number"
+              id="change"
+              value={change !== undefined ? change : ''}
+              onChange={(value) => changeCustomDerivationPath('change', value)}
+            />
+            /
+            <Input
+              type="number"
+              id="addressIndex"
+              value={addressIndex !== undefined ? addressIndex : ''}
+              onChange={(value) => changeCustomDerivationPath('addressIndex', value)}
+            />
+          </AdvancedInputArea>
+          <Select
+            label="Network"
+            options={[MAINNET_NETWORK, TESTNET_NETWORK]}
+            value={network}
+            onChange={updateNetwork}
+          />
+        </AdvancedSection>
+      )}
+      {loading ? (
+        <div>Please Wait..</div>
+      ) : (
+        <Button onClick={handleContinue}>Continue</Button>
+      )}
+    </Wrapper>
   );
 };

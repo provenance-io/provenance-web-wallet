@@ -1,4 +1,11 @@
-import { Button, ButtonGroup, FooterNav, AssetRow, Content, Denom } from 'Components';
+import {
+  Button,
+  ButtonGroup,
+  FooterNav,
+  AssetRow,
+  Content,
+  Denom,
+} from 'Components';
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAddress, useActiveAccount } from 'redux/hooks';
@@ -40,44 +47,59 @@ const AssetsContainer = styled.div`
 
 export const Dashboard = () => {
   const navigate = useNavigate();
-  const { getAddressAssets, assets } = useAddress();
+  const { getAddressAssets, assets, getAddressTx } = useAddress();
   const activeAccount = useActiveAccount();
   const { address } = activeAccount;
 
   // Onload get account assets
   useEffect(() => {
-    if (address) getAddressAssets(address);
-  }, [address, getAddressAssets]);
+    if (address) {
+      getAddressAssets(address);
+      getAddressTx(address);
+    }
+  }, [address, getAddressAssets, getAddressTx]);
 
   const calculatePortfolioValue = () => {
     let totalValue = 0;
-    const assetValues = assets.map(({ usdPrice, amount }) => usdPrice * Number(amount));
-    assetValues.forEach((value) => { totalValue += value });
+    const assetValues = assets.map(
+      ({ usdPrice, amount }) => usdPrice * Number(amount)
+    );
+    assetValues.forEach((value) => {
+      totalValue += value;
+    });
     return totalValue;
   };
 
-  const renderAssets = () => assets.map(({ display, displayAmount }) => (
-    <AssetRow
-      onClick={() => navigate(`/asset/${display}`)}
-      img={display}
-      name={display}
-      amount={{ count: displayAmount }}
-      key={display}
-    />
-  ));
+  const renderAssets = () =>
+    assets.map(({ display, displayAmount }) => (
+      <AssetRow
+        onClick={() => navigate(`/asset/${display}`)}
+        img={display}
+        name={display}
+        amount={{ count: displayAmount }}
+        key={display}
+      />
+    ));
 
   return (
     <Content>
       <DashboardHeader />
       <PortfolioTitle>Portfolio Value</PortfolioTitle>
-      <Value><Denom>$</Denom>{calculatePortfolioValue().toFixed(2)}</Value>
+      <Value>
+        <Denom>$</Denom>
+        {calculatePortfolioValue().toFixed(2)}
+      </Value>
       <ButtonGroup layout="inline" direction="row">
-        <Button layout="default" onClick={() => navigate('./send')}>Send</Button>
-        <Button layout="default" onClick={() => navigate('./receive')}>Receive</Button>
+        <Button layout="default" onClick={() => navigate('./send')}>
+          Send
+        </Button>
+        <Button layout="default" onClick={() => navigate('./receive')}>
+          Receive
+        </Button>
       </ButtonGroup>
       <AssetsTitle>My Assets</AssetsTitle>
       <AssetsContainer>
-        {assets.length ? renderAssets(): 'Address has no assets...'}
+        {assets.length ? renderAssets() : 'Address has no assets...'}
       </AssetsContainer>
       <FooterNav />
     </Content>

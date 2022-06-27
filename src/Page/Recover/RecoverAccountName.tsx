@@ -14,11 +14,11 @@ const InputGroup = styled.div`
 `;
 
 interface Props {
-  nextUrl: string,
+  nextUrl: string;
 }
 
-export const RecoverAccountName:React.FC<Props> = ({ nextUrl }) => {
-  const [ name, setName ] = useState('');
+export const RecoverAccountName: React.FC<Props> = ({ nextUrl }) => {
+  const [name, setName] = useState('');
   const [error, setError] = useState('');
   const navigate = useNavigate();
   const { updateTempAccount } = useAccount();
@@ -30,7 +30,7 @@ export const RecoverAccountName:React.FC<Props> = ({ nextUrl }) => {
     if (!newError) {
       // Update the tempAccount to use this account name
       updateTempAccount({ name });
-      navigate(nextUrl)
+      navigate(nextUrl);
     }
     setError(newError);
   };
@@ -38,7 +38,11 @@ export const RecoverAccountName:React.FC<Props> = ({ nextUrl }) => {
   return (
     <>
       <Group>
-        <Header title="Name Your Account" progress={33} iconLeft={ICON_NAMES.CLOSE} />
+        <Header
+          title="Name Your Account"
+          progress={33}
+          iconLeft={ICON_NAMES.CLOSE}
+        />
         <InfoText margin="16px auto 0 auto" font="PRIMARY">
           Name your account to easily identify it while using Provenance Wallet.
         </InfoText>
@@ -47,13 +51,14 @@ export const RecoverAccountName:React.FC<Props> = ({ nextUrl }) => {
         </InfoText>
         <InputGroup>
           <Input
+            autoFocus
             label="Account Name"
             id="wallet-name"
-            placeholder='Enter name'
+            placeholder="Enter name"
             value={name}
             onChange={setName}
             error={error}
-            />
+          />
         </InputGroup>
       </Group>
       <Button onClick={handleContinue}>Continue</Button>

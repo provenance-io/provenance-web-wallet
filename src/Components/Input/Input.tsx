@@ -2,15 +2,17 @@ import styled from 'styled-components';
 import { COLORS } from 'theme/colors';
 
 interface InputProps {
+  autoFocus?: boolean;
   id: string;
   label?: string;
-  disabled?: boolean,
+  disabled?: boolean;
   type?: string;
   placeholder?: string;
-  value?: string | number,
-  error?: string,
+  value?: string | number;
+  error?: string;
   children?: React.ReactNode;
-  onChange?: (e: any) => void
+  onChange?: (e: any) => void;
+  onKeyDown?: (e: any) => void;
 }
 
 const InputGroup = styled.div`
@@ -28,9 +30,10 @@ const Label = styled.label`
   line-height: 2.24rem;
 `;
 
-const InputEl = styled.input<{error?: string}>`
+const InputEl = styled.input<{ error?: string }>`
   padding: 10px;
-  border: 1px solid ${({ error }) => error ? COLORS.NEGATIVE_300 : COLORS.NEUTRAL_300 };
+  border: 1px solid
+    ${({ error }) => (error ? COLORS.NEGATIVE_300 : COLORS.NEUTRAL_300)};
   border-radius: 4px;
   color: ${COLORS.WHITE};
   font-size: 1.4rem;
@@ -73,7 +76,7 @@ export const Input = ({
       id={id}
       type={type}
       value={value}
-      onChange={(event) => (event?.target && onChange) && onChange(event.target.value)}
+      onChange={(event) => event?.target && onChange && onChange(event.target.value)}
       error={error}
       disabled={disabled}
       autoComplete="off"

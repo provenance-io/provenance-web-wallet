@@ -18,21 +18,21 @@ const InputSection = styled.div`
   }
 `;
 const ErrorMessage = styled.div`
-  color: #E63740;
+  color: #e63740;
   font-weight: bold;
   margin-bottom: 20px;
 `;
 
 interface InputData {
-  id: number,
-  error?: string,
-  value?: string,
-};
+  id: number;
+  error?: string;
+  value?: string;
+}
 interface Props {
-  nextUrl: string,
+  nextUrl: string;
 }
 
-export const EnterSeed:React.FC<Props> = ({ nextUrl }) => {
+export const EnterSeed: React.FC<Props> = ({ nextUrl }) => {
   const totalSeeds = 24;
   const navigate = useNavigate();
   const { updateTempAccount } = useAccount();
@@ -45,13 +45,15 @@ export const EnterSeed:React.FC<Props> = ({ nextUrl }) => {
         value: '',
         id: i,
         error: '',
-      }
+      };
       // Update target inputValue
       newInputValues[i] = data;
     }
     return newInputValues;
   };
-  const [inputValues, setInputValues] = useState<InputData[]>(createInitialInputData());
+  const [inputValues, setInputValues] = useState<InputData[]>(
+    createInitialInputData()
+  );
   const [submitError, setSubmitError] = useState<string>('');
 
   const updateInput = (index: number, field: 'error' | 'value', value: string) => {
@@ -72,7 +74,7 @@ export const EnterSeed:React.FC<Props> = ({ nextUrl }) => {
     inputValues.forEach((data, index) => {
       const { value } = data;
       // Must be string A-Z only
-      if (value && !(/^[a-zA-Z]+$/.test(value))) {
+      if (value && !/^[a-zA-Z]+$/.test(value)) {
         valid = false;
         // Set input error
         updateInput(index, 'error', 'Must be string');
@@ -99,13 +101,14 @@ export const EnterSeed:React.FC<Props> = ({ nextUrl }) => {
           updateInput(index, 'value', word);
         });
       } else updateInput(i, 'value', value);
-    }
+    };
 
     for (let i = 0; i < total; i += 1) {
       const displayNum = i + 1;
       const { value, error } = inputValues[i];
       allInputsElements.push(
         <Input
+          autoFocus={i === 0}
           id={`${displayNum}`}
           label={`Passphrase ${displayNum}`}
           key={`Passphrase ${displayNum}`}
@@ -136,7 +139,6 @@ export const EnterSeed:React.FC<Props> = ({ nextUrl }) => {
       } else {
         setSubmitError('Invalid Mnemonic');
       }
-
     }
     // If any error, show error message
     else setSubmitError('Please fix input issues above');
@@ -148,11 +150,11 @@ export const EnterSeed:React.FC<Props> = ({ nextUrl }) => {
   return (
     <Wrapper>
       <Header title="Enter Recovery Passphrase" progress={100} />
-      <InputSection>
-        {createSeedInputs(totalSeeds)}
-      </InputSection>
+      <InputSection>{createSeedInputs(totalSeeds)}</InputSection>
       {submitError && <ErrorMessage>{submitError}</ErrorMessage>}
-      <Button onClick={handleContinue} disabled={!allFilledOut}>Continue</Button>
+      <Button onClick={handleContinue} disabled={!allFilledOut}>
+        Continue
+      </Button>
     </Wrapper>
   );
 };

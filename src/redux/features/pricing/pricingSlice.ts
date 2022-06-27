@@ -1,8 +1,10 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import qs from 'query-string';
-import { PRICING_URL } from 'consts';
+import { PRICING_API_URL } from 'consts';
 import { RootState } from 'redux/store';
 import { api } from '../api';
+import { getServicePricingEngineApi } from 'utils';
+import { Account } from 'types';
 
 /**
  * INITIAL STATE
@@ -11,9 +13,11 @@ import { api } from '../api';
 interface InitialState {
   denomPriceLoading: boolean;
   gasPriceLoading: boolean;
+  priceEngineLoading: boolean;
 
   denomPricesError: any;
   gasPriceError: any;
+  priceEngineError: any;
 
   denomPrices: {
     [key: string]: Array<{
@@ -24,19 +28,35 @@ interface InitialState {
 
   gasPrice: number;
   gasPriceDenom: string;
+
+  priceEnginePrices: {
+    [key: string]: {
+      id: string;
+      markerAddress: string;
+      markerDenom: string;
+      scopeAddress: string;
+      scopeUuid: string;
+      priceTimestamp: string;
+      usdPrice: number;
+    };
+  };
 }
 
 const initialState: InitialState = {
   denomPriceLoading: false,
   gasPriceLoading: false,
+  priceEngineLoading: false,
 
   denomPricesError: null,
   gasPriceError: null,
+  priceEngineError: null,
 
   denomPrices: {},
 
   gasPrice: 0,
   gasPriceDenom: '',
+
+  priceEnginePrices: {},
 };
 
 /**
@@ -44,22 +64,27 @@ const initialState: InitialState = {
  */
 export const GET_GAS_PRICE = 'GET_GAS_PRICE';
 export const GET_DENOM_PRICE = 'GET_DENOM_PRICE';
+export const QUERY_PRICING_ENGINE = 'QUERY_PRICING_ENGINE';
 
 /**
  * ASYNC ACTIONS
  */
-interface GetDenomPriceArgs {
+type GetDenomPriceArgs = {
   denom: string;
-  endDate: string;
-  period: string;
-  startDate: string;
-}
+  endDate?: string;
+  period?: string;
+  startDate?: string;
+};
+
+type QueryPriceEngineArgs = {
+  denom: string[];
+};
 
 export const getDenomPrice = createAsyncThunk(
   GET_DENOM_PRICE,
   ({ denom, period, startDate, endDate }: GetDenomPriceArgs) =>
     api({
-      url: `${PRICING_URL}/marker/${denom}?${qs.stringify({
+      url: `${PRICING_API_URL}/marker/${denom}?${qs.stringify({
         period,
         startDate,
         endDate,
@@ -69,11 +94,33 @@ export const getDenomPrice = createAsyncThunk(
 
 export const getGasPrice = createAsyncThunk(GET_GAS_PRICE, () =>
   api({
-    url: `${PRICING_URL}/gas-price`,
+    url: `${PRICING_API_URL}/gas-price`,
   })
 );
 
-export const pricingActions = { getDenomPrice, getGasPrice };
+export const queryPricingEngine = createAsyncThunk(
+  QUERY_PRICING_ENGINE,
+  ({ denom }: QueryPriceEngineArgs, { getState }) => {
+    const {
+      account: { accounts: allAccounts, activeAccountId },
+    } = getState() as RootState;
+    const { address = '' } = allAccounts.filter(
+      ({ id }: Account) => activeAccountId === id
+    )[0];
+
+    return api({
+      url: getServicePricingEngineApi(
+        address,
+        `/pricing/marker/denom/list?${qs.stringify(
+          { denom },
+          { arrayFormat: 'bracket-separator', arrayFormatSeparator: ',' }
+        )}`
+      ),
+    });
+  }
+);
+
+export const pricingActions = { getDenomPrice, getGasPrice, queryPricingEngine };
 
 /**
  * SLICE
@@ -113,6 +160,27 @@ const pricingSlice = createSlice({
         state.gasPrice = 0;
         state.gasPriceDenom = '';
         state.gasPriceError = payload;
+      });
+
+    // QUERY_PRICING_ENGINE
+    builder
+      .addCase(queryPricingEngine.pending, (state) => {
+        state.priceEngineLoading = true;
+      })
+      .addCase(queryPricingEngine.fulfilled, (state, { payload }) => {
+        state.priceEngineLoading = false;
+        state.priceEnginePrices = payload.data.reduce(
+          (prices: InitialState['priceEnginePrices'], curr: any) => {
+            prices[curr.markerDenom] = curr;
+            return prices;
+          },
+          state.priceEnginePrices
+        );
+      })
+      .addCase(queryPricingEngine.rejected, (state, { payload }) => {
+        state.priceEngineLoading = false;
+        state.priceEnginePrices = {};
+        state.priceEngineError = payload;
       });
   },
 });

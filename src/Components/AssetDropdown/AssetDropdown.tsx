@@ -2,18 +2,20 @@ import { useState } from 'react';
 import { Sprite } from 'Components';
 import { ICON_NAMES } from 'consts';
 import styled from 'styled-components';
+import { Asset } from 'types';
+import { COLORS } from 'theme';
 
 const Wrapper = styled.div`
   position: relative;
 `;
-const AssetItem = styled.div<{option: boolean}>`
-  border: 1px solid #A2A7B9;
-  border-radius: ${({ option }) => option ? '0px' : '4px' };
+const AssetItem = styled.div<{ option: boolean }>`
+  border: 1px solid #a2a7b9;
+  border-radius: ${({ option }) => (option ? '0px' : '4px')};
   padding: 16px;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  background: ${({ option }) => option ? '#2C2F3A' : '#1B1E29' };
+  background: ${({ option }) => (option ? '#2C2F3A' : '#1B1E29')};
   cursor: pointer;
   width: 100%;
   user-select: none;
@@ -29,7 +31,7 @@ const Left = styled.div`
   display: flex;
   align-items: center;
 `;
-const AssetImg = styled.img`
+const AssetImg = styled.object`
   margin-right: 8px;
   width: 30px;
 `;
@@ -46,7 +48,7 @@ const AssetValue = styled.div`
 const AssetCount = styled.div`
   font-weight: 400;
   font-size: 1.2rem;
-  color: #A2A7B9;
+  color: #a2a7b9;
 `;
 const FloatingOptions = styled.div`
   position: absolute;
@@ -57,50 +59,58 @@ const FloatingOptions = styled.div`
   width: 100%;
 `;
 
-
-interface Asset {
-  icon: string,
-  name: string,
-  value: number,
-  amount: number,
-  id: number|string,
-};
 interface Props {
-  assets: Asset[],
-  className?: string,
-  activeID: number|string,
-  onChange: (e: any) => void,
+  assets: Asset[];
+  className?: string;
+  activeDenom?: string;
+  onChange: (e: any) => void;
 }
 
-export const AssetDropdown:React.FC<Props> = ({ className, assets, activeID=assets[0].id, onChange }) => {
+export const AssetDropdown: React.FC<Props> = ({
+  className,
+  assets,
+  activeDenom = assets[0].denom,
+  onChange,
+}) => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
-  const handleAssetClick = (id: string|number) => {
+  const handleAssetClick = (asset: Asset) => {
     // If open, close.  If closed, open.
     setDropdownOpen(!dropdownOpen);
     // If not already active, set to active
-    onChange(id);
+    onChange(asset);
   };
-  const activeAsset = assets.find(({ id }) => id === activeID) || assets[0];
+  const activeAsset = assets.find(({ denom }) => denom === activeDenom) || assets[0];
 
   // TODO: Need to make sure all currency and number values get the proper sig figs and currency icon
-  const renderDropdown = ({ id, icon, name, value, amount }: Asset, option: boolean = false) => (
-    <AssetItem onClick={() => handleAssetClick(id)} key={id} option={option}>
-      <Right>
-        <AssetImg src={`/images/assets/${icon}.svg`} />
-        <AssetName>{name}</AssetName>
-      </Right>
-      <Left>
-        <Amounts>
-          <AssetValue>${value}</AssetValue>
-          <AssetCount>{amount} {name}</AssetCount>
-        </Amounts>
-        {!option && <Sprite icon={ICON_NAMES.CARET} size="1rem" />}
-      </Left>
-    </AssetItem>
-  );
-  
+  const renderDropdown = (asset: Asset, option: boolean = false) => {
+    const { denom, display, usdPrice, displayAmount } = asset;
+
+    return (
+      <AssetItem onClick={() => handleAssetClick(asset)} key={denom} option={option}>
+        <Right>
+          <AssetImg data={`/images/assets/${display}.svg`} type="image/png">
+            <Sprite icon={ICON_NAMES.PROVENANCE} size="3rem" color={COLORS.WHITE} />
+          </AssetImg>
+          <AssetName>{display}</AssetName>
+        </Right>
+        <Left>
+          <Amounts>
+            <AssetValue>${usdPrice}</AssetValue>
+            <AssetCount>
+              {displayAmount} {display}
+            </AssetCount>
+          </Amounts>
+          {!option && <Sprite icon={ICON_NAMES.CARET} size="1rem" />}
+        </Left>
+      </AssetItem>
+    );
+  };
+
   // Don't render the currently active dropdown in all options
-  const renderAllDropdowns = () => assets.filter((asset) => asset.id !== activeID).map((asset) => renderDropdown(asset, true));
+  const renderAllDropdowns = () =>
+    assets
+      .filter((asset) => asset.denom !== activeDenom)
+      .map((asset) => renderDropdown(asset, true));
 
   return (
     <Wrapper className={className}>

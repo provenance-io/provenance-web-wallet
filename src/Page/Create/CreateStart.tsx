@@ -16,12 +16,12 @@ import { createMnemonic } from 'utils';
 const Select = styled(SelectBase)`
   margin-top: 10px;
 `;
-const AdvancedMessage = styled.div<{active: boolean}>`
+const AdvancedMessage = styled.div<{ active: boolean }>`
   font-size: 1.6rem;
   font-weight: bold;
   margin-top: 80px;
   cursor: pointer;
-  color: ${({ active }) => active ? '#357EFD' : '#FFFFFF' };
+  color: ${({ active }) => (active ? '#357EFD' : '#FFFFFF')};
   user-select: none;
 `;
 
@@ -48,30 +48,47 @@ export const CreateStart = ({ nextUrl }: Props) => {
 
   const toggleAdvancedSettings = () => {
     if (showAdvanced) setNetwork(defaultNetwork);
-    setShowAdvanced(!showAdvanced)
+    setShowAdvanced(!showAdvanced);
   };
 
   return (
     <Content>
-      <Header iconLeft={ICON_NAMES.CLOSE} progress={33} title="Name Your Account" backLocation={APP_URL} />
+      <Header
+        iconLeft={ICON_NAMES.CLOSE}
+        progress={33}
+        title="Name Your Account"
+        backLocation={APP_URL}
+      />
       <BodyContent
         $css={css`
           text-align: center;
           margin-bottom: 32px;
         `}
       >
-        Name your acount to easily identify it while using the Figure Tech Wallet. These names are
-        stored locally, and can only be seen by you.
+        Name your acount to easily identify it while using the Figure Tech Wallet.
+        These names are stored locally, and can only be seen by you.
       </BodyContent>
-      <Input id="account-name" label="Account Name" type="text" placeholder="Account Name" value={name} onChange={setName} />
-      <AdvancedMessage
-        active={showAdvanced}
-        onClick={toggleAdvancedSettings}
-      >
+      <Input
+        autoFocus
+        id="account-name"
+        label="Account Name"
+        type="text"
+        placeholder="Account Name"
+        value={name}
+        onChange={setName}
+      />
+      <AdvancedMessage active={showAdvanced} onClick={toggleAdvancedSettings}>
         Advanced Settings ({`${showAdvanced ? 'On' : 'Off'}`})
       </AdvancedMessage>
-      {showAdvanced && <Select label="Network" options={['mainnet', 'testnet']} value={network} onChange={setNetwork} />}
-      <Button onClick={handleContinue} >Continue</Button>
+      {showAdvanced && (
+        <Select
+          label="Network"
+          options={['mainnet', 'testnet']}
+          value={network}
+          onChange={setNetwork}
+        />
+      )}
+      <Button onClick={handleContinue}>Continue</Button>
     </Content>
   );
 };

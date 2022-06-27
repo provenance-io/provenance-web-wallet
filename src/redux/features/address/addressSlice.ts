@@ -3,62 +3,13 @@ import { ADDRESS_URL } from 'consts';
 import { RootState } from 'redux/store';
 import { api } from '../api';
 import { getServiceMobileApi } from 'utils';
+import { compareDesc, parseISO } from 'date-fns';
+import { Address, Transaction } from 'types';
 
 /**
  * INITIAL STATE
  */
-interface InitialState {
-  allTransactionsLoading: boolean;
-  assetsLoading: boolean;
-  transactionsLoading: boolean;
-
-  allTransactionsPages: number;
-  allTransactionsTotalCount: number;
-
-  allTransactions: Array<{
-    block: number;
-    feeAmount: string;
-    hash: string;
-    signer: string;
-    status: string;
-    time: string;
-    type: string;
-  }>;
-
-  assets: Array<{
-    amount: string;
-    dailyHigh: number;
-    dailyLow: number;
-    dailyVolume: number;
-    denom: string;
-    description: string;
-    display: string;
-    displayAmount: string;
-    exponent: number;
-    usdPrice: number;
-  }>;
-
-  transactions: Array<{
-    amount: number;
-    block: number;
-    denom: string;
-    exponent: number;
-    hash: string;
-    pricePerUnit: number;
-    recipientAddress: string;
-    senderAddress: string;
-    status: string;
-    timestamp: string;
-    totalPrice: number;
-    txFee: number;
-  }>;
-
-  allTransactionsError: any;
-  assetsError?: any;
-  transactionsError?: any;
-}
-
-const initialState: InitialState = {
+const initialState: Address = {
   allTransactionsLoading: false,
   assetsLoading: false,
   transactionsLoading: false,
@@ -86,12 +37,12 @@ const GET_ADDRESS_TX_ALL = 'GET_ADDRESS_TX_ALL';
 /**
  * SPECIAL ASYNC ACTIONS
  */
-const getAddressAssetsCount = async (addr: string):Promise<number> => {
+const getAddressAssetsCount = async (addr: string): Promise<number> => {
   const result = await api({
     url: `${getServiceMobileApi(addr, ADDRESS_URL)}/${addr}/assets`,
   });
   return result?.data?.length || 0;
-}
+};
 
 /**
  * ASYNC ACTIONS
@@ -104,20 +55,16 @@ export const getAddressAssets = createAsyncThunk(
     })
 );
 
-export const getAddressTx = createAsyncThunk(
-  GET_ADDRESS_TX,
-  (addr: string) =>
-    api({
-      url: `${getServiceMobileApi(addr, ADDRESS_URL)}/${addr}/transactions`,
-    })
+export const getAddressTx = createAsyncThunk(GET_ADDRESS_TX, (addr: string) =>
+  api({
+    url: `${getServiceMobileApi(addr, ADDRESS_URL)}/${addr}/transactions`,
+  })
 );
 
-export const getAddressTxAll = createAsyncThunk(
-  GET_ADDRESS_TX_ALL,
-  (addr: string) =>
-    api({
-      url: `${getServiceMobileApi(addr, ADDRESS_URL)}/${addr}/transactions/all`,
-    })
+export const getAddressTxAll = createAsyncThunk(GET_ADDRESS_TX_ALL, (addr: string) =>
+  api({
+    url: `${getServiceMobileApi(addr, ADDRESS_URL)}/${addr}/transactions/all`,
+  })
 );
 
 export const addressActions = { getAddressAssets, getAddressTx, getAddressTxAll };
@@ -156,7 +103,9 @@ const addressSlice = createSlice({
       })
       .addCase(getAddressTx.fulfilled, (state, { payload }) => {
         state.transactionsLoading = false;
-        state.transactions = payload.data;
+        state.transactions = payload.data.sort((a: Transaction, b: Transaction) =>
+          compareDesc(parseISO(a.timestamp), parseISO(b.timestamp))
+        );
       })
       .addCase(getAddressTx.rejected, (state, { payload }) => {
         state.transactionsLoading = false;

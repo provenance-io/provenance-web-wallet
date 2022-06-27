@@ -24,6 +24,9 @@ import {
   ResetWallets,
   Seedphrase,
   SeedphraseIntro,
+  SendAmount,
+  SendComplete,
+  SendReview,
   Transactions,
   Unlock,
   UnlockAuth,
@@ -53,6 +56,9 @@ import {
   RECOVER_SEED_URL,
   RECOVER_URL,
   RESET_WALLETS_URL,
+  SEND_COMPLETE_URL,
+  SEND_REVIEW_URL,
+  SEND_URL,
   TRANSACTIONS_URL,
   UNLOCK_URL,
 } from 'consts';
@@ -60,12 +66,17 @@ import {
 export const routes = [
   {
     path: APP_URL,
-    element: (
-      <RequiresAuth />
-    ),
+    element: <RequiresAuth />,
     children: [
       // LANDING PAGE
-      { index: true, element: <Page bgImage align="center"><Landing /></Page> },
+      {
+        index: true,
+        element: (
+          <Page bgImage align="center">
+            <Landing />
+          </Page>
+        ),
+      },
       // DASHBOARD
       {
         path: DASHBOARD_URL,
@@ -75,64 +86,67 @@ export const routes = [
           { path: DASHBOARD_SEND_URL, element: <DashboardSend /> },
           { path: DASHBOARD_RECEIVE_URL, element: <DashboardReceive /> },
           { path: DASHBOARD_MENU_URL, element: <DashboardMenu /> },
-          { path: DASHBOARD_ACCOUNT_CREATE_URL, element: <DashboardAccountCreate  nextUrl={DASHBOARD_MENU_URL} /> },
-          { path: DASHBOARD_CONNECTION_DETAILS_URL, element: <DashboardConnectionDetails /> },
-        ]
+          {
+            path: DASHBOARD_ACCOUNT_CREATE_URL,
+            element: <DashboardAccountCreate nextUrl={DASHBOARD_MENU_URL} />,
+          },
+          {
+            path: DASHBOARD_CONNECTION_DETAILS_URL,
+            element: <DashboardConnectionDetails />,
+          },
+        ],
       },
       // ACTIONS
       {
         path: ACTIONS_URL,
         element: <Page />,
-        children: [
-          { index: true, element: <Actions /> },
-        ],
+        children: [{ index: true, element: <Actions /> }],
       },
       // ASSET
       {
         path: ASSET_URL,
         element: <Page bgImage />,
-        children: [
-          { index: true, element: <Asset /> },
-        ],
+        children: [{ index: true, element: <Asset /> }],
       },
       // TRANSACTIONS
       {
         path: TRANSACTIONS_URL,
         element: <Page />,
-        children: [
-          { index: true, element: <Transactions /> },
-        ],
+        children: [{ index: true, element: <Transactions /> }],
       },
       // PROFILE
       {
         path: PROFILE_URL,
         element: <Page />,
-        children: [
-          { index: true, element: <Profile /> },
-        ],
+        children: [{ index: true, element: <Profile /> }],
       },
       // RESET WALLETS
       {
         path: RESET_WALLETS_URL,
         element: <Page />,
+        children: [{ index: true, element: <ResetWallets /> }],
+      },
+      {
+        path: SEND_URL,
+        element: <Page />,
         children: [
-          { index: true, element: <ResetWallets /> },
+          { index: true, element: <SendAmount /> },
+          { path: SEND_COMPLETE_URL, element: <SendComplete /> },
+          { path: SEND_REVIEW_URL, element: <SendReview /> },
         ],
       },
       // WALLETCONNECT CONNECTION
       {
         path: CONNECT_URL,
-        element: <Page bgImage/>,
-        children: [
-          { index: true, element: <Connect /> },
-        ],
+        element: <Page bgImage />,
+        children: [{ index: true, element: <Connect /> }],
       },
     ],
   },
   // RECOVER WALLET
   {
     path: RECOVER_URL,
-    element: <Page align='center'/>,
+    element: <Page align="center" />,
     children: [
       { index: true, element: <RecoverAccountName nextUrl={RECOVER_NOTE_URL} /> },
       {
@@ -147,14 +161,17 @@ export const routes = [
         path: RECOVER_PASSWORD_URL,
         element: <RecoverPassword nextUrl={DASHBOARD_URL} />,
       },
-    ]
+    ],
   },
   // CREATE WALLET
   {
     path: CREATE_URL,
     element: <CreateAuth />,
     children: [
-      { index: true, element: <CreateStart nextUrl={CREATE_SEEDPHRASE_INTRO_URL} /> },
+      {
+        index: true,
+        element: <CreateStart nextUrl={CREATE_SEEDPHRASE_INTRO_URL} />,
+      },
       {
         path: CREATE_SEEDPHRASE_INTRO_URL,
         element: <SeedphraseIntro nextUrl={CREATE_SEEDPHRASE_URL} />,
@@ -171,23 +188,22 @@ export const routes = [
         path: CREATE_PASSWORD_URL,
         element: <CreatePassword nextUrl={CREATE_COMPLETE_URL} />,
       },
-      { path: CREATE_COMPLETE_URL, element: <CreateComplete nextUrl={DASHBOARD_URL} /> },
+      {
+        path: CREATE_COMPLETE_URL,
+        element: <CreateComplete nextUrl={DASHBOARD_URL} />,
+      },
     ],
   },
   {
     path: UNLOCK_URL,
     element: <UnlockAuth />,
-    children: [
-      { index: true, element: <Unlock nextUrl={DASHBOARD_URL} /> },
-    ]
+    children: [{ index: true, element: <Unlock nextUrl={DASHBOARD_URL} /> }],
   },
   {
     path: NOTIFICATION_URL,
-    element: <Page bgImage/>,
-    children: [
-      { index: true, element: <Notification /> },
-    ],
-  }
+    element: <Page bgImage />,
+    children: [{ index: true, element: <Notification /> }],
+  },
   // { path: FOUR_OH_FOUR_URL, element: <NotFound /> },
   // { path: '*', element: <Navigate to={FOUR_OH_FOUR_URL} /> },
 ];

@@ -1,5 +1,5 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-import { STATISTICS_URL } from 'consts';
+import { STATISTICS_API_URL } from 'consts';
 import { RootState } from 'redux/store';
 import { api } from '../api';
 import { Statistics } from 'types';
@@ -36,7 +36,7 @@ const GET_STATISTICS = 'GET_STATISTICS';
  */
 
 const getStatistics = createAsyncThunk(GET_STATISTICS, () =>
-  api({ url: STATISTICS_URL })
+  api({ url: STATISTICS_API_URL })
 );
 
 export const statisticsActions = { getStatistics };

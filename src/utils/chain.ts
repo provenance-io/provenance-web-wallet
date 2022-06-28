@@ -18,7 +18,7 @@ import {
 import { fromSeed as bip32FromSeed, BIP32Interface, fromBase58 as bip32FromB58 } from 'bip32';
 import { toWords as bech32ToWords, encode as bech32Encode } from 'bech32';
 import { publicKeyCreate as secp256k1PublicKeyCreate, ecdsaSign as secp256k1EcdsaSign } from 'secp256k1';
-import { bufferToBytes, bytesToBase64, base64ToBytes } from '@tendermint/belt';
+import { bufferToBytes, bytesToBase64 } from '@tendermint/belt';
 import { createHash } from 'crypto';
 // TYPESCRIPT TYPES
 import type { Bech32String, Bytes } from '@tendermint/types';

@@ -77,7 +77,12 @@
     "util": "0.12.4"
   },
   "scripts": {
-    "clean": "rm -rf ./build",
+    "clean:build": "rm -rf ./build",
+    "clean:protos": "rm -rf ./src/proto",
+    "clean:schemas": "rm -rf ./src/types/schema",
+    "clean:nodeModules": "rm -rf ./node_modules",
+    "clean:packageLock": "rm -rf ./package-lock.json",
+    "clean:all": "npm run clean:build && npm run clean:protos && npm run clean:schemas && npm run clean:nodeModules && npm run clean:packageLock",
     "commentSniff": "node -e 'require(\"./scripts/commentSniffer.js\").commentSniffer()'",
     "lint": "eslint src",
     "start": "env-cmd -e default,staging react-scripts start",
@@ -85,6 +90,7 @@
     "build:devTools": "env-cmd -e default,staging react-scripts build && npm run reduxDev",
     "build:protos": "./scripts/build_protos.sh",
     "build:schemas": "json2ts -i third_party/schema -o src/types/schema/",
+    "build:full": "npm run clean:all && npm i && npm run build:protos && npm run build:schemas && npm run build",
     "reduxDev": "redux-devtools",
     "test": "env-cmd -e e2e react-scripts test --watch --verbose"
   },

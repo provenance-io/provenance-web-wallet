@@ -30,8 +30,6 @@ export const Authenticate:React.FC<Props> = ({ handleApprove, handleDecline, han
       if (!masterKey) newPasswordError = 'Invalid password';
       // Password was correct
       else {
-        // TODO: Indicate if you want this account to be mainnet or testnet
-        // const network = 'testnet';
         // Derive the privateKey
         const { privateKey } = createWalletFromMasterKey(masterKey);
         if (handleAuth) handleAuth(privateKey);

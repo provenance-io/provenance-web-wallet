@@ -2,7 +2,14 @@ import styled from 'styled-components';
 import { useState } from 'react';
 import { CopyValue, Button, Header, Sprite, BottomFloat, ButtonGroup } from 'Components';
 import { useNavigate } from 'react-router-dom';
-import { DASHBOARD_URL, ICON_NAMES, MAINNET_NETWORK, NEW_ACCOUNT_ADD_URL } from 'consts';
+import {
+  DASHBOARD_URL,
+  ICON_NAMES,
+  MAINNET_NETWORK,
+  NEW_ACCOUNT_ADD_URL,
+  NEW_ACCOUNT_SUB_URL,
+  NEW_ACCOUNT_IMPORT_URL,
+} from 'consts';
 import { useAccount } from 'redux/hooks';
 import { trimString } from 'utils';
 import { AccountNetwork } from 'types';
@@ -78,15 +85,21 @@ const WalletAction = styled.div`
 
 const Pill = styled.div<{ network: AccountNetwork}>`
   font-size: 1rem;
-  background: ${({ network }) => network === MAINNET_NETWORK ? COLORS.SECONDARY_750 : COLORS.PRIMARY_600 };
+  ${({ network }) => network === MAINNET_NETWORK ? `
+    background: ${COLORS.SECONDARY_750};
+  ` : `
+    box-shadow: 0 0 0 1px ${COLORS.SECONDARY_500};
+    background: none;
+  `};
   border-radius: 6px;
-  padding: 0px 10px;
+  width: 60px;
+  text-align: center;
   margin-left: 20px;
 `;
 
 export const DashboardMenu:React.FC = () => {
   const navigate = useNavigate();
-  const { activeAccountId, accounts, saveAccountData } = useAccount();
+  const { activeAccountId, accounts, saveAccountData, removeAccount } = useAccount();
   const [ accountMenuTargetId, setAccountMenuTargetId ] = useState('');
   const menuTargetAccount = accountMenuTargetId ? accounts.find(account => account.address === accountMenuTargetId) : { address: '', accountLevel: ''};
   const { address: menuTargetAddress, accountLevel: menuTargetAccountLevel } = menuTargetAccount!;
@@ -106,10 +119,17 @@ export const DashboardMenu:React.FC = () => {
     </WalletItem>
   ));
 
-  const handleSelectWallet = () => {
+  const handleSelectAccount = () => {
     // Save to redux and chrome storage
     saveAccountData({ activeAccountId: accountMenuTargetId })
   };
+
+  const handleRemoveAccount = () => {
+    // TODO: Needs confirmation modal, maybe even authenticate to remove an account?
+    // Create confirmation modal where user must type out last 4 of the address
+    removeAccount(menuTargetAddress!);
+  };
+  const handleRenameAccount = () => {};
 
   return (
     <>
@@ -118,7 +138,7 @@ export const DashboardMenu:React.FC = () => {
       {accountMenuTargetId && (
         <WalletActionsPopup onClick={() => setAccountMenuTargetId('')}>
           {activeAccountId !== accountMenuTargetId && (
-            <WalletAction onClick={handleSelectWallet}>
+            <WalletAction onClick={handleSelectAccount}>
               Select Account
             </WalletAction>
           )}
@@ -127,19 +147,19 @@ export const DashboardMenu:React.FC = () => {
             <CopyValue value={menuTargetAddress} successText="Address Copied!" noPopup>Copy Account Address</CopyValue>
           </WalletAction>
           {menuTargetAccountLevel !== 'addressIndex' && (
-            <WalletAction onClick={() => navigate(NEW_ACCOUNT_ADD_URL)}>
+            <WalletAction onClick={() => navigate(NEW_ACCOUNT_SUB_URL)}>
               Create Sub Account
             </WalletAction>
           )}
-          <WalletAction>Rename</WalletAction>
-          <WalletAction>Remove</WalletAction>
+          <WalletAction onClick={handleRenameAccount}>Rename</WalletAction>
+          {accounts.length > 1 && <WalletAction onClick={handleRemoveAccount}>Remove</WalletAction>}
           <WalletAction onClick={() => setAccountMenuTargetId('')}>Close</WalletAction>
         </WalletActionsPopup>
       )}
       <BottomFloat>
         <ButtonGroup>
-          <Button onClick={() => navigate(NEW_ACCOUNT_ADD_URL)} disabled title="Temporarily Disabled">Create New Account</Button>
-          <Button variant='secondary' onClick={() => navigate(NEW_ACCOUNT_ADD_URL)} disabled title="Temporarily Disabled">Import Account</Button>
+          <Button onClick={() => navigate(NEW_ACCOUNT_ADD_URL)}>Create New Account</Button>
+          <Button variant='secondary' onClick={() => navigate(NEW_ACCOUNT_IMPORT_URL)}>Import Account</Button>
         </ButtonGroup>
       </BottomFloat>
     </>

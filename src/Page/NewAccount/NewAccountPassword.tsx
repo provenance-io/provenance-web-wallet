@@ -20,7 +20,7 @@ import {
   createChildAccount,
   decryptKey,
 } from 'utils';
-import { Account } from 'types';
+import { Account, FlowType } from 'types';
 
 const Input = styled(InputBase)`
   margin-bottom: 30px;
@@ -29,7 +29,7 @@ const Input = styled(InputBase)`
 interface Props {
   nextUrl: string;
   previousUrl: string;
-  flowType: 'create' | 'add' | 'recover';
+  flowType: FlowType;
   progress: number,
 }
 
@@ -41,7 +41,14 @@ export const NewAccountPassword = ({ nextUrl, previousUrl, flowType, progress }:
   const [errors, setErrors] = useState<string[]>([]); // [password-error, repeated-password-error, generic-error]
 
   const passwordMinLength = Number(PASSWORD_MIN_LENGTH)!;
+  // Check for each flotType
+  const isSubAccount = flowType === 'sub';
+  const isImportAccount = flowType === 'import';
   const isAddAccount = flowType === 'add';
+  const isCreateAccount = flowType === 'create';
+  const isRecoverAccount = flowType === 'recover';
+  const additionalAccount = isSubAccount || isImportAccount || isAddAccount;
+  const enterNewPassword = isCreateAccount || isRecoverAccount;
   const password = walletPassword[0];
   const repeatedPassword = walletPassword[1];
 
@@ -55,8 +62,8 @@ export const NewAccountPassword = ({ nextUrl, previousUrl, flowType, progress }:
 
   const handleContinue = async () => {
     let latestErrors = [];
-    // Check repeated password (flowType of 'add' will not have the password repeat input)
-    if (!isAddAccount) {
+    // Check repeated password (For flowtypes with a new wallet password)
+    if (enterNewPassword) {
       if (password !== repeatedPassword) latestErrors[1] = 'Passwords must match.';
       if (!repeatedPassword) latestErrors[1] = 'Please confirm your password.';
     }
@@ -65,11 +72,12 @@ export const NewAccountPassword = ({ nextUrl, previousUrl, flowType, progress }:
     // If there are no errors, continue
     if (!latestErrors.length) {
       let fullNewAccountData = {} as Account;
+      const isChildAccount = !!tempAccount?.parentMasterKey && !!tempAccount?.parentHdPath;
       // Are we creating a new account or adding an account to a parent? (check for tempaccount parentMasterKey & parentHdPath)
-      if (!!tempAccount?.parentMasterKey && !!tempAccount?.parentHdPath) {
+      if (isChildAccount) {
         // Take the password entered and decode the parent masterKey for use
-        const decodedParentMasterKey = decryptKey(tempAccount.parentMasterKey, password);
-        fullNewAccountData = createChildAccount(decodedParentMasterKey, tempAccount.parentHdPath, tempAccount.hdPath);
+        const decodedParentMasterKey = decryptKey(tempAccount!.parentMasterKey!, password);
+        fullNewAccountData = createChildAccount(decodedParentMasterKey, tempAccount!.parentHdPath!, tempAccount!.hdPath);
       } else {
         // Create main root account based on the HD path
         fullNewAccountData = createRootAccount(tempAccount!.mnemonic!, tempAccount!.hdPath!);
@@ -101,8 +109,8 @@ export const NewAccountPassword = ({ nextUrl, previousUrl, flowType, progress }:
     <Content>
       <Header iconLeft={ICON_NAMES.CLOSE} progress={progress} title="Wallet Password" backLocation={previousUrl} />
       <Typo type='body'>
-        {flowType === 'add' ?
-        'Current wallet password. Your password is required to add additional accounts.' :
+        {additionalAccount ?
+        'Existing wallet password. Your password is required to add/import additional accounts.' :
         'Enter a wallet password. This password will be used for permissions, authentication, and unlocking. This password is only stored locally.'}
       </Typo>
 
@@ -115,7 +123,7 @@ export const NewAccountPassword = ({ nextUrl, previousUrl, flowType, progress }:
         onChange={(value) => updatePassword(value)}
         error={errors[0]}
       />
-      {!isAddAccount && (
+      {enterNewPassword && (
         <Input
           id="wallet-password-repeat"
           label="Confirm Wallet Password"

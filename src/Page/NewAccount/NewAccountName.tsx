@@ -14,6 +14,7 @@ import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import { useAccount, useActiveAccount, useSettings, useWalletConnect } from 'redux/hooks';
 import { completeHdPath } from 'utils';
+import { FlowType } from 'types';
 
 interface StyledProps {
   enabled?: boolean,
@@ -30,19 +31,19 @@ const AdvancedTextButton = styled.div<StyledProps>`
 interface Props {
   nextUrl: string;
   previousUrl: string;
-  flowType: 'create' | 'add' | 'recover';
+  flowType: FlowType;
   progress: number;
 }
 
 export const NewAccountName = ({ previousUrl, nextUrl, flowType, progress }: Props) => {
   // Shorthand flowtypes
-  const flowTypeAdd = flowType === 'add';
+  const flowTypeSub = flowType === 'sub';
   const flowTypeRecover = flowType === 'recover';
-  const flowTypeCreate = flowType === 'create';
   const { accountLevel: parentAccountLevel, name: parentAccountName, hdPath: parentHdPath, masterKey: parentMasterKey } = useActiveAccount();
   // When we are adding an account, we need to write the HD path all the way down to addressIndex and account for the parent path
   // TODO: completeHdPath can set a custom addressIndex, determine if an addressIndex already exists (loop through all accounts) and auto increment that value by 1 as needed.
-  const defaultHdPath = flowTypeAdd ? completeHdPath(parentHdPath!, "0'", true) : DEFAULT_MAINNET_HD_PATH;
+  const defaultHdPath = flowTypeSub ? completeHdPath(parentHdPath!, "0'", true) : DEFAULT_MAINNET_HD_PATH;
+  // TODO: 
 
   const [name, setName] = useState('');
   const [error, setError] = useState('');
@@ -54,11 +55,11 @@ export const NewAccountName = ({ previousUrl, nextUrl, flowType, progress }: Pro
   const { resetSettingsData } = useSettings();
   const { resetWalletConnectData } = useWalletConnect();
   // const accountType: 'wallet' | 'account' = flowType === 'create' ? 'wallet' : 'account';
-  const accountType: 'wallet' | 'account' = flowTypeCreate ? 'account' : 'account';
+  const accountType = 'account';
 
   const handleContinue = async () => {
     const validLength = name.length > 2 && name.length < 16;
-    const validCharacters = /^([a-zA-Z0-9-_]+\s)*[a-zA-Z0-9-_]+$/.test(name)
+    const validCharacters = /^([a-zA-Z0-9-_]+\s)*[a-zA-Z0-9-_]+$/.test(name);
     let newError = '';
     if (!validCharacters) newError = 'Name must only contain alphanumeric characters.'
     if (!validLength) newError = 'Name must be 3 to 15 alphanumeric characters.'
@@ -75,8 +76,8 @@ export const NewAccountName = ({ previousUrl, nextUrl, flowType, progress }: Pro
       updateTempAccount({
         name,
         hdPath,
-        ...((flowTypeAdd && parentHdPath) && { parentHdPath }),
-        ...((flowTypeAdd && parentMasterKey) && { parentMasterKey })
+        ...((flowTypeSub && parentHdPath) && { parentHdPath }),
+        ...((flowTypeSub && parentMasterKey) && { parentMasterKey })
       });
       // Move to next step
       navigate(nextUrl);
@@ -116,7 +117,7 @@ export const NewAccountName = ({ previousUrl, nextUrl, flowType, progress }: Pro
   // TODO: If the user closes this, we need to clear out the temp account information
 
   // If an 'addressIndex' is trying to add an account, don't let it -- not possible.
-  const createAccountDisabled = (flowTypeAdd && parentAccountLevel === 'addressIndex');
+  const createAccountDisabled = (flowTypeSub && parentAccountLevel === 'addressIndex');
   const recoverClearWallet = (flowTypeRecover && !!accounts.length);
 
   return (
@@ -139,7 +140,7 @@ export const NewAccountName = ({ previousUrl, nextUrl, flowType, progress }: Pro
           <AdvancedTextButton enabled={showAdvanced} onClick={toggleShowAdvanced}>Advanced Settings ({showAdvanced ? 'Enabled' : 'Disabled'})</AdvancedTextButton>
           {showAdvanced && <AdvancedSettings
             setResults={(newHdPath) => {setHdPath(newHdPath)}}
-            parentHdPath={flowTypeAdd ? parentHdPath : undefined}
+            parentHdPath={flowTypeSub ? parentHdPath : undefined}
             setContinueDisabled={setContinueDisabled}
           />
           }

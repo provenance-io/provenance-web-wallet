@@ -1,13 +1,11 @@
 # TODO
 ## To do shortlist
 
-## Next Branch Issues (priority)
-* - Dashboard Menu
-  - Create account button (new account with seedphrase)
-  - Import Account button (new account import seedphrase)
+## Near-Future™ Branch Tasks
 * - Dashboard menu - child accounts indented (tree)
-* - Advanced settings - "reset defaults" for mainnet / testnet
+* - Advanced settings - "reset defaults" button for mainnet / testnet
 * - Unlock page nuke option (to see create account again or auto start create account)
+* - Notify the user when they are creating a duplicate account (check HD path, if it already exists in accounts don't let them create the account)
 
 ### Bugs
 * Random error after/during unlock 'Error: Missing or invalid topic field'
@@ -16,6 +14,7 @@
   - Look into the setting of localStorage, value changes, no popup, on second click, value exists, popup opens
 * dApp request message sign and no popup is triggered from background.js
   - Doesn't always happen, hard to recreate
+  - Seems to happen less and less with code refactoring, see if others report same issue or remove
 
 ### Missing Core Functionality
 * Sign for transactions/send hash
@@ -38,8 +37,6 @@
 * Instead of "Please Wait" messages, show a full page spinning loader (can later add additional text)
 * Allow pressing "enter" on an input to automatically submit (accessability)
   - Will need additional accessability features (tab index, titles, etc)
-* Need testing built into app (all the flows: create, recovery, etc)
-* Ability to remove wallet from dashboard menu (only allowed if 2+ wallets exist)
 * When user doesn't have a wallet created but does have the extension, no popup is triggered
   - Instead open the popup and prompt the user to go through the account creation flow
     - This would only apply to initiating a walletconnect-init connection

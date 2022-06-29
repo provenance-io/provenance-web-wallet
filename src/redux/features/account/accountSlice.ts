@@ -40,6 +40,7 @@ const RESET_ACCOUNT_DATA = 'RESET_ACCOUNT_DATA';
 const PULL_INITIAL_ACCOUNT_DATA = 'PULL_INITIAL_ACCOUNT_DATA';
 const SAVE_ACCOUNT_DATA = 'SAVE_ACCOUNT_DATA';
 const ADD_ACCOUNT = 'ADD_ACCOUNT';
+const REMOVE_ACCOUNT = 'REMOVE_ACCOUNT';
 
  /**
  * ASYNC ACTIONS
@@ -94,6 +95,23 @@ export const addAccount =  createAsyncThunk(ADD_ACCOUNT, async (account: Account
   }
   return '';
 });
+// Add to and save account data into the chrome store (will combine data instead of overriding ex accounts array)
+export const removeAccount =  createAsyncThunk(REMOVE_ACCOUNT, async (address: string) => {
+  // Get existing saved data (to merge into)
+  const existingData = await getSavedData('account');
+  // Get the existing accounts array
+  const { accounts, activeAccountId } = existingData;
+  // Filter to only keep accounts without this address
+  const newAccounts = accounts.filter((existingAccount: Account) => existingAccount.address !== address);
+  // If removed account was active, set first account in accounts list as active
+  const newActiveAccountId = activeAccountId === address ? newAccounts[0].address : activeAccountId;
+  // Combine to update account data
+  const newAccountData = { accounts: newAccounts, activeAccountId: newActiveAccountId };  
+  // Save to chrome storage
+  await addSavedData({ account: newAccountData });
+  // Return new combined values to update redux store
+  return newAccountData;
+});
 
 /**
  * SLICE
@@ -111,6 +129,14 @@ const accountSlice = createSlice({
       state.activeAccountId = activeAccountId;
     })
     .addCase(addAccount.fulfilled, (state, { payload }) => {
+      // We won't be adding an account if it already existed in the accounts array (see async func above)
+      if (payload) {
+        const { accounts, activeAccountId } = payload;
+        state.accounts = accounts;
+        state.activeAccountId = activeAccountId;
+      }
+    })
+    .addCase(removeAccount.fulfilled, (state, { payload }) => {
       // We won't be adding an account if it already existed in the accounts array (see async func above)
       if (payload) {
         const { accounts, activeAccountId } = payload;
@@ -142,6 +168,7 @@ export const accountActions = {
   pullInitialAccountData,
   saveAccountData,
   addAccount,
+  removeAccount,
   resetAccountData,
 };
 

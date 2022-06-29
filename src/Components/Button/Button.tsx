@@ -32,17 +32,17 @@ const variations: {
       active: COLORS.PRIMARY_300,
       border: COLORS.PRIMARY_550,
       default: COLORS.PRIMARY_550,
-      hover: COLORS.PRIMARY_650,
-      hoverBorder: COLORS.PRIMARY_650,
+      hover: COLORS.PRIMARY_600,
+      hoverBorder: COLORS.PRIMARY_600,
       color: COLORS.WHITE,
       disabled: COLORS.NEUTRAL_400,
     },
     secondary: {
-      active: COLORS.SECONDARY_700,
-      border: COLORS.SECONDARY_700,
-      default: COLORS.SECONDARY_700,
-      hover: COLORS.SECONDARY_750,
-      hoverBorder: COLORS.SECONDARY_700,
+      active: 'transparent',
+      border: COLORS.PRIMARY_500,
+      default: 'transparent',
+      hover: 'transparent',
+      hoverBorder: COLORS.PRIMARY_550,
       color: COLORS.WHITE,
       disabled: COLORS.NEUTRAL_400,
     },
@@ -77,7 +77,7 @@ const StyledButton = styled.button<StyledButtonProps>`
   color: ${({ variant }) => variations[variant].color};
   font-weight: 500;
   font-size: 1.4rem;
-  border: 2px solid ${({ variant }) => variations[variant].border};
+  border: 1px solid ${({ variant }) => variations[variant].border};
   background-color: ${({ variant }) => variations[variant].default};
   cursor: pointer;
   pointer-events:auto;

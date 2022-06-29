@@ -2,13 +2,14 @@ import React, { useEffect, useMemo } from 'react';
 import styled from 'styled-components';
 import { Outlet } from 'react-router-dom';
 import { COLORS } from 'theme';
-import { NEW_ACCOUNT_CREATE_URL, NEW_ACCOUNT_RECOVER_URL, NEW_ACCOUNT_ADD_URL } from 'consts';
+import { NEW_ACCOUNT_ADD_URL, NEW_ACCOUNT_CREATE_URL, NEW_ACCOUNT_IMPORT_URL, NEW_ACCOUNT_RECOVER_URL, NEW_ACCOUNT_SUB_URL } from 'consts';
 import { useAccount } from 'redux/hooks';
 import { useNavigate, useLocation } from 'react-router-dom';
+import { FlowType } from 'types';
 
 interface Props {
   children?: React.ReactNode,
-  flowType: 'create' | 'add' | 'recover';
+  flowType: FlowType;
 }
 
 const PageStyled = styled.div`
@@ -35,9 +36,11 @@ export const NewAccountAuth = ({ children = null, flowType }: Props) => {
   const navigate = useNavigate();
   const location = useLocation();
   const newAccountLandingPages = useMemo(() => ({
-    add: NEW_ACCOUNT_ADD_URL,
+    sub: NEW_ACCOUNT_SUB_URL,
     create: NEW_ACCOUNT_CREATE_URL,
     recover: NEW_ACCOUNT_RECOVER_URL,
+    add: NEW_ACCOUNT_ADD_URL,
+    import: NEW_ACCOUNT_IMPORT_URL,
   }), []);
   // Are we already on a landing page
   const isNewAccountLandingPage = Object.values(newAccountLandingPages).includes(location.pathname);

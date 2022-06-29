@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
-import { useRoutes } from "react-router-dom";
+import { useRoutes } from 'react-router-dom';
 import { useAccount, useSettings, useWalletConnect } from 'redux/hooks';
-import { routes } from "routes";
+import { routes } from 'routes';
 
 function App() {
   const [initialLoad, setInitialLoad] = useState(true);

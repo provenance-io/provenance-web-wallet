@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import styled from 'styled-components';
 import { Sprite } from 'Components';
-import { trimString } from 'utils';
+import { buildJWT, trimString } from 'utils';
 import { ICON_NAMES, CHAINID_TESTNET } from 'consts';
 import circleIcon from 'images/circle-icon.svg';
 import { useActiveAccount, useWalletConnect } from 'redux/hooks';
@@ -61,6 +61,7 @@ interface Props {
 
 export const WalletConnectInit:React.FC<Props> = ({ payload, closeWindow }) => {
   const [useFallbackIcon, setUseFallbackIcon] = useState(false);
+  const [jwt, setJwt] = useState('');
   const { peerMeta = {
     name: 'N/A',
     url: 'N/A',
@@ -69,6 +70,11 @@ export const WalletConnectInit:React.FC<Props> = ({ payload, closeWindow }) => {
   const { name, url, icons } = peerMeta;
   const { connector, saveWalletconnectData, connectionDuration } = useWalletConnect();
   const activeAccount = useActiveAccount();
+  const { publicKey, address, name: activeAccountName } = activeAccount;
+  const handleAuth = (privateKey: Uint8Array) => {
+    const newJwt = buildJWT(privateKey, publicKey!, address!);
+    setJwt(newJwt);
+  };
   const handleApprove = async () => {
     if (connector) {
       const data = {
@@ -76,12 +82,12 @@ export const WalletConnectInit:React.FC<Props> = ({ payload, closeWindow }) => {
         // NOTE: Don't allow selecting both testnet and mainnet accounts at the same time
         chainId: CHAINID_TESTNET,
         accounts: [{
-          publicKey: activeAccount.publicKey,
-          address: activeAccount.address,
-          jwt: `${btoa('123')}.${btoa('456')}.${btoa('789')}`,
+          publicKey,
+          address,
+          jwt,
           walletInfo: {
             id: 'id',
-            name: activeAccount.name,
+            name: activeAccountName,
             coin: 'coin'
           }
         }],
@@ -118,7 +124,7 @@ export const WalletConnectInit:React.FC<Props> = ({ payload, closeWindow }) => {
         ) : <Sprite icon={ICON_NAMES.CHAIN} size="6rem" />}
         <ConnectBgImg src={circleIcon} />
       </ConnectIcon>
-      <Authenticate handleApprove={handleApprove} handleDecline={handleDecline} />
+      <Authenticate handleApprove={handleApprove} handleDecline={handleDecline} handleAuth={handleAuth} />
     </>
   );
 };

@@ -1,3 +1,4 @@
+import base64url from 'base64url';
 // CONSTANTS/VARIABLES
 import {
   PROVENANCE_ADDRESS_PREFIX_MAINNET,
@@ -8,6 +9,7 @@ import {
   MAINNET_NETWORK,
 } from 'consts';
 // CHAIN HELPER FUNCTIONS
+import { convertUtf8ToBuffer } from '@walletconnect/utils';
 import {
   generateMnemonic as bip39gm,
   mnemonicToSeedSync as bip39mts,
@@ -188,4 +190,27 @@ export const createRootAccount = (mnemonic: string, childPath?: string):Account 
   const rootHdPath = 'm';
 
   return createChildAccount(rootMasterKeyB64, rootHdPath, childPath);
+};
+
+
+export const buildJWT = (privateKey: Uint8Array, publicKey: string, address: string, expires?: number) => {
+  // Build JWT
+  const now = Math.floor(Date.now() / 1000); // Current time
+  const exp = expires || now + 86400; // (24hours)
+  const header = JSON.stringify({alg: 'ES256K', typ: 'JWT'});
+  const headerEncoded = base64url(header);
+  const payload = JSON.stringify({
+    sub: publicKey,
+    iss: 'provenance.io',
+    iat: now,
+    exp,
+    addr: address,
+  });
+  const payloadEncoded = base64url(payload);
+  const jwt = `${headerEncoded}.${payloadEncoded}`;
+  const jwtBuffer = convertUtf8ToBuffer(jwt);
+  const signature = signBytes(jwtBuffer, privateKey);
+  const signedPayloadEncoded = bytesToBase64(signature);
+  const signedJWT = `${headerEncoded}.${payloadEncoded}.${signedPayloadEncoded}`;
+  return signedJWT;
 };

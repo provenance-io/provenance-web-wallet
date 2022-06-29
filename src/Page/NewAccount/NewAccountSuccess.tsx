@@ -3,10 +3,11 @@ import { Button, Header, Typo, Content, BottomFloat } from 'Components';
 import { useNavigate } from 'react-router-dom';
 import { useAccount } from 'redux/hooks';
 import backupComplete from 'images/backup-complete.svg';
+import { FlowType } from 'types';
 
 interface Props {
   nextUrl: string;
-  flowType: 'create' | 'add' | 'recover';
+  flowType: FlowType;
 }
 
 const Image = styled.img`
@@ -27,9 +28,9 @@ export const NewAccountSuccess = ({ nextUrl, flowType }: Props) => {
   let message = '';
   let title = '';
   switch (flowType) {
-    case 'add': {
+    case 'sub': {
       message = 'Account has been successfully created.  Click continue to proceed to the dashboard.';
-      title = 'Account Added';
+      title = 'Sub Account Added';
       break;
     }
     case 'create': {
@@ -37,9 +38,19 @@ export const NewAccountSuccess = ({ nextUrl, flowType }: Props) => {
       title = 'Wallet Created';
       break;
     }
+    case 'add': {
+      message = 'Account has been successfully created.  Click continue to proceed to the dashboard.';
+      title = 'Account Created';
+      break;
+    }
     case 'recover': {
       message = 'Account has been successfully recovered.  Click continue to proceed to the dashboard.';
       title = 'Account Recovered';
+      break;
+    }
+    case 'import': {
+      message = 'Account has been successfully imported.  Click continue to proceed to the dashboard.';
+      title = 'Account Imported';
       break;
     }
     default: break;

@@ -8,6 +8,7 @@ export * from './NewAccount';
 export * from './Notification';
 export * from './Page';
 export * from './Profile';
+export * from './RemoveAccount';
 export * from './RequiresAuth';
 export * from './Transactions';
 export * from './Unlock';

@@ -9,6 +9,7 @@ import {
   NEW_ACCOUNT_ADD_URL,
   NEW_ACCOUNT_SUB_URL,
   NEW_ACCOUNT_IMPORT_URL,
+  REMOVE_ACCOUNT_URL,
 } from 'consts';
 import { useAccount } from 'redux/hooks';
 import { trimString } from 'utils';
@@ -99,7 +100,7 @@ const Pill = styled.div<{ network: AccountNetwork}>`
 
 export const DashboardMenu:React.FC = () => {
   const navigate = useNavigate();
-  const { activeAccountId, accounts, saveAccountData, removeAccount } = useAccount();
+  const { activeAccountId, accounts, saveAccountData } = useAccount();
   const [ accountMenuTargetId, setAccountMenuTargetId ] = useState('');
   const menuTargetAccount = accountMenuTargetId ? accounts.find(account => account.address === accountMenuTargetId) : { address: '', accountLevel: ''};
   const { address: menuTargetAddress, accountLevel: menuTargetAccountLevel } = menuTargetAccount!;
@@ -124,11 +125,6 @@ export const DashboardMenu:React.FC = () => {
     saveAccountData({ activeAccountId: accountMenuTargetId })
   };
 
-  const handleRemoveAccount = () => {
-    // TODO: Needs confirmation modal, maybe even authenticate to remove an account?
-    // Create confirmation modal where user must type out last 4 of the address
-    removeAccount(menuTargetAddress!);
-  };
   const handleRenameAccount = () => {};
 
   return (
@@ -152,7 +148,7 @@ export const DashboardMenu:React.FC = () => {
             </WalletAction>
           )}
           <WalletAction onClick={handleRenameAccount}>Rename</WalletAction>
-          {accounts.length > 1 && <WalletAction onClick={handleRemoveAccount}>Remove</WalletAction>}
+          {accounts.length > 1 && <WalletAction onClick={() => navigate(`${REMOVE_ACCOUNT_URL}/${menuTargetAddress}`)}>Remove</WalletAction>}
           <WalletAction onClick={() => setAccountMenuTargetId('')}>Close</WalletAction>
         </WalletActionsPopup>
       )}

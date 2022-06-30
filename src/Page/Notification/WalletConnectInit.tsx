@@ -1,12 +1,11 @@
 import { useState } from 'react';
 import styled from 'styled-components';
-import { Sprite } from 'Components';
+import { Sprite, Authenticate } from 'Components';
 import { buildJWT, trimString } from 'utils';
 import { ICON_NAMES, CHAINID_TESTNET } from 'consts';
 import circleIcon from 'images/circle-icon.svg';
 import { useActiveAccount, useWalletConnect } from 'redux/hooks';
 import { EventPayload } from 'types';
-import { Authenticate } from './Authenticate';
 
 const Title = styled.div`
   font-weight: 600;

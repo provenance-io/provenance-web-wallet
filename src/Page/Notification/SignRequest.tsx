@@ -1,9 +1,8 @@
 import { EventPayload } from 'types';
 import styled from 'styled-components';
 import { convertHexToUtf8, convertHexToBuffer, convertArrayBufferToHex } from "@walletconnect/utils";
-import { Authenticate } from './Authenticate';
 import { useWalletConnect } from 'redux/hooks';
-import { List } from 'Components';
+import { List, Authenticate } from 'Components';
 import { useEffect, useState } from 'react';
 import { format } from 'date-fns';
 import { signBytes } from 'utils';

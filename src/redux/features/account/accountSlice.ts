@@ -41,6 +41,7 @@ const PULL_INITIAL_ACCOUNT_DATA = 'PULL_INITIAL_ACCOUNT_DATA';
 const SAVE_ACCOUNT_DATA = 'SAVE_ACCOUNT_DATA';
 const ADD_ACCOUNT = 'ADD_ACCOUNT';
 const REMOVE_ACCOUNT = 'REMOVE_ACCOUNT';
+const RENAME_ACCOUNT = 'RENAME_ACCOUNT';
 
  /**
  * ASYNC ACTIONS
@@ -112,6 +113,29 @@ export const removeAccount =  createAsyncThunk(REMOVE_ACCOUNT, async (address: s
   // Return new combined values to update redux store
   return newAccountData;
 });
+// Rename an account and readd to all data storage locations
+export const renameAccount =  createAsyncThunk(RENAME_ACCOUNT, async (payload: { address: string, name: string }) => {
+  const { address, name } = payload;
+  // Get existing saved data (to merge into)
+  const existingData = await getSavedData('account');
+  // Get the existing accounts array
+  const { accounts, activeAccountId } = existingData;
+  // Find target account
+  const targetAccount: Account = accounts.find((existingAccount: Account) => existingAccount.address === address);
+  // All other accounts
+  const otherAccounts: Account[] = accounts.filter((existingAccount: Account) => existingAccount.address !== address);
+  // Clone the targetAccount to change name value
+  const updatedAccount = { ...targetAccount };
+  updatedAccount.name = name;
+  // Re-Add updatedAccount to all accounts
+  const newAccounts = [...otherAccounts, updatedAccount];
+  // Combine to update account data
+  const newAccountData = { accounts: newAccounts, activeAccountId };  
+  // Save to chrome storage
+  await addSavedData({ account: newAccountData });
+  // Return new combined values to update redux store
+  return newAccountData;
+});
 
 /**
  * SLICE
@@ -144,6 +168,12 @@ const accountSlice = createSlice({
         state.activeAccountId = activeAccountId;
       }
     })
+    .addCase(renameAccount.fulfilled, (state, { payload }) => {
+      if (payload) {
+        const { accounts } = payload;
+        state.accounts = accounts;
+      }
+    })
     .addCase(saveAccountData.fulfilled, (state, { payload }) => {
       const { accounts, activeAccountId } = payload;
       if (accounts) state.accounts = accounts;
@@ -169,6 +199,7 @@ export const accountActions = {
   saveAccountData,
   addAccount,
   removeAccount,
+  renameAccount,
   resetAccountData,
 };
 

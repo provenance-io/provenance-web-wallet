@@ -1,10 +1,12 @@
 # TODO
 ## To do shortlist
 
+## Current Branch Tasks
+
 ## Near-Future™ Branch Tasks
+* - Unlock page nuke option (to see create account again or auto start create account)
 * - Dashboard menu - child accounts indented (tree)
 * - Advanced settings - "reset defaults" button for mainnet / testnet
-* - Unlock page nuke option (to see create account again or auto start create account)
 * - Notify the user when they are creating a duplicate account (check HD path, if it already exists in accounts don't let them create the account)
 
 ### Bugs

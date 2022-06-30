@@ -52,8 +52,11 @@ const InputEl = styled.input<{error?: string}>`
 
 const InputError = styled.div`
   color: ${COLORS.NEGATIVE_300};
-  font-size: 1.2rem;
   column-gap: 1px;
+  font-size: 1.1rem;
+  position: absolute;
+  right: 3px;
+  top: 21px;
 `;
 
 export const Input = ({

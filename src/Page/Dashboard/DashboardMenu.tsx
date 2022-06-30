@@ -10,6 +10,7 @@ import {
   NEW_ACCOUNT_SUB_URL,
   NEW_ACCOUNT_IMPORT_URL,
   REMOVE_ACCOUNT_URL,
+  RENAME_ACCOUNT_URL,
 } from 'consts';
 import { useAccount } from 'redux/hooks';
 import { trimString } from 'utils';
@@ -125,8 +126,6 @@ export const DashboardMenu:React.FC = () => {
     saveAccountData({ activeAccountId: accountMenuTargetId })
   };
 
-  const handleRenameAccount = () => {};
-
   return (
     <>
       <Header title='Accounts' iconLeft={ICON_NAMES.CLOSE} backLocation={DASHBOARD_URL} />
@@ -147,7 +146,7 @@ export const DashboardMenu:React.FC = () => {
               Create Sub Account
             </WalletAction>
           )}
-          <WalletAction onClick={handleRenameAccount}>Rename</WalletAction>
+          <WalletAction onClick={() => navigate(`${RENAME_ACCOUNT_URL}/${menuTargetAddress}`)}>Rename</WalletAction>
           {accounts.length > 1 && <WalletAction onClick={() => navigate(`${REMOVE_ACCOUNT_URL}/${menuTargetAddress}`)}>Remove</WalletAction>}
           <WalletAction onClick={() => setAccountMenuTargetId('')}>Close</WalletAction>
         </WalletActionsPopup>

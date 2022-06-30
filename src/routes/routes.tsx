@@ -18,6 +18,7 @@ import {
   NEW_ACCOUNT_IMPORT,
 } from './newAccount';
 import { REMOVE_ACCOUNT } from './removeAccount';
+import { RENAME_ACCOUNT } from './renameAccount';
 
 export const routes = [
   {
@@ -43,6 +44,7 @@ export const routes = [
   NEW_ACCOUNT_IMPORT,
   NOTIFICATION,
   REMOVE_ACCOUNT,
+  RENAME_ACCOUNT,
   UNLOCK,
   // { path: FOUR_OH_FOUR_URL, element: <NotFound /> },
   // { path: '*', element: <Navigate to={FOUR_OH_FOUR_URL} /> },

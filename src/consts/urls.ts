@@ -72,6 +72,8 @@ export const UNLOCK_URL = '/unlock';
 export const NOTIFICATION_URL = '/notification';
 // REMOVE ACCOUNT
 export const REMOVE_ACCOUNT_URL = '/remove';
+// RENAME ACCOUNT
+export const RENAME_ACCOUNT_URL = '/rename';
 
 // TODO: Check what ALL_URLS is used for and if it's really needed...
 // ALL URLS

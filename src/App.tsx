@@ -45,7 +45,7 @@ function App() {
 
   useEffect(() => {
     // If we have a connector, listen for the disconnect event
-    if (connector) connector.on('disconnect', async () => { walletconnectDisconnect() });
+    if (connector) connector.on('disconnect', async () => { walletconnectDisconnect(); });
   }, [connector, walletconnectDisconnect]);
 
   // If this is the initialLoad, get and set the storage wallet values

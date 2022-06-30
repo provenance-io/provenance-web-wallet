@@ -3,8 +3,27 @@ import { DASHBOARD_MENU_URL, ICON_NAMES } from 'consts';
 import { useState } from 'react';
 import { useParams, useNavigate } from 'react-router';
 import { useAccount } from 'redux/hooks';
+import styled from 'styled-components';
 import { Account } from 'types';
 import { decryptKey } from 'utils';
+
+const StyledAddress = styled.div`
+  color: rgb(217 217 217);
+  font-weight: bold;
+  font-size: 1.2rem;
+  width: 100%;
+  text-align: center;
+  margin-bottom: 8px;
+  background: rgb(72 73 73);
+  padding: 10px;
+  border-radius: 3px;
+`;
+const InputSection = styled.div`
+  width: 100%;
+  input {
+    margin-bottom: 20px;
+  }
+`;
 
 export const RemoveAccount: React.FC = () => {
   const [confirmAddress, setConfirmAddress] = useState('');
@@ -36,33 +55,36 @@ export const RemoveAccount: React.FC = () => {
   return (
     <>
       <Header title='Remove Account' iconLeft={ICON_NAMES.CLOSE} backLocation={DASHBOARD_MENU_URL} />
+      <StyledAddress>{removeAddress}</StyledAddress>
       <Alert type="warning" title="Warning">
-        Continuing will remove the account: "{name}" ({removeAddress}). Without its seed phase, this account cannot be recovered.
+        Without its seed phase, account "{name}" cannot be recovered.
       </Alert>
       <Typo
-        type="subhead"
+        type="headline2"
         align='left'
         marginTop='20px'
         marginBottom='20px'
       >
-        Confirm Account and Wallet Password
+        Confirm Removal
       </Typo>
-      <Input
-        id="confirmAddress"
-        value={confirmAddress}
-        onChange={setConfirmAddress}
-        placeholder="Last 4 address characters"
-        label='Last 4 Address Characters'
-        error={inputErrors[0]}
-      />
-      <Input
-        id="walletPassword"
-        value={walletPassword}
-        onChange={setWalletPassword}
-        placeholder="Wallet password"
-        label='Wallet Password'
-        error={inputErrors[1]}
-      />
+      <InputSection>
+        <Input
+          id="confirmAddress"
+          value={confirmAddress}
+          onChange={setConfirmAddress}
+          placeholder="Last 4 address characters"
+          label='Last 4 Address Characters'
+          error={inputErrors[0]}
+        />
+        <Input
+          id="walletPassword"
+          value={walletPassword}
+          onChange={setWalletPassword}
+          placeholder="Wallet password"
+          label='Wallet Password'
+          error={inputErrors[1]}
+        />
+      </InputSection>
       <BottomFloat>
         <Button onClick={handleRemoveAccount} variant="primary" layout="row">Remove Account</Button>
       </BottomFloat>

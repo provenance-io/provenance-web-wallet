@@ -90,7 +90,7 @@ const settingsSlice = createSlice({
   extraReducers: (builder) => {
     builder
     // Reset redux store to initial values
-    .addCase(resetSettingsData.fulfilled, (state) => { state = initialState })
+    .addCase(resetSettingsData.fulfilled, () => initialState)
     .addCase(pullInitialSettingsData.fulfilled, (state, { payload }) => {
       const { unlockEST, unlockEXP, unlockDuration } = payload;
       state.unlockEST = unlockEST;

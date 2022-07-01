@@ -6,8 +6,9 @@ import {
   Content,
   BodyContent,
   BottomFloat,
+  ButtonGroup,
 } from 'Components';
-import { APP_URL, ICON_NAMES, PASSWORD_MIN_LENGTH } from 'consts';
+import { APP_URL, ICON_NAMES, PASSWORD_MIN_LENGTH, RESET_WALLET_URL } from 'consts';
 import { useNavigate } from 'react-router-dom';
 import { decryptKey } from 'utils';
 import { useActiveAccount, useSettings } from 'redux/hooks';
@@ -55,7 +56,7 @@ export const Unlock = ({ nextUrl }: Props) => {
   return (
     <Content>
       <Header iconLeft={ICON_NAMES.CLOSE} progress={100} title="Unlock Wallet" backLocation={APP_URL} />
-      <BodyContent>Enter your password</BodyContent>
+      <BodyContent>Enter your password to unlock wallet</BodyContent>
       <Input
         id="wallet-password"
         label="Password"
@@ -66,7 +67,10 @@ export const Unlock = ({ nextUrl }: Props) => {
         error={error}
       />
       <BottomFloat>
-        <Button onClick={handleSubmit}>Continue</Button>
+        <ButtonGroup>
+          <Button onClick={handleSubmit}>Continue</Button>
+          <Button variant='secondary' onClick={() => {navigate(RESET_WALLET_URL)}}>Destroy Wallet</Button>
+        </ButtonGroup>
       </BottomFloat>
     </Content>
   );

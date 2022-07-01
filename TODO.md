@@ -4,7 +4,6 @@
 ## Current Branch Tasks
 
 ## Near-Future™ Branch Tasks
-* - Unlock page nuke option (to see create account again or auto start create account)
 * - Dashboard menu - child accounts indented (tree)
 * - Advanced settings - "reset defaults" button for mainnet / testnet
 * - Notify the user when they are creating a duplicate account (check HD path, if it already exists in accounts don't let them create the account)
@@ -18,13 +17,13 @@
 * dApp request message sign and no popup is triggered from background.js
   - Doesn't always happen, hard to recreate
   - Seems to happen less and less with code refactoring, see if others report same issue or remove
+  - Connect and then instantly go to sign message in demo, most of the time triggers this bug
 
 ### Missing Core Functionality
 * Sign for transactions/send hash
 
 ### Wallet Connect / dApp Enhancements
 * When connecting into a dApp, user should be able to select target account to connect (and set active)
-* Correctly form/create JWT when connecting with wallet connect (just dummy data right now)
 
 ### Settings
 * Allow user to set timeout for auto-logout
@@ -32,8 +31,10 @@
   - Require them to type ~"Remove all Data"
 
 ### General
+* Profile menu to change wallet password
+  - Would need to unlock all master keys for all accounts and relock and save with new password
 * Add fading background to floating buttons so user can see there is content to scroll down for
-  - Alternatly, allow build a custom scrollbar that doesn't stand out as much as a normal white version
+  - Maybe build a custom scrollbar that doesn't stand out as much as a normal white version
 * General styling updates - lots of pages need a once over to match designs and asthetic
 * Create more typography components, try not to have any styled components by pulling out to shared versions
 * Auto check mnuemonic input fields as they are entered (make sure valid word)
@@ -47,8 +48,6 @@
 
 ### Accounts
 * Automatically switch API urls based on current active wallet.  TP will go to test urls, PB will go to prod urls
-* Allow importing new wallets and display in dashboard menu (under new wallet names)
-  - Split accounts by wallet in dashboard menu
 
 ### Extra
 * Secret dev menu?

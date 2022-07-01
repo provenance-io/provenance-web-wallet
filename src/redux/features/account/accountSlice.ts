@@ -146,7 +146,7 @@ const accountSlice = createSlice({
   extraReducers: (builder) => {
     builder
     // Reset redux store to initial values
-    .addCase(resetAccountData.fulfilled, (state) => { state = initialState })
+    .addCase(resetAccountData.fulfilled, () => initialState)
     .addCase(pullInitialAccountData.fulfilled, (state, { payload }) => {
       const { accounts, activeAccountId } = payload;
       state.accounts = accounts;

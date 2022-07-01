@@ -5,29 +5,24 @@ import { decryptKey, createWalletFromMasterKey } from 'utils';
 import { useActiveAccount, useSettings } from 'redux/hooks';
 
 interface Props {
-  handleApprove: () => void,
+  handleApprove: (privateKey: Uint8Array) => void,
   handleDecline: () => void,
-  handleAuth?: (privateKey: Uint8Array) => void,
-  authText?: string,
   approveText?: string,
   rejectText?: string,
 }
 
 export const Authenticate:React.FC<Props> = ({
-  handleApprove,
-  handleDecline,
-  handleAuth,
-  authText = 'Authenticate',
+  handleApprove: approveCallback,
+  handleDecline: declineCallback,
   approveText = 'Approve',
   rejectText = 'Reject',
 }) => {
   const [walletPassword, setWalletPassword] = useState('');
-  const [authenticated, setAuthenticated] = useState(false);
   const [passwordError, setPasswordError] = useState('');
   const { masterKey: key } = useActiveAccount();
   const { unlockDuration, saveSettingsData } = useSettings();
 
-  const handleAuthAccount = async () => {
+  const handleApprove = async () => {
     let newPasswordError = '';
     // Wallet password must exist
     if (!walletPassword) newPasswordError = 'Enter password';
@@ -42,41 +37,37 @@ export const Authenticate:React.FC<Props> = ({
       else {
         // Derive the privateKey
         const { privateKey } = createWalletFromMasterKey(masterKey);
-        if (handleAuth) handleAuth(privateKey);
-        // Update local authentication status
-        setAuthenticated(true);
         // Bump the unlock duration
         const now = Date.now();
         await saveSettingsData({ unlockEST: now, unlockEXP: now + unlockDuration! });
+        // Run approval callback function
+        approveCallback(privateKey);
       }
     }
     // Update error(s)
     setPasswordError(newPasswordError);
   };
 
+  const handleChange = (value: string) => {
+    // reset error, set new value
+    setPasswordError('');
+    setWalletPassword(value);
+  }
+
   return (
-    authenticated ? (
-      <BottomFloat>
-        <ButtonGroup>
-          <Button onClick={handleApprove}>{approveText}</Button>
-          <Button variant='transparent' onClick={handleDecline}>{rejectText}</Button>
-        </ButtonGroup>
-      </BottomFloat>
-    ) : (
-      <BottomFloat>
-        <ButtonGroup>
-          <Input
-            placeholder="Enter Wallet Password"
-            id="Wallet-Pasword"
-            value={walletPassword}
-            onChange={setWalletPassword}
-            error={passwordError}
-            type="password"
-          />
-          <Button onClick={handleAuthAccount}>{authText}</Button>
-          <Button variant='transparent' onClick={handleDecline}>{rejectText}</Button>
-        </ButtonGroup>
-      </BottomFloat>
-    )
+    <BottomFloat>
+      <ButtonGroup>
+        <Input
+          placeholder="Enter Wallet Password"
+          id="Wallet-Pasword"
+          value={walletPassword}
+          onChange={handleChange}
+          error={passwordError}
+          type="password"
+        />
+        <Button onClick={handleApprove}>{approveText}</Button>
+        <Button variant='transparent' onClick={declineCallback}>{rejectText}</Button>
+      </ButtonGroup>
+    </BottomFloat>
   );
 };

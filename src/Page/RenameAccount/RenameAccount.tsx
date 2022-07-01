@@ -49,6 +49,11 @@ export const RenameAccount: React.FC = () => {
     }
   };
 
+  const handleInputChange = (value: string) => {
+    setInputError('');
+    setNewName(value);
+  }
+
   return (
     <>
       <Header title='Rename Account' iconLeft={ICON_NAMES.CLOSE} backLocation={DASHBOARD_MENU_URL} />
@@ -57,7 +62,7 @@ export const RenameAccount: React.FC = () => {
         <Input
           id="renameAccount"
           value={newName}
-          onChange={setNewName}
+          onChange={handleInputChange}
           placeholder="Account Name"
           label='Enter New Account Name'
           error={inputError}

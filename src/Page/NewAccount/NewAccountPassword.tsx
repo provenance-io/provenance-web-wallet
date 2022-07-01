@@ -38,7 +38,7 @@ export const NewAccountPassword = ({ nextUrl, previousUrl, flowType, progress }:
   const { tempAccount, addAccount } = useAccount();
   const { bumpUnlockDuration } = useSettings();
   const [walletPassword, setWalletPassword] = useState<string[]>([]); // [password, repeated-password]
-  const [errors, setErrors] = useState<string[]>([]); // [password-error, repeated-password-error, generic-error]
+  const [errors, setErrors] = useState<string[]>([]); // [password-error, repeated-password-error]
 
   const passwordMinLength = Number(PASSWORD_MIN_LENGTH)!;
   // Check for each flotType
@@ -53,8 +53,8 @@ export const NewAccountPassword = ({ nextUrl, previousUrl, flowType, progress }:
   const repeatedPassword = walletPassword[1];
 
   // Password is stored as an array [password, repeated-password]
-  const updatePassword = (value: string, repeated?: boolean) => {
-    const targetIndex = repeated ? 1 : 0; // [password, repeated-password];
+  const updatePassword = (value: string, passwordConfirm?: boolean) => {
+    const targetIndex = passwordConfirm ? 1 : 0; // [password, repeated-password];
     const newWalletPassword = [...walletPassword];
     newWalletPassword[targetIndex] = value;
     setWalletPassword(newWalletPassword);
@@ -105,6 +105,12 @@ export const NewAccountPassword = ({ nextUrl, previousUrl, flowType, progress }:
     setErrors(latestErrors);
   };
 
+  const handleInputChange = (value: string, errorIndex: number, passwordConfirm?: boolean) => {
+    const updatedErrors = [...errors];
+    updatedErrors[errorIndex] = '';
+    updatePassword(value, passwordConfirm);
+  };
+
   return (
     <Content>
       <Header iconLeft={ICON_NAMES.CLOSE} progress={progress} title="Wallet Password" backLocation={previousUrl} />
@@ -120,7 +126,7 @@ export const NewAccountPassword = ({ nextUrl, previousUrl, flowType, progress }:
         type="password"
         placeholder="Enter Wallet Password"
         value={password}
-        onChange={(value) => updatePassword(value)}
+        onChange={(value) => handleInputChange(value, 0)}
         error={errors[0]}
       />
       {enterNewPassword && (
@@ -130,12 +136,11 @@ export const NewAccountPassword = ({ nextUrl, previousUrl, flowType, progress }:
           type="password"
           placeholder="Confirm Wallet Password"
           value={repeatedPassword}
-          onChange={(value) => updatePassword(value, true)}
+          onChange={(value) => handleInputChange(value, 1, true)}
           error={errors[1]}
         />
       )}
       
-      {errors[3] && <Typo type="error" marginTop="20px">{errors[3]}</Typo>}
       <BottomFloat>
         <Button onClick={handleContinue}>Continue</Button>
       </BottomFloat>

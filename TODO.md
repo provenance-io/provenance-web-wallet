@@ -8,6 +8,7 @@
 * - Dashboard menu - child accounts indented (tree)
 * - Advanced settings - "reset defaults" button for mainnet / testnet
 * - Notify the user when they are creating a duplicate account (check HD path, if it already exists in accounts don't let them create the account)
+* - Second child (sub) account should automatically up the accountIndex from the next highest value
 
 ### Bugs
 * Random error after/during unlock 'Error: Missing or invalid topic field'

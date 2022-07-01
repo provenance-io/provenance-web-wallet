@@ -43,7 +43,6 @@ export const SignRequest:React.FC<Props> = ({ payload, closeWindow }) => {
   } = useWalletConnect();
   const [parsedParams, setParsedParams] = useState<ParsedParams>({});
   const [encodedMessage, setEncodedMessage] = useState('');
-  const [privateKey, setPrivateKey] = useState<Uint8Array>();
 
   // Onload, pull out and parse payload params
   useEffect(() => {
@@ -68,7 +67,7 @@ export const SignRequest:React.FC<Props> = ({ payload, closeWindow }) => {
     }
   };
 
-  const handleApprove = async () => {
+  const handleApprove = async (privateKey: Uint8Array) => {
     if (connector && privateKey && encodedMessage) {
       const bites = convertHexToBuffer(encodedMessage);
       const signature = signBytes(bites, privateKey);
@@ -98,9 +97,6 @@ export const SignRequest:React.FC<Props> = ({ payload, closeWindow }) => {
       closeWindow();
     }
   }
-  const handleAuth = (privateKey: Uint8Array) => {
-    setPrivateKey(privateKey);
-  }
 
   const ListItems = {
     platform: connector?.peerMeta?.name || 'N/A',
@@ -118,7 +114,7 @@ export const SignRequest:React.FC<Props> = ({ payload, closeWindow }) => {
       <Authenticate
         handleApprove={handleApprove}
         handleDecline={handleDecline}
-        handleAuth={handleAuth}
+        approveText="Sign Message"
       />
     </SignContainer>
   );

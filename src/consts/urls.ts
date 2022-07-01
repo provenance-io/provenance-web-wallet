@@ -1,4 +1,9 @@
 // ---------
+// WEB URLS
+// ---------
+export const PROVENANCE_WEB_URL = 'https://provenance.io';
+export const PROVENANCE_WEB_DOCS_URL = 'https://docs.provenance.io';
+// ---------
 // API URLS
 // ---------
 export const SERVICE_MOBILE_WALLET_TESTNET = process.env.REACT_APP_SERVICE_MOBILE_WALLET_TESTNET;
@@ -57,7 +62,6 @@ export const DASHBOARD_RECEIVE_URL = `${DASHBOARD_URL}/receive`;
 export const DASHBOARD_CONNECTION_DETAILS_URL = `${DASHBOARD_URL}/connection`;
 // PROFILE URLS
 export const PROFILE_URL = '/profile';
-export const RESET_WALLETS_URL = '/profile/reset-wallets';
 // TRANSACTION URLS
 export const TRANSACTIONS_URL = '/transactions';
 // ACTIONS URLS
@@ -74,6 +78,8 @@ export const NOTIFICATION_URL = '/notification';
 export const REMOVE_ACCOUNT_URL = '/remove';
 // RENAME ACCOUNT
 export const RENAME_ACCOUNT_URL = '/rename';
+// RESET WALLET
+export const RESET_WALLET_URL = '/reset';
 
 // TODO: Check what ALL_URLS is used for and if it's really needed...
 // ALL URLS
@@ -102,7 +108,6 @@ export const ALL_URLS = {
   RECOVER_ACCOUNT_SEED_INFO_URL,
   RECOVER_ACCOUNT_SEED_INPUT_URL,
   RECOVER_ACCOUNT_SUCCESS_URL,
-  RESET_WALLETS_URL,
   TRANSACTIONS_URL,
   UNLOCK_URL,
 };

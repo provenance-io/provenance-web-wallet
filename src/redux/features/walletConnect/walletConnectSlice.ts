@@ -168,7 +168,7 @@ const walletConnectSlice = createSlice({
   extraReducers: (builder) => {
     builder
     // Reset redux store to initial values
-    .addCase(resetWalletConnectData.fulfilled, (state) => { state = initialState })
+    .addCase(resetWalletConnectData.fulfilled, () => initialState)
     .addCase(pullInitialWCData.fulfilled, (state, { payload }) => {
       const {
         connectionEST,
@@ -247,7 +247,7 @@ const walletConnectSlice = createSlice({
     clearConnectionTimer: (state) => {
       if (state.connectionTimer) clearTimeout(state.connectionTimer);
       state.connectionTimer = initialState.connectionTimer;
-    }
+    },
   },
 });
 

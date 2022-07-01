@@ -11,6 +11,7 @@ export * from './Profile';
 export * from './RemoveAccount';
 export * from './RenameAccount';
 export * from './RequiresAuth';
+export * from './ResetWallet';
 export * from './Transactions';
 export * from './Unlock';
 export * from './UnlockAuth';

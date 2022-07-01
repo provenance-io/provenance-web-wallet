@@ -60,7 +60,6 @@ interface Props {
 
 export const WalletConnectInit:React.FC<Props> = ({ payload, closeWindow }) => {
   const [useFallbackIcon, setUseFallbackIcon] = useState(false);
-  const [jwt, setJwt] = useState('');
   const { peerMeta = {
     name: 'N/A',
     url: 'N/A',
@@ -70,12 +69,10 @@ export const WalletConnectInit:React.FC<Props> = ({ payload, closeWindow }) => {
   const { connector, saveWalletconnectData, connectionDuration } = useWalletConnect();
   const activeAccount = useActiveAccount();
   const { publicKey, address, name: activeAccountName } = activeAccount;
-  const handleAuth = (privateKey: Uint8Array) => {
-    const newJwt = buildJWT(privateKey, publicKey!, address!);
-    setJwt(newJwt);
-  };
-  const handleApprove = async () => {
+
+  const handleApprove = async (privateKey: Uint8Array) => {
     if (connector) {
+      const jwt = buildJWT(privateKey, publicKey!, address!);
       const data = {
         // TODO: This needs to be based on the selected account(s)
         // NOTE: Don't allow selecting both testnet and mainnet accounts at the same time
@@ -123,7 +120,7 @@ export const WalletConnectInit:React.FC<Props> = ({ payload, closeWindow }) => {
         ) : <Sprite icon={ICON_NAMES.CHAIN} size="6rem" />}
         <ConnectBgImg src={circleIcon} />
       </ConnectIcon>
-      <Authenticate handleApprove={handleApprove} handleDecline={handleDecline} handleAuth={handleAuth} />
+      <Authenticate handleApprove={handleApprove} handleDecline={handleDecline} approveText="Connect" />
     </>
   );
 };

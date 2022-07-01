@@ -52,6 +52,14 @@ export const RemoveAccount: React.FC = () => {
     }
   };
 
+  const handleInputChange = (value: string, errorIndex: number, type: 'wallet' | 'address') => {
+    // clear any errors out
+    const updatedErrors = [...inputErrors];
+    updatedErrors[errorIndex] = '';
+    setInputErrors(updatedErrors);
+    type === 'address' ? setConfirmAddress(value) : setWalletPassword(value);
+  };
+
   return (
     <>
       <Header title='Remove Account' iconLeft={ICON_NAMES.CLOSE} backLocation={DASHBOARD_MENU_URL} />
@@ -71,7 +79,7 @@ export const RemoveAccount: React.FC = () => {
         <Input
           id="confirmAddress"
           value={confirmAddress}
-          onChange={setConfirmAddress}
+          onChange={(value) => handleInputChange(value, 0, 'address')}
           placeholder="Last 4 address characters"
           label='Last 4 Address Characters'
           error={inputErrors[0]}
@@ -79,7 +87,7 @@ export const RemoveAccount: React.FC = () => {
         <Input
           id="walletPassword"
           value={walletPassword}
-          onChange={setWalletPassword}
+          onChange={(value) => handleInputChange(value, 1, 'wallet')}
           placeholder="Wallet password"
           label='Wallet Password'
           error={inputErrors[1]}

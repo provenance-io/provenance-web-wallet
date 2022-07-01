@@ -50,13 +50,13 @@ const InputEl = styled.input<{error?: string}>`
   }
 `;
 
-const InputError = styled.div`
+const InputError = styled.div<{hasLabel?: boolean}>`
   color: ${COLORS.NEGATIVE_300};
   column-gap: 1px;
   font-size: 1.1rem;
   position: absolute;
   right: 3px;
-  top: 21px;
+  top: ${({ hasLabel }) => hasLabel ? '22px' : '-10px' };
 `;
 
 export const Input = ({
@@ -72,7 +72,7 @@ export const Input = ({
 }: InputProps) => (
   <InputGroup>
     {label && <Label htmlFor={id}>{label}</Label>}
-    {error && <InputError>{error}</InputError>}
+    {error && <InputError hasLabel={!!label}>{error}</InputError>}
     <InputEl
       id={id}
       type={type}

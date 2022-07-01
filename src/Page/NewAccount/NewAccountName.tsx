@@ -114,6 +114,11 @@ export const NewAccountName = ({ previousUrl, nextUrl, flowType, progress }: Pro
     else setShowAdvanced(true);
   }
 
+  const handleInputChange = (value: string) => {
+    setError('');
+    setName(value);
+  };
+
   // TODO: If the user closes this, we need to clear out the temp account information
 
   // If an 'addressIndex' is trying to add an account, don't let it -- not possible.
@@ -134,7 +139,7 @@ export const NewAccountName = ({ previousUrl, nextUrl, flowType, progress }: Pro
             label={`${accountType} Name`}
             placeholder={`Enter ${accountType} name`}
             value={name}
-            onChange={setName}
+            onChange={handleInputChange}
             error={error}
           />
           <AdvancedTextButton enabled={showAdvanced} onClick={toggleShowAdvanced}>Advanced Settings ({showAdvanced ? 'Enabled' : 'Disabled'})</AdvancedTextButton>

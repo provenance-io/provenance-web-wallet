@@ -47,6 +47,11 @@ export const Unlock = ({ nextUrl }: Props) => {
     setError(newError);
   };
 
+  const handleInputChange = (value: string) => {
+    setError('');
+    setPassword(value);
+  }
+
   return (
     <Content>
       <Header iconLeft={ICON_NAMES.CLOSE} progress={100} title="Unlock Wallet" backLocation={APP_URL} />
@@ -57,7 +62,7 @@ export const Unlock = ({ nextUrl }: Props) => {
         type="password"
         placeholder="Enter Password"
         value={password}
-        onChange={setPassword}
+        onChange={handleInputChange}
         error={error}
       />
       <BottomFloat>

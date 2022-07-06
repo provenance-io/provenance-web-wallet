@@ -6,13 +6,13 @@ import { ICON_NAMES, SEND_REVIEW_URL } from 'consts';
 import { useActiveAccount, useMessage, usePricing } from 'redux/hooks';
 import { capitalize, getGrpcApi } from 'utils';
 import { convertUtf8ToBuffer } from '@walletconnect/utils';
+import { GrpcService, } from '@provenanceio/wallet-lib';
 import { Message } from 'google-protobuf';
 import { COLORS } from 'theme';
 import {
   buildCalculateTxFeeRequest,
   buildMessage,
   createAnyMessageBase64,
-  // grpcService,
   getAccountInfo,
   msgAnyB64toAny,
   // MsgSendDisplay,
@@ -45,11 +45,12 @@ export const SendAmount = () => {
     useMessage();
   const { queryPricingEngine, priceEnginePrices } = usePricing();
   const { address, publicKey } = useActiveAccount();
-
+  
   useEffect(() => {
     if (address && coinAddress && coin?.denom) {
       (async () => {
         const grpcAddress = getGrpcApi(address);
+        const grpcService = new GrpcService(grpcAddress);
         const method = 'provenance_sendTransaction';
         const type = 'MsgSend';
         const gasPrice = 19050;
@@ -72,23 +73,33 @@ export const SendAmount = () => {
           params: [metadata],
         };
         const messageMsgSend = buildMessage(type, sendMessage);
-        const message = createAnyMessageBase64(type, messageMsgSend as Message);
-        const msgAny = msgAnyB64toAny(message);
-        const { baseAccount } = await getAccountInfo(address, grpcAddress);
-        const calculateTxFeeRequest = buildCalculateTxFeeRequest({
-          msgAny,
-          account: baseAccount,
-          publicKey: convertUtf8ToBuffer(publicKey!), 
-          gasPriceDenom: 'nhash',
-          gasPrice: 19050,
-          gasAdjustment: 1.25,
-        });
-      console.log('grpcAddress :', grpcAddress);
-      console.log('sendMessage :', sendMessage);
-      console.log('request :', request);
-      console.log('msgAny :', msgAny);
-      console.log('baseAccount :', baseAccount);
-      console.log('calculateTxFeeRequest :', calculateTxFeeRequest);
+        const messageB64String = createAnyMessageBase64(type, messageMsgSend as Message);
+        // const { baseAccount } = await getAccountInfo(address, grpcAddress);
+        // const calculateTxFeeRequest = buildCalculateTxFeeRequest({
+        //   msgAny,
+        //   account: baseAccount,
+        //   publicKey: convertUtf8ToBuffer(publicKey!), 
+        //   gasPriceDenom: 'nhash',
+        //   gasPrice: 19050,
+        //   gasAdjustment: 1.25,
+        // });
+        // console.log('grpcAddress :', grpcAddress);
+        // console.log('sendMessage :', sendMessage);
+        // console.log('request :', request);
+        // console.log('msgAny :', msgAny);
+        // console.log('baseAccount :', baseAccount);
+        // console.log('calculateTxFeeRequest :', calculateTxFeeRequest);
+        /*
+        txBytes: Uint8Array | string,
+        mode: BroadcastMode,
+          - export enum BroadcastMode {
+              BROADCAST_MODE_UNSPECIFIED = 0,
+              BROADCAST_MODE_BLOCK = 1,
+              BROADCAST_MODE_SYNC = 2,
+              BROADCAST_MODE_ASYNC = 3,
+            }
+        */
+        grpcService.broadcastTx({ txBytes: messageB64String, mode: 0 });
       })();
     }
   }, [address, coin?.denom, coinAddress, coinAmount, publicKey]);

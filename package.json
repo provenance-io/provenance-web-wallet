@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@provenanceio/wallet-utils": "1.0.1",
+    "@provenanceio/wallet-lib": "2.4.3",
     "@reduxjs/toolkit": "^1.7.2",
     "@tendermint/belt": "0.3.0",
     "@tendermint/sig": "0.6.0",

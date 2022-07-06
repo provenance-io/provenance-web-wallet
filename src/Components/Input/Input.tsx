@@ -2,15 +2,17 @@ import styled from 'styled-components';
 import { COLORS } from 'theme/colors';
 
 interface InputProps {
+  autoFocus?: boolean;
+  children?: React.ReactNode;
+  disabled?: boolean,
+  error?: string,
   id: string;
   label?: string;
-  disabled?: boolean,
-  type?: string;
+  onChange?: (e: any) => void;
+  onKeyDown?: (e: any) => void;
   placeholder?: string;
+  type?: string;
   value?: string | number,
-  error?: string,
-  children?: React.ReactNode;
-  onChange?: (e: any) => void
 }
 
 const InputGroup = styled.div`

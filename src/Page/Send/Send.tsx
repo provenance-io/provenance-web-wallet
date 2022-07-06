@@ -1,17 +1,12 @@
 import { useState, useEffect } from 'react';
-import { Header, AssetDropdown, Input, Sprite, Button } from 'Components';
+import { Header, AssetDropdown, Input, Sprite, Button, Content, BottomFloat } from 'Components';
 import styled from 'styled-components';
-import { ICON_NAMES, SEND_URL } from 'consts';
+import { DASHBOARD_URL, ICON_NAMES, SEND_AMOUNT_URL } from 'consts';
 import { trimString } from 'utils';
 import { useNavigate } from 'react-router';
 import { useAddress, useMessage } from 'redux/hooks';
 import { format, parseISO } from 'date-fns';
 
-const Wrapper = styled.div`
-  text-align: center;
-  width: 100%;
-  font-family: 'Gothic A1', sans-serif;
-`;
 const SectionTitle = styled.div`
   font-size: 1.4rem;
   font-weight: 500;
@@ -92,31 +87,45 @@ export const Send: React.FC = () => {
       return setError('An address is required');
     }
 
-    navigate(SEND_URL);
+    navigate(SEND_AMOUNT_URL);
   };
 
   return (
-    <Wrapper>
+    <Content>
       <Header title="Send" iconLeft={ICON_NAMES.CLOSE} />
-      <SectionTitle>Select Asset</SectionTitle>
-      <AssetDropdown assets={assets} activeDenom={coin?.denom} onChange={setCoin} />
-      <SectionTitle>Send to Address</SectionTitle>
-      <Input
-        placeholder="Enter or select address below"
-        id="address"
-        value={coinAddress}
-        onChange={setCoinAddress}
-        error={error}
-      />
-      <SectionTitle>Recent Addresses</SectionTitle>
-      <RecentAddressSection>
-        {renderRecentAddresses()}
-        <RecentAddressItem>
-          <AddressInfo>View All</AddressInfo>
-          <Sprite icon={ICON_NAMES.CHEVRON} size="1.3rem" />
-        </RecentAddressItem>
-      </RecentAddressSection>
-      <Button onClick={validateAndNavigate}>Next</Button>
-    </Wrapper>
+      {assets.length ? (
+        <>
+          <SectionTitle>Select Asset</SectionTitle>
+          <AssetDropdown assets={assets} activeDenom={coin?.denom} onChange={setCoin} />
+          <SectionTitle>Send to Address</SectionTitle>
+          <Input
+            placeholder="Enter or select address below"
+            id="address"
+            value={coinAddress}
+            onChange={setCoinAddress}
+            error={error}
+          />
+          <SectionTitle>Recent Addresses</SectionTitle>
+          <RecentAddressSection>
+            {renderRecentAddresses()}
+            <RecentAddressItem>
+              <AddressInfo>View All</AddressInfo>
+              <Sprite icon={ICON_NAMES.CHEVRON} size="1.3rem" />
+            </RecentAddressItem>
+          </RecentAddressSection>
+          <BottomFloat>
+            <Button onClick={validateAndNavigate}>Next</Button>
+          </BottomFloat>
+        </>
+      ) : (
+        <>
+          <SectionTitle>Account has no assets to send</SectionTitle>
+          <BottomFloat>
+            <Button onClick={() => navigate(DASHBOARD_URL)}>Back</Button>
+          </BottomFloat>
+        </>
+      )}
+      
+    </Content>
   )
 };

@@ -66,8 +66,9 @@ export const DASHBOARD_RECEIVE_URL = `${DASHBOARD_URL}/receive`;
 export const DASHBOARD_CONNECTION_DETAILS_URL = `${DASHBOARD_URL}/connection`;
 // -- SEND URLS
 export const SEND_URL = '/send';
-export const SEND_REVIEW_URL = '/send/review';
-export const SEND_COMPLETE_URL = '/send/complete';
+export const SEND_AMOUNT_URL = `${SEND_URL}/amount`;
+export const SEND_REVIEW_URL = `${SEND_URL}/review`;
+export const SEND_COMPLETE_URL = `${SEND_URL}/complete`;
 // PROFILE URLS
 export const PROFILE_URL = '/profile';
 // TRANSACTION URLS

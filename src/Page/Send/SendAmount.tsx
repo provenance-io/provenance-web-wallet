@@ -1,12 +1,11 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router';
 import styled from 'styled-components';
-import { Button, Header, Input, Sprite } from 'Components';
+import { Button, Content, Header, Input } from 'Components';
 import { ICON_NAMES, SEND_REVIEW_URL } from 'consts';
 import { useActiveAccount, useMessage, usePricing } from 'redux/hooks';
 import { capitalize, getGrpcApi } from 'utils';
-import { COLORS, COLOR_VARIABLES } from 'theme';
-// import { Message } from 'google-protobuf';
+import { COLORS } from 'theme';
 import {
   buildCalculateTxFeeRequest,
   buildMessage,
@@ -17,13 +16,7 @@ import {
   MsgSendDisplay,
 } from '@provenanceio/wallet-utils';
 
-const Wrapper = styled.div`
-  text-align: center;
-  width: 100%;
-  font-family: 'Gothic A1', sans-serif;
-`;
-
-const AssetImg = styled.object`
+const AssetImg = styled.img`
   width: 100px;
   max-width: 113px;
 `;
@@ -40,7 +33,7 @@ const AssetAmount = styled(Input)`
 const TxMemo = styled(Input)`
   padding: 16px 8px;
   border: none;
-  border-bottom: 1px solid ${COLOR_VARIABLES.NEUTRAL_700};
+  border-bottom: 1px solid ${COLORS.NEUTRAL_700};
 `;
 
 export const SendAmount = () => {
@@ -95,18 +88,12 @@ export const SendAmount = () => {
   };
 
   return !coin ? null : (
-    <Wrapper>
+    <Content>
       <Header
         title={`Send ${capitalize(coin.display)}`}
         iconLeft={ICON_NAMES.ARROW}
       />
-      <AssetImg data={`/images/assets/${coin.display}.svg`} type="image/svg+xml">
-        <Sprite
-          icon={ICON_NAMES.PROVENANCE}
-          color={COLORS.PRIMARY_500}
-          size="10rem"
-        />
-      </AssetImg>
+      <AssetImg src={`/images/assets/${coin.display}.svg`} />
       <AssetAmount
         autoFocus
         id="sendAmount"
@@ -126,6 +113,6 @@ export const SendAmount = () => {
       <TxMemo id="txMemo" placeholder="Note" value={txMemo} onChange={setMemo} />
       <p>Transaction</p>
       <Button onClick={validateAndNavigate}>Next</Button>
-    </Wrapper>
+    </Content>
   );
 };

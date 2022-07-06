@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import { ICON_NAMES, DASHBOARD_CONNECTION_DETAILS_URL } from 'consts';
+import { ICON_NAMES, DASHBOARD_CONNECTION_DETAILS_URL, DASHBOARD_MENU_URL } from 'consts';
 import { Sprite, CopyValue } from 'Components';
 import { useNavigate } from 'react-router-dom';
 import { COLORS } from 'theme';
@@ -61,7 +61,7 @@ export const DashboardHeader:React.FC = () => {
 
   return (
     <HeaderRow>
-      <Menu onClick={() => navigate('./menu')}>
+      <Menu onClick={() => navigate(DASHBOARD_MENU_URL)}>
         <Sprite icon={ICON_NAMES.MENU} size="2rem" />
       </Menu>
         <WalletInfo>

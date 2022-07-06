@@ -3,7 +3,6 @@ import { Sprite } from 'Components';
 import { ICON_NAMES } from 'consts';
 import styled from 'styled-components';
 import { Asset } from 'types';
-import { COLORS } from 'theme';
 
 const Wrapper = styled.div`
   position: relative;
@@ -87,9 +86,7 @@ export const AssetDropdown: React.FC<Props> = ({
     return (
       <AssetItem onClick={() => handleAssetClick(asset)} key={denom} option={option}>
         <Right>
-          <AssetImg src={`/images/assets/${display}.svg`}>
-            <Sprite icon={ICON_NAMES.PROVENANCE} size="3rem" color={COLORS.WHITE} />
-          </AssetImg>
+          <AssetImg src={`/images/assets/${display}.svg`} />
           <AssetName>{display}</AssetName>
         </Right>
         <Left>
@@ -108,13 +105,13 @@ export const AssetDropdown: React.FC<Props> = ({
   // Don't render the currently active dropdown in all options
   const renderAllDropdowns = () =>
     assets
-      .filter((asset) => asset.denom !== activeDenom)
+      .filter((asset) => asset?.denom !== activeDenom)
       .map((asset) => renderDropdown(asset, true));
 
   return (
     <Wrapper className={className}>
-      {renderDropdown(activeAsset)}
-      {dropdownOpen && <FloatingOptions>{renderAllDropdowns()}</FloatingOptions>}
+      {!!activeAsset && renderDropdown(activeAsset)}
+      {dropdownOpen && !!assets.length && <FloatingOptions>{renderAllDropdowns()}</FloatingOptions>}
     </Wrapper>
   );
 };

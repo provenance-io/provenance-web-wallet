@@ -1,4 +1,5 @@
 import { Button, ButtonGroup, FooterNav, AssetRow, Content, Denom } from 'Components';
+import { SEND_URL, DASHBOARD_RECEIVE_URL } from 'consts';
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAddress, useActiveAccount } from 'redux/hooks';
@@ -72,8 +73,8 @@ export const Dashboard = () => {
       <PortfolioTitle>Portfolio Value</PortfolioTitle>
       <Value><Denom>$</Denom>{calculatePortfolioValue().toFixed(2)}</Value>
       <ButtonGroup direction="row">
-        <Button layout="row" onClick={() => navigate('./send')}>Send</Button>
-        <Button layout="row" onClick={() => navigate('./receive')}>Receive</Button>
+        <Button layout="row" onClick={() => navigate(SEND_URL)}>Send</Button>
+        <Button layout="row" onClick={() => navigate(DASHBOARD_RECEIVE_URL)}>Receive</Button>
       </ButtonGroup>
       <AssetsTitle>My Assets</AssetsTitle>
       <AssetsContainer>

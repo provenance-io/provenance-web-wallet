@@ -5,15 +5,17 @@ import { Button, Content, Header, Input } from 'Components';
 import { ICON_NAMES, SEND_REVIEW_URL } from 'consts';
 import { useActiveAccount, useMessage, usePricing } from 'redux/hooks';
 import { capitalize, getGrpcApi } from 'utils';
+import { convertUtf8ToBuffer } from '@walletconnect/utils';
+import { Message } from 'google-protobuf';
 import { COLORS } from 'theme';
 import {
   buildCalculateTxFeeRequest,
   buildMessage,
   createAnyMessageBase64,
   // grpcService,
-  // getAccountInfo,
+  getAccountInfo,
   msgAnyB64toAny,
-  MsgSendDisplay,
+  // MsgSendDisplay,
 } from '@provenanceio/wallet-utils';
 
 const AssetImg = styled.img`
@@ -48,27 +50,45 @@ export const SendAmount = () => {
     if (address && coinAddress && coin?.denom) {
       (async () => {
         const grpcAddress = getGrpcApi(address);
-        console.log({ grpcAddress, /*getAccountInfo,*/ address });
-        // const type = 'MsgSend';
-        // const sendMessage: MsgSendDisplay = {
-        //   fromAddress: address,
-        //   toAddress: coinAddress,
-        //   amountList: [{ denom: coin.denom, amount: coinAmount }],
-        // };
-        //       const msgSend = buildMessage(type, sendMessage);
-        //       const message = createAnyMessageBase64(type, msgSend as Message);
-        //       const msgAny = msgAnyB64toAny(message);
-        // const { baseAccount } = await getAccountInfo(address, grpcAddress);
-        // console.log(baseAccount);
-        //       const calculateTxFeeRequest = buildCalculateTxFeeRequest(
-        //         msgAny,
-        //         baseAccount,
-        //         publicKey as unknown as Uint8Array, // SUPER HACKY BUT NEED TO TEST
-        //         'nhash',
-        //         19050,
-        //         1.25
-        //       );
-        //       console.log(calculateTxFeeRequest);
+        const method = 'provenance_sendTransaction';
+        const type = 'MsgSend';
+        const gasPrice = 19050;
+        const description = `Send Coin (${coin.denom})`;
+        const sendMessage = {
+          amountList: [{ denom: coin.denom, amount: coinAmount!}],
+          fromAddress: address,
+          toAddress: coinAddress,
+        };
+        const metadata = JSON.stringify({
+          description,
+          address,
+          gasPrice,
+          date: Date.now(),
+        });
+        const request = {
+          id: Math.random().toString().slice(2, 16 + 2), // Generate a random id to use
+          jsonrpc: '2.0',
+          method,
+          params: [metadata],
+        };
+        const messageMsgSend = buildMessage(type, sendMessage);
+        const message = createAnyMessageBase64(type, messageMsgSend as Message);
+        const msgAny = msgAnyB64toAny(message);
+        const { baseAccount } = await getAccountInfo(address, grpcAddress);
+        const calculateTxFeeRequest = buildCalculateTxFeeRequest({
+          msgAny,
+          account: baseAccount,
+          publicKey: convertUtf8ToBuffer(publicKey!), 
+          gasPriceDenom: 'nhash',
+          gasPrice: 19050,
+          gasAdjustment: 1.25,
+        });
+      console.log('grpcAddress :', grpcAddress);
+      console.log('sendMessage :', sendMessage);
+      console.log('request :', request);
+      console.log('msgAny :', msgAny);
+      console.log('baseAccount :', baseAccount);
+      console.log('calculateTxFeeRequest :', calculateTxFeeRequest);
       })();
     }
   }, [address, coin?.denom, coinAddress, coinAmount, publicKey]);

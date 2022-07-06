@@ -8,10 +8,14 @@ export const PROVENANCE_WEB_DOCS_URL = 'https://docs.provenance.io';
 // ---------
 export const SERVICE_MOBILE_WALLET_TESTNET = process.env.REACT_APP_SERVICE_MOBILE_WALLET_TESTNET;
 export const SERVICE_MOBILE_WALLET_MAINNET = process.env.REACT_APP_SERVICE_MOBILE_WALLET_MAINNET;
+export const GRPC_CLIENT_ADDRESS_TESTNET = 'https://wallet.test.figure.tech/proxy';
+export const GRPC_CLIENT_ADDRESS_MAINNET = 'https://wallet.figure.tech/proxy';
+export const SERVICE_PRICING_ENGINE_TESTNET = 'https://test.figure.tech/service-pricing-engine/external/api/v1';
+export const SERVICE_PRICING_ENGINE_MAINNET = 'https://www.figure.tech/service-pricing-engine/external/api/v1';
 export const ADDRESS_URL = '/address';
-export const PRICING_URL = `${SERVICE_MOBILE_WALLET_MAINNET}/pricing`;
-export const STATISTICS_URL = `${SERVICE_MOBILE_WALLET_MAINNET}/statistics`;
-export const MARKER_URL = `${PRICING_URL}/marker`;
+export const PRICING_API_URL = `${SERVICE_MOBILE_WALLET_MAINNET}/pricing`;
+export const STATISTICS_API_URL = `${SERVICE_MOBILE_WALLET_MAINNET}/statistics`;
+export const MARKER_API_URL = `${PRICING_API_URL}/marker`;
 // ---------------------
 // INNER-APP PATH URLS
 // ---------------------
@@ -60,6 +64,10 @@ export const DASHBOARD_MENU_URL = `${DASHBOARD_URL}/menu`;
 export const DASHBOARD_SEND_URL = `${DASHBOARD_URL}/send`;
 export const DASHBOARD_RECEIVE_URL = `${DASHBOARD_URL}/receive`;
 export const DASHBOARD_CONNECTION_DETAILS_URL = `${DASHBOARD_URL}/connection`;
+// -- SEND URLS
+export const SEND_URL = '/send';
+export const SEND_REVIEW_URL = '/send/review';
+export const SEND_COMPLETE_URL = '/send/complete';
 // PROFILE URLS
 export const PROFILE_URL = '/profile';
 // TRANSACTION URLS

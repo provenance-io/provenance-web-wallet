@@ -1,22 +1,24 @@
 import { configureStore, ThunkAction, Action } from '@reduxjs/toolkit';
-import devToolsEnhancer from "remote-redux-devtools";
-import addressReducer from './features/address/addressSlice';
-import pricingReducer from './features/pricing/pricingSlice';
-import statisticsReducer from './features/statistics/statisticsSlice';
 import accountReducer from './features/account/accountSlice';
-import walletConnectReducer from './features/walletConnect/walletConnectSlice';
+import addressReducer from './features/address/addressSlice';
+import devToolsEnhancer from "remote-redux-devtools";
+import messageReducer from './features/message/messageSlice';
+import pricingReducer from './features/pricing/pricingSlice';
 import settingsReducer from './features/settings/settingsSlice';
+import statisticsReducer from './features/statistics/statisticsSlice';
+import walletConnectReducer from './features/walletConnect/walletConnectSlice';
 
 export const store = configureStore({
   ...(process.env.REACT_APP_ENV === "staging") && {enhancers: [devToolsEnhancer({ realtime: true, port: 8000 })]},
   devTools: false,
   reducer: {
+    account: accountReducer,
     api_address: addressReducer,
     api_pricing: pricingReducer,
     api_statistics: statisticsReducer,
-    account: accountReducer,
-    walletConnect: walletConnectReducer,
+    message: messageReducer,
     settings: settingsReducer,
+    walletConnect: walletConnectReducer,
   },
   middleware: (getDefaultMiddleware) => getDefaultMiddleware({
     serializableCheck: false,

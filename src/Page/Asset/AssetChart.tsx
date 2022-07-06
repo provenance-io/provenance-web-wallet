@@ -2,7 +2,7 @@ import { useParams } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { Chart, Loading } from 'Components';
-import { MARKER_URL } from 'consts';
+import { MARKER_API_URL } from 'consts';
 import { hashFormat, generateStartDate, percentChange } from 'utils';
 import {
   FetchMarkerType,
@@ -74,7 +74,7 @@ export const AssetChart:React.FC<Props> = ({ onValueChange, setError, loading, s
     async function fetchMarkerData() {
       const isHash = assetName === 'hash';
       const fetchName = isHash ? 'nhash' : assetName;
-      const fetchUrl = `${MARKER_URL}/${fetchName}?period=${timePeriod}&startDate=${startDate}&endDate=${endDate}`;
+      const fetchUrl = `${MARKER_API_URL}/${fetchName}?period=${timePeriod}&startDate=${startDate}&endDate=${endDate}`;
       setLoading(true);
       setError(false);
       // TODO: Move this data into the redux store and pull from there instead (remove promise chain within component here)

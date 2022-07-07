@@ -7,6 +7,7 @@ import { convertUtf8ToBuffer } from '@walletconnect/utils';
 import { Message } from 'google-protobuf';
 import {
   buildCalculateTxFeeRequest,
+  calculateTxFees,
   buildBroadcastTxRequest,
   buildMessage,
   createAnyMessageBase64,
@@ -33,7 +34,7 @@ export const SendReview = () => {
         const feeDenom = 'nhash';
         const memo = `Send Coin (${coin.denom}) to ${coinAddress}`;
         const chainId = network === 'testnet' ? CHAINID_TESTNET : CHAINID_MAINNET;
-        const wallet = { address, privateKey: masterKey.privateKey, publicKey: masterKey.publicKey };
+        const wallet = { address, privateKey: masterKey.privateKey!, publicKey: masterKey.publicKey };
         const sendMessage = {
           amountList: [{ denom: coin.denom, amount: coinAmount!}],
           fromAddress: address,
@@ -51,18 +52,21 @@ export const SendReview = () => {
           gasPrice,
           gasAdjustment,
         });
-        // const broadcastTxRequest = buildBroadcastTxRequest({
-        //   account: baseAccount,
-        //   chainId,
-        //   feeDenom,
-        //   // feeEstimate: calculateTxFeeRequest,
-        //   // gasEstimate: calculateTxFeeRequest,
-        //   memo,
-        //   msgAny,
-        //   wallet,
-        // });
+        const { totalFeesList, estimatedGas: gasEstimate } = await calculateTxFees(grpcAddress, calculateTxFeeRequest);
+        const feeEstimate = Number(totalFeesList.find((f) => f.denom === 'nhash')?.amount);
+        
+        const broadcastTxRequest = buildBroadcastTxRequest({
+          account: baseAccount,
+          chainId,
+          feeDenom,
+          feeEstimate,
+          gasEstimate,
+          memo,
+          msgAny,
+          wallet,
+        });
 
-        // await broadcastTx(grpcAddress, broadcastTxRequest);
+        await broadcastTx(grpcAddress, broadcastTxRequest);
         // console.log('grpcAddress :', grpcAddress);
         // console.log('sendMessage :', sendMessage);
         // console.log('request :', request);

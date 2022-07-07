@@ -53,7 +53,7 @@ export const SendReview = () => {
           gasAdjustment,
         });
         const { totalFeesList, estimatedGas: gasEstimate } = await calculateTxFees(grpcAddress, calculateTxFeeRequest);
-        const feeEstimate = Number(totalFeesList.find((f) => f.denom === 'nhash')?.amount);
+        const feeEstimate = Number(totalFeesList.find((fee) => fee.denom === 'nhash')?.amount);
         
         const broadcastTxRequest = buildBroadcastTxRequest({
           account: baseAccount,
@@ -67,12 +67,6 @@ export const SendReview = () => {
         });
 
         await broadcastTx(grpcAddress, broadcastTxRequest);
-        // console.log('grpcAddress :', grpcAddress);
-        // console.log('sendMessage :', sendMessage);
-        // console.log('request :', request);
-        // console.log('msgAny :', msgAny);
-        // console.log('baseAccount :', baseAccount);
-        // console.log('calculateTxFeeRequest :', calculateTxFeeRequest);
         navigate(SEND_COMPLETE_URL);
       })();
     }

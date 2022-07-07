@@ -5,7 +5,7 @@ import { buildJWT, trimString } from 'utils';
 import { ICON_NAMES, CHAINID_TESTNET } from 'consts';
 import circleIcon from 'images/circle-icon.svg';
 import { useActiveAccount, useWalletConnect } from 'redux/hooks';
-import { EventPayload } from 'types';
+import { BIP32Interface, EventPayload } from 'types';
 
 const Title = styled.div`
   font-weight: 600;
@@ -70,9 +70,9 @@ export const WalletConnectInit:React.FC<Props> = ({ payload, closeWindow }) => {
   const activeAccount = useActiveAccount();
   const { publicKey, address, name: activeAccountName } = activeAccount;
 
-  const handleApprove = async (privateKey: Uint8Array) => {
+  const handleApprove = async (masterKey: BIP32Interface) => {
     if (connector) {
-      const jwt = buildJWT(privateKey, publicKey!, address!);
+      const jwt = buildJWT(masterKey, address!);
       const data = {
         // TODO: This needs to be based on the selected account(s)
         // NOTE: Don't allow selecting both testnet and mainnet accounts at the same time

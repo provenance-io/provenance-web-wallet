@@ -6,6 +6,7 @@ import { List, Authenticate } from 'Components';
 import { useEffect, useState } from 'react';
 import { format } from 'date-fns';
 import { signBytes } from 'utils';
+import { BIP32Interface } from 'types';
 
 const SignContainer = styled.div`
   padding-bottom: 300px;
@@ -67,10 +68,10 @@ export const SignRequest:React.FC<Props> = ({ payload, closeWindow }) => {
     }
   };
 
-  const handleApprove = async (privateKey: Uint8Array) => {
-    if (connector && privateKey && encodedMessage) {
+  const handleApprove = async (masterKey: BIP32Interface) => {
+    if (connector && masterKey && encodedMessage) {
       const bites = convertHexToBuffer(encodedMessage);
-      const signature = signBytes(bites, privateKey);
+      const signature = signBytes(bites, masterKey.privateKey!);
       // Convert back to hex
       const resultFull = convertArrayBufferToHex(signature);
       // Cut off the leading "0x"

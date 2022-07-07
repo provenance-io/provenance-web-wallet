@@ -1,5 +1,6 @@
 export * from './Account';
 export * from './Address';
+export * from './Chain';
 export * from './ChartTypes';
 export * from './Message';
 export * from './Routing';

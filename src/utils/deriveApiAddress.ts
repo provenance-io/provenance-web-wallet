@@ -5,11 +5,11 @@ import {
   SERVICE_MOBILE_WALLET_TESTNET,
   SERVICE_PRICING_ENGINE_MAINNET,
   SERVICE_PRICING_ENGINE_TESTNET,
-  PROVENANCE_ADDRESS_PREFIX_TESTNET
+  ADDRESS_PREFIX_TESTNET
 } from 'consts';
 
 const isTestnet = (address: string) =>
-  address.startsWith(PROVENANCE_ADDRESS_PREFIX_TESTNET!);
+  address.startsWith(ADDRESS_PREFIX_TESTNET!);
 
 export const getServiceMobileApi = (address: string, additionalPath: string) => {
   const serviceUrl = isTestnet(address)

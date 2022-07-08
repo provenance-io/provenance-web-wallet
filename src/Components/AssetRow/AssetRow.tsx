@@ -53,7 +53,7 @@ export const AssetRow:React.FC<Props> = ({ img, name, amount, onClick }) => {
   const renderAmount = () => {
     if (!amount) return 'Buy • Mar 31';
     // const changeSymbol = amount.change ? '+' : '-';
-    return amount.count;
+    return Number(amount.count).toFixed(2);
   };
 
   return (

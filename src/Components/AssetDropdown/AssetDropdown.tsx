@@ -81,7 +81,9 @@ export const AssetDropdown: React.FC<Props> = ({
   const activeAsset = assets.find(({ denom }) => denom === activeDenom) || assets[0];
 
   const renderDropdown = (asset: Asset, option: boolean = false) => {
-    const { denom, display, usdPrice, displayAmount } = asset;
+    const { denom, display, usdPrice, displayAmount, exponent } = asset;
+
+    const price = (usdPrice / Number(`1e-${exponent}`)).toFixed(3);
 
     return (
       <AssetItem onClick={() => handleAssetClick(asset)} key={denom} option={option}>
@@ -91,12 +93,12 @@ export const AssetDropdown: React.FC<Props> = ({
         </Right>
         <Left>
           <Amounts>
-            <AssetValue>${usdPrice}</AssetValue>
+            <AssetValue>${price}</AssetValue>
             <AssetCount>
-              {displayAmount} {display}
+              {Number(displayAmount).toFixed(2)} {display}
             </AssetCount>
           </Amounts>
-          {!option && <Sprite icon={ICON_NAMES.CARET} size="1rem" />}
+          {!option && assets.length > 1 && <Sprite icon={ICON_NAMES.CARET} size="1rem" />}
         </Left>
       </AssetItem>
     );

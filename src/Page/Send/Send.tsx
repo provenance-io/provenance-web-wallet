@@ -1,10 +1,10 @@
 import { useState, useEffect } from 'react';
-import { Header, AssetDropdown, Input, Sprite, Button, Content, BottomFloat } from 'Components';
+import { Header, AssetDropdown, Input, Sprite, Button, Content, BottomFloat, Loading, Typo } from 'Components';
 import styled from 'styled-components';
 import { DASHBOARD_URL, ICON_NAMES, SEND_AMOUNT_URL } from 'consts';
 import { trimString } from 'utils';
 import { useNavigate } from 'react-router';
-import { useAddress, useMessage } from 'redux/hooks';
+import { useActiveAccount, useAddress, useMessage } from 'redux/hooks';
 import { format, parseISO } from 'date-fns';
 
 const SectionTitle = styled.div`
@@ -59,10 +59,26 @@ const Date = styled.div`
 
 export const Send: React.FC = () => {
   const navigate = useNavigate();
-  const { assets, transactions } = useAddress();
+  const {
+    assets,
+    transactions,
+    getAddressTx,
+    transactionsLoading,
+    transactionsError,
+  } = useAddress();
   const recentAddresses = [...transactions].splice(0, 4);
   const [error, setError] = useState('');
+  const [initialLoad, setInitialLoad] = useState(true);
   const { coinAddress, setCoinAddress, coin, setCoin } = useMessage();
+  const { address } = useActiveAccount();
+
+  // Initial load fetch all transactions
+  useEffect(() => {
+    if (initialLoad && address) {
+      setInitialLoad(false);
+      getAddressTx(address);
+    }
+  }, [initialLoad, address, getAddressTx]);
 
   useEffect(() => {
     setCoin(assets[0]);
@@ -95,7 +111,7 @@ export const Send: React.FC = () => {
       <Header title="Send" iconLeft={ICON_NAMES.CLOSE} />
       {assets.length ? (
         <>
-          <SectionTitle>Select Asset</SectionTitle>
+          <SectionTitle>{assets.length > 1 ? 'Select Asset' : 'Asset'}</SectionTitle>
           <AssetDropdown assets={assets} activeDenom={coin?.denom} onChange={setCoin} />
           <SectionTitle>Send to Address</SectionTitle>
           <Input
@@ -107,11 +123,19 @@ export const Send: React.FC = () => {
           />
           <SectionTitle>Recent Addresses</SectionTitle>
           <RecentAddressSection>
-            {renderRecentAddresses()}
-            <RecentAddressItem>
-              <AddressInfo>View All</AddressInfo>
-              <Sprite icon={ICON_NAMES.CHEVRON} size="1.3rem" />
-            </RecentAddressItem>
+            {!!transactionsError && <Typo type="error">Error fetching recent addresses: {transactionsError}</Typo>}
+            {transactionsLoading ?
+              <Loading /> :
+              !transactions.length ?
+              <Typo type="body" align='left' textStyle='italic'>No recent addresses available</Typo> :
+              renderRecentAddresses()
+            }
+            {!!transactions.length &&
+              <RecentAddressItem>
+                <AddressInfo>View All</AddressInfo>
+                <Sprite icon={ICON_NAMES.CHEVRON} size="1.3rem" />
+              </RecentAddressItem>
+            }
           </RecentAddressSection>
           <BottomFloat>
             <Button onClick={validateAndNavigate}>Next</Button>

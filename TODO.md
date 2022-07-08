@@ -2,7 +2,9 @@
 ## To do shortlist
 
 ## Current Branch Tasks
-* Send Hash to an address 
+* Send Hash to an address [DONE]
+* Clean up pages to match designs
+* Save recent addresses
 
 ## Near-Future™ Branch Tasks
 * Dashboard menu - child accounts indented (tree)

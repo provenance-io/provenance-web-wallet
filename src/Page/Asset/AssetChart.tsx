@@ -93,12 +93,12 @@ export const AssetChart:React.FC<Props> = ({ onValueChange, setError, loading, s
         // Loop through each api value and split into chart data arrays
         sortedMarkerData.forEach(({ timestamp, price }: FetchMarkerType, index: number) => {
           // Convert nhash to hash if needed
-          const finalPrice = isHash ? hashFormat('nhash', price) : price;
+          const finalPrice = isHash ? hashFormat(price) : price;
           // Calculate price change from first price
           const diff = price - sortedMarkerData[0].price;
           // Calculate percent change
           const finalValueDiffPercents = percentChange(sortedMarkerData[0].price, price);
-          const finalValueDiffs = isHash ? hashFormat('nhash', diff) : diff;
+          const finalValueDiffs = isHash ? hashFormat(diff) : diff;
           // Add data to appropriate array
           newValueDiffPercents.push(finalValueDiffPercents);
           newLabels.push(timestamp);

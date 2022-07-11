@@ -1,6 +1,11 @@
 import React from 'react';
 import styled, { css } from 'styled-components';
-import { COLORS } from 'theme';
+import { COLORS, FONTS } from 'theme';
+
+/*
+  ${FONT_VARIABLES.PRIMARY_FONT}: Gothic A1, sans-serif;
+  ${FONT_VARIABLES.SECONDARY_FONT}: Montserrat, sans-serif; 
+*/
 
 interface StyledProps {
   align: 'left' | 'right' | 'center';
@@ -19,8 +24,17 @@ const StylingMixin = css<StyledProps>`
   color: ${({ color }) => COLORS[color] };
 `;
 
+const TitleStyle = styled.p`
+  ${FONTS.PRIMARY_FONT};
+  font-weight: 700;
+  font-size: 1.8rem;
+  line-height: 2.88rem;
+  letter-spacing: 0.04em;
+  ${StylingMixin}
+`;
+
 const DisplayBodyStyle = styled.p`
-  font-family: 'Montserrat', 'sans-serif';
+  ${FONTS.SECONDARY_FONT};
   font-weight: 400;
   font-size: 1.6rem;
   line-height: 2.48rem;
@@ -29,7 +43,7 @@ const DisplayBodyStyle = styled.p`
 `;
 
 const BodyStyle = styled.p`
-  font-family: 'Gothic A1', sans-serif;
+  ${FONTS.PRIMARY_FONT};
   font-weight: 400;
   line-height: 2.24rem;
   letter-spacing: 0.04em;
@@ -40,7 +54,7 @@ const ErrorStyle = styled(BodyStyle)`
   color: #ED6E74;
 `;
 const SubheadStyle = styled.p`
-  font-family: 'Gothic A1', sans-serif;
+  ${FONTS.PRIMARY_FONT};
   font-weight: 700;
   font-size: 1.4rem;
   line-height: 2.22rem;
@@ -48,7 +62,7 @@ const SubheadStyle = styled.p`
   ${StylingMixin}
 `;
 const Headline2Style = styled.p`
-  font-family: 'Montserrat', 'sans-serif';
+  ${FONTS.SECONDARY_FONT};
   font-weight: 600;
   font-size: 1.6rem;
   line-height: 1.95rem;
@@ -57,7 +71,7 @@ const Headline2Style = styled.p`
   ${StylingMixin}
 `;
 
-type TypoType = 'body' | 'subhead' | 'headline2' | 'error' | 'displayBody';
+type TypoType = 'body' | 'subhead' | 'headline2' | 'error' | 'displayBody' | 'title';
 interface Props {
   className?: string,
   children: React.ReactNode;
@@ -87,6 +101,7 @@ export const Typo:React.FC<Props> = ({
       case 'headline2': return <Headline2Style {...allProps}>{children}</Headline2Style>
       case 'error': return <ErrorStyle {...allProps}>{children}</ErrorStyle>
       case 'displayBody': return <DisplayBodyStyle {...allProps}>{children}</DisplayBodyStyle>
+      case 'title': return <TitleStyle {...allProps}>{children}</TitleStyle>
     }
   }
   

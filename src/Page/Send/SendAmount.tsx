@@ -3,8 +3,8 @@ import { useNavigate } from 'react-router';
 import styled from 'styled-components';
 import { BottomFloat, Button, Content, Header, Input, Typo } from 'Components';
 import { ICON_NAMES, SEND_REVIEW_URL } from 'consts';
-import { useMessage, usePricing } from 'redux/hooks';
-import { capitalize } from 'utils';
+import { useActiveAccount, useMessage, useAddress } from 'redux/hooks';
+import { capitalize, hashFormat } from 'utils';
 import { COLORS } from 'theme';
 
 const AssetImg = styled.img`
@@ -24,7 +24,7 @@ const AssetAmount = styled(Input)`
 `;
 const StyledRow = styled.div`
   border-bottom: 1px solid ${COLORS.NEUTRAL_700};
-  margin-top: 64px;
+  padding: 10px 0;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -46,15 +46,14 @@ const Uppercase = styled.span`
 export const SendAmount = () => {
   const navigate = useNavigate();
   const [errors, setErrors] = useState<string[]>([]); // [AmountError, MemoError]
-  const { coin, coinAmount, setCoinAmount, txMemo, setMemo } =
+  const { coin, coinAmount, setCoinAmount, txMemo, setMemo, getTxFeeEstimate, txFeeEstimate, txGasEstimate } =
     useMessage();
-  const { queryPricingEngine, priceEnginePrices } = usePricing();
+  const { assets } = useAddress();
+  const { publicKey } = useActiveAccount();
   
   useEffect(() => {
-    if (coin) {
-      queryPricingEngine({ denom: [coin.denom] });
-    }
-  }, [coin, queryPricingEngine]);
+    if (coinAmount) getTxFeeEstimate(publicKey!);
+  }, [coinAmount, publicKey, getTxFeeEstimate]);
 
   const validateAndNavigate = () => {
     let newErrors = [];
@@ -62,6 +61,23 @@ export const SendAmount = () => {
     if (txMemo && txMemo.length > 30) newErrors[1] = 'Max memo length 30';
     setErrors(newErrors);
     if (!newErrors.length) navigate(SEND_REVIEW_URL);
+  };
+
+  const calculatePriceUSD = () => {
+    let value = '0.00';
+    const assetData = assets.find(({denom}) => coin!.denom === denom);
+    if (coinAmount && assetData) {
+      const nhashAmount = hashFormat(coinAmount, 'hash');
+      value = `${(assetData.usdPrice * nhashAmount).toFixed(2)}`;
+    }
+    return `~$${value} USD`;
+  };
+
+  const handleAmountChange = (amount: string) => {
+    const newErrors = [...errors];
+    newErrors[0] = (Number(amount) + Number(hashFormat(txFeeEstimate || 0, 'nhash')) + Number(hashFormat(txGasEstimate || 0, 'nhash'))) > Number(coin!.displayAmount) ? 'Insufficient funds' : '';
+    setErrors(newErrors);
+    setCoinAmount(amount);
   };
 
   return !coin ? null : (
@@ -76,23 +92,32 @@ export const SendAmount = () => {
         id="sendAmount"
         placeholder="0"
         value={coinAmount}
-        onChange={setCoinAmount}
+        onChange={handleAmountChange}
         error={errors[0]}
+        type="number"
       />
       <Typo type="displayBody">
         {Number(coin.displayAmount).toFixed(2)} <Uppercase>{coin.display}</Uppercase> available
       </Typo>
-      <Typo type="displayBody">
-        ${coinAmount && priceEnginePrices[coin.denom]
-          ? `${(priceEnginePrices[coin.denom]?.usdPrice * Number(coinAmount)).toFixed(2)}`
-          : '0.00'} USD
-      </Typo>
+      <Typo type="displayBody" marginBottom="64px">{calculatePriceUSD()}</Typo>
       <StyledRow>
         <RowTitle>
           <Typo type="body">Note</Typo>
         </RowTitle>
         <RowValue>
           <TxMemo id="txMemo" placeholder="Click to add note (optional)" value={txMemo} onChange={setMemo} error={errors[1]} />
+        </RowValue>
+      </StyledRow>
+      <StyledRow>
+        <RowTitle>
+          <Typo type="body">Transaction Fee</Typo>
+        </RowTitle>
+        <RowValue>
+          <Typo type="body" align="right">
+            <Uppercase>
+              {txFeeEstimate ? `${(hashFormat(txFeeEstimate, 'nhash') + hashFormat(txGasEstimate!, 'nhash')).toFixed(2)} ${coin.display}` : 'N/A'}
+            </Uppercase>
+          </Typo>
         </RowValue>
       </StyledRow>
       <BottomFloat>

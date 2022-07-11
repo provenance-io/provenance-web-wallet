@@ -2,6 +2,11 @@ import styled from 'styled-components';
 import { capitalize } from 'utils';
 import { COLORS } from 'theme';
 
+const ListContainer = styled.div<{marginBottom?: string, maxHeight?: string}>`
+  ${({ marginBottom }) => !!marginBottom && `margin-bottom: ${marginBottom};` }
+  ${({ maxHeight }) => !!maxHeight && `max-height: ${maxHeight}; overflow-y: scroll;` }
+`;
+
 const ListRow = styled.div`
   border-top: 1px solid ${COLORS.NEUTRAL_600};
   padding: 16px 8px;
@@ -24,12 +29,16 @@ const ListContent = styled.div`
 
 interface ListProps {
   message: {
-    [key: string]: string;
+    [key: string]: string | number;
   };
+  marginBottom?: string;
+  maxHeight?: string;
 }
 
 export const List = ({
   message,
+  marginBottom,
+  maxHeight,
 }: ListProps) => {
 
   const createList = Object.keys(message).map(item => (
@@ -40,8 +49,8 @@ export const List = ({
   ));
 
   return (
-    <>
+    <ListContainer marginBottom={marginBottom} maxHeight={maxHeight}>
       {createList}
-    </>
+    </ListContainer>
   )
 };

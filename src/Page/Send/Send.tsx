@@ -69,16 +69,17 @@ export const Send: React.FC = () => {
   const recentAddresses = [...transactions].splice(0, 4);
   const [error, setError] = useState('');
   const [initialLoad, setInitialLoad] = useState(true);
-  const { coinAddress, setCoinAddress, coin, setCoin } = useMessage();
+  const { txSendAddress, setTxSendAddress, setTxFromAddress, coin, setCoin } = useMessage();
   const { address } = useActiveAccount();
 
   // Initial load fetch all transactions
   useEffect(() => {
     if (initialLoad && address) {
       setInitialLoad(false);
+      setTxFromAddress(address);
       getAddressTx(address);
     }
-  }, [initialLoad, address, getAddressTx]);
+  }, [initialLoad, address, getAddressTx, setTxFromAddress]);
 
   useEffect(() => {
     setCoin(assets[0]);
@@ -88,7 +89,7 @@ export const Send: React.FC = () => {
     recentAddresses.map(({ recipientAddress, timestamp }, index) => (
       <RecentAddressItem
         key={`${recipientAddress}_${index}`}
-        onClick={() => setCoinAddress(recipientAddress)}
+        onClick={() => setTxSendAddress(recipientAddress)}
       >
         <AddressInfo>
           <Address>{trimString(recipientAddress, 11, 4)}</Address>
@@ -99,7 +100,7 @@ export const Send: React.FC = () => {
     ));
 
   const validateAndNavigate = () => {
-    if (!coinAddress) {
+    if (!txSendAddress) {
       return setError('An address is required');
     }
 
@@ -117,8 +118,8 @@ export const Send: React.FC = () => {
           <Input
             placeholder="Enter or select address below"
             id="address"
-            value={coinAddress}
-            onChange={setCoinAddress}
+            value={txSendAddress}
+            onChange={setTxSendAddress}
             error={error}
           />
           <SectionTitle>Recent Addresses</SectionTitle>

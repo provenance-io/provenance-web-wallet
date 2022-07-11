@@ -27,7 +27,6 @@ const initialState: MessageSlice = {
   txGasPriceAdjustment: 1.25, // TODO: Dynamically get gas price adjustment
   txGasPriceDenom: 'nhash',
   txGasEstimate: 0,
-  txGasAdjustment: 0,
   txType: 'MsgSend', // TODO: Make Dynamic
 };
 
@@ -53,7 +52,7 @@ export const getTxFeeEstimate = createAsyncThunk<GetTxFeeEstimateResponse, strin
       txType,
       txGasPriceDenom,
       txGasPrice,
-      txGasAdjustment,
+      txGasPriceAdjustment,
     } = message;
     console.log('message: ', message);
     // Required values must exist to get fee estimate
@@ -84,7 +83,7 @@ export const getTxFeeEstimate = createAsyncThunk<GetTxFeeEstimateResponse, strin
         publicKey: convertUtf8ToBuffer(publicKey), 
         gasPriceDenom: txGasPriceDenom,
         gasPrice: txGasPrice,
-        gasAdjustment: txGasAdjustment,
+        gasAdjustment: txGasPriceAdjustment,
       });
       const { totalFeesList, estimatedGas: txGasEstimate } = await calculateTxFees(grpcAddress, calculateTxFeeRequest);
       const txFeeEstimate = Number(totalFeesList.find((fee) => fee.denom === 'nhash')?.amount);

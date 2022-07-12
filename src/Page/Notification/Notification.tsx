@@ -6,6 +6,7 @@ import { EventPayload } from 'types';
 import { Content } from 'Components';
 import { WalletConnectInit } from './WalletConnectInit';
 import { SignRequest } from './SignRequest';
+import { SendTransaction } from './SendTransaction';
 
 type ExtensionTypes = 'extension' | 'browser' | '';
 
@@ -110,10 +111,11 @@ export const Notification:React.FC = () => {
 
   const renderNotificationContent = () => {
     if (!eventPayload) return null;
+    const pageProps = { payload: eventPayload, closeWindow: closeWindow };
     switch(notificationType) {
-      case 'session_request': return <WalletConnectInit payload={eventPayload} closeWindow={closeWindow} />
-      case 'provenance_sendTransaction': // fallthrough
-      case 'provenance_sign': return <SignRequest payload={eventPayload} closeWindow={closeWindow} />;
+      case 'session_request': return <WalletConnectInit {...pageProps} />
+      case 'provenance_sendTransaction': return <SendTransaction {...pageProps} />
+      case 'provenance_sign': return <SignRequest {...pageProps}  />;
       default: return null;
     }
   };

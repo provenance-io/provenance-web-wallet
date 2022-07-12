@@ -2,6 +2,15 @@
 ## To do shortlist
 
 ## Current Branch Tasks
+* Handle walletconnect-js messages
+  - Broadcast transaction/sendHash [IN_PROGRESS]
+  - Sign message [DONE]
+  - Sign JWT
+  - Custom Actions
+    - Send Hash
+    - Create Marker
+    - Destroy Marker
+    - Approve Marker
 
 ## Near-Future™ Branch Tasks
 * Handle blockchain broadcast failures & display reasons (instead of success page)

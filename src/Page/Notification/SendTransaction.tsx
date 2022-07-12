@@ -1,11 +1,12 @@
 import { EventPayload } from 'types';
 import styled from 'styled-components';
-import { convertHexToUtf8, convertHexToBuffer, convertArrayBufferToHex } from "@walletconnect/utils";
+import { convertHexToUtf8, convertHexToBuffer, convertArrayBufferToHex, convertUtf8ToBuffer } from "@walletconnect/utils";
+import { msgAnyB64toAny, unpackDisplayObjectFromWalletMessage } from '@provenanceio/wallet-utils';
 import { useWalletConnect } from 'redux/hooks';
 import { List, Authenticate } from 'Components';
 import { useEffect, useState } from 'react';
 import { format } from 'date-fns';
-import { signBytes } from 'utils';
+import { signBytes, bytesToJSON } from 'utils';
 import { BIP32Interface } from 'types';
 
 const SignContainer = styled.div`
@@ -29,11 +30,11 @@ interface Props {
 interface ParsedParams {
   address?: string,
   description?: string,
-  payload?: string,
+  messageAnyB64?: string,
   date?: number,
 }
 
-export const SignRequest:React.FC<Props> = ({ payload, closeWindow }) => {
+export const SendTransaction:React.FC<Props> = ({ payload, closeWindow }) => {
   const {
     connector,
     connectionEXP,
@@ -46,14 +47,26 @@ export const SignRequest:React.FC<Props> = ({ payload, closeWindow }) => {
 
   // Onload, pull out and parse payload params
   useEffect(() => {
-    const { params } = payload;
-    const [detailsJSONString, hexEncodedMessage] = params as string[];
+    const { params } = payload; // payload = [metadata, hexMessage]
+    const [metadataString, hexEncodedMessage] = params as string[];
     setEncodedMessage(hexEncodedMessage);
-    const details = JSON.parse(detailsJSONString);
-    const decodedMessage = convertHexToUtf8(hexEncodedMessage);
+    const metadata = JSON.parse(metadataString);
+    const messageAnyB64 = convertHexToUtf8(hexEncodedMessage);
+    if (messageAnyB64) {
+      const msgAny = msgAnyB64toAny(messageAnyB64);
+      console.log('msgAny :', msgAny);
+      const msgObj = unpackDisplayObjectFromWalletMessage(messageAnyB64);
+      console.log('msgObj :', msgObj);
+      // const msgBuffer = convertUtf8ToBuffer(msgValueUInt8Array);
+      // const msgString = msgBuffer.toString('utf8');
+      // const msgJSON = JSON.parse(msgString);
+      // console.log('msgBuffer :', msgBuffer);
+      // console.log('msgString :', msgString);
+      // console.log('msgJSON :', msgJSON);
+    }
     setParsedParams({
-      ...details,
-      payload: decodedMessage,
+      ...metadata,
+      messageAnyB64,
     })
   }, [payload]);
 
@@ -98,13 +111,42 @@ export const SignRequest:React.FC<Props> = ({ payload, closeWindow }) => {
     }
   }
 
+  // 1) Loop through each item in params
+
+  // How is the message packaged up? (use sendCoin as an example)
+  /*
+    const metadata = JSON.stringify({
+      description,
+      address,
+      gasPrice,
+      date: Date.now(),
+    });
+    const request = {
+      id: rngNum(),
+      jsonrpc: '2.0',
+      method,
+      params: [metadata],
+    };
+    const sendMessage = {
+      fromAddress: address,
+      toAddress,
+      amountList: [{ denom, amount: amountString }],
+    };
+  */
+  // const type = 'MsgSend';
+  // const messageMsgSend = buildMessage(type, sendMessage);
+  // const message = createAnyMessageBase64(type, messageMsgSend as Message);
+  // const hexMsg = convertUtf8ToHex(message);
+  // request.params.push(hexMsg);
+  // const result = await connector.sendCustomRequest(request);
+
+
   const ListItems = {
     platform: connector?.peerMeta?.name || 'N/A',
     address: parsedParams?.address || 'N/A',
     created: parsedParams?.date ? format(new Date(parsedParams.date), 'MMM d, h:mm a') : 'N/A',
     'message type': 'provenance_sign',
     description: parsedParams?.description || 'N/A',
-    payload: parsedParams?.payload || 'N/A',
   };
 
   return (

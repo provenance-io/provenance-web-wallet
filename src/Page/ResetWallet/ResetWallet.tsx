@@ -76,7 +76,7 @@ export const ResetWallet: React.FC = () => {
         />
       </InputSection>
       <BottomFloat>
-        <Button onClick={submitDestroyWallet} variant="primary" layout="row">Destroy Wallet</Button>
+        <Button onClick={submitDestroyWallet}>Destroy Wallet</Button>
       </BottomFloat>
     </>
   )

@@ -1,5 +1,6 @@
+import { Sprite } from '../Sprite';
 import React from 'react';
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 import { COLORS } from 'theme';
 
 interface Variation {
@@ -60,17 +61,26 @@ const variations: {
 type StyledButtonProps = {
   variant: 'default' | 'primary' | 'secondary' | 'transparent';
   layout: 'column' | 'row';
+  icon?: string;
+  iconGap?: string;
+  iconLocation?: 'top' | 'right' | 'bottom' | 'left',
 };
 
-const ButtonWrapper = styled.div<StyledButtonProps>`
-  ${({ layout }) => layout === 'row' && `
-    padding: 32px 16px;
-    flex-grow: 1;
-  ` }
+const ButtonWrapper = styled.div``;
+
+const IconStyling = css<StyledButtonProps>`
+  ${({ icon, iconGap, iconLocation }) => !!icon && `
+    display: flex;
+    align-items: center;
+    ${iconLocation === 'top' ? `flex-direction: column; svg { margin-bottom: ${iconGap}; }` : ''}
+    ${iconLocation === 'bottom' ? `flex-direction: column; svg { margin-top: ${iconGap}; }` : ''}
+    ${iconLocation === 'left' ? `svg { margin-right: ${iconGap}; }` : ''}
+    ${iconLocation === 'right' ? `svg { margin-left: ${iconGap}; }` : ''}
+  `}
 `;
 
 const StyledButton = styled.button<StyledButtonProps>`
-  padding: 14px 0;
+  padding: 12px 20px;
   width: 100%;
   border: none;
   border-radius: 4px;
@@ -97,21 +107,52 @@ const StyledButton = styled.button<StyledButtonProps>`
     border-color: ${({ variant }) => variations[variant].disabled};
     cursor: not-allowed;
   }
+  ${IconStyling}
 `;
 
-export type Props = {
-  children: React.ReactNode;
-  onClick?: (event:React.MouseEvent) => void;
-  variant?: 'default' | 'primary' | 'secondary' | 'transparent';
-  layout?: 'column' | 'row';
-  disabled?: boolean,
-  title?: string,
+type SvgProps = {
+  alt?: string;
+  animate?: boolean;
+  flipX?: boolean;
+  flipY?: boolean;
+  secondaryColor?: string;
+  size?: string;
+  spin?: string | number;
 };
 
-export const Button = ({ title, children, variant = 'primary', layout = 'column', onClick, disabled = false, ...rest }: Props) => (
-  <ButtonWrapper variant={variant} layout={layout} title={title}>
-    <StyledButton variant={variant} layout={layout} onClick={onClick} {...rest} disabled={disabled} >
+type Props = {
+  children: React.ReactNode;
+  onClick?: (event:React.MouseEvent) => void;
+  variant?: 'default' | 'primary' | 'secondary' | 'transparent',
+  layout?: 'column' | 'row',
+  disabled?: boolean,
+  title?: string,
+  icon?: string,
+  iconLocation?: 'top' | 'right' | 'bottom' | 'left',
+  iconGap?: string,
+  iconSize?: string,
+  iconProps?: SvgProps,
+};
+
+export const Button = ({
+  title,
+  children,
+  variant = 'primary',
+  layout = 'column',
+  onClick,
+  disabled = false,
+  iconLocation = 'left',
+  icon,
+  iconSize = '14px',
+  iconGap = '14px',
+  iconProps,
+  ...rest
+}: Props) => (
+  <ButtonWrapper title={title}>
+    <StyledButton variant={variant} layout={layout} onClick={onClick} {...rest} disabled={disabled} icon={icon} iconGap={iconGap} iconLocation={iconLocation}>
+      {!!icon && (iconLocation === 'top' || iconLocation === 'left') && <Sprite icon={icon} size={iconSize} {...iconProps} />}
       {children}
+      {!!icon && (iconLocation === 'bottom' || iconLocation === 'right') && <Sprite icon={icon} size={iconSize} {...iconProps} />}
     </StyledButton>
   </ButtonWrapper>
 );

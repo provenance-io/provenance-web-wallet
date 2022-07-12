@@ -94,7 +94,7 @@ export const RemoveAccount: React.FC = () => {
         />
       </InputSection>
       <BottomFloat>
-        <Button onClick={handleRemoveAccount} variant="primary" layout="row">Remove Account</Button>
+        <Button onClick={handleRemoveAccount}>Remove Account</Button>
       </BottomFloat>
     </>
   )

@@ -69,7 +69,7 @@ export const RenameAccount: React.FC = () => {
         />
       </InputSection>
       <BottomFloat>
-        <Button onClick={submitAccountRename} variant="primary" layout="row">Rename Account</Button>
+        <Button onClick={submitAccountRename}>Rename Account</Button>
       </BottomFloat>
     </>
   )

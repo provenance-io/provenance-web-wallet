@@ -1,8 +1,7 @@
 import styled from 'styled-components';
-import { ICON_NAMES, DASHBOARD_CONNECTION_DETAILS_URL } from 'consts';
+import { ICON_NAMES, DASHBOARD_CONNECTION_DETAILS_URL, DASHBOARD_MENU_URL } from 'consts';
 import { Sprite, CopyValue } from 'Components';
 import { useNavigate } from 'react-router-dom';
-import { COLORS } from 'theme';
 import { useActiveAccount, useWalletConnect } from 'redux/hooks';
 import { trimString } from 'utils';
 
@@ -30,20 +29,6 @@ const WalletAddress = styled.p`
 const WalletConnect = styled.div`
   cursor: pointer;
 `;
-const Notify = styled.span`
-  position: absolute;
-  border-radius: 50%;
-  background-color: ${COLORS.SECONDARY_650};
-  color: ${COLORS.SECONDARY_250};
-  height: 20px;
-  width: 20px;
-  font-family: 'Gothic A1', sans-serif;
-  margin-left: -15px;
-  font-weight: 700;
-  font-size: 12px;
-  text-align: center;
-  padding: 4px 0 0 1px;
-`;
 
 export const DashboardHeader:React.FC = () => {
   const navigate = useNavigate();
@@ -51,17 +36,11 @@ export const DashboardHeader:React.FC = () => {
   const { connected } = session;
   const activeAccount = useActiveAccount();
   const { name, address = '' } = activeAccount;
-
-  // TODO: Add check for pending notifications here
-  const notify = false;
-  // TODO: Add check for number of notifications here
-  const notifications = 3;
-  // TODO: Need to navigate to the correct connection details
   const viewNotifications = () => navigate(DASHBOARD_CONNECTION_DETAILS_URL);
 
   return (
     <HeaderRow>
-      <Menu onClick={() => navigate('./menu')}>
+      <Menu onClick={() => navigate(DASHBOARD_MENU_URL)}>
         <Sprite icon={ICON_NAMES.MENU} size="2rem" />
       </Menu>
         <WalletInfo>
@@ -71,12 +50,7 @@ export const DashboardHeader:React.FC = () => {
           </CopyValue>
         </WalletInfo>
       <WalletConnect>
-        {!!connected && !!connector && (
-          <>
-            <Sprite onClick={viewNotifications} icon={ICON_NAMES.CHAIN} size="4.8rem" />
-            {notify && <Notify>{notifications}</Notify>}
-          </>
-        )}
+        {!!connected && !!connector && <Sprite onClick={viewNotifications} icon={ICON_NAMES.CHAIN} size="4.8rem" />}
       </WalletConnect>
     </HeaderRow>
   );

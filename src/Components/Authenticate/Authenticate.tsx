@@ -1,11 +1,12 @@
 import { useState } from 'react';
 import { Input, Button, ButtonGroup, BottomFloat } from 'Components';
 import { PASSWORD_MIN_LENGTH } from 'consts';
-import { decryptKey, createWalletFromMasterKey } from 'utils';
+import { decryptKey } from 'utils';
 import { useActiveAccount, useSettings } from 'redux/hooks';
+import { BIP32Interface, fromBase58 as bip32FromB58 } from 'bip32';
 
 interface Props {
-  handleApprove: (privateKey: Uint8Array) => void,
+  handleApprove: (masterKey: BIP32Interface) => void,
   handleDecline: () => void,
   approveText?: string,
   rejectText?: string,
@@ -35,13 +36,11 @@ export const Authenticate:React.FC<Props> = ({
       if (!masterKey) newPasswordError = 'Invalid password';
       // Password was correct
       else {
-        // Derive the privateKey
-        const { privateKey } = createWalletFromMasterKey(masterKey);
         // Bump the unlock duration
         const now = Date.now();
         await saveSettingsData({ unlockEST: now, unlockEXP: now + unlockDuration! });
         // Run approval callback function
-        approveCallback(privateKey);
+        approveCallback(bip32FromB58(masterKey));
       }
     }
     // Update error(s)

@@ -2,7 +2,7 @@ import { useParams } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { Chart, Loading } from 'Components';
-import { MARKER_URL } from 'consts';
+import { MARKER_API_URL } from 'consts';
 import { hashFormat, generateStartDate, percentChange } from 'utils';
 import {
   FetchMarkerType,
@@ -74,7 +74,7 @@ export const AssetChart:React.FC<Props> = ({ onValueChange, setError, loading, s
     async function fetchMarkerData() {
       const isHash = assetName === 'hash';
       const fetchName = isHash ? 'nhash' : assetName;
-      const fetchUrl = `${MARKER_URL}/${fetchName}?period=${timePeriod}&startDate=${startDate}&endDate=${endDate}`;
+      const fetchUrl = `${MARKER_API_URL}/${fetchName}?period=${timePeriod}&startDate=${startDate}&endDate=${endDate}`;
       setLoading(true);
       setError(false);
       // TODO: Move this data into the redux store and pull from there instead (remove promise chain within component here)
@@ -93,12 +93,12 @@ export const AssetChart:React.FC<Props> = ({ onValueChange, setError, loading, s
         // Loop through each api value and split into chart data arrays
         sortedMarkerData.forEach(({ timestamp, price }: FetchMarkerType, index: number) => {
           // Convert nhash to hash if needed
-          const finalPrice = isHash ? hashFormat('nhash', price) : price;
+          const finalPrice = isHash ? hashFormat(price) : price;
           // Calculate price change from first price
           const diff = price - sortedMarkerData[0].price;
           // Calculate percent change
           const finalValueDiffPercents = percentChange(sortedMarkerData[0].price, price);
-          const finalValueDiffs = isHash ? hashFormat('nhash', diff) : diff;
+          const finalValueDiffs = isHash ? hashFormat(diff) : diff;
           // Add data to appropriate array
           newValueDiffPercents.push(finalValueDiffPercents);
           newLabels.push(timestamp);

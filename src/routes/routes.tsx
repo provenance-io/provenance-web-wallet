@@ -19,6 +19,7 @@ import {
 } from './newAccount';
 import { REMOVE_ACCOUNT } from './removeAccount';
 import { RENAME_ACCOUNT } from './renameAccount';
+import { SEND } from './send';
 
 export const routes = [
   {
@@ -46,6 +47,7 @@ export const routes = [
   RENAME_ACCOUNT,
   RESET_WALLET,
   UNLOCK,
+  SEND,
   // { path: FOUR_OH_FOUR_URL, element: <NotFound /> },
   // { path: '*', element: <Navigate to={FOUR_OH_FOUR_URL} /> },
 ];

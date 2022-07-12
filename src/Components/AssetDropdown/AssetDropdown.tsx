@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Sprite } from 'Components';
 import { ICON_NAMES } from 'consts';
 import styled from 'styled-components';
+import { Asset } from 'types';
 
 const Wrapper = styled.div`
   position: relative;
@@ -57,55 +58,62 @@ const FloatingOptions = styled.div`
   width: 100%;
 `;
 
-
-interface Asset {
-  icon: string,
-  name: string,
-  value: number,
-  amount: number,
-  id: number|string,
-};
 interface Props {
-  assets: Asset[],
-  className?: string,
-  activeID: number|string,
-  onChange: (e: any) => void,
+  assets: Asset[];
+  className?: string;
+  activeDenom?: string;
+  onChange: (e: any) => void;
 }
 
-export const AssetDropdown:React.FC<Props> = ({ className, assets, activeID=assets[0].id, onChange }) => {
+export const AssetDropdown: React.FC<Props> = ({
+  className,
+  assets,
+  activeDenom = assets[0]?.denom,
+  onChange,
+}) => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
-  const handleAssetClick = (id: string|number) => {
+  const handleAssetClick = (asset: Asset) => {
     // If open, close.  If closed, open.
     setDropdownOpen(!dropdownOpen);
     // If not already active, set to active
-    onChange(id);
+    onChange(asset);
   };
-  const activeAsset = assets.find(({ id }) => id === activeID) || assets[0];
+  const activeAsset = assets.find(({ denom }) => denom === activeDenom) || assets[0];
 
-  // TODO: Need to make sure all currency and number values get the proper sig figs and currency icon
-  const renderDropdown = ({ id, icon, name, value, amount }: Asset, option: boolean = false) => (
-    <AssetItem onClick={() => handleAssetClick(id)} key={id} option={option}>
-      <Right>
-        <AssetImg src={`/images/assets/${icon}.svg`} />
-        <AssetName>{name}</AssetName>
-      </Right>
-      <Left>
-        <Amounts>
-          <AssetValue>${value}</AssetValue>
-          <AssetCount>{amount} {name}</AssetCount>
-        </Amounts>
-        {!option && <Sprite icon={ICON_NAMES.CARET} size="1rem" />}
-      </Left>
-    </AssetItem>
-  );
+  const renderDropdown = (asset: Asset, option: boolean = false) => {
+    const { denom, display, usdPrice, displayAmount, exponent } = asset;
+
+    const price = (usdPrice / Number(`1e-${exponent}`)).toFixed(3);
+
+    return (
+      <AssetItem onClick={() => handleAssetClick(asset)} key={denom} option={option}>
+        <Right>
+          <AssetImg src={`/images/assets/${display}.svg`} />
+          <AssetName>{display}</AssetName>
+        </Right>
+        <Left>
+          <Amounts>
+            <AssetValue>${price}</AssetValue>
+            <AssetCount>
+              {Number(displayAmount).toFixed(2)} {display}
+            </AssetCount>
+          </Amounts>
+          {!option && assets.length > 1 && <Sprite icon={ICON_NAMES.CARET} size="1rem" />}
+        </Left>
+      </AssetItem>
+    );
+  };
   
   // Don't render the currently active dropdown in all options
-  const renderAllDropdowns = () => assets.filter((asset) => asset.id !== activeID).map((asset) => renderDropdown(asset, true));
+  const renderAllDropdowns = () =>
+    assets
+      .filter((asset) => asset?.denom !== activeDenom)
+      .map((asset) => renderDropdown(asset, true));
 
   return (
     <Wrapper className={className}>
-      {renderDropdown(activeAsset)}
-      {dropdownOpen && <FloatingOptions>{renderAllDropdowns()}</FloatingOptions>}
+      {!!activeAsset && renderDropdown(activeAsset)}
+      {dropdownOpen && !!assets.length && <FloatingOptions>{renderAllDropdowns()}</FloatingOptions>}
     </Wrapper>
   );
 };

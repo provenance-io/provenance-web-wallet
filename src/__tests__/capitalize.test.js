@@ -36,6 +36,16 @@ const testData = [
     string: '',
     result: '',
   },
+  {
+    type: 'uppercase',
+    string: 'hash',
+    result: 'HASH',
+  },
+  {
+    type: 'uppercase',
+    string: 'haSH',
+    result: 'HASH',
+  },
 ];
 
 // ---------------------------------------------------------------
@@ -43,7 +53,7 @@ const testData = [
 // ---------------------------------------------------------------
 describe('Capitalize a list of words properly', () => {
   testData.forEach(({ type, string, result }) => {
-    test(`capitalize "${string}"`, () => {
+    test(`capitalize "${string}" to be "${result}"`, () => {
       expect(capitalize(string, type)).toBe(result);
     })
   });

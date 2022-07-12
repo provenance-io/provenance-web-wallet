@@ -1,2 +1,0 @@
-export const PROVENANCE_ADDRESS_PREFIX_MAINNET = 'pb';
-export const PROVENANCE_ADDRESS_PREFIX_TESTNET = 'tp';

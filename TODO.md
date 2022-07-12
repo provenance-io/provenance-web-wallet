@@ -4,10 +4,12 @@
 ## Current Branch Tasks
 
 ## Near-Future™ Branch Tasks
-* - Dashboard menu - child accounts indented (tree)
-* - Advanced settings - "reset defaults" button for mainnet / testnet
-* - Notify the user when they are creating a duplicate account (check HD path, if it already exists in accounts don't let them create the account)
-* - Second child (sub) account should automatically up the accountIndex from the next highest value
+* Handle blockchain broadcast failures & display reasons (instead of success page)
+* Batch action/message (single sign for paginated list of things to take action on)
+* Dashboard menu - child accounts indented (tree)
+* Advanced settings - "reset defaults" button for mainnet / testnet
+* Notify the user when they are creating a duplicate account (check HD path, if it already exists in accounts don't let them create the account)
+* Second child (sub) account should automatically up the accountIndex from the next highest value
 
 ### Bugs
 * Random error after/during unlock 'Error: Missing or invalid topic field'
@@ -24,6 +26,8 @@
 
 ### Wallet Connect / dApp Enhancements
 * When connecting into a dApp, user should be able to select target account to connect (and set active)
+  - In dashboard menu indicate which account is currently connected to dApp
+  - If switching active account, disconnect from dApp (maybe)
 
 ### Settings
 * Allow user to set timeout for auto-logout
@@ -31,6 +35,8 @@
   - Require them to type ~"Remove all Data"
 
 ### General
+* Create better readme with instructions on how to initialize the local extension and redux dev tools
+* Allow for yarn start to use chrome spoof commands
 * Profile menu to change wallet password
   - Would need to unlock all master keys for all accounts and relock and save with new password
 * Add fading background to floating buttons so user can see there is content to scroll down for

@@ -2,10 +2,6 @@
 ## To do shortlist
 
 ## Current Branch Tasks
-* Send Hash to an address [DONE]
-* Clean up pages to match designs [DONE]
-* Save recent addresses [BLOCKED]
-* Add icons to send/receive buttons on dashboard [IN_PROGRESS]
 
 ## Near-Future™ Branch Tasks
 * Handle blockchain broadcast failures & display reasons (instead of success page)

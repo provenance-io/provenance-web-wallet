@@ -3,10 +3,13 @@
 
 ## Current Branch Tasks
 * Send Hash to an address [DONE]
-* Clean up pages to match designs
-* Save recent addresses
+* Clean up pages to match designs [DONE]
+* Save recent addresses [BLOCKED]
+* Add icons to send/receive buttons on dashboard [IN_PROGRESS]
 
 ## Near-Future™ Branch Tasks
+* Handle blockchain broadcast failures & display reasons (instead of success page)
+* Batch action/message (single sign for paginated list of things to take action on)
 * Dashboard menu - child accounts indented (tree)
 * Advanced settings - "reset defaults" button for mainnet / testnet
 * Notify the user when they are creating a duplicate account (check HD path, if it already exists in accounts don't let them create the account)

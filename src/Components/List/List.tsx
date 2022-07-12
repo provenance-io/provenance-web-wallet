@@ -2,8 +2,13 @@ import styled from 'styled-components';
 import { capitalize } from 'utils';
 import { COLORS } from 'theme';
 
-const ListContainer = styled.div<{marginBottom?: string, maxHeight?: string}>`
+const ListContainer = styled.div<{
+  marginBottom?: string,
+  marginTop?: string,
+  maxHeight?: string
+}>`
   ${({ marginBottom }) => !!marginBottom && `margin-bottom: ${marginBottom};` }
+  ${({ marginTop }) => !!marginTop && `margin-top: ${marginTop};` }
   ${({ maxHeight }) => !!maxHeight && `max-height: ${maxHeight}; overflow-y: scroll;` }
 `;
 
@@ -29,27 +34,29 @@ const ListContent = styled.div`
 
 interface ListProps {
   message: {
-    [key: string]: string | number;
+    [key: string]: string | number | undefined;
   };
   marginBottom?: string;
+  marginTop?: string;
   maxHeight?: string;
 }
 
 export const List = ({
   message,
   marginBottom,
+  marginTop,
   maxHeight,
 }: ListProps) => {
 
   const createList = Object.keys(message).map(item => (
     <ListRow key={item}>
       <ListContent>{capitalize(item)}</ListContent>
-      <ListContent>{message[item]}</ListContent>
+      <ListContent>{message[item] !== undefined ? message[item] : 'N/A'}</ListContent>
     </ListRow>
   ));
 
   return (
-    <ListContainer marginBottom={marginBottom} maxHeight={maxHeight}>
+    <ListContainer marginBottom={marginBottom} maxHeight={maxHeight} marginTop={marginTop}>
       {createList}
     </ListContainer>
   )

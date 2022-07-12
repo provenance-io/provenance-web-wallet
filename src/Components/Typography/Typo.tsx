@@ -42,6 +42,15 @@ const DisplayBodyStyle = styled.p`
   ${StylingMixin}
 `;
 
+const Display2Style = styled.p`
+  ${FONTS.SECONDARY_FONT};
+  font-weight: 300;
+  font-size: 3.8rem;
+  line-height: 4.6rem;
+  letter-spacing: 0.02em;
+  ${StylingMixin}
+`;
+
 const BodyStyle = styled.p`
   ${FONTS.PRIMARY_FONT};
   font-weight: 400;
@@ -71,7 +80,7 @@ const Headline2Style = styled.p`
   ${StylingMixin}
 `;
 
-type TypoType = 'body' | 'subhead' | 'headline2' | 'error' | 'displayBody' | 'title';
+type TypoType = 'body' | 'subhead' | 'headline2' | 'error' | 'displayBody' | 'title' | 'display2';
 interface Props {
   className?: string,
   children: React.ReactNode;
@@ -101,6 +110,7 @@ export const Typo:React.FC<Props> = ({
       case 'headline2': return <Headline2Style {...allProps}>{children}</Headline2Style>
       case 'error': return <ErrorStyle {...allProps}>{children}</ErrorStyle>
       case 'displayBody': return <DisplayBodyStyle {...allProps}>{children}</DisplayBodyStyle>
+      case 'display2': return <Display2Style {...allProps}>{children}</Display2Style>
       case 'title': return <TitleStyle {...allProps}>{children}</TitleStyle>
     }
   }

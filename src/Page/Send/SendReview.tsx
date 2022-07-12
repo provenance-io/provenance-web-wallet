@@ -16,13 +16,22 @@ import {
 } from '@provenanceio/wallet-utils';
 import { BIP32Interface } from 'types';
 
-// TODO: Needs to get coinDenom (currently hardcoded)
+// TODO: Needs to get tx fee Denom (currently hardcoded)
 // TODO: Needs to get Transaction Fee before sending
 
 export const SendReview = () => {
   const navigate = useNavigate();
   const { address, network } = useActiveAccount();
-  const { coin, coinAmount, txMemo, txFromAddress, txSendAddress, txFeeEstimate, txGasEstimate } = useMessage();
+  const {
+    coin,
+    coinAmount,
+    txMemo,
+    txFromAddress,
+    txSendAddress,
+    txFeeEstimate,
+    txGasEstimate,
+    setTxDate,
+  } = useMessage();
   const [baseAccount, setBaseAccount] = useState<any>(null);
   const type = 'MsgSend';
   const feeDenom = 'nhash';
@@ -61,6 +70,8 @@ export const SendReview = () => {
           msgAny,
           wallet,
         });
+        const txDate = Date.now();
+        setTxDate(txDate);
 
         await broadcastTx(grpcAddress, broadcastTxRequest);
         navigate(SEND_COMPLETE_URL);

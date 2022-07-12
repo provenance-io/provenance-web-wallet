@@ -15,18 +15,19 @@ import { convertUtf8ToBuffer } from '@walletconnect/utils';
 import { getGrpcApi } from 'utils';
 
 const initialState: MessageSlice = {
-  coinAmount: undefined,
   coin: undefined,
-  txBaseAccount: '',
-  txSendAddress: '',
-  txFromAddress: '',
-  txMemo: undefined,
-  txFeeEstimate: 0,
+  coinAmount: undefined,
+  txBaseAccount: undefined,
+  txDate: undefined,
   txFeeDenom: 'nhash',
+  txFeeEstimate: undefined,
+  txFromAddress: undefined,
+  txGasEstimate: undefined,
   txGasPrice: 19050, // TODO: Dynamically get gas price
   txGasPriceAdjustment: 1.25, // TODO: Dynamically get gas price adjustment
   txGasPriceDenom: 'nhash',
-  txGasEstimate: 0,
+  txMemo: undefined,
+  txSendAddress: undefined,
   txType: 'MsgSend', // TODO: Make Dynamic
 };
 
@@ -135,6 +136,12 @@ const messageSlice = createSlice({
     setMemo(state, action) {
       state.txMemo = action.payload;
     },
+
+    setTxDate(state, action) {
+      state.txDate = action.payload;
+    },
+
+    resetMessage: () => initialState,
   },
 });
 

@@ -1,4 +1,4 @@
-import { WalletConnectClient } from 'types';
+import { WalletConnectClient } from 'types'
 
 export const createEventListeners = (connector: WalletConnectClient) => {
   connector.on("connect", (error, payload) => {

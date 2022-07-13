@@ -43,7 +43,7 @@ const GET_TX_FEE_ESTIMATE = 'GET_TX_FEE_ESTIMATE';
 export const getTxFeeEstimate = createAsyncThunk<GetTxFeeEstimateResponse, string, {state: RootState }>(
   GET_TX_FEE_ESTIMATE,
   async (publicKey, { getState }) => {
-    console.log('messageSlice.ts | getTxFeeEstimate(): publicKey', publicKey);
+    // TODO: Probably move this function into chain.ts or some other util.  Potentially even into wallet-utils
     const { message } = getState();
     const {
       coin,
@@ -55,7 +55,6 @@ export const getTxFeeEstimate = createAsyncThunk<GetTxFeeEstimateResponse, strin
       txGasPrice,
       txGasPriceAdjustment,
     } = message;
-    console.log('message: ', message);
     // Required values must exist to get fee estimate
     const requiredValuesExist =
       txType !== undefined &&
@@ -66,7 +65,6 @@ export const getTxFeeEstimate = createAsyncThunk<GetTxFeeEstimateResponse, strin
       coin.denom !== undefined &&
       coinAmount !== undefined;
 
-    console.log('requiredValuesExist :', requiredValuesExist);
     if (requiredValuesExist) {
       const sendMessage = {
         amountList: [{ denom: coin!.denom, amount: coinAmount!}],

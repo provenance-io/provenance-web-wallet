@@ -14,3 +14,5 @@ export * from './queryParams';
 export * from './saveData';
 export * from './trimString';
 export * from './completeHdPath';
+export * from './txMessageFormat';
+export * from './getJSType';

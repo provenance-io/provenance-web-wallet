@@ -5,7 +5,7 @@
 * Handle walletconnect-js messages
   - Broadcast transaction/sendHash [IN_PROGRESS]
   - Sign message [DONE]
-  - Sign JWT
+  - Sign JWT (Just a "signMessage") [DONE]
   - Custom Actions
     - Send Hash
     - Create Marker
@@ -13,6 +13,9 @@
     - Approve Marker
 
 ## Near-Future™ Branch Tasks
+* Wallet-utils not correctly converting numbers to strings (example: permissionsList)
+* If dApp disconnects while a user is signing a message, auto reject on ext if possible
+  - Change the page, say "You've been disconnected" and just allow pressing "ok" to leave
 * Handle blockchain broadcast failures & display reasons (instead of success page)
 * Batch action/message (single sign for paginated list of things to take action on)
 * Dashboard menu - child accounts indented (tree)
@@ -21,6 +24,8 @@
 * Second child (sub) account should automatically up the accountIndex from the next highest value
 
 ### Bugs
+* Sometimes extension shows pending action when there is none
+  - At very least, if there is none, when opened, remove pending notice from ext icon
 * Random error after/during unlock 'Error: Missing or invalid topic field'
   - Unlock works, wallet exists, no other visible issues
 * dApp connection request takes two clicks to cause popup to open 

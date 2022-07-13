@@ -1,12 +1,12 @@
 import { EventPayload } from 'types';
 import styled from 'styled-components';
-import { convertHexToUtf8, convertHexToBuffer, convertArrayBufferToHex, convertUtf8ToBuffer } from "@walletconnect/utils";
-import { msgAnyB64toAny, unpackDisplayObjectFromWalletMessage } from '@provenanceio/wallet-utils';
+import { convertHexToUtf8, convertHexToBuffer, convertArrayBufferToHex } from "@walletconnect/utils";
+import { unpackDisplayObjectFromWalletMessage } from '@provenanceio/wallet-utils';
 import { useWalletConnect } from 'redux/hooks';
 import { List, Authenticate } from 'Components';
 import { useEffect, useState } from 'react';
 import { format } from 'date-fns';
-import { signBytes, bytesToJSON } from 'utils';
+import { signBytes } from 'utils';
 import { BIP32Interface } from 'types';
 
 const SignContainer = styled.div`
@@ -53,16 +53,8 @@ export const SendTransaction:React.FC<Props> = ({ payload, closeWindow }) => {
     const metadata = JSON.parse(metadataString);
     const messageAnyB64 = convertHexToUtf8(hexEncodedMessage);
     if (messageAnyB64) {
-      const msgAny = msgAnyB64toAny(messageAnyB64);
-      console.log('msgAny :', msgAny);
       const msgObj = unpackDisplayObjectFromWalletMessage(messageAnyB64);
       console.log('msgObj :', msgObj);
-      // const msgBuffer = convertUtf8ToBuffer(msgValueUInt8Array);
-      // const msgString = msgBuffer.toString('utf8');
-      // const msgJSON = JSON.parse(msgString);
-      // console.log('msgBuffer :', msgBuffer);
-      // console.log('msgString :', msgString);
-      // console.log('msgJSON :', msgJSON);
     }
     setParsedParams({
       ...metadata,
@@ -151,7 +143,7 @@ export const SendTransaction:React.FC<Props> = ({ payload, closeWindow }) => {
 
   return (
     <SignContainer>
-      <Title>Sign Request</Title>
+      <Title>Transaction</Title>
       <List message={ListItems} />
       <Authenticate
         handleApprove={handleApprove}

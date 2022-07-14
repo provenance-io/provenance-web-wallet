@@ -9,7 +9,7 @@
     "node": ">=16.0.0 <=16.15.0"
   },
   "dependencies": {
-    "@provenanceio/wallet-utils": "file:../wallet-utils/provenanceio-wallet-utils-0.0.0-development.tgz",
+    "@provenanceio/wallet-utils": "1.1.0",
     "@reduxjs/toolkit": "^1.7.2",
     "@tendermint/belt": "0.3.0",
     "@tendermint/sig": "0.6.0",

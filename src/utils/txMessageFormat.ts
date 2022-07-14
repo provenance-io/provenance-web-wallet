@@ -1,92 +1,88 @@
 import { getJSType } from './getJSType';
+import { trimAddress } from './trimString';
+import { hashFormat } from './hashFormat';
 
-/*
-
-  AddMarker Example: {
-    "typeName": "MsgGeneric",
-    "amount": {
-        "denom": "July13_01",
-        "amount": "1"
-    },
-    "manager": "tp1knsxfnn0lq48mmnkfnkgtkk8qnxxdu0y2tklkh",
-    "fromAddress": "tp1knsxfnn0lq48mmnkfnkgtkk8qnxxdu0y2tklkh",
-    "status": 2,
-    "markerType": 1,
-    "accessListList": [
-        {
-            "address": "tp1knsxfnn0lq48mmnkfnkgtkk8qnxxdu0y2tklkh",
-            "permissionsList": [
-                6,
-                2,
-                1,
-                3,
-                4,
-                5
-            ]
-        }
-    ],
-    "supplyFixed": true,
-    "allowGovernanceControl": false
-}
-
-*/
-type AmountList = { denom: string, amount: string }[];
-type Address = string;
+interface Amount { denom: string, amount: string };
+type AmountList = Amount[];
 interface MessageObject { [fieldName: string]: any };
 
-type FieldValue = MessageObject | Address | number | AmountList;
-type FormatFieldTypes = 'amount' | 'address';
+type FieldValue = MessageObject | string | number | AmountList;
 
 // Special fields need to have their values formatted for better UI display
-const formatField = (type: FormatFieldTypes, value: FieldValue) => {};
+const formatField = (fieldKey: string, fieldValue: FieldValue): FieldValue => {
+  switch (fieldKey) {
+    // Account address trimed to (3...8)
+    case 'address': // fallthrough
+    case 'manager': // fallthrough
+    case 'fromAddress': // fallthrough
+    case 'toAddress': // fallthrough
+      return trimAddress(fieldValue as string);
+    // amountList is an array of objects: amountList: [{ denom: 'a', amount: '1' }, {...}]
+    // Note: If the denom is nhash, autoconvert to hash
+    case 'amountList': 
+      return (fieldValue as AmountList)
+        .map(({amount, denom}) => `${denom === 'nhash' ?
+          `${hashFormat(amount)} Hash` :
+          `${amount} ${denom}`}`
+        );
+    case 'amount': {
+      const { denom, amount } = fieldValue as Amount;
+      return `${denom === 'nhash' ? `${hashFormat(amount)} Hash` : `${amount} ${denom}`}`;
+    }
+    // No matches, just return what was passed in
+    default: return fieldValue;
+  }
+};
 
 export const txMessageFormat = (messageShape: MessageObject) => {
   const finalMessage = {} as MessageObject;
-  // Loop to pull all values out
-  const pullValues = (obj: MessageObject, targetKey?: string, indexLabel?: number) => {
-    const allObjKeys = Object.keys(obj);
-    allObjKeys.forEach((objKey) => {
-      const objValue = obj[objKey];
-      const objJSType = getJSType(objValue);
-      // Value is not an object or array
-      // { messageKey: string } | { messageKey: number }
-      const keyName = targetKey || objKey;
-      const keyValue = !!indexLabel ? `${keyName} ${indexLabel}` : keyName;
-      if (objJSType !== 'array' && objJSType !== 'object') {
-        if (targetKey) {
-          // Clone existing object
-          finalMessage[keyValue] = { ...finalMessage[keyValue] };
-          // Add additional vlaue
-          finalMessage[keyValue][objKey] = objValue
-        } else finalMessage[objKey] = objValue;
-      }
+
+  // Loop to pull all values out of object, formatting as needed
+  const pullValueLoop = (obj: MessageObject, parentFieldKey?: string) => {
+    // Gather all the fields to loop over
+    const allObjFields = Object.keys(obj);
+    allObjFields.forEach((currentField) => {
+      // Certain fields are spefically formatted based on their name
+      const currentFieldValue = formatField(currentField, obj[currentField]);
+      // What type is the current value we're looking at
+      const currentFieldValueJSType = getJSType(currentFieldValue);
+      // No more looping (non array/obj), just write to finalMessage object
+      if (currentFieldValueJSType !== 'array' && currentFieldValueJSType !== 'object') {
+        parentFieldKey ? finalMessage[parentFieldKey][currentField] = currentFieldValue :
+        finalMessage[currentField] = currentFieldValue;
+      };
+
       // Value is an array []
-      // { messageKey: [1, 2] } | { messageKey: [[1, 2], [1, 2]] } | { messageKey: [{a: 1}, {a: 2}] }
-      if (objJSType === 'array') {
-        const multiItem = objValue.length > 1;
-        objValue.forEach((arrayVal: any, index: number) => {
-          pullValues(arrayVal, keyValue, multiItem ? index + 1 : undefined);
-        });
-      }
+      if (currentFieldValueJSType === 'array') {
+        const currentFieldValueArray = (currentFieldValue as any[]);
+        // Determine if we need to display multiple items from the array
+        const multiItem = currentFieldValueArray.length > 1;
+        // End the loop if array consists of strings or numbers
+        const endLoop = !currentFieldValueArray.find(val => getJSType(val) !== 'string' && getJSType(val) !== 'number');
+        // Array is all string/numbers (combine and display)
+        if (endLoop) {
+          const currentFieldCombinedValue = currentFieldValueArray.join(`\n`);
+          parentFieldKey ? finalMessage[parentFieldKey][currentField] = currentFieldCombinedValue :
+          finalMessage[currentField] = currentFieldCombinedValue;
+        } else { // Array needs additional looping (object/array children)
+          currentFieldValueArray.forEach((cfArrayVal: any, index: number) => {
+            const newCfName = `${multiItem ? `${currentField} ${index + 1}` : currentField}`;
+            finalMessage[newCfName] = {};
+            pullValueLoop(cfArrayVal, newCfName);
+          });
+        }
+      };
+
       // Value is an object {}
-      // { messageKey: {a: 1} } | { messageKey: {a: {b: 1}} } | { messageKey: {a: [1, 2]} }
-      if (objJSType === 'object') { pullValues(objValue); }
+      if (currentFieldValueJSType === 'object') {
+        // Create this entry in the finalMessage, then repeat loop targeting it
+        finalMessage[currentField] = {};
+        pullValueLoop(currentFieldValue as MessageObject, currentField);
+      };
     })
   };
-  pullValues(messageShape);
+  pullValueLoop(messageShape);
+  console.log('finalMessage :', finalMessage);
 
   return finalMessage;
 };
-
-/*
-  { a: 1 } => { a: 1 }
-  // When an array only has one item, label it w/o the number
-  { a: [{ b: 1, c: 1}] } => { a: { b: 1, c: 1 }}
-  // When an array has multiple items, split each out into an index key value
-  { a: [{ b:1, c:1}, { b:2, c:2 }] } => { a1: { b:1, c:1 }, a2: { b:2, c:2}}
-  // Objects stay as objects | When we render we will make a new category for all things under an object (needed for arrays above)
-  { a: { b: 1 }} => { a: { b: 1 }}
-  .. 
-  special cases can get extra formatting
-  everything else needs to be json stringified just incase it's still an object (to prevent errors)
-*/

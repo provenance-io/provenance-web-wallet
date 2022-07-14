@@ -12,7 +12,7 @@ import { useWalletConnect } from 'redux/hooks';
 import { List, Authenticate } from 'Components';
 import { useEffect, useState } from 'react';
 import { format } from 'date-fns';
-import { signBytes, txMessageFormat, getTxFeeEstimate, getGrpcApi, getChainId } from 'utils';
+import { txMessageFormat, getTxFeeEstimate, getGrpcApi, getChainId } from 'utils';
 import { BIP32Interface } from 'types';
 
 const SignContainer = styled.div`
@@ -116,12 +116,25 @@ export const SendTransaction:React.FC<Props> = ({ payload, closeWindow }) => {
 
     await broadcastTx(grpcAddress, broadcastTxRequest);
 
+    /*  RETURN HERE - UNABLE TO BROADCASTTX - ERROR:
+      Uncaught (in promise) TypeError: r.toArray is not a function
+        at jspb.Message.addToRepeatedWrapperField (2.383abc85.chunk.js:2:270942)
+        at proto.cosmos.tx.v1beta1.TxBody.addMessages (2.383abc85.chunk.js:2:655812)
+        at S (2.383abc85.chunk.js:2:3409328)
+        at R (2.383abc85.chunk.js:2:3409735)
+        at main.9ac5772f.chunk.js:1:26779
+        at l (2.383abc85.chunk.js:2:28464)
+        at Generator._invoke (2.383abc85.chunk.js:2:28217)
+        at Generator.next (2.383abc85.chunk.js:2:28827)
+        at o (2.383abc85.chunk.js:2:26347)
+        at s (2.383abc85.chunk.js:2:26550)
+    */
+
 
     if (connector && masterKey && encodedMessage) {
       const bites = convertHexToBuffer(encodedMessage);
-      const signature = signBytes(bites, masterKey.privateKey!);
       // Convert back to hex
-      const resultFull = convertArrayBufferToHex(signature);
+      const resultFull = convertArrayBufferToHex(bites);
       // Cut off the leading "0x"
       const result = resultFull.slice(2, resultFull.length);
       await connector.approveRequest({

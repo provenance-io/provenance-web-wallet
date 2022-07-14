@@ -2,10 +2,13 @@
 ## To do shortlist
 
 ## Current Branch Tasks
+* Clean up messageSlice to use "getTxFeeEstimate" from chain.ts
 * Handle walletconnect-js messages
   - Broadcast transaction/sendHash [IN_PROGRESS]
   - Sign message [DONE]
   - Sign JWT (Just a "signMessage") [DONE]
+  - "Data" button to show json of tx message
+  - Pagination for txs.  Typically "1/1" but batch will use "1/n"
   - Custom Actions
     - Send Hash
     - Create Marker
@@ -13,6 +16,7 @@
     - Approve Marker
 
 ## Near-Future™ Branch Tasks
+* When a tx message (walletconnect-js) comes through, auto switch to the target wallet (maybe...)
 * Wallet-utils not correctly converting numbers to strings (example: permissionsList)
 * If dApp disconnects while a user is signing a message, auto reject on ext if possible
   - Change the page, say "You've been disconnected" and just allow pressing "ok" to leave

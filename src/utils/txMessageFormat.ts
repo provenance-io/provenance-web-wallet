@@ -82,7 +82,6 @@ export const txMessageFormat = (messageShape: MessageObject) => {
     })
   };
   pullValueLoop(messageShape);
-  console.log('finalMessage :', finalMessage);
 
   return finalMessage;
 };

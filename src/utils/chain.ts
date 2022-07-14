@@ -11,6 +11,12 @@ import {
 // CHAIN HELPER FUNCTIONS
 import { convertUtf8ToBuffer } from '@walletconnect/utils';
 import {
+  buildCalculateTxFeeRequest,
+  calculateTxFees,
+  getAccountInfo,
+  SupportedDenoms,
+} from '@provenanceio/wallet-utils';
+import {
   generateMnemonic as bip39gm,
   mnemonicToSeedSync as bip39mts,
   validateMnemonic as bip39vm,
@@ -22,8 +28,14 @@ import { bufferToBytes, bytesToBase64 } from '@tendermint/belt';
 import { createHash } from 'crypto';
 // TYPESCRIPT TYPES
 import type { Bech32String, Bytes } from '@tendermint/types';
-// import type { KeyPair } from '@tendermint/sig';
-import { Account, HDPathData, AccountLevel, AccountPrefix, AccountNetwork } from 'types';
+import {
+  Account,
+  HDPathData,
+  AccountLevel,
+  AccountPrefix,
+  AccountNetwork,
+} from 'types';
+import { getGrpcApi } from './deriveApiAddress';
 
 export const validateMnemonic = bip39vm;
 export const bip32FromB58 = fromBase58;
@@ -63,21 +75,6 @@ const createAddress = (publicKey: Bytes, prefix: string = ADDRESS_PREFIX_MAINNET
 
   return bech32Encode(prefix, words);
 }
-
-// const createKeyPairFromMasterKey = (masterKey: BIP32Interface, hdPath?: string ): KeyPair => {
-//   // If it's a root hd path or master node just return the private key without deriving
-//   const buffer = hdPath && hdPath !== 'm' ? masterKey.derivePath(hdPath).privateKey : masterKey.privateKey;
-//   if (!buffer) {
-//     throw new Error('could not derive private key');
-//   }
-//   const privateKey = bufferToBytes(buffer);
-//   const publicKey = secp256k1PublicKeyCreate(privateKey, true);
-
-//   return {
-//     privateKey,
-//     publicKey,
-//   };
-// }
 
 interface CreateWalletProps {
   privateKeyB64: string,
@@ -227,4 +224,41 @@ export const buildJWT = (masterKey: BIP32Interface | string, address: string, ex
   const signedPayloadEncoded = bytesToBase64(signature);
   const signedJWT = `${headerEncoded}.${payloadEncoded}.${signedPayloadEncoded}`;
   return signedJWT;
+};
+
+interface GetTxFeeEstimate {
+  publicKey: Buffer,
+  msgAny: any,
+  address: string,
+  gasPrice?: number,
+  gasPriceDenom?: SupportedDenoms,
+  gasAdjustment?: number,
+};
+interface GetTxFeeEstimateResponse {
+  txFeeEstimate: number,
+  txGasEstimate: number,
+}
+
+export const getTxFeeEstimate = async ({
+  publicKey,
+  msgAny,
+  address,
+  gasPrice = 19050,
+  gasPriceDenom = 'nhash',
+  gasAdjustment = 1.25,
+}: GetTxFeeEstimate):Promise<GetTxFeeEstimateResponse> => {
+  const grpcAddress = getGrpcApi(address);
+  const { baseAccount } = await getAccountInfo(address, grpcAddress);
+  const calculateTxFeeRequest = buildCalculateTxFeeRequest({
+    msgAny,
+    account: baseAccount,
+    publicKey: bufferToBytes(publicKey), 
+    gasPriceDenom,
+    gasPrice,
+    gasAdjustment,
+  });
+  const { totalFeesList, estimatedGas: txGasEstimate } = await calculateTxFees(grpcAddress, calculateTxFeeRequest);
+  const txFeeEstimate = Number(totalFeesList.find((fee) => fee.denom === 'nhash')?.amount);
+
+  return { txFeeEstimate: txFeeEstimate || 0, txGasEstimate: txGasEstimate || 0 }
 };

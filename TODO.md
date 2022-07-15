@@ -2,20 +2,27 @@
 ## To do shortlist
 
 ## Current Branch Tasks
-* Clean up messageSlice to use "getTxFeeEstimate" from chain.ts
+* Create txSend complete success page
+* Clean up messageSlice to use "getTxFeeEstimate" from chain.ts [DONE]
 * Handle walletconnect-js messages
   - Broadcast transaction/sendHash [IN_PROGRESS]
   - Sign message [DONE]
   - Sign JWT (Just a "signMessage") [DONE]
   - "Data" button to show json of tx message
   - Pagination for txs.  Typically "1/1" but batch will use "1/n"
+  - Sending nhash but keeping "amount" as hash.  Ends up sending "1 nhash". [BUG]
+    - Need to keep it simple/constant in entire app.
+        - All "saved" hash amounts will ALWAYS be NHASH
+        - All "display"/"ui" hash amounts will ALWAYS show HASH
+        - User facing = HASH, tx/blockchain facing = NHASH
   - Custom Actions
-    - Send Hash
+    - Send Hash [DONE]
     - Create Marker
     - Destroy Marker
     - Approve Marker
 
 ## Near-Future™ Branch Tasks
+* Clean up chain.ts util file, make a chain folder and split out the actions into separate files, too messy currently
 * When a tx message (walletconnect-js) comes through, auto switch to the target wallet (maybe...)
 * Wallet-utils not correctly converting numbers to strings (example: permissionsList)
 * If dApp disconnects while a user is signing a message, auto reject on ext if possible

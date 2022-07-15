@@ -9,12 +9,21 @@ import {
   MAINNET_NETWORK,
 } from 'consts';
 // CHAIN HELPER FUNCTIONS
-import { convertUtf8ToBuffer } from '@walletconnect/utils';
+import {
+  convertUtf8ToBuffer as _convertUtf8ToBuffer,
+  convertHexToUtf8 as _convertHexToUtf8,
+  convertHexToBuffer as _convertHexToBuffer,
+  convertArrayBufferToHex as _convertArrayBufferToHex,
+} from '@walletconnect/utils';
 import {
   buildCalculateTxFeeRequest,
   calculateTxFees,
   getAccountInfo,
   SupportedDenoms,
+  buildMessage,
+  createAnyMessageBase64,
+  msgAnyB64toAny,
+  ReadableMessageNames,
 } from '@provenanceio/wallet-utils';
 import {
   generateMnemonic as bip39gm,
@@ -27,6 +36,7 @@ import { publicKeyCreate as secp256k1PublicKeyCreate, ecdsaSign as secp256k1Ecds
 import { bufferToBytes, bytesToBase64 } from '@tendermint/belt';
 import { createHash } from 'crypto';
 // TYPESCRIPT TYPES
+import { Message as MessageProto } from 'google-protobuf';
 import type { Bech32String, Bytes } from '@tendermint/types';
 import {
   Account,
@@ -34,11 +44,16 @@ import {
   AccountLevel,
   AccountPrefix,
   AccountNetwork,
+  MessageSend,
 } from 'types';
 import { getGrpcApi } from './deriveApiAddress';
 
 export const validateMnemonic = bip39vm;
 export const bip32FromB58 = fromBase58;
+export const convertUtf8ToBuffer = _convertUtf8ToBuffer;
+export const convertHexToUtf8 = _convertHexToUtf8;
+export const convertHexToBuffer = _convertHexToBuffer;
+export const convertArrayBufferToHex = _convertArrayBufferToHex;
 
 export const createMnemonic = (wordCount = MNEMONIC_WORD_COUNT) => {
   const strength = (wordCount / 3) * 32;
@@ -261,4 +276,12 @@ export const getTxFeeEstimate = async ({
   const txFeeEstimate = Number(totalFeesList.find((fee) => fee.denom === 'nhash')?.amount);
 
   return { txFeeEstimate: txFeeEstimate || 0, txGasEstimate: txGasEstimate || 0 }
+};
+
+export const getMessageAny = (txType: ReadableMessageNames, sendMessage: MessageSend) => {
+  const messageMsgSend = buildMessage(txType!, sendMessage);
+  const messageB64String = createAnyMessageBase64(txType!, messageMsgSend as MessageProto);
+  const msgAny = msgAnyB64toAny(messageB64String);
+
+  return msgAny;
 };

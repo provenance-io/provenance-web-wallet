@@ -1,18 +1,18 @@
 import { EventPayload } from 'types';
 import styled from 'styled-components';
-import { convertHexToUtf8, convertHexToBuffer, convertArrayBufferToHex } from "@walletconnect/utils";
 import {
   unpackDisplayObjectFromWalletMessage,
   buildBroadcastTxRequest,
   broadcastTx,
   SupportedDenoms,
   getAccountInfo,
+  msgAnyB64toAny,
 } from '@provenanceio/wallet-utils';
 import { useWalletConnect } from 'redux/hooks';
 import { List, Authenticate } from 'Components';
 import { useEffect, useState } from 'react';
 import { format } from 'date-fns';
-import { txMessageFormat, getTxFeeEstimate, getGrpcApi, getChainId } from 'utils';
+import { txMessageFormat, getTxFeeEstimate, getGrpcApi, getChainId, convertHexToUtf8 } from 'utils';
 import { BIP32Interface } from 'types';
 
 const SignContainer = styled.div`
@@ -58,28 +58,25 @@ export const SendTransaction:React.FC<Props> = ({ payload, closeWindow }) => {
   const [parsedMetadata, setParsedMetadata] = useState<ParsedMetadata>({});
   const [parsedTxMessage, setParsedTxMessage] = useState<ParsedTxMessage>({});
   const [txMsgAny, setTxMsgAny] = useState<any>({});
-  const [encodedMessage, setEncodedMessage] = useState('');
 
   // Onload, pull out and parse payload params
   useEffect(() => {
     const { params } = payload; // payload = { ..., params: [metadata, hexMessage] }
     const [metadataString, hexEncodedMessage] = params as string[];
-    setEncodedMessage(hexEncodedMessage);
     const metadata = JSON.parse(metadataString);
     const messageAnyB64 = convertHexToUtf8(hexEncodedMessage);
+    const msgAny = msgAnyB64toAny(messageAnyB64);
+    setTxMsgAny(msgAny);
     let txMsg;
     if (messageAnyB64) {
       const msgObj = unpackDisplayObjectFromWalletMessage(messageAnyB64);
       txMsg = txMessageFormat(msgObj);
-      setTxMsgAny(txMsg);
-      console.log('msgObj :', msgObj);
-      console.log('txMsg :', txMsg);
-      console.log('metadata :', metadata);
     }
     setParsedMetadata(metadata)
     setParsedTxMessage(txMsg as ParsedTxMessage);
   }, [payload]);
 
+  // TODO: Move bumpWalletConnectTimeout to redux method (DRY)
   // Connection to the dApp is on a timer, whenever the user interacts with the dApp (approve/deny) reset the timer
   const bumpWalletConnectTimeout = async () => {
     // Only bump/update the time if all connection values exist
@@ -91,52 +88,34 @@ export const SendTransaction:React.FC<Props> = ({ payload, closeWindow }) => {
   };
 
   const handleApprove = async (masterKey: BIP32Interface) => {
-    const address = parsedMetadata.address!;
-    const privateKey = masterKey.privateKey!;
-    const publicKey = masterKey.publicKey;
-    const wallet = { address, privateKey, publicKey };
-    const grpcAddress = getGrpcApi(address);
-    const chainId = getChainId(address);
-    const { baseAccount } = await getAccountInfo(address, grpcAddress);
-    const {txFeeEstimate, txGasEstimate} = await getTxFeeEstimate({
-      address,
-      publicKey,
-      msgAny: txMsgAny,
-    });
-    const broadcastTxRequest = buildBroadcastTxRequest({
-      account: baseAccount,
-      chainId,
-      feeDenom: parsedMetadata!.gasPrice!.gasPriceDenom,
-      feeEstimate: txFeeEstimate!,
-      gasEstimate: parsedMetadata!.gasPrice!.gasPrice || txGasEstimate,
-      memo: parsedMetadata.memo || '',
-      msgAny: txMsgAny,
-      wallet,
-    });
+    // Connector must exist to respond to request
+    if (connector) {
+      const address = parsedMetadata.address!;
+      const privateKey = masterKey.privateKey!;
+      const publicKey = masterKey.publicKey;
+      const wallet = { address, privateKey, publicKey };
+      const grpcAddress = getGrpcApi(address);
+      const chainId = getChainId(address);
+      const { baseAccount } = await getAccountInfo(address, grpcAddress);
+      const {txFeeEstimate, txGasEstimate} = await getTxFeeEstimate({
+        address,
+        publicKey,
+        msgAny: txMsgAny,
+        gasPrice: parsedMetadata?.gasPrice?.gasPrice,
+        gasPriceDenom: parsedMetadata?.gasPrice?.gasPriceDenom,
+      });
 
-    await broadcastTx(grpcAddress, broadcastTxRequest);
-
-    /*  RETURN HERE - UNABLE TO BROADCASTTX - ERROR:
-      Uncaught (in promise) TypeError: r.toArray is not a function
-        at jspb.Message.addToRepeatedWrapperField (2.383abc85.chunk.js:2:270942)
-        at proto.cosmos.tx.v1beta1.TxBody.addMessages (2.383abc85.chunk.js:2:655812)
-        at S (2.383abc85.chunk.js:2:3409328)
-        at R (2.383abc85.chunk.js:2:3409735)
-        at main.9ac5772f.chunk.js:1:26779
-        at l (2.383abc85.chunk.js:2:28464)
-        at Generator._invoke (2.383abc85.chunk.js:2:28217)
-        at Generator.next (2.383abc85.chunk.js:2:28827)
-        at o (2.383abc85.chunk.js:2:26347)
-        at s (2.383abc85.chunk.js:2:26550)
-    */
-
-
-    if (connector && masterKey && encodedMessage) {
-      const bites = convertHexToBuffer(encodedMessage);
-      // Convert back to hex
-      const resultFull = convertArrayBufferToHex(bites);
-      // Cut off the leading "0x"
-      const result = resultFull.slice(2, resultFull.length);
+      const broadcastTxRequest = buildBroadcastTxRequest({
+        account: baseAccount,
+        chainId,
+        feeDenom: parsedMetadata!.gasPrice!.gasPriceDenom || 'nhash',
+        feeEstimate: txFeeEstimate!,
+        gasEstimate: txGasEstimate,
+        memo: parsedMetadata.memo || '',
+        msgAny: txMsgAny,
+        wallet,
+      });
+      const result = await broadcastTx(grpcAddress, broadcastTxRequest);
       await connector.approveRequest({
         id: payload.id,
         jsonrpc: payload.jsonrpc,
@@ -144,8 +123,9 @@ export const SendTransaction:React.FC<Props> = ({ payload, closeWindow }) => {
       });
       await removePendingRequest(payload.id);
       await bumpWalletConnectTimeout();
+      // TODO: Create success page
       closeWindow();
-    }
+    };
   }
   const handleDecline = async () => {
     if (connector) {

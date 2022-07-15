@@ -4,7 +4,13 @@ import styled from 'styled-components';
 import { BottomFloat, Button, Content, Header, Input, Typo } from 'Components';
 import { ICON_NAMES, SEND_REVIEW_URL } from 'consts';
 import { useActiveAccount, useMessage, useAddress } from 'redux/hooks';
-import { capitalize, hashFormat } from 'utils';
+import {
+  capitalize,
+  hashFormat,
+  getTxFeeEstimate,
+  convertUtf8ToBuffer,
+  getMessageAny,
+} from 'utils';
 import { COLORS } from 'theme';
 
 const AssetImg = styled.img`
@@ -46,14 +52,62 @@ const Uppercase = styled.span`
 export const SendAmount = () => {
   const navigate = useNavigate();
   const [errors, setErrors] = useState<string[]>([]); // [AmountError, MemoError]
-  const { coin, coinAmount, setCoinAmount, txMemo, setMemo, getTxFeeEstimate, txFeeEstimate, txGasEstimate } =
-    useMessage();
+  const [initialLoad, setInitialLoad] = useState(true);
+  const {
+    coin,
+    coinAmount,
+    setCoinAmount,
+    txMemo,
+    setMemo,
+    txFeeEstimate,
+    txGasEstimate,
+    setTxFees,
+    txGasPrice,
+    txGasPriceAdjustment,
+    txFromAddress,
+    txSendAddress,
+    txGasPriceDenom,
+    txType,
+  } = useMessage();
   const { assets } = useAddress();
   const { publicKey } = useActiveAccount();
   
+  // Any time coin amount changes (and it's >0), calculate the txFeeEstimates
   useEffect(() => {
-    if (coinAmount) getTxFeeEstimate(publicKey!);
-  }, [coinAmount, publicKey, getTxFeeEstimate]);
+    if (coinAmount) {
+      setInitialLoad(false);
+      const asyncAction = async () => {
+        const sendMessage = {
+          amountList: [{ denom: coin!.denom, amount: coinAmount!}],
+          fromAddress: txFromAddress!,
+          toAddress: txSendAddress!,
+        };
+        const msgAny = getMessageAny(txType!, sendMessage);
+        const { txFeeEstimate, txGasEstimate } = await getTxFeeEstimate({
+          address: txFromAddress!,
+          msgAny,
+          publicKey: convertUtf8ToBuffer(publicKey!),
+          gasAdjustment: txGasPriceAdjustment,
+          gasPrice: txGasPrice,
+          gasPriceDenom: txGasPriceDenom,
+        });
+        setTxFees({ txFeeEstimate, txGasEstimate });
+      };
+      asyncAction();
+    }
+  }, [
+    coinAmount,
+    publicKey,
+    setTxFees,
+    initialLoad,
+    coin,
+    txFromAddress,
+    txGasPrice,
+    txGasPriceAdjustment,
+    txGasPriceDenom,
+    txSendAddress,
+    txType,
+  ]);
 
   const validateAndNavigate = () => {
     let newErrors = [];

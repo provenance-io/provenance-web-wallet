@@ -14,7 +14,7 @@ const testData = [
   {
     amount: 1,
     amountType: 'hash',
-    result: 999999999.9999999,
+    result: 1000000000,
   },
   {
     amount: 1,

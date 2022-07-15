@@ -50,7 +50,7 @@ export const List = ({
 
   const createList = Object.keys(message).map(item => (
     <ListRow key={item}>
-      <ListContent>{capitalize(item)}</ListContent>
+      <ListContent>{capitalize(item, 'camelcase')}</ListContent>
       <ListContent>{message[item] !== undefined ? message[item] : 'N/A'}</ListContent>
     </ListRow>
   ));

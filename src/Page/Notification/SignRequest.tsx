@@ -1,17 +1,15 @@
 import { EventPayload } from 'types';
 import styled from 'styled-components';
-import { convertHexToUtf8, convertHexToBuffer, convertArrayBufferToHex } from "@walletconnect/utils";
 import { useWalletConnect } from 'redux/hooks';
 import { List, Authenticate } from 'Components';
 import { useEffect, useState } from 'react';
 import { format } from 'date-fns';
-import { signBytes } from 'utils';
+import { signBytes, convertHexToUtf8, convertHexToBuffer, convertArrayBufferToHex } from 'utils';
 import { BIP32Interface } from 'types';
 
 const SignContainer = styled.div`
   padding-bottom: 300px;
 `;
-
 const Title = styled.div`
   font-weight: 600;
   text-transform: uppercase;

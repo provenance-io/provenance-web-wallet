@@ -1,27 +1,21 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router';
 import { Authenticate, Content, Header, List, Typo } from 'Components';
-import { ICON_NAMES, SEND_AMOUNT_URL, SEND_COMPLETE_URL, CHAINID_MAINNET, CHAINID_TESTNET } from 'consts';
-import { useMessage, useActiveAccount } from 'redux/hooks';
-import { getGrpcApi, hashFormat } from 'utils';
-import { Message } from 'google-protobuf';
+import { ICON_NAMES, SEND_AMOUNT_URL, SEND_COMPLETE_URL } from 'consts';
+import { useMessage } from 'redux/hooks';
+import { getChainId, getGrpcApi, hashFormat } from 'utils';
 import {
   buildBroadcastTxRequest,
-  buildMessage,
-  createAnyMessageBase64,
   getAccountInfo,
-  msgAnyB64toAny,
   broadcastTx,
   // MsgSendDisplay,
 } from '@provenanceio/wallet-utils';
 import { BIP32Interface } from 'types';
 
-// TODO: Needs to get tx fee Denom (currently hardcoded)
-// TODO: Needs to get Transaction Fee before sending
+// TODO: Needs to get tx fee Denom (currently hardcoded).  When ability to send other coins exists
 
 export const SendReview = () => {
   const navigate = useNavigate();
-  const { address, network } = useActiveAccount();
   const {
     coin,
     coinAmount,
@@ -29,14 +23,12 @@ export const SendReview = () => {
     txFromAddress,
     txSendAddress,
     txFeeEstimate,
+    txFeeDenom,
     txGasEstimate,
     setTxDate,
+    txMsgAny,
   } = useMessage();
   const [baseAccount, setBaseAccount] = useState<any>(null);
-  const type = 'MsgSend';
-  const feeDenom = 'nhash';
-  const memo = txMemo || '';
-  const chainId = network === 'testnet' ? CHAINID_TESTNET : CHAINID_MAINNET;
   const grpcAddress = getGrpcApi(txFromAddress!);
 
   // Get baseAccount
@@ -51,23 +43,16 @@ export const SendReview = () => {
   const handleSignAndSend = (masterKey: BIP32Interface) => {
     if (txFromAddress && txSendAddress && coin?.denom) {
       (async () => {
-        const sendMessage = {
-          amountList: [{ denom: coin!.denom, amount: coinAmount!}],
-          fromAddress: address!,
-          toAddress: txSendAddress!,
-        };
-        const messageMsgSend = buildMessage(type, sendMessage);
-        const messageB64String = createAnyMessageBase64(type, messageMsgSend as Message);
-        const msgAny = msgAnyB64toAny(messageB64String);
-        const wallet = { address: txFromAddress!, privateKey: masterKey.privateKey!, publicKey: masterKey.publicKey };
+        const wallet = { address: txFromAddress, privateKey: masterKey.privateKey!, publicKey: masterKey.publicKey };
+        const chainId = getChainId(txFromAddress);
         const broadcastTxRequest = buildBroadcastTxRequest({
           account: baseAccount,
           chainId,
-          feeDenom,
+          feeDenom: txFeeDenom,
           feeEstimate: txFeeEstimate!,
           gasEstimate: txGasEstimate!,
-          memo,
-          msgAny,
+          memo: txMemo || '',
+          msgAny: txMsgAny,
           wallet,
         });
         const txDate = Date.now();
@@ -95,7 +80,7 @@ export const SendReview = () => {
           from: txFromAddress || 'N/A',
           sending: `${coinAmount} ${coin.display}`,
           'Transaction Fee': `${totalFees} ${coin.display}`,
-          ...(!!memo && {note: memo}),
+          ...(!!txMemo && {note: txMemo}),
           total: `${total} ${coin.display}`
         }}
         marginBottom="80px"

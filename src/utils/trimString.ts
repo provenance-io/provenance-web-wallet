@@ -31,3 +31,5 @@ export const trimString = (
   const back = text.split('').reverse().join('').slice(0, maxLength - ellipsisIndex).split('').reverse().join('');
   return ''.concat(front, ellipsisValue, back);
 };
+
+export const trimAddress = (fullAddress: string) => trimString(fullAddress, 11, 3);

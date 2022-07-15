@@ -4,6 +4,15 @@
 ## Current Branch Tasks
 
 ## Near-Future™ Branch Tasks
+* Create txSend complete success page
+* "Data" button to show json of tx message
+* Pagination for txs.  Typically "1/1" but batch will use "1/n"
+* Unable to reject pending tx if connection is dead (should auto reject somehow if disconnected)
+* Clean up chain.ts util file, make a chain folder and split out the actions into separate files, too messy currently
+* When a tx message (walletconnect-js) comes through, auto switch to the target wallet (maybe...)
+* Wallet-utils not correctly converting numbers to strings (example: permissionsList)
+* If dApp disconnects while a user is signing a message, auto reject on ext if possible
+  - Change the page, say "You've been disconnected" and just allow pressing "ok" to leave
 * Handle blockchain broadcast failures & display reasons (instead of success page)
 * Batch action/message (single sign for paginated list of things to take action on)
 * Dashboard menu - child accounts indented (tree)
@@ -12,6 +21,8 @@
 * Second child (sub) account should automatically up the accountIndex from the next highest value
 
 ### Bugs
+* Sometimes extension shows pending action when there is none
+  - At very least, if there is none, when opened, remove pending notice from ext icon
 * Random error after/during unlock 'Error: Missing or invalid topic field'
   - Unlock works, wallet exists, no other visible issues
 * dApp connection request takes two clicks to cause popup to open 

@@ -9,7 +9,22 @@ import {
   MAINNET_NETWORK,
 } from 'consts';
 // CHAIN HELPER FUNCTIONS
-import { convertUtf8ToBuffer } from '@walletconnect/utils';
+import {
+  convertUtf8ToBuffer as _convertUtf8ToBuffer,
+  convertHexToUtf8 as _convertHexToUtf8,
+  convertHexToBuffer as _convertHexToBuffer,
+  convertArrayBufferToHex as _convertArrayBufferToHex,
+} from '@walletconnect/utils';
+import {
+  buildCalculateTxFeeRequest,
+  calculateTxFees,
+  getAccountInfo,
+  SupportedDenoms,
+  buildMessage,
+  createAnyMessageBase64,
+  msgAnyB64toAny,
+  ReadableMessageNames,
+} from '@provenanceio/wallet-utils';
 import {
   generateMnemonic as bip39gm,
   mnemonicToSeedSync as bip39mts,
@@ -18,17 +33,27 @@ import {
 import { fromSeed as bip32FromSeed, BIP32Interface, fromBase58 } from 'bip32';
 import { toWords as bech32ToWords, encode as bech32Encode } from 'bech32';
 import { publicKeyCreate as secp256k1PublicKeyCreate, ecdsaSign as secp256k1EcdsaSign } from 'secp256k1';
-import { bufferToBytes as _bufferToBytes, bytesToBase64 as _bytesToBase64 } from '@tendermint/belt';
+import { bufferToBytes, bytesToBase64 } from '@tendermint/belt';
 import { createHash } from 'crypto';
 // TYPESCRIPT TYPES
+import { Message as MessageProto } from 'google-protobuf';
 import type { Bech32String, Bytes } from '@tendermint/types';
-// import type { KeyPair } from '@tendermint/sig';
-import { Account, HDPathData, AccountLevel, AccountPrefix, AccountNetwork } from 'types';
+import {
+  Account,
+  HDPathData,
+  AccountLevel,
+  AccountPrefix,
+  AccountNetwork,
+  MessageSend,
+} from 'types';
+import { getGrpcApi } from './deriveApiAddress';
 
 export const validateMnemonic = bip39vm;
 export const bip32FromB58 = fromBase58;
-export const bytesToBase64 = _bytesToBase64;
-export const bufferToBytes = _bufferToBytes;
+export const convertUtf8ToBuffer = _convertUtf8ToBuffer;
+export const convertHexToUtf8 = _convertHexToUtf8;
+export const convertHexToBuffer = _convertHexToBuffer;
+export const convertArrayBufferToHex = _convertArrayBufferToHex;
 
 export const createMnemonic = (wordCount = MNEMONIC_WORD_COUNT) => {
   const strength = (wordCount / 3) * 32;
@@ -65,21 +90,6 @@ const createAddress = (publicKey: Bytes, prefix: string = ADDRESS_PREFIX_MAINNET
 
   return bech32Encode(prefix, words);
 }
-
-// const createKeyPairFromMasterKey = (masterKey: BIP32Interface, hdPath?: string ): KeyPair => {
-//   // If it's a root hd path or master node just return the private key without deriving
-//   const buffer = hdPath && hdPath !== 'm' ? masterKey.derivePath(hdPath).privateKey : masterKey.privateKey;
-//   if (!buffer) {
-//     throw new Error('could not derive private key');
-//   }
-//   const privateKey = bufferToBytes(buffer);
-//   const publicKey = secp256k1PublicKeyCreate(privateKey, true);
-
-//   return {
-//     privateKey,
-//     publicKey,
-//   };
-// }
 
 interface CreateWalletProps {
   privateKeyB64: string,
@@ -229,4 +239,49 @@ export const buildJWT = (masterKey: BIP32Interface | string, address: string, ex
   const signedPayloadEncoded = bytesToBase64(signature);
   const signedJWT = `${headerEncoded}.${payloadEncoded}.${signedPayloadEncoded}`;
   return signedJWT;
+};
+
+interface GetTxFeeEstimate {
+  publicKey: string,
+  msgAny: any,
+  address: string,
+  gasPrice?: number,
+  gasPriceDenom?: SupportedDenoms,
+  gasAdjustment?: number,
+};
+interface GetTxFeeEstimateResponse {
+  txFeeEstimate: number,
+  txGasEstimate: number,
+}
+
+export const getTxFeeEstimate = async ({
+  publicKey,
+  msgAny,
+  address,
+  gasPrice = 19050,
+  gasPriceDenom = 'nhash',
+  gasAdjustment = 1.25,
+}: GetTxFeeEstimate):Promise<GetTxFeeEstimateResponse> => {
+  const grpcAddress = getGrpcApi(address);
+  const { baseAccount } = await getAccountInfo(address, grpcAddress);
+  const calculateTxFeeRequest = buildCalculateTxFeeRequest({
+    msgAny,
+    account: baseAccount,
+    publicKey: bufferToBytes(convertUtf8ToBuffer(publicKey)), 
+    gasPriceDenom,
+    gasPrice,
+    gasAdjustment,
+  });
+  const { totalFeesList, estimatedGas: txGasEstimate } = await calculateTxFees(grpcAddress, calculateTxFeeRequest);
+  const txFeeEstimate = Number(totalFeesList.find((fee) => fee.denom === 'nhash')?.amount);
+
+  return { txFeeEstimate: txFeeEstimate || 0, txGasEstimate: txGasEstimate || 0 }
+};
+
+export const getMessageAny = (txType: ReadableMessageNames, sendMessage: MessageSend) => {
+  const messageMsgSend = buildMessage(txType!, sendMessage);
+  const messageB64String = createAnyMessageBase64(txType!, messageMsgSend as MessageProto);
+  const msgAny = msgAnyB64toAny(messageB64String);
+
+  return msgAny;
 };

@@ -7,7 +7,7 @@ export interface Message {
   coinAmount?: string;
   txBaseAccount?: string,
   txDate?: number,
-  txFeeDenom: string,
+  txFeeDenom: SupportedDenoms,
   txFeeEstimate?: number,
   txFromAddress?: string,
   txGasAdjustment?: number,
@@ -16,6 +16,7 @@ export interface Message {
   txGasPriceAdjustment: number,
   txGasPriceDenom: SupportedDenoms,
   txMemo?: string;
+  txMsgAny?: any,
   txSendAddress?: string,
   txType?: ReadableMessageNames,
 };

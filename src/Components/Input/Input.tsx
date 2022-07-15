@@ -39,7 +39,7 @@ const InputEl = styled.input<{error?: string}>`
   font-size: 1.4rem;
   font-weight: 500;
   line-height: 2.24rem;
-  background: #091527;
+  background: ${COLORS.BACKGROUND_1};
 
   &::placeholder {
     color: ${COLORS.NEUTRAL_300};

@@ -242,7 +242,7 @@ export const buildJWT = (masterKey: BIP32Interface | string, address: string, ex
 };
 
 interface GetTxFeeEstimate {
-  publicKey: Buffer,
+  publicKey: string,
   msgAny: any,
   address: string,
   gasPrice?: number,
@@ -267,7 +267,7 @@ export const getTxFeeEstimate = async ({
   const calculateTxFeeRequest = buildCalculateTxFeeRequest({
     msgAny,
     account: baseAccount,
-    publicKey: bufferToBytes(publicKey), 
+    publicKey: bufferToBytes(convertUtf8ToBuffer(publicKey)), 
     gasPriceDenom,
     gasPrice,
     gasAdjustment,

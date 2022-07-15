@@ -8,11 +8,11 @@ import {
   getAccountInfo,
   msgAnyB64toAny,
 } from '@provenanceio/wallet-utils';
-import { useWalletConnect } from 'redux/hooks';
+import { useAccount, useWalletConnect } from 'redux/hooks';
 import { List, Authenticate } from 'Components';
 import { useEffect, useState } from 'react';
 import { format } from 'date-fns';
-import { txMessageFormat, getTxFeeEstimate, getGrpcApi, getChainId, convertHexToUtf8 } from 'utils';
+import { txMessageFormat, getTxFeeEstimate, getGrpcApi, getChainId, convertHexToUtf8, hashFormat } from 'utils';
 import { BIP32Interface } from 'types';
 
 const SignContainer = styled.div`
@@ -55,26 +55,55 @@ export const SendTransaction:React.FC<Props> = ({ payload, closeWindow }) => {
     saveWalletconnectData,
     removePendingRequest,
   } = useWalletConnect();
+  const { accounts } = useAccount();
   const [parsedMetadata, setParsedMetadata] = useState<ParsedMetadata>({});
   const [parsedTxMessage, setParsedTxMessage] = useState<ParsedTxMessage>({});
   const [txMsgAny, setTxMsgAny] = useState<any>({});
+  const [txType, setTxType] = useState<string>('');
+  const [txFeeEstimate, setTxFeeEstimate] = useState<number>(0);
+  const [txGasEstimate, setTxGasEstimate] = useState<number>(0);
+  const [initialLoad, setInitialLoad] = useState(true);
 
   // Onload, pull out and parse payload params
   useEffect(() => {
-    const { params } = payload; // payload = { ..., params: [metadata, hexMessage] }
-    const [metadataString, hexEncodedMessage] = params as string[];
-    const metadata = JSON.parse(metadataString);
-    const messageAnyB64 = convertHexToUtf8(hexEncodedMessage);
-    const msgAny = msgAnyB64toAny(messageAnyB64);
-    setTxMsgAny(msgAny);
-    let txMsg;
-    if (messageAnyB64) {
-      const msgObj = unpackDisplayObjectFromWalletMessage(messageAnyB64);
-      txMsg = txMessageFormat(msgObj);
+    if (initialLoad) {
+      // Only run this once
+      setInitialLoad(false);
+      const { params } = payload; // payload = { ..., params: [metadata, hexMessage] }
+      const [metadataString, hexEncodedMessage] = params as string[];
+      const newParsedMetadata = JSON.parse(metadataString);
+      const messageAnyB64 = convertHexToUtf8(hexEncodedMessage);
+      const msgAny = msgAnyB64toAny(messageAnyB64);
+      setTxType(msgAny.getTypeName());
+      setTxMsgAny(msgAny);
+      let txMsg;
+      if (messageAnyB64) {
+        const msgObj = unpackDisplayObjectFromWalletMessage(messageAnyB64);
+        txMsg = txMessageFormat(msgObj);
+      }
+
+      setParsedMetadata(newParsedMetadata)
+      setParsedTxMessage(txMsg as ParsedTxMessage);
+      // Calculate the tx and gas fees
+      (async () => {
+        const address = newParsedMetadata.address!;
+        const targetAccount = accounts.find(({ address: storeAddress }) => storeAddress === address);
+        if (targetAccount) {
+          const {txFeeEstimate, txGasEstimate} = await getTxFeeEstimate({
+            address,
+            publicKey: targetAccount.publicKey!,
+            msgAny,
+            gasPrice: newParsedMetadata?.gasPrice?.gasPrice,
+            gasPriceDenom: newParsedMetadata?.gasPrice?.gasPriceDenom,
+          });
+          console.log('txFeeEstimate :', txFeeEstimate);
+          console.log('txGasEstimate :', txGasEstimate);
+          setTxFeeEstimate(txFeeEstimate);
+          setTxGasEstimate(txGasEstimate);
+        }
+      })();
     }
-    setParsedMetadata(metadata)
-    setParsedTxMessage(txMsg as ParsedTxMessage);
-  }, [payload]);
+  }, [payload, parsedMetadata, txMsgAny, accounts, initialLoad]);
 
   // TODO: Move bumpWalletConnectTimeout to redux method (DRY)
   // Connection to the dApp is on a timer, whenever the user interacts with the dApp (approve/deny) reset the timer
@@ -97,19 +126,11 @@ export const SendTransaction:React.FC<Props> = ({ payload, closeWindow }) => {
       const grpcAddress = getGrpcApi(address);
       const chainId = getChainId(address);
       const { baseAccount } = await getAccountInfo(address, grpcAddress);
-      const {txFeeEstimate, txGasEstimate} = await getTxFeeEstimate({
-        address,
-        publicKey,
-        msgAny: txMsgAny,
-        gasPrice: parsedMetadata?.gasPrice?.gasPrice,
-        gasPriceDenom: parsedMetadata?.gasPrice?.gasPriceDenom,
-      });
-
       const broadcastTxRequest = buildBroadcastTxRequest({
         account: baseAccount,
         chainId,
         feeDenom: parsedMetadata!.gasPrice!.gasPriceDenom || 'nhash',
-        feeEstimate: txFeeEstimate!,
+        feeEstimate: txFeeEstimate,
         gasEstimate: txGasEstimate,
         memo: parsedMetadata.memo || '',
         msgAny: txMsgAny,
@@ -140,10 +161,16 @@ export const SendTransaction:React.FC<Props> = ({ payload, closeWindow }) => {
     }
   }
 
+  const formatMetadataGasFee = () => {
+    const gasPriceDenom = parsedMetadata?.gasPrice?.gasPriceDenom || 'nhash';
+    return gasPriceDenom === 'nhash' ?
+        `${(hashFormat(txFeeEstimate, 'nhash') + hashFormat(txGasEstimate!, 'nhash')).toFixed(4)} Hash` :
+        `${(txFeeEstimate + txGasEstimate).toFixed(3)} ${gasPriceDenom}`;
+  }
   const metadataListItems = {
     platform: connector?.peerMeta?.name || 'N/A',
-    'Gas Fee': `${parsedMetadata?.gasPrice?.gasPrice} ${parsedMetadata?.gasPrice?.gasPriceDenom}` || 'N/A',
-    '@type': parsedMetadata?.type || 'N/A',
+    'Gas Fee': formatMetadataGasFee(),
+    '@type': txType || 'N/A',
     date: parsedMetadata?.date ? format(new Date(parsedMetadata.date), 'MMM d, h:mm a') : 'N/A',
     description: parsedMetadata?.description || 'N/A',
   };

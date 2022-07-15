@@ -2,26 +2,17 @@
 ## To do shortlist
 
 ## Current Branch Tasks
+* Walletconnect sends gas fee as nhash, convert to display hash in UI [DONE]
 * Create txSend complete success page
+* "Data" button to show json of tx message
+* Pagination for txs.  Typically "1/1" but batch will use "1/n"
 * Clean up messageSlice to use "getTxFeeEstimate" from chain.ts [DONE]
-* Handle walletconnect-js messages
-  - Broadcast transaction/sendHash [IN_PROGRESS]
-  - Sign message [DONE]
-  - Sign JWT (Just a "signMessage") [DONE]
-  - "Data" button to show json of tx message
-  - Pagination for txs.  Typically "1/1" but batch will use "1/n"
-  - Sending nhash but keeping "amount" as hash.  Ends up sending "1 nhash". [BUG]
-    - Need to keep it simple/constant in entire app.
-        - All "saved" hash amounts will ALWAYS be NHASH
-        - All "display"/"ui" hash amounts will ALWAYS show HASH
-        - User facing = HASH, tx/blockchain facing = NHASH
-  - Custom Actions
-    - Send Hash [DONE]
-    - Create Marker
-    - Destroy Marker
-    - Approve Marker
+* Broadcast transaction/sendHash [DONE]
+* Sign message [DONE]
+* Sign JWT (Just a "signMessage") [DONE]
 
 ## Near-Future™ Branch Tasks
+* Unable to reject pending tx if connection is dead (should auto reject somehow if disconnected)
 * Clean up chain.ts util file, make a chain folder and split out the actions into separate files, too messy currently
 * When a tx message (walletconnect-js) comes through, auto switch to the target wallet (maybe...)
 * Wallet-utils not correctly converting numbers to strings (example: permissionsList)

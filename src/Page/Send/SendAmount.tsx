@@ -8,7 +8,6 @@ import {
   capitalize,
   hashFormat,
   getTxFeeEstimate,
-  convertUtf8ToBuffer,
   getMessageAny,
 } from 'utils';
 import { COLORS } from 'theme';
@@ -52,7 +51,6 @@ const Uppercase = styled.span`
 export const SendAmount = () => {
   const navigate = useNavigate();
   const [errors, setErrors] = useState<string[]>([]); // [AmountError, MemoError]
-  const [initialLoad, setInitialLoad] = useState(true);
   const {
     coin,
     coinAmount,
@@ -68,38 +66,42 @@ export const SendAmount = () => {
     txSendAddress,
     txGasPriceDenom,
     txType,
+    setTxMsgAny,
   } = useMessage();
   const { assets } = useAddress();
   const { publicKey } = useActiveAccount();
   
   // Any time coin amount changes (and it's >0), calculate the txFeeEstimates
   useEffect(() => {
-    if (coinAmount) {
-      setInitialLoad(false);
-      const asyncAction = async () => {
-        const sendMessage = {
-          amountList: [{ denom: coin!.denom, amount: coinAmount!}],
-          fromAddress: txFromAddress!,
-          toAddress: txSendAddress!,
+    if (!errors[0]) {
+      if (coinAmount) {
+        const asyncAction = async () => {
+          // If coinAmount is referring to 'HASH' convery amount to nhash
+          const finalCoinAmount = coin?.denom === 'nhash' ? hashFormat(coinAmount, 'hash') : coinAmount;
+          const sendMessage = {
+            amountList: [{ denom: coin!.denom, amount: `${finalCoinAmount}`}],
+            fromAddress: txFromAddress!,
+            toAddress: txSendAddress!,
+          };
+          const msgAny = getMessageAny(txType!, sendMessage);
+          setTxMsgAny(msgAny);
+          const { txFeeEstimate, txGasEstimate } = await getTxFeeEstimate({
+            address: txFromAddress!,
+            msgAny,
+            publicKey: publicKey!,
+            gasAdjustment: txGasPriceAdjustment,
+            gasPrice: txGasPrice,
+            gasPriceDenom: txGasPriceDenom,
+          });
+          setTxFees({ txFeeEstimate, txGasEstimate });
         };
-        const msgAny = getMessageAny(txType!, sendMessage);
-        const { txFeeEstimate, txGasEstimate } = await getTxFeeEstimate({
-          address: txFromAddress!,
-          msgAny,
-          publicKey: convertUtf8ToBuffer(publicKey!),
-          gasAdjustment: txGasPriceAdjustment,
-          gasPrice: txGasPrice,
-          gasPriceDenom: txGasPriceDenom,
-        });
-        setTxFees({ txFeeEstimate, txGasEstimate });
-      };
-      asyncAction();
+        asyncAction();
+      } else setTxFees({ txFeeEstimate: 0, txGasEstimate: 0 })
     }
   }, [
     coinAmount,
     publicKey,
     setTxFees,
-    initialLoad,
     coin,
     txFromAddress,
     txGasPrice,
@@ -107,6 +109,8 @@ export const SendAmount = () => {
     txGasPriceDenom,
     txSendAddress,
     txType,
+    setTxMsgAny,
+    errors,
   ]);
 
   const validateAndNavigate = () => {
@@ -169,7 +173,7 @@ export const SendAmount = () => {
         <RowValue>
           <Typo type="body" align="right">
             <Uppercase>
-              {txFeeEstimate ? `${(hashFormat(txFeeEstimate, 'nhash') + hashFormat(txGasEstimate!, 'nhash')).toFixed(2)} ${coin.display}` : 'N/A'}
+              {txFeeEstimate ? `${(hashFormat(txFeeEstimate, 'nhash') + hashFormat(txGasEstimate!, 'nhash')).toFixed(4)} ${coin.display}` : 'N/A'}
             </Uppercase>
           </Typo>
         </RowValue>

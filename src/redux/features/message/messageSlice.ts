@@ -15,6 +15,7 @@ const initialState: MessageSlice = {
   txGasPriceAdjustment: 1.25, // TODO: Dynamically get gas price adjustment
   txGasPriceDenom: 'nhash',
   txMemo: undefined,
+  txMsgAny: undefined,
   txSendAddress: undefined,
   txType: 'MsgSend', // TODO: Make Dynamic
 };
@@ -52,6 +53,10 @@ const messageSlice = createSlice({
       const { txFeeEstimate, txGasEstimate } = action.payload;
       state.txFeeEstimate = txFeeEstimate;
       state.txGasEstimate = txGasEstimate;
+    },
+
+    setTxMsgAny(state, action) {
+      state.txMsgAny = action.payload;
     },
 
     resetMessage: () => initialState,

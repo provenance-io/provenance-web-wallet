@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router';
 import styled from 'styled-components';
 import { BottomFloat, Button, Content, Header, Input, Typo } from 'Components';
-import { ICON_NAMES, SEND_REVIEW_URL } from 'consts';
+import { ICON_NAMES, SEND_REVIEW_URL, SEND_URL } from 'consts';
 import { useActiveAccount, useMessage, useAddress } from 'redux/hooks';
 import {
   capitalize,
@@ -143,6 +143,7 @@ export const SendAmount = () => {
       <Header
         title={`Send ${capitalize(coin.display)}`}
         iconLeft={ICON_NAMES.ARROW}
+        backLocation={SEND_URL}
       />
       <AssetImg src={`/images/assets/${coin.display}.svg`} />
       <AssetAmount

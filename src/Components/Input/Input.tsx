@@ -31,7 +31,7 @@ const Label = styled.label`
   text-transform: capitalize;
 `;
 
-const InputEl = styled.input<{error?: string}>`
+const InputEl = styled.input<{error?: string, background?: string}>`
   padding: 10px;
   border: 1px solid ${({ error }) => error ? COLORS.NEGATIVE_300 : COLORS.NEUTRAL_300 };
   border-radius: 4px;
@@ -39,7 +39,7 @@ const InputEl = styled.input<{error?: string}>`
   font-size: 1.4rem;
   font-weight: 500;
   line-height: 2.24rem;
-  background: ${COLORS.BACKGROUND_1};
+  background: ${({ background }) => background ? background : 'transparent' };
 
   &::placeholder {
     color: ${COLORS.NEUTRAL_300};

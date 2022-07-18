@@ -63,7 +63,7 @@ export const ResetWallet: React.FC = () => {
       <Alert type='warning' title='Warning'>
         You are about to remove all accounts from this wallet.  This action cannot be undone.  Accounts can only be recovered with their recovery seed phrase.
       </Alert>
-      <Typo type='headline2' align='left'>Destruction phrase:</Typo>
+      <Typo type='headline2' align='left' marginBottom='10px' marginTop='20px'>Destruction phrase:</Typo>
       <Phrase>"{destroyPhrase}"</Phrase>
       <InputSection>
         <Input

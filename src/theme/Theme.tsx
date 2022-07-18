@@ -57,6 +57,13 @@ export const GlobalStyles = createGlobalStyle<{
     width: ${MAX_WIDTH};
   }
 
+  pre {
+    white-space: break-spaces;
+    line-height: 1.8rem;
+    font-size: 1.2rem;
+    word-break: break-word;
+  }
+
   button, div, a, p {
     letter-spacing: 0.04rem;
   }

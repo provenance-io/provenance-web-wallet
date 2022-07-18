@@ -109,7 +109,7 @@ export const Send: React.FC = () => {
 
   return (
     <Content>
-      <Header title="Send" iconLeft={ICON_NAMES.CLOSE} />
+      <Header title="Send" iconLeft={ICON_NAMES.CLOSE} backLocation={DASHBOARD_URL} />
       {assets.length ? (
         <>
           <SectionTitle>{assets.length > 1 ? 'Select Asset' : 'Asset'}</SectionTitle>

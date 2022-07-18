@@ -9,15 +9,12 @@ import {
   msgAnyB64toAny,
 } from '@provenanceio/wallet-utils';
 import { useAccount, useWalletConnect } from 'redux/hooks';
-import { List, Authenticate } from 'Components';
+import { List, Authenticate, Content, FullData } from 'Components';
 import { useEffect, useState } from 'react';
 import { format } from 'date-fns';
 import { txMessageFormat, getTxFeeEstimate, getGrpcApi, getChainId, convertHexToUtf8, hashFormat } from 'utils';
 import { BIP32Interface } from 'types';
 
-const SignContainer = styled.div`
-  padding-bottom: 300px;
-`;
 const Title = styled.div`
   font-weight: 600;
   text-transform: uppercase;
@@ -27,6 +24,16 @@ const Title = styled.div`
   font-size: 1.6rem;
   text-align: center;
   margin-bottom: 20px;
+`;
+const PaginationDisplay = styled.div`
+  position: fixed;
+  bottom: 180px;
+  font-size: 1.4rem;
+  letter-spacing: 0.2em;
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  left: 0;
 `;
 
 interface Props {
@@ -59,6 +66,7 @@ export const SendTransaction:React.FC<Props> = ({ payload, closeWindow }) => {
   const [parsedMetadata, setParsedMetadata] = useState<ParsedMetadata>({});
   const [parsedTxMessage, setParsedTxMessage] = useState<ParsedTxMessage>({});
   const [txMsgAny, setTxMsgAny] = useState<any>({});
+  const [unpackedTxMsgAny, setUnpackedTxMsgAny] = useState({});
   const [txType, setTxType] = useState<string>('');
   const [txFeeEstimate, setTxFeeEstimate] = useState<number>(0);
   const [txGasEstimate, setTxGasEstimate] = useState<number>(0);
@@ -79,6 +87,7 @@ export const SendTransaction:React.FC<Props> = ({ payload, closeWindow }) => {
       let txMsg;
       if (messageAnyB64) {
         const msgObj = unpackDisplayObjectFromWalletMessage(messageAnyB64);
+        setUnpackedTxMsgAny(msgObj);
         txMsg = txMessageFormat(msgObj);
       }
 
@@ -96,8 +105,6 @@ export const SendTransaction:React.FC<Props> = ({ payload, closeWindow }) => {
             gasPrice: newParsedMetadata?.gasPrice?.gasPrice,
             gasPriceDenom: newParsedMetadata?.gasPrice?.gasPriceDenom,
           });
-          console.log('txFeeEstimate :', txFeeEstimate);
-          console.log('txGasEstimate :', txGasEstimate);
           setTxFeeEstimate(txFeeEstimate);
           setTxGasEstimate(txGasEstimate);
         }
@@ -175,21 +182,25 @@ export const SendTransaction:React.FC<Props> = ({ payload, closeWindow }) => {
     description: parsedMetadata?.description || 'N/A',
   };
   const txMsgListItems = {...parsedTxMessage};
-
+  // One field is incorrectly labled accessListList in the protos, we also want to render it last
+  const { accessListList, ...filteredTxMsgListItems } = txMsgListItems;
   const ListItems = {
     ...metadataListItems,
-    ...txMsgListItems,
+    ...filteredTxMsgListItems,
+    ...(accessListList !== undefined && { accessList: accessListList })
   };
 
   return (
-    <SignContainer>
+    <Content>
       <Title>Transaction</Title>
-      <List message={ListItems} />
+      <FullData data={unpackedTxMsgAny} />
+      <List message={ListItems} maxHeight="324px" />
+      <PaginationDisplay>1/1</PaginationDisplay>
       <Authenticate
         handleApprove={handleApprove}
         handleDecline={handleDecline}
         approveText="Sign Message"
       />
-    </SignContainer>
+    </Content>
   );
 };

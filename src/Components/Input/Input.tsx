@@ -13,6 +13,7 @@ interface InputProps {
   placeholder?: string;
   type?: string;
   value?: string | number,
+  background?: string,
 }
 
 const InputGroup = styled.div`
@@ -45,7 +46,7 @@ const InputEl = styled.input<{error?: string, background?: string}>`
     color: ${COLORS.NEUTRAL_300};
   }
   &:focus {
-    outline-color: #1b66ea;
+    outline-color: ${COLORS.PRIMARY_550};
     outline-offset: -1px;
     outline-width: 1px;
     outline-style: solid;
@@ -70,6 +71,7 @@ export const Input = ({
   disabled,
   onChange,
   children,
+  background,
   ...rest
 }: InputProps) => (
   <InputGroup>
@@ -83,6 +85,7 @@ export const Input = ({
       error={error}
       disabled={disabled}
       autoComplete="off"
+      background={background}
       {...rest}
     />
     {children}

@@ -2,18 +2,20 @@ import { useNavigate, useSearchParams } from 'react-router-dom';
 import { ACTIONS_URL, WC_NOTIFICATION_TYPES } from 'consts';
 import { useEffect, useState } from 'react';
 import { useWalletConnect } from 'redux/hooks';
-import { EventPayload } from 'types';
+import { EventPayload, WCNotification } from 'types';
 import { Content } from 'Components';
 import { WalletConnectInit } from './WalletConnectInit';
 import { SignRequest } from './SignRequest';
 import { SendTransaction } from './SendTransaction';
+import { RequestFailed } from './RequestFailed';
 
 type ExtensionTypes = 'extension' | 'browser' | '';
 
 export const Notification:React.FC = () => {
-  const [notificationType, setNotificationType] = useState<string>('');
+  const [notificationType, setNotificationType] = useState<WCNotification>('unknown');
   const [eventPayload, setEventPayload] = useState<EventPayload | null>(null);
   const [extensionType, setExtensionType] = useState<ExtensionTypes>('');
+  const [failedMessage, setFailedMessage] = useState('');
   const [searchParams, setSearchParams] = useSearchParams();
   const navigate = useNavigate();
   const {
@@ -42,7 +44,7 @@ export const Notification:React.FC = () => {
         const targetPendingRequest: EventPayload = pendingRequests[pendingRequestId];
         if (targetPendingRequest) {
           setEventPayload(targetPendingRequest);
-          if (targetPendingRequest?.method) setNotificationType(targetPendingRequest.method);
+          if (targetPendingRequest?.method) setNotificationType(targetPendingRequest.method as WCNotification);
         }
     }
   }, [searchParams, pendingRequests]);
@@ -54,7 +56,7 @@ export const Notification:React.FC = () => {
       // Loop through each notification type and create event listener
       WC_NOTIFICATION_TYPES.forEach(NOTE_TYPE => {
         connector.on(NOTE_TYPE, (error, payload) => {
-          setNotificationType(NOTE_TYPE);
+          setNotificationType(NOTE_TYPE as WCNotification);
           // Save the request locally
           // - If the user closes the window/popup or doesn't notice it in the background it can be retreived
           //    - Clicking QR Code modal connect button again
@@ -111,12 +113,13 @@ export const Notification:React.FC = () => {
 
   const renderNotificationContent = () => {
     if (!eventPayload) return null;
-    const pageProps = { payload: eventPayload, closeWindow: closeWindow };
+    const pageProps = { payload: eventPayload, closeWindow, setFailedMessage };
+    if (failedMessage) return <RequestFailed failedMessage={failedMessage} {...pageProps} />
     switch(notificationType) {
       case 'session_request': return <WalletConnectInit {...pageProps} />
       case 'provenance_sendTransaction': return <SendTransaction {...pageProps} />
       case 'provenance_sign': return <SignRequest {...pageProps}  />;
-      default: return null;
+      default: { console.log('Notification.tsx | renderNotificationContent | default case'); return null; }
     }
   };
 

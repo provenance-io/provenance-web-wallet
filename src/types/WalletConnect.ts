@@ -78,3 +78,11 @@ export interface WalletConnectStorage { // WalletConnect session data
   pendingRequests?: SavedPendingRequests,
   totalPendingRequests?: number,
 }
+
+export type WCNotification =
+  'connect' |
+  'disconnect' |
+  'session_request' |
+  'provenance_sign' |
+  'provenance_sendTransaction' |
+  'unknown';

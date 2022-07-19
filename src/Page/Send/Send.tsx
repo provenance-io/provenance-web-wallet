@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { Header, AssetDropdown, Input, Sprite, Button, Content, BottomFloat, Loading, Typo } from 'Components';
 import styled from 'styled-components';
 import { DASHBOARD_URL, ICON_NAMES, SEND_AMOUNT_URL } from 'consts';
-import { trimString } from 'utils';
+import { trimString, validateAddress } from 'utils';
 import { useNavigate } from 'react-router';
 import { useActiveAccount, useAddress, useMessage } from 'redux/hooks';
 import { format, parseISO } from 'date-fns';
@@ -69,7 +69,14 @@ export const Send: React.FC = () => {
   const recentAddresses = [...transactions].splice(0, 4);
   const [error, setError] = useState('');
   const [initialLoad, setInitialLoad] = useState(true);
-  const { txSendAddress, setTxSendAddress, setTxFromAddress, coin, setCoin } = useMessage();
+  const {
+    txSendAddress,
+    setTxSendAddress,
+    setTxFromAddress,
+    coin,
+    setCoin,
+    resetMessage,
+  } = useMessage();
   const { address } = useActiveAccount();
 
   // Initial load fetch all transactions
@@ -100,16 +107,15 @@ export const Send: React.FC = () => {
     ));
 
   const validateAndNavigate = () => {
-    if (!txSendAddress) {
-      return setError('An address is required');
-    }
+    if (!txSendAddress) return setError('An address is required');
+    if (!validateAddress(txSendAddress)) return setError('Address entered is invalid');
 
     navigate(SEND_AMOUNT_URL);
   };
 
   return (
     <Content>
-      <Header title="Send" iconLeft={ICON_NAMES.CLOSE} backLocation={DASHBOARD_URL} />
+      <Header title="Send" iconLeft={ICON_NAMES.CLOSE} backLocation={DASHBOARD_URL} backCallback={() => { resetMessage() }} />
       {assets.length ? (
         <>
           <SectionTitle>{assets.length > 1 ? 'Select Asset' : 'Asset'}</SectionTitle>

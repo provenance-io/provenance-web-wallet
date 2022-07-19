@@ -53,9 +53,20 @@ const LinkOrButton = styled.button`
   cursor: pointer;
 `;
 
-const BackButton = ({ children, backLocation }: { children: React.ReactNode, backLocation?: string }) => {
+interface BackButtonProps {
+  children: React.ReactNode,
+  backLocation?: string,
+  backCallback?: () => void,
+}
+
+const BackButton:React.FC<BackButtonProps> = ({ children, backLocation, backCallback }) => {
   const navigate = useNavigate();
-  return <LinkOrButton onClick={() => backLocation ? navigate(backLocation) : navigate(-1)}>{children}</LinkOrButton>;
+  const handleBackClick = () => {
+    if (backCallback) backCallback();
+    backLocation ? navigate(backLocation) : navigate(-1);
+  };
+
+  return <LinkOrButton onClick={handleBackClick}>{children}</LinkOrButton>;
 };
 
 interface HeaderProps {
@@ -64,16 +75,17 @@ interface HeaderProps {
   title?: string | React.ReactNode;
   marginBottom?: string;
   backLocation?: string;
+  backCallback?: () => void;
 }
 
-export const Header = ({ iconLeft = ICON_NAMES.ARROW, progress, title, marginBottom = '32px', backLocation }: HeaderProps) => {
+export const Header = ({ iconLeft = ICON_NAMES.ARROW, progress, title, marginBottom = '32px', backLocation, backCallback }: HeaderProps) => {
   const excludeBackButton = iconLeft === 'false' || iconLeft === 'none' || iconLeft === 'off';
 
   return (
     <Wrapper marginBottom={marginBottom}>
       <Content excludeBackButton={excludeBackButton}>
         {!excludeBackButton && (
-          <BackButton backLocation={backLocation}>
+          <BackButton backLocation={backLocation} backCallback={backCallback}>
             <Sprite size="1.4rem" icon={iconLeft} />
           </BackButton>
         )}

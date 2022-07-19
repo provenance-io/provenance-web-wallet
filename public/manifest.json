@@ -36,7 +36,12 @@
   "background": {
     "service_worker": "background.js"
   },
-  "externally_connectable": {
-    "matches": ["https://*.figure.tech/*", "http://localhost:3000/*", "https://localhost:3000/*"]
-  }
+  "content_scripts": [
+    {
+      "all_frames": true,
+      "js": [ "content-script.js" ],
+      "matches": [ "file://*/*", "http://*/*", "https://*/*" ],
+      "run_at": "document_start"
+    }
+  ]
 }

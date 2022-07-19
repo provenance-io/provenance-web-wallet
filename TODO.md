@@ -6,16 +6,18 @@
 * When leaving send flow back to dashboard, reset/clear out coin redux store data. [DONE]
 * If invalid address/unable to get gas-estimate, display an error on the next page (gas fee is required) [DONE]
   - In "send" flow, validate the address entered
-
-## Bugs
-* dApp request message sign and no popup is triggered from background.js [1]
+* dApp connection request takes two clicks to cause popup to open [DONE]
+  - Note: Requires update to walletconnect-js
+  - Look into the setting of localStorage, value changes, no popup, on second click, value exists, popup opens
+  - Potentially/likely a walletconnect-js issue
+* dApp request message sign and no popup is triggered from background.js [DONE]
   - Doesn't always happen, hard to recreate
   - Seems to happen less and less with code refactoring, see if others report same issue or remove
   - Connect and then instantly go to sign message in demo, most of the time triggers this bug
+
+## Bugs
 * Wallet-utils not correctly converting numbers to strings (example: permissionsList) [2]
   - This will need to be fixed within wallet-utils, not here in web-wallet.
-* dApp connection request takes two clicks to cause popup to open 
-  - Look into the setting of localStorage, value changes, no popup, on second click, value exists, popup opens [2]
 * Unable to reject pending tx if connection is dead (should auto reject somehow if disconnected) [3]
 * If dApp disconnects while a user is signing a message, auto reject on ext if possible [3]
   - Change the page, say "You've been disconnected" and just allow pressing "ok" to leave

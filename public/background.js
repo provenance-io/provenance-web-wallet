@@ -3,7 +3,6 @@
 // Handle Notification Popup Window
 // ----------------------------------------
 const notificationPopupEvent = function(request, sender, sendResponse) {
-  console.log('background.js | notificationPopupEvent');
   chrome.windows.get(sender.tab.windowId).then((senderWindow) => {
     // Basic popup config
     const popupConfig = {
@@ -17,8 +16,12 @@ const notificationPopupEvent = function(request, sender, sendResponse) {
     };
     // Run function based on the event
     const { event, uri } = request;
-    console.log('background.js | notificationPopupEvent | event: ', event);
     switch (event) {
+      case 'test':
+        // update the popup config url
+        popupConfig.url = `${popupConfig.url}`;
+        chrome.windows.create(popupConfig);
+        break;
       case 'walletconnect_init':
         // Uri is required to be included
         if (uri) {
@@ -35,6 +38,7 @@ const notificationPopupEvent = function(request, sender, sendResponse) {
       default: break;
     }
   });
+  sendResponse();
 };
 
 const asyncGetStorage = async () => {
@@ -52,8 +56,9 @@ asyncGetStorage();
 const asyncSetup = async () => {
   const { account } = await chrome.storage.local.get('account') || {};
   // Only set up listeners if user has created an extension wallet
+  // TODO: This should work even without an account, instead open a page explaining that an account is required (this way it doesn't look broken)
   if (account?.accounts.length) {
-    chrome.runtime.onMessageExternal.addListener(notificationPopupEvent);
+    chrome.runtime.onMessage.addListener(notificationPopupEvent);
   }
 }
 asyncSetup();

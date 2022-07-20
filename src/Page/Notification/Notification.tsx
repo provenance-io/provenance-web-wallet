@@ -1,25 +1,32 @@
+import WalletConnectClient from "@walletconnect/client";
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { ACTIONS_URL, WC_NOTIFICATION_TYPES } from 'consts';
 import { useEffect, useState } from 'react';
 import { useWalletConnect } from 'redux/hooks';
 import { EventPayload, WCNotification } from 'types';
-import { Content } from 'Components';
+import { Content, Loading } from 'Components';
 import { WalletConnectInit } from './WalletConnectInit';
 import { SignRequest } from './SignRequest';
 import { SendTransaction } from './SendTransaction';
 import { RequestFailed } from './RequestFailed';
 
 type ExtensionTypes = 'extension' | 'browser' | '';
+interface PageProps {
+  payload: EventPayload,
+  closeWindow: () => void,
+  setFailedMessage: (value: string) => void,
+}
 
 export const Notification:React.FC = () => {
-  const [notificationType, setNotificationType] = useState<WCNotification>('unknown');
+  const [notificationType, setNotificationType] = useState<WCNotification>('');
   const [eventPayload, setEventPayload] = useState<EventPayload | null>(null);
   const [extensionType, setExtensionType] = useState<ExtensionTypes>('');
   const [failedMessage, setFailedMessage] = useState('');
+  const [unexpectedClose, setUnexpectedClose] = useState(true);
   const [searchParams, setSearchParams] = useSearchParams();
   const navigate = useNavigate();
   const {
-    createConnector,
+    setConnector,
     connector,
     pendingRequests,
     saveWalletconnectData,
@@ -32,9 +39,17 @@ export const Notification:React.FC = () => {
       const tabsExist = await chrome?.tabs?.getCurrent();
       const newExtensionType = tabsExist ? 'browser' : 'extension';
       setExtensionType(newExtensionType);
+      if (newExtensionType === 'browser') {
+        if (connector && notificationType === 'session_request' && unexpectedClose) {
+          // Automatically reject any pending connection requests if the popup is closed (x pressed)
+          window.addEventListener('beforeunload', () => {
+            connector.rejectSession({ message: 'Connection rejected by user' });
+          });
+        }
+      }
     };
     asyncExtensionType();
-  });
+  }, [connector, unexpectedClose, notificationType]);
   
   // On page load, if a payloadId was passed in, search for that payload in storage
   // Also check url search params for wc session or pending requests
@@ -77,13 +92,6 @@ export const Notification:React.FC = () => {
           if (NOTE_TYPE === 'disconnect') saveWalletconnectData({ pendingRequests: {}, totalPendingRequests: 0 });
         });
       });
-
-      return () => {
-        // Remove created event listeners
-        WC_NOTIFICATION_TYPES.forEach(NOTE_TYPE => {
-          connector.off(NOTE_TYPE);
-        });
-      }
     }
   }, [connector, saveWalletconnectData, addPendingRequest]
   );
@@ -92,13 +100,16 @@ export const Notification:React.FC = () => {
   useEffect(() => {
     if (!connector && wcUriParam) {
       // Create new connector
-      createConnector(wcUriParam);
+      const connector = new WalletConnectClient({ uri: wcUriParam });
+      // Save connector into redux store
+      setConnector(connector);
       // Clear out uri from search params
       setSearchParams('');
     }
-  }, [connector, wcUriParam, createConnector, setSearchParams]);
+  }, [connector, wcUriParam, setSearchParams, setConnector]);
 
   const closeWindow = async () => {
+    setUnexpectedClose(false);
     if (extensionType === 'extension') {
       // If we remove the window in extension mode all of chrome will close, instead just redirect to the actions page
       navigate(ACTIONS_URL);
@@ -112,20 +123,23 @@ export const Notification:React.FC = () => {
   };
 
   const renderNotificationContent = () => {
-    if (!eventPayload) return null;
     const pageProps = { payload: eventPayload, closeWindow, setFailedMessage };
-    if (failedMessage) return <RequestFailed failedMessage={failedMessage} {...pageProps} />
+    if (!eventPayload) return <RequestFailed failedMessage="Missing event payload, close this popup and retry the action from the dApp." title="Unknown Error" {...pageProps} />;
+    if (failedMessage) return <RequestFailed failedMessage={failedMessage} {...pageProps} />;
+
     switch(notificationType) {
-      case 'session_request': return <WalletConnectInit {...pageProps} />
-      case 'provenance_sendTransaction': return <SendTransaction {...pageProps} />
-      case 'provenance_sign': return <SignRequest {...pageProps}  />;
-      default: { console.log('Notification.tsx | renderNotificationContent | default case'); return null; }
+      case 'session_request': return <WalletConnectInit {...pageProps as PageProps} />
+      case 'provenance_sendTransaction': return <SendTransaction {...pageProps as PageProps} />
+      case 'provenance_sign': return <SignRequest {...pageProps as PageProps} />;
+      case 'connect': // fallthrough
+      case 'disconnect': return '' // Return empty since this would only show up for a split second before the popup closes/changes
+      default: return <RequestFailed failedMessage={`Unknown notification type: ${notificationType}, close this popup and retry the action from the dApp.`} title="Unknown Notification" {...pageProps} />;
     }
   };
 
   return (
     <Content>
-      {renderNotificationContent()}
+      {notificationType ? renderNotificationContent() : <Loading />}
     </Content>
   );
 };

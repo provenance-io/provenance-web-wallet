@@ -5,12 +5,13 @@ import txErrorImg from 'images/tx-error.svg';
 import { useEffect, useState } from 'react';
 
 interface Props {
-  payload: EventPayload,
+  payload: EventPayload | null,
   failedMessage: string,
   closeWindow: () => void,
+  title?: string,
 }
 
-export const RequestFailed:React.FC<Props> = ({ payload, closeWindow, failedMessage }) => {
+export const RequestFailed:React.FC<Props> = ({ payload, closeWindow, failedMessage, title = 'Transaction Failed'}) => {
   const [initialLoad, setInitialLoad] = useState(true);
   const {
     connector,
@@ -23,7 +24,7 @@ export const RequestFailed:React.FC<Props> = ({ payload, closeWindow, failedMess
   // If we landed here, something went wrong, kill the request
   useEffect(() => {
     // Make sure we only load this once
-    if (connector && initialLoad) {
+    if (connector && initialLoad && payload) {
       setInitialLoad(false);
       (async () => {
         await connector.rejectRequest({
@@ -39,11 +40,15 @@ export const RequestFailed:React.FC<Props> = ({ payload, closeWindow, failedMess
   // TODO: Move bumpWalletConnectTimeout to redux method (DRY)
   // Connection to the dApp is on a timer, whenever the user interacts with the dApp (approve/deny) reset the timer
   const bumpWalletConnectTimeout = async () => {
-    // Only bump/update the time if all connection values exist
-    if (connectionEXP && connectionDuration) {
+    // Only bump/update the time if all connection values exist and are not already expired
+    const connectionTimersExist = (connectionEXP && connectionDuration);
+    if (connectionTimersExist) {
       const now = Date.now();
-      const newConnectionEXP = now + connectionDuration;
-      await saveWalletconnectData({ connectionEXP: newConnectionEXP });
+      const hasExpired = now > connectionEXP;
+      if (!hasExpired) {
+        const newConnectionEXP = now + connectionDuration;
+        await saveWalletconnectData({ connectionEXP: newConnectionEXP });
+      }
     }
   };
 
@@ -54,9 +59,9 @@ export const RequestFailed:React.FC<Props> = ({ payload, closeWindow, failedMess
 
   return (
     <Content>
-      <Typo type="headline2" marginBottom='80px'>Transaction Failed</Typo>
+      <Typo type="headline2" marginBottom='80px'>{title}</Typo>
       <ImageContainer size="140px" centered src={txErrorImg} alt="Transaction Failed" />
-      <Typo type="body" marginTop='60px'>Unable to initiate transaction: {failedMessage}</Typo>
+      <Typo type="body" marginTop='60px'>{failedMessage}</Typo>
       <BottomFloat>
         <Button onClick={handleClose}>Close</Button>
       </BottomFloat>

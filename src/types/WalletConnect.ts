@@ -85,4 +85,4 @@ export type WCNotification =
   'session_request' |
   'provenance_sign' |
   'provenance_sendTransaction' |
-  'unknown';
+  '';

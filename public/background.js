@@ -2,8 +2,14 @@
 // ----------------------------------------
 // Handle Notification Popup Window
 // ----------------------------------------
-const notificationPopupEvent = function(request, sender, sendResponse) {
-  chrome.windows.get(sender.tab.windowId).then((senderWindow) => {
+const notificationPopupEvent = async function(request, sender, sendResponse) {
+  const rngNum = Math.floor(Math.random() * 100);
+  // When just pinging, don't do anything else
+  if (request === 'ping' || !request) {
+    sendResponse();
+    return true;
+  };
+  await chrome.windows.get(sender.tab.windowId).then((senderWindow) => {
     // Basic popup config
     const popupConfig = {
       focused: true,
@@ -17,16 +23,11 @@ const notificationPopupEvent = function(request, sender, sendResponse) {
     // Run function based on the event
     const { event, uri } = request;
     switch (event) {
-      case 'test':
-        // update the popup config url
-        popupConfig.url = `${popupConfig.url}`;
-        chrome.windows.create(popupConfig);
-        break;
       case 'walletconnect_init':
         // Uri is required to be included
         if (uri) {
           // update the popup config url
-          popupConfig.url = `${popupConfig.url}?wc=${uri}`;
+          popupConfig.url = `${popupConfig.url}?wc=${uri}&rng=${rngNum}`;
           chrome.windows.create(popupConfig);
         }
         break;
@@ -39,6 +40,7 @@ const notificationPopupEvent = function(request, sender, sendResponse) {
     }
   });
   sendResponse();
+  return true;
 };
 
 const asyncGetStorage = async () => {
@@ -47,6 +49,7 @@ const asyncGetStorage = async () => {
   // Update the badge based on the existing number of requests
   chrome.action.setBadgeText({text: `${totalPendingRequests || ''}`});
   chrome.action.setBadgeBackgroundColor({ color: [255, 0, 0, 255] });
+  return true;
 };
 asyncGetStorage();
 
@@ -60,5 +63,6 @@ const asyncSetup = async () => {
   if (account?.accounts.length) {
     chrome.runtime.onMessage.addListener(notificationPopupEvent);
   }
+  return true;
 }
 asyncSetup();

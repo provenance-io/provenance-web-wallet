@@ -230,9 +230,15 @@ const walletConnectSlice = createSlice({
     })
   },
   reducers: {
+    setConnector: (state, { payload }) => {
+      state.connector = payload;
+    },
     createConnector: (state, { payload: uri }) => {
       const connector = new WalletConnectClient({ uri });
-      state.connector = connector;
+      // connector must have a peerId
+      if (connector.peerId) {
+        state.connector = connector;
+      }
     },
     createConnectionTimer: (state, { payload }) => {
       const { callback, duration } = payload;

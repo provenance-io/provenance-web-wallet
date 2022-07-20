@@ -12,7 +12,7 @@ import { useAccount, useWalletConnect } from 'redux/hooks';
 import { List, Authenticate, Content, FullData } from 'Components';
 import { useEffect, useState } from 'react';
 import { format } from 'date-fns';
-import { txMessageFormat, getTxFeeEstimate, getGrpcApi, getChainId, convertHexToUtf8, hashFormat } from 'utils';
+import { txMessageFormat, getTxFeeEstimate, getGrpcApi, getChainId, convertHexToUtf8, hashFormat, validateAddress } from 'utils';
 import { BIP32Interface } from 'types';
 
 const Title = styled.div`
@@ -39,6 +39,7 @@ const PaginationDisplay = styled.div`
 interface Props {
   payload: EventPayload,
   closeWindow: () => void,
+  setFailedMessage: (value: string) => void,
 }
 interface ParsedMetadata {
   address?: string,
@@ -54,7 +55,7 @@ interface ParsedMetadata {
 }
 interface ParsedTxMessage { [fieldName: string]: any };
 
-export const SendTransaction:React.FC<Props> = ({ payload, closeWindow }) => {
+export const SendTransaction:React.FC<Props> = ({ payload, closeWindow, setFailedMessage }) => {
   const {
     connector,
     connectionEXP,
@@ -85,8 +86,9 @@ export const SendTransaction:React.FC<Props> = ({ payload, closeWindow }) => {
       setTxType(msgAny.getTypeName());
       setTxMsgAny(msgAny);
       let txMsg;
+      let msgObj;
       if (messageAnyB64) {
-        const msgObj = unpackDisplayObjectFromWalletMessage(messageAnyB64);
+        msgObj = unpackDisplayObjectFromWalletMessage(messageAnyB64);
         setUnpackedTxMsgAny(msgObj);
         txMsg = txMessageFormat(msgObj);
       }
@@ -95,11 +97,29 @@ export const SendTransaction:React.FC<Props> = ({ payload, closeWindow }) => {
       setParsedTxMessage(txMsg as ParsedTxMessage);
       // Calculate the tx and gas fees
       (async () => {
-        const address = newParsedMetadata.address!;
-        const targetAccount = accounts.find(({ address: storeAddress }) => storeAddress === address);
-        if (targetAccount) {
+        const {
+          toAddress,
+          fromAddress,
+          delegatorAddress,
+          validatorAddress,
+          address: txMsgAddress,
+        } = msgObj as {[key: string]: any} || {};
+        const metadataAddress = newParsedMetadata.address!
+        const potentialAddresses = [
+          metadataAddress,
+          toAddress,
+          fromAddress,
+          delegatorAddress,
+          validatorAddress,
+          txMsgAddress,
+        ];
+        // Build a list of all possible address values and validate all of them.  Must all be valid to calculate txFees w/o errors
+        const addressesToValidate = potentialAddresses.filter(address => !!address);
+        const allAddressValid = !addressesToValidate.filter((address:string) => !validateAddress(address)).length;
+        const targetAccount = accounts.find(({ address: storeAddress }) => storeAddress === metadataAddress);
+        if (targetAccount && allAddressValid) {
           const {txFeeEstimate, txGasEstimate} = await getTxFeeEstimate({
-            address,
+            address: metadataAddress,
             publicKey: targetAccount.publicKey!,
             msgAny,
             gasPrice: newParsedMetadata?.gasPrice?.gasPrice,
@@ -107,10 +127,13 @@ export const SendTransaction:React.FC<Props> = ({ payload, closeWindow }) => {
           });
           setTxFeeEstimate(txFeeEstimate);
           setTxGasEstimate(txGasEstimate);
+        } else {
+          // Missing or invalid address for tx, display a message to the user and stop the transaction
+          setFailedMessage('Missing or invalid address received, please review all addresses in the transaction request and try again.');
         }
       })();
     }
-  }, [payload, parsedMetadata, txMsgAny, accounts, initialLoad]);
+  }, [payload, parsedMetadata, txMsgAny, accounts, initialLoad, setFailedMessage]);
 
   // TODO: Move bumpWalletConnectTimeout to redux method (DRY)
   // Connection to the dApp is on a timer, whenever the user interacts with the dApp (approve/deny) reset the timer

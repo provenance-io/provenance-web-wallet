@@ -2,6 +2,8 @@ import { useEffect, useState } from 'react';
 import { useRoutes } from 'react-router-dom';
 import { useAccount, useSettings, useWalletConnect } from 'redux/hooks';
 import { routes } from 'routes';
+import { NOTIFICATION_URL, ALL_URLS } from 'consts';
+import { useNavigate } from 'react-router-dom';
 
 function App() {
   const [initialLoad, setInitialLoad] = useState(true);
@@ -18,6 +20,7 @@ function App() {
     walletconnectDisconnect,
   } = useWalletConnect();
   const { pullInitialSettingsData } = useSettings();
+  const navigate = useNavigate();
 
   // Check for an active walletconnect session, start the log-off timer if it doesn't exist
   useEffect(() => {
@@ -66,10 +69,32 @@ function App() {
     }
   }, [initialLoad, pullInitialAccountData, pullInitialSettingsData, pullInitialWCData]);
 
+  // Check settings and url search params to potentially redirect user to a new page
+  useEffect(() => {
+    const urlSearchParams = new URLSearchParams(window?.location?.search);
+    const walletConnectURI = urlSearchParams.get('wc');
+    const redirectToURL = urlSearchParams.get('redirectTo');
+    // Determine if we're being sent to the notifications page (walletconnect session or manual redirect) 
+    const redirectToNotificationsPage: boolean = !!walletConnectURI || !!(redirectToURL && redirectToURL === 'NOTIFICATION_URL');
+    if (redirectToNotificationsPage) {
+      // Wallet connect request
+      if (walletConnectURI) {
+        // New walletconnect session request
+        navigate(`${NOTIFICATION_URL}?wc=${encodeURIComponent(walletConnectURI)}`);
+      }
+      // Other Notification reason
+      else if (redirectToURL) {
+        const existingURL = ALL_URLS[redirectToURL as keyof typeof ALL_URLS];
+        // Make sure url exists (don't allow random redirects to non-existing pages)
+        if (existingURL) navigate(existingURL);
+      }
+    } 
+  }, [navigate]);
+
   const routing = useRoutes(routes);
 
   // TODO: Create loading screen while data gets pulled in from storage
-  return <>{initialLoad ? 'LOADING...' : routing}</>;
+  return <>{initialLoad ? '' : routing}</>;
 }
 
 export default App;

@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import { Outlet } from 'react-router-dom';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useActiveAccount, useSettings } from 'redux/hooks';
-import { APP_URL, DASHBOARD_URL, NOTIFICATION_URL, ALL_URLS } from 'consts';
+import { APP_URL, DASHBOARD_URL, ALL_URLS } from 'consts';
 
 interface PageProps {
   children?: React.ReactNode;
@@ -19,10 +19,7 @@ export const RequiresAuth = ({ children = null }: PageProps) => {
   // Check settings and url search params to potentially redirect user to a new page
   useEffect(() => {
     const urlSearchParams = new URLSearchParams(window?.location?.search);
-    const walletConnectURI = urlSearchParams.get('wc');
     const redirectToURL = urlSearchParams.get('redirectTo');
-    // Determine if we're being sent to the notifications page (walletconnect session or manual redirect) 
-    const redirectToNotificationsPage: boolean = !!walletConnectURI || !!(redirectToURL && redirectToURL === 'NOTIFICATION_URL');
     // Check the users credentials/access before auto-redirecting them as needed
     // Current time
     const now = Date.now();
@@ -34,21 +31,7 @@ export const RequiresAuth = ({ children = null }: PageProps) => {
       // Send user to the landing page which will ask to unlock
       navigate(`${APP_URL}${urlSearchParams}`);
     }
-    // User should land on the notifications page
-    else if (redirectToNotificationsPage) {
-      // Wallet connect request
-      if (walletConnectURI) {
-        // New walletconnect session request
-        navigate(`${NOTIFICATION_URL}?wc=${encodeURIComponent(walletConnectURI)}`);
-      }
-      // Other Notification reason
-      else if (redirectToURL) {
-        const existingURL = ALL_URLS[redirectToURL as keyof typeof ALL_URLS];
-        // Make sure url exists (don't allow random redirects to non-existing pages)
-        if (existingURL) navigate(existingURL);
-      }
-    // Redirecting to non NOTIFICATION_URL page
-    } else if (redirectToURL && authenticated) {
+    else if (redirectToURL && authenticated) {
       // Redirect user to specific page (other notifications)
       const existingURL = ALL_URLS[redirectToURL as keyof typeof ALL_URLS];
       // Make sure url exists (don't allow random redirects to non-existing pages)

@@ -56,10 +56,10 @@ const InputEl = styled.input<{error?: string, background?: string}>`
 const InputError = styled.div<{hasLabel?: boolean}>`
   color: ${COLORS.NEGATIVE_300};
   column-gap: 1px;
-  font-size: 1.1rem;
+  font-size: 1.2rem;
   position: absolute;
   right: 3px;
-  top: ${({ hasLabel }) => hasLabel ? '22px' : '-10px' };
+  top: ${({ hasLabel }) => hasLabel ? '22px' : '-12px' };
 `;
 
 export const Input = ({

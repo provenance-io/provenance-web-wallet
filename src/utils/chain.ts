@@ -31,7 +31,7 @@ import {
   validateMnemonic as bip39vm,
 } from 'bip39';
 import { fromSeed as bip32FromSeed, BIP32Interface, fromBase58 } from 'bip32';
-import { toWords as bech32ToWords, encode as bech32Encode } from 'bech32';
+import { toWords as bech32ToWords, encode as bech32Encode, decode as bech32Decode } from 'bech32';
 import { publicKeyCreate as secp256k1PublicKeyCreate, ecdsaSign as secp256k1EcdsaSign } from 'secp256k1';
 import { bufferToBytes, bytesToBase64 } from '@tendermint/belt';
 import { createHash } from 'crypto';
@@ -54,6 +54,8 @@ export const convertUtf8ToBuffer = _convertUtf8ToBuffer;
 export const convertHexToUtf8 = _convertHexToUtf8;
 export const convertHexToBuffer = _convertHexToBuffer;
 export const convertArrayBufferToHex = _convertArrayBufferToHex;
+
+export const validateAddress = (address: string) => {try { return !!bech32Decode(address) } catch { return false}};
 
 export const createMnemonic = (wordCount = MNEMONIC_WORD_COUNT) => {
   const strength = (wordCount / 3) * 32;

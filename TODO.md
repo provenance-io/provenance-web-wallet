@@ -14,7 +14,7 @@
   - "Error: Could not establish connection. Receiving end does not exist." (first click)
   - Look into the setting of localStorage, value changes, no popup, on second click, value exists, popup opens
   - Potentially a walletconnect-js issue
-* Random error after/during unlock 'Error: Missing or invalid topic field' [IN_PROGRESS]
+* Random error after/during unlock 'Error: Missing or invalid topic field' [DONE*]
   - Unlock works, wallet exists, no other visible issues
 
 ## Bugs

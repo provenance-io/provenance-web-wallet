@@ -5,8 +5,8 @@
   "license": "Apache-2.0",
   "homepage": "/",
   "engines": {
-    "npm": ">=8.0.0 <=8.5.8",
-    "node": ">=16.0.0 <=16.15.0"
+    "npm": "8.x.x",
+    "node": "16.x.x"
   },
   "dependencies": {
     "@provenanceio/wallet-utils": "1.1.0",

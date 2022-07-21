@@ -19,6 +19,7 @@ interface ChromeInitialState {
 type State = ChromeInitialState & {
   connector: WalletConnectClient | null,
   session: IWalletConnectSession,
+  initialDataPulled: boolean,
 }
 interface WalletconnectChromeSave {
   connectionEST?: number,
@@ -40,6 +41,7 @@ const chromeInitialState: ChromeInitialState = {
 }
 const initialState: State = {
   ...chromeInitialState,
+  initialDataPulled: false,
   connector: null,
   session: {
     accounts: [],
@@ -183,13 +185,18 @@ const walletConnectSlice = createSlice({
       state.totalPendingRequests = totalPendingRequests;
       // If we have a peerId, start the walletconnect connection
       if (session && session.peerId) {
-        const connector = new WalletConnectClient(session);
-        // Make sure the session isn't expired, if it is we will kill the session
-        const now = Date.now();
-        if (!connectionEXP || now >= connectionEXP) connector.killSession();
-        state.session = session;
-        state.connector = connector;
+        const connector = new WalletConnectClient({session});
+        // Check if the session is already disconnected
+        if (connector?.session?.connected) {
+          // Make sure the session isn't expired, if it is we will kill the session
+          const now = Date.now();
+          if (!connectionEXP || now >= connectionEXP) connector.killSession();
+          state.session = session;
+          state.connector = connector;
+        }
       }
+      // Update to set initial data as pulled
+      state.initialDataPulled = true;
     })
     .addCase(saveWalletconnectData.fulfilled, (state, { payload }: { payload: WalletconnectChromeSave}) => {
       const {
@@ -212,8 +219,6 @@ const walletConnectSlice = createSlice({
       // Clear any timeouts running and reset value
       if (state.connectionTimer) clearTimeout(state.connectionTimer);
       state.connectionTimer = initialState.connectionTimer;
-      // If currently connected, kill the session
-      if (state.connector) state.connector.killSession();
       // Reset values for connector and session (third party should auto clear walletconnect from localstorage)
       state.connector = initialState.connector;
       state.session = initialState.session;

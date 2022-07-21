@@ -2,12 +2,12 @@ import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { RootState } from 'redux/store';
 import { getSavedData, addSavedData, removeSavedData } from 'utils';
 import { DEFAULT_UNLOCK_DURATION } from 'consts';
-import { Settings } from 'types';
+import { SettingsState, SettingsStorage } from 'types';
 
 /**
  * TYPES
  */
-type State = Settings;
+type State = SettingsState;
 
 /**
  * STATE
@@ -16,6 +16,7 @@ const initialState: State = {
   unlockDuration: DEFAULT_UNLOCK_DURATION,
   unlockEST: 0,
   unlockEXP: 0,
+  initialDataPulled: false,
 };
 
 /**
@@ -55,7 +56,7 @@ export const resetSettingsData = createAsyncThunk(RESET_SETTINGS_DATA, async () 
   return { unlockEST, unlockEXP, unlockDuration };
 })
 // Save settings data into the chrome store
-export const saveSettingsData = createAsyncThunk(SAVE_SETTINGS_DATA, async (data: Settings) => {
+export const saveSettingsData = createAsyncThunk(SAVE_SETTINGS_DATA, async (data: SettingsStorage) => {
   // Get existing saved data (to merge into)
   const existingData = await getSavedData('settings');
   const newData = { ...existingData, ...data };
@@ -96,6 +97,7 @@ const settingsSlice = createSlice({
       state.unlockEST = unlockEST;
       state.unlockEXP = unlockEXP;
       state.unlockDuration = unlockDuration;
+      state.initialDataPulled = true;
     })
     .addCase(saveSettingsData.fulfilled, (state, { payload }) => {
       const { unlockEST, unlockEXP, unlockDuration } = payload;

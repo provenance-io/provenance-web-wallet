@@ -7,15 +7,14 @@
 * If invalid address/unable to get gas-estimate, display an error on the next page (gas fee is required) [DONE]
   - In "send" flow, validate the address entered
 * Move notification page redirect into App.tsx instead of RequiresAuth.tsx
-* Occationally/rarely, when clicking to connect or an action, popup opens with no content [DONE*]
-  - Hard to recreate, loads basic popup with no content (just a page background)
-* dApp connection request takes two clicks to cause popup to open [DONE*]
-  - Sometimes, not always, hard to debug/reproduce
-  - "Error: Could not establish connection. Receiving end does not exist." (first click)
-  - Look into the setting of localStorage, value changes, no popup, on second click, value exists, popup opens
-  - Potentially a walletconnect-js issue
-* Random error after/during unlock 'Error: Missing or invalid topic field' [DONE*]
-  - Unlock works, wallet exists, no other visible issues
+* Unable to connect [DONE]
+  - Error 01: 'Session currently connected' [DONE]
+    - Only happens on close (check event listener for close)
+  - Error 02: 'Uncaught (in promise) Error: Missing or invalid topic field' [DONE]
+    - Load, async chrome storage check, which checking, notification creates connector which adds it to the storage, async finishes by finding existing connection
+      - Essentially a race condition.
+      - Nothing should be allowed to happen until all initial fetch/loadings have finished
+        - Show a loading bar until that happens (add to app.tsx)
 
 ## Bugs
 * Whenever we fail to get gas estimate display error (same error as an invalid address) [1]
@@ -32,6 +31,13 @@
   - If the tab changes, reset the extension type (if not connected)
 * Sometimes extension shows pending action when there is none [3]
   - At very least, if there is none, when opened, remove pending notice from ext icon
+* Occationally/rarely, when clicking to connect or an action, popup opens with no content [DONE*MAYBE*WATCH]
+  - Hard to recreate, loads basic popup with no content (just a page background)
+* dApp connection request takes two clicks to cause popup to open [DONE*MAYBE*WATCH]
+  - Sometimes, not always, hard to debug/reproduce
+  - "Error: Could not establish connection. Receiving end does not exist." (first click)
+  - Look into the setting of localStorage, value changes, no popup, on second click, value exists, popup opens
+  - Potentially a walletconnect-js issue
 
 ## Features
 * Popup should use custom html page (instead of using index and getting js-redirected) [1]

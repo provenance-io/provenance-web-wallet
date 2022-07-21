@@ -30,7 +30,6 @@ export const DashboardConnectionDetails:React.FC = () => {
     connector,
     connectionEST,
     connectionEXP,
-    walletconnectDisconnect,
   } = useWalletConnect();
   const [formattedEXP, setFormattedEXP] = useState('N/A');
   const [formattedEST, setFormattedEST] = useState('N/A');
@@ -49,7 +48,7 @@ export const DashboardConnectionDetails:React.FC = () => {
   }, [navigate, connector, connected]);
 
   const handleDisconnect = () => {
-    walletconnectDisconnect();
+    if (connector) connector.killSession();
   };
 
   const renderConnectedAccounts = () => (session && session.accounts) ?

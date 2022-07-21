@@ -22,7 +22,6 @@ export const Notification:React.FC = () => {
   const [eventPayload, setEventPayload] = useState<EventPayload | null>(null);
   const [extensionType, setExtensionType] = useState<ExtensionTypes>('');
   const [failedMessage, setFailedMessage] = useState('');
-  const [unexpectedClose, setUnexpectedClose] = useState(true);
   const [searchParams, setSearchParams] = useSearchParams();
   const navigate = useNavigate();
   const {
@@ -40,16 +39,16 @@ export const Notification:React.FC = () => {
       const newExtensionType = tabsExist ? 'browser' : 'extension';
       setExtensionType(newExtensionType);
       if (newExtensionType === 'browser') {
-        if (connector && notificationType === 'session_request' && unexpectedClose) {
-          // Automatically reject any pending connection requests if the popup is closed (x pressed)
-          window.addEventListener('beforeunload', () => {
+        // If we're attempting to connect (session_request) and we're not already connected when we "x" out of the popup, reject the request
+        window.addEventListener('beforeunload', () => {
+          if (connector && notificationType === 'session_request' && !connector.connected) {
             connector.rejectSession({ message: 'Connection rejected by user' });
-          });
-        }
+          }
+        });
       }
     };
     asyncExtensionType();
-  }, [connector, unexpectedClose, notificationType]);
+  }, [connector, notificationType]);
   
   // On page load, if a payloadId was passed in, search for that payload in storage
   // Also check url search params for wc session or pending requests
@@ -77,10 +76,6 @@ export const Notification:React.FC = () => {
           //    - Clicking QR Code modal connect button again
           //    - Opening extension directly (which should be showing a "1" notification in the icon)
           const { id } = payload;
-          // Get the current date to timestamp request
-          // const date = Date.now();
-          // const finalPayload = { ...payload, date };
-          // setEventPayload(finalPayload);
           setEventPayload(payload);
           // Only add 'provenance_sign' and 'provenance_sendTransaction' to pendingRequest list
           if (NOTE_TYPE === 'provenance_sign' || NOTE_TYPE === 'provenance_sendTransaction') {
@@ -109,7 +104,6 @@ export const Notification:React.FC = () => {
   }, [connector, wcUriParam, setSearchParams, setConnector]);
 
   const closeWindow = async () => {
-    setUnexpectedClose(false);
     if (extensionType === 'extension') {
       // If we remove the window in extension mode all of chrome will close, instead just redirect to the actions page
       navigate(ACTIONS_URL);

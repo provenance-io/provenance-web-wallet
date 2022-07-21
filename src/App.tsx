@@ -4,11 +4,15 @@ import { useAccount, useSettings, useWalletConnect } from 'redux/hooks';
 import { routes } from 'routes';
 import { NOTIFICATION_URL, ALL_URLS } from 'consts';
 import { useNavigate } from 'react-router-dom';
+import { Content, Loading } from 'Components';
+import { Page } from 'Page';
 
 function App() {
-  const [initialLoad, setInitialLoad] = useState(true);
+  const [initialAppLoad, setInitialAppLoad] = useState(true);
+  const [allInitialDataLoaded, setAllInitialDataLoaded] = useState(false);
   const {
     pullInitialAccountData,
+    initialDataPulled: initialAccountDataPulled,
   } = useAccount();
   const {
     connector,
@@ -18,9 +22,17 @@ function App() {
     connectionEXP,
     connectionTimer,
     walletconnectDisconnect,
+    initialDataPulled: initialWCDataPulled,
   } = useWalletConnect();
-  const { pullInitialSettingsData } = useSettings();
+  const { pullInitialSettingsData, initialDataPulled: initialSettingsDataPulled } = useSettings();
   const navigate = useNavigate();
+
+  // Check if the app is still loading on startup
+  useEffect(() => {
+    // Check to see that all initial data pulls have finished
+    const hasInitialDataLoaded = initialAccountDataPulled && initialSettingsDataPulled && initialWCDataPulled;
+    setAllInitialDataLoaded(hasInitialDataLoaded);
+  }, [initialAccountDataPulled, initialSettingsDataPulled, initialWCDataPulled]);
 
   // Check for an active walletconnect session, start the log-off timer if it doesn't exist
   useEffect(() => {
@@ -54,9 +66,9 @@ function App() {
   // If this is the initialLoad, get and set the storage wallet values
   // This happens everytime the popup is opened and closed
   useEffect(() => {
-    if (initialLoad) {
+    if (initialAppLoad) {
       // No longer initial load
-      setInitialLoad(false);
+      setInitialAppLoad(false);
       // Note: All of these pull data functions are async
       // Pull account data from chrome storage (accounts, activeAccountId, key)
       pullInitialAccountData();
@@ -67,7 +79,7 @@ function App() {
       // - Window localstorage (session)
       pullInitialWCData();
     }
-  }, [initialLoad, pullInitialAccountData, pullInitialSettingsData, pullInitialWCData]);
+  }, [initialAppLoad, pullInitialAccountData, pullInitialSettingsData, pullInitialWCData]);
 
   // Check settings and url search params to potentially redirect user to a new page
   useEffect(() => {
@@ -92,9 +104,16 @@ function App() {
   }, [navigate]);
 
   const routing = useRoutes(routes);
-
-  // TODO: Create loading screen while data gets pulled in from storage
-  return <>{initialLoad ? '' : routing}</>;
+  
+  // TODO: Create full landing Page which uses the Loading component
+  return allInitialDataLoaded ? routing :
+    (
+      <Page bgImage>
+        <Content>
+          <Loading />
+        </Content>
+      </Page>
+    );
 }
 
 export default App;

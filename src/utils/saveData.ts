@@ -1,6 +1,6 @@
 import {
   AccountStorage,
-  Settings,
+  SettingsStorage,
   WalletConnectStorage,
 } from 'types';
 
@@ -10,7 +10,7 @@ import {
 type StorageData = {} | [];
 interface StorageItems {
   account: AccountStorage,
-  settings?: Settings,
+  settings?: SettingsStorage,
   walletconnect?: WalletConnectStorage,
 };
 type StorageItemKey = keyof StorageItems;

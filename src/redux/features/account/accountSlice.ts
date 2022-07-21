@@ -17,6 +17,7 @@ interface ChromeInitialState {
 }
 type State = ChromeInitialState & {
   tempAccount?: TempAccount;
+  initialDataPulled: boolean;
 }
 interface UpdateTempAccount {
   payload: TempAccount
@@ -31,6 +32,7 @@ const chromeInitialState: ChromeInitialState = {
 const initialState: State = {
   ...chromeInitialState,
   tempAccount: undefined,
+  initialDataPulled: false,
 };
 
 /**
@@ -151,6 +153,7 @@ const accountSlice = createSlice({
       const { accounts, activeAccountId } = payload;
       state.accounts = accounts;
       state.activeAccountId = activeAccountId;
+      state.initialDataPulled = true;
     })
     .addCase(addAccount.fulfilled, (state, { payload }) => {
       // We won't be adding an account if it already existed in the accounts array (see async func above)

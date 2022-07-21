@@ -3,27 +3,21 @@ import { ADDRESS_URL } from 'consts';
 import { RootState } from 'redux/store';
 import { api } from '../api';
 import { getServiceMobileApi } from 'utils';
-import { Address, Transaction } from 'types';
-import { compareDesc, parseISO } from 'date-fns';
+import { Address } from 'types';
 
 /**
  * INITIAL STATE
  */
 const initialState: Address = {
-  allTransactionsLoading: false,
-  assetsLoading: false,
-  transactionsLoading: false,
-
-  allTransactionsPages: 0,
-  allTransactionsTotalCount: 0,
-
-  allTransactions: [],
-  assets: [],
+  transactionsTotalCount: 0,
+  transactionsPages: 0,
   transactions: [],
+  transactionsLoading: false,
+  transactionsError: false,
 
-  allTransactionsError: null,
+  assetsLoading: false,
   assetsError: null,
-  transactionsError: null,
+  assets: [],
 };
 
 /**
@@ -32,7 +26,6 @@ const initialState: Address = {
 
 const GET_ADDRESS_ASSETS = 'GET_ADDRESS_ASSETS';
 const GET_ADDRESS_TX = 'GET_ADDRESS_TX';
-const GET_ADDRESS_TX_ALL = 'GET_ADDRESS_TX_ALL';
 
 /**
  * SPECIAL ASYNC ACTIONS
@@ -57,21 +50,19 @@ export const getAddressAssets = createAsyncThunk(
 
 export const getAddressTx = createAsyncThunk(
   GET_ADDRESS_TX,
-  (addr: string) =>
-    api({
-      url: `${getServiceMobileApi(addr, ADDRESS_URL)}/${addr}/transactions`,
-    })
+  (params: {address: string, page?: number, count?: number}) => {
+    const {address, page, count} = params;
+    const urlObj = new URL(`${getServiceMobileApi(address, ADDRESS_URL)}/${address}/transactions/all`);
+    const searchParamsObj = new URLSearchParams();
+    if (page) searchParamsObj.append('page', `${page}`);
+    if (count) searchParamsObj.append('count', `${count}`);
+    urlObj.search = searchParamsObj.toString();
+    const url = urlObj.toString();
+    return api({url});
+  }
 );
 
-export const getAddressTxAll = createAsyncThunk(
-  GET_ADDRESS_TX_ALL,
-  (addr: string) =>
-    api({
-      url: `${getServiceMobileApi(addr, ADDRESS_URL)}/${addr}/transactions/all`,
-    })
-);
-
-export const addressActions = { getAddressAssets, getAddressTx, getAddressTxAll };
+export const addressActions = { getAddressAssets, getAddressTx };
 
 export const noDispatchActions = {
   getAddressAssetsCount,
@@ -99,41 +90,23 @@ const addressSlice = createSlice({
         state.assets = [];
         state.assetsError = payload;
       });
-
-    // ADDRESS TRANSACTIONS
+    // ADDRESS TRANSACTIONS ALL
     builder
       .addCase(getAddressTx.pending, (state) => {
         state.transactionsLoading = true;
       })
       .addCase(getAddressTx.fulfilled, (state, { payload }) => {
         state.transactionsLoading = false;
-        state.transactions = payload.data.sort((a: Transaction, b: Transaction) =>
-          compareDesc(parseISO(a.timestamp), parseISO(b.timestamp))
-        );
+        state.transactions = payload.data.transactions;
+        state.transactionsPages = payload.data.pages;
+        state.transactionsTotalCount = payload.data.totalCount;
       })
-      .addCase(getAddressTx.rejected, (state, { payload }) => {
-        state.transactionsLoading = false;
-        state.transactions = [];
-        state.transactionsError = payload;
-      });
-
-    // ADDRESS TRANSACTIONS ALL
-    builder
-      .addCase(getAddressTxAll.pending, (state) => {
-        state.allTransactionsLoading = true;
-      })
-      .addCase(getAddressTxAll.fulfilled, (state, { payload }) => {
-        state.allTransactionsLoading = false;
-        state.allTransactions = payload.data.transactions;
-        state.allTransactionsPages = payload.data.pages;
-        state.allTransactionsTotalCount = payload.data.totalCount;
-      })
-      .addCase(getAddressTxAll.rejected, (state, { payload }) => {
-        state.allTransactionsLoading = false;
-        state.allTransactions = [];
-        state.allTransactionsPages = 0;
-        state.allTransactionsTotalCount = 0;
-        state.allTransactionsError = payload;
+      .addCase(getAddressTx.rejected, (state) => {
+        state.transactionsLoading = initialState.transactionsLoading;
+        state.transactions = initialState.transactions;
+        state.transactionsPages = initialState.transactionsPages;
+        state.transactionsTotalCount = initialState.transactionsTotalCount;
+        state.transactionsError = initialState.transactionsError;
       });
   },
 });

@@ -18,6 +18,7 @@ const AssetItem = styled.div`
 `;
 const AssetImg = styled.img`
   margin-right: 16px;
+  width: 40px;
 `;
 const AssetDetails = styled.div`
   line-height: 20px;
@@ -39,32 +40,29 @@ const AssetArrow = styled.div`
 
 interface Props {
   img: string,
-  name: string,
+  title: string,
   onClick?: () => void,
-  amount?: {
-    count: string,
-    value?: string,
-    change?: number,
-  },
+  actionIcon?: string,
+  subtitle?: string,
 }
 
-export const AssetRow:React.FC<Props> = ({ img, name, amount, onClick }) => {
-
-  const renderAmount = () => {
-    if (!amount) return 'Buy • Mar 31';
-    // const changeSymbol = amount.change ? '+' : '-';
-    return Number(amount.count).toFixed(2);
-  };
+export const RowItem:React.FC<Props> = ({
+  img,
+  title,
+  subtitle,
+  onClick,
+  actionIcon=`${ICON_NAMES.CHEVRON}`,
+}) => {
 
   return (
     <AssetItem onClick={onClick}>
       <AssetImg src={`/images/assets/${img}.svg`} />
       <AssetDetails>
-        <AssetName>{name}</AssetName>
-        <AssetAmount>{renderAmount()}</AssetAmount>
+        <AssetName>{title}</AssetName>
+        <AssetAmount>{subtitle}</AssetAmount>
       </AssetDetails>
       <AssetArrow>
-        <Sprite icon={ICON_NAMES.CHEVRON} size="1.2rem" />
+        <Sprite icon={actionIcon} size="1.2rem" />
       </AssetArrow>
     </AssetItem>
   );

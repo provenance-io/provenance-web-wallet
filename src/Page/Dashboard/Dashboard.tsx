@@ -1,4 +1,4 @@
-import { Button, ButtonGroup, FooterNav, AssetRow, Content, Denom } from 'Components';
+import { Button, ButtonGroup, FooterNav, RowItem, Content, Denom } from 'Components';
 import { SEND_URL, DASHBOARD_RECEIVE_URL, ICON_NAMES } from 'consts';
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
@@ -58,11 +58,11 @@ export const Dashboard = () => {
   };
 
   const renderAssets = () => assets.map(({ display, displayAmount }) => (
-    <AssetRow
+    <RowItem
       onClick={() => navigate(`/asset/${display}`)}
       img={display}
-      name={display}
-      amount={{ count: displayAmount }}
+      title={display}
+      subtitle={displayAmount}
       key={display}
     />
   ));

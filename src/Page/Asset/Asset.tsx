@@ -1,7 +1,7 @@
 import { useParams } from 'react-router-dom';
 import { useState } from 'react';
 import styled from 'styled-components';
-import { FooterNav, Header, Sprite, AssetRow } from 'Components';
+import { FooterNav, Header, Sprite, RowItem } from 'Components';
 import { ICON_NAMES } from 'consts';
 import { AssetChart } from './AssetChart';
 import { AssetStats } from './AssetStats';
@@ -106,10 +106,10 @@ export const Asset:React.FC = () => {
       <AssetStats />
       <SectionTitle>Recent Transactions</SectionTitle>
       <div>
-        <AssetRow img="hash" name="hash" amount={{ count: '500', change: 13.63 }} />
-        <AssetRow img="hash" name="hash" amount={{ count: '500', change: 13.63 }} />
-        <AssetRow img="hash" name="hash" amount={{ count: '500', change: 13.63 }} />
-        <AssetRow img="hash" name="hash" amount={{ count: '500', change: 13.63 }} />
+        <RowItem img="hash" title="hash" subtitle='500' />
+        <RowItem img="hash" title="hash" subtitle='500' />
+        <RowItem img="hash" title="hash" subtitle='500' />
+        <RowItem img="hash" title="hash" subtitle='500' />
       </div>
       <FooterNav />
     </Wrapper>

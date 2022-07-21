@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { Header, Input, Sprite } from 'Components';
 import QRCode from 'qrcode';
 import styled from 'styled-components';
-import { trimString } from 'utils';
+import { trimAddress } from 'utils';
 import { ICON_NAMES } from 'consts';
 
 const Wrapper = styled.div`
@@ -84,7 +84,7 @@ export const DashboardReceive:React.FC = () => {
       <Header title="Receive" />
       <Text>Show this QR code or share account address to receive assets</Text>
       {qrcode && <QRImage src={qrcode} alt="Address QR Code" />}
-      <Input placeholder={trimString(address, 20, 10)} label="Wallet Address" disabled id="address">
+      <Input placeholder={trimAddress(address)} label="Wallet Address" disabled id="address">
         <CopyButton onClick={copyAddress} justCopied={justCopied}>
           {justCopied ? <Sprite icon={ICON_NAMES.CHECK} size="1.4rem" color='#CACC5D' /> : <Sprite icon={ICON_NAMES.COPY} size="1.4rem" color="#A2A7B9" />}
         </CopyButton>

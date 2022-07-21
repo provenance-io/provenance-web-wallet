@@ -73,6 +73,7 @@ export const SEND_COMPLETE_URL = `${SEND_URL}/complete`;
 export const PROFILE_URL = '/profile';
 // TRANSACTION URLS
 export const TRANSACTIONS_URL = '/transactions';
+export const TRANSACTION_DETAILS_URL = '/transaction/:hash';
 // ACTIONS URLS
 export const ACTIONS_URL = '/actions';
 // ASSET URLS

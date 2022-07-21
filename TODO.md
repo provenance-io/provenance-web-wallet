@@ -4,8 +4,6 @@
 ## Current Branch Tasks/Changes
 * Add "backCallback" to header component to run on click (before navigating) [DONE]
 * When leaving send flow back to dashboard, reset/clear out coin redux store data. [DONE]
-* If invalid address/unable to get gas-estimate, display an error on the next page (gas fee is required) [DONE]
-  - In "send" flow, validate the address entered
 * Move notification page redirect into App.tsx instead of RequiresAuth.tsx
 * Unable to connect [DONE]
   - Error 01: 'Session currently connected' [DONE]

@@ -1,5 +1,15 @@
 import { useState, useEffect } from 'react';
-import { Header, AssetDropdown, Input, Sprite, Button, Content, BottomFloat, Loading, Typo } from 'Components';
+import {
+  Header,
+  AssetDropdown,
+  Input,
+  Sprite,
+  Button,
+  Content,
+  BottomFloat,
+  Loading,
+  Typo,
+} from 'Components';
 import styled from 'styled-components';
 import { DASHBOARD_URL, ICON_NAMES, SEND_AMOUNT_URL } from 'consts';
 import { trimString, validateAddress } from 'utils';
@@ -33,11 +43,11 @@ const RecentAddressItem = styled.div`
   padding: 20px;
   align-items: center;
   justify-content: space-between;
-  border-top: 1px solid #3D4151;
+  border-top: 1px solid #3d4151;
   cursor: pointer;
   transition: 250ms all;
   &:hover {
-    background: #2C3040;
+    background: #2c3040;
   }
   &:last-of-type {
     margin-bottom: 60px;
@@ -54,7 +64,7 @@ const Address = styled.div`
 `;
 const Date = styled.div`
   font-size: 1.2rem;
-  color: #B9BDCA;
+  color: #b9bdca;
 `;
 
 export const Send: React.FC = () => {
@@ -108,18 +118,30 @@ export const Send: React.FC = () => {
 
   const validateAndNavigate = () => {
     if (!txSendAddress) return setError('An address is required');
-    if (!validateAddress(txSendAddress)) return setError('Address entered is invalid');
+    if (!validateAddress(txSendAddress))
+      return setError('Address entered is invalid');
 
     navigate(SEND_AMOUNT_URL);
   };
 
   return (
     <Content>
-      <Header title="Send" iconLeft={ICON_NAMES.CLOSE} backLocation={DASHBOARD_URL} backCallback={() => { resetMessage() }} />
+      <Header
+        title="Send"
+        iconLeft={ICON_NAMES.CLOSE}
+        backLocation={DASHBOARD_URL}
+        backCallback={() => {
+          resetMessage();
+        }}
+      />
       {assets.length ? (
         <>
           <SectionTitle>{assets.length > 1 ? 'Select Asset' : 'Asset'}</SectionTitle>
-          <AssetDropdown assets={assets} activeDenom={coin?.denom} onChange={setCoin} />
+          <AssetDropdown
+            assets={assets}
+            activeDenom={coin?.denom}
+            onChange={setCoin}
+          />
           <SectionTitle>Send to Address</SectionTitle>
           <Input
             placeholder="Enter or select address below"
@@ -127,22 +149,30 @@ export const Send: React.FC = () => {
             value={txSendAddress}
             onChange={setTxSendAddress}
             error={error}
+            autoFocus
           />
           <SectionTitle>Recent Addresses</SectionTitle>
           <RecentAddressSection>
-            {!!transactionsError && <Typo type="error">Error fetching recent addresses: {transactionsError}</Typo>}
-            {transactionsLoading ?
-              <Loading /> :
-              !transactions.length ?
-              <Typo type="body" align='left' textStyle='italic'>No recent addresses available</Typo> :
+            {!!transactionsError && (
+              <Typo type="error">
+                Error fetching recent addresses: {transactionsError}
+              </Typo>
+            )}
+            {transactionsLoading ? (
+              <Loading />
+            ) : !transactions.length ? (
+              <Typo type="body" align="left" textStyle="italic">
+                No recent addresses available
+              </Typo>
+            ) : (
               renderRecentAddresses()
-            }
-            {!!transactions.length &&
+            )}
+            {!!transactions.length && (
               <RecentAddressItem>
                 <AddressInfo>View All</AddressInfo>
                 <Sprite icon={ICON_NAMES.CHEVRON} size="1.3rem" />
               </RecentAddressItem>
-            }
+            )}
           </RecentAddressSection>
           <BottomFloat>
             <Button onClick={validateAndNavigate}>Next</Button>
@@ -156,7 +186,6 @@ export const Send: React.FC = () => {
           </BottomFloat>
         </>
       )}
-      
     </Content>
-  )
+  );
 };

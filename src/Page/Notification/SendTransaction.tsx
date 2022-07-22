@@ -12,7 +12,15 @@ import { useAccount, useWalletConnect } from 'redux/hooks';
 import { List, Authenticate, Content, FullData } from 'Components';
 import { useEffect, useState } from 'react';
 import { format } from 'date-fns';
-import { txMessageFormat, getTxFeeEstimate, getGrpcApi, getChainId, convertHexToUtf8, hashFormat, validateAddress } from 'utils';
+import {
+  txMessageFormat,
+  getTxFeeEstimate,
+  getGrpcApi,
+  getChainId,
+  convertHexToUtf8,
+  hashFormat,
+  validateAddress,
+} from 'utils';
 import { BIP32Interface } from 'types';
 
 const Title = styled.div`
@@ -37,25 +45,31 @@ const PaginationDisplay = styled.div`
 `;
 
 interface Props {
-  payload: EventPayload,
-  closeWindow: () => void,
-  setFailedMessage: (value: string) => void,
+  payload: EventPayload;
+  closeWindow: () => void;
+  setFailedMessage: (value: string) => void;
 }
 interface ParsedMetadata {
-  address?: string,
-  description?: string,
-  messageAnyB64?: string,
-  date?: number,
-  memo?: string,
+  address?: string;
+  description?: string;
+  messageAnyB64?: string;
+  date?: number;
+  memo?: string;
   gasPrice?: {
-    gasPrice: number,
-    gasPriceDenom: SupportedDenoms,
+    gasPrice: number;
+    gasPriceDenom: SupportedDenoms;
   };
-  type?: string,
+  type?: string;
 }
-interface ParsedTxMessage { [fieldName: string]: any };
+interface ParsedTxMessage {
+  [fieldName: string]: any;
+}
 
-export const SendTransaction:React.FC<Props> = ({ payload, closeWindow, setFailedMessage }) => {
+export const SendTransaction: React.FC<Props> = ({
+  payload,
+  closeWindow,
+  setFailedMessage,
+}) => {
   const {
     connector,
     connectionEXP,
@@ -93,7 +107,7 @@ export const SendTransaction:React.FC<Props> = ({ payload, closeWindow, setFaile
         txMsg = txMessageFormat(msgObj);
       }
 
-      setParsedMetadata(newParsedMetadata)
+      setParsedMetadata(newParsedMetadata);
       setParsedTxMessage(txMsg as ParsedTxMessage);
       // Calculate the tx and gas fees
       (async () => {
@@ -103,8 +117,8 @@ export const SendTransaction:React.FC<Props> = ({ payload, closeWindow, setFaile
           delegatorAddress,
           validatorAddress,
           address: txMsgAddress,
-        } = msgObj as {[key: string]: any} || {};
-        const metadataAddress = newParsedMetadata.address!
+        } = (msgObj as { [key: string]: any }) || {};
+        const metadataAddress = newParsedMetadata.address!;
         const potentialAddresses = [
           metadataAddress,
           toAddress,
@@ -114,11 +128,17 @@ export const SendTransaction:React.FC<Props> = ({ payload, closeWindow, setFaile
           txMsgAddress,
         ];
         // Build a list of all possible address values and validate all of them.  Must all be valid to calculate txFees w/o errors
-        const addressesToValidate = potentialAddresses.filter(address => !!address);
-        const allAddressValid = !addressesToValidate.filter((address:string) => !validateAddress(address)).length;
-        const targetAccount = accounts.find(({ address: storeAddress }) => storeAddress === metadataAddress);
+        const addressesToValidate = potentialAddresses.filter(
+          (address) => !!address
+        );
+        const allAddressValid = !addressesToValidate.filter(
+          (address: string) => !validateAddress(address)
+        ).length;
+        const targetAccount = accounts.find(
+          ({ address: storeAddress }) => storeAddress === metadataAddress
+        );
         if (targetAccount && allAddressValid) {
-          const {txFeeEstimate, txGasEstimate} = await getTxFeeEstimate({
+          const { txFeeEstimate, txGasEstimate } = await getTxFeeEstimate({
             address: metadataAddress,
             publicKey: targetAccount.publicKey!,
             msgAny,
@@ -129,7 +149,9 @@ export const SendTransaction:React.FC<Props> = ({ payload, closeWindow, setFaile
           setTxGasEstimate(txGasEstimate);
         } else {
           // Missing or invalid address for tx, display a message to the user and stop the transaction
-          setFailedMessage('Missing or invalid address received, please review all addresses in the transaction request and try again.');
+          setFailedMessage(
+            'Missing or invalid address received, please review all addresses in the transaction request and try again.'
+          );
         }
       })();
     }
@@ -176,8 +198,8 @@ export const SendTransaction:React.FC<Props> = ({ payload, closeWindow, setFaile
       await bumpWalletConnectTimeout();
       // TODO: Create success page
       closeWindow();
-    };
-  }
+    }
+  };
   const handleDecline = async () => {
     if (connector) {
       await connector.rejectRequest({
@@ -189,28 +211,32 @@ export const SendTransaction:React.FC<Props> = ({ payload, closeWindow, setFaile
       await bumpWalletConnectTimeout();
       closeWindow();
     }
-  }
+  };
 
   const formatMetadataGasFee = () => {
     const gasPriceDenom = parsedMetadata?.gasPrice?.gasPriceDenom || 'nhash';
-    return gasPriceDenom === 'nhash' ?
-        `${(hashFormat(txFeeEstimate, 'nhash') + hashFormat(txGasEstimate!, 'nhash')).toFixed(4)} Hash` :
-        `${(txFeeEstimate + txGasEstimate).toFixed(3)} ${gasPriceDenom}`;
-  }
+    return gasPriceDenom === 'nhash'
+      ? `${(
+          hashFormat(txFeeEstimate, 'nhash') + hashFormat(txGasEstimate!, 'nhash')
+        ).toFixed(4)} Hash`
+      : `${(txFeeEstimate + txGasEstimate).toFixed(3)} ${gasPriceDenom}`;
+  };
   const metadataListItems = {
     platform: connector?.peerMeta?.name || 'N/A',
     'Gas Fee': formatMetadataGasFee(),
     '@type': txType || 'N/A',
-    date: parsedMetadata?.date ? format(new Date(parsedMetadata.date), 'MMM d, h:mm a') : 'N/A',
+    date: parsedMetadata?.date
+      ? format(new Date(parsedMetadata.date), 'MMM d, h:mm a')
+      : 'N/A',
     description: parsedMetadata?.description || 'N/A',
   };
-  const txMsgListItems = {...parsedTxMessage};
+  const txMsgListItems = { ...parsedTxMessage };
   // One field is incorrectly labled accessListList in the protos, we also want to render it last
   const { accessListList, ...filteredTxMsgListItems } = txMsgListItems;
   const ListItems = {
     ...metadataListItems,
     ...filteredTxMsgListItems,
-    ...(accessListList !== undefined && { accessList: accessListList })
+    ...(accessListList !== undefined && { accessList: accessListList }),
   };
 
   return (

@@ -12,16 +12,21 @@ import {
 import { ICON_NAMES, DEFAULT_MAINNET_HD_PATH } from 'consts';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
-import { useAccount, useActiveAccount, useSettings, useWalletConnect } from 'redux/hooks';
+import {
+  useAccount,
+  useActiveAccount,
+  useSettings,
+  useWalletConnect,
+} from 'redux/hooks';
 import { completeHdPath } from 'utils';
 import { FlowType } from 'types';
 
 interface StyledProps {
-  enabled?: boolean,
+  enabled?: boolean;
 }
 
 const AdvancedTextButton = styled.div<StyledProps>`
-  color: ${({ enabled }) => enabled ? '#357EFD' : '#AAAAAA' };
+  color: ${({ enabled }) => (enabled ? '#357EFD' : '#AAAAAA')};
   font-weight: bold;
   margin: 20px 0;
   cursor: pointer;
@@ -35,15 +40,27 @@ interface Props {
   progress: number;
 }
 
-export const NewAccountName = ({ previousUrl, nextUrl, flowType, progress }: Props) => {
+export const NewAccountName = ({
+  previousUrl,
+  nextUrl,
+  flowType,
+  progress,
+}: Props) => {
   // Shorthand flowtypes
   const flowTypeSub = flowType === 'sub';
   const flowTypeRecover = flowType === 'recover';
-  const { accountLevel: parentAccountLevel, name: parentAccountName, hdPath: parentHdPath, masterKey: parentMasterKey } = useActiveAccount();
+  const {
+    accountLevel: parentAccountLevel,
+    name: parentAccountName,
+    hdPath: parentHdPath,
+    masterKey: parentMasterKey,
+  } = useActiveAccount();
   // When we are adding an account, we need to write the HD path all the way down to addressIndex and account for the parent path
   // TODO: completeHdPath can set a custom addressIndex, determine if an addressIndex already exists (loop through all accounts) and auto increment that value by 1 as needed.
-  const defaultHdPath = flowTypeSub ? completeHdPath(parentHdPath!, "0'", true) : DEFAULT_MAINNET_HD_PATH;
-  // TODO: 
+  const defaultHdPath = flowTypeSub
+    ? completeHdPath(parentHdPath!, "0'", true)
+    : DEFAULT_MAINNET_HD_PATH;
+  // TODO:
 
   const [name, setName] = useState('');
   const [error, setError] = useState('');
@@ -61,9 +78,13 @@ export const NewAccountName = ({ previousUrl, nextUrl, flowType, progress }: Pro
     const validLength = name.length > 2 && name.length < 16;
     const validCharacters = /^([a-zA-Z0-9-_]+\s)*[a-zA-Z0-9-_]+$/.test(name);
     let newError = '';
-    if (!validCharacters) newError = 'Name must only contain alphanumeric characters.'
-    if (!validLength) newError = 'Name must be 3 to 15 alphanumeric characters.'
-    if (!name) newError = `Please enter ${accountType === 'account' ? 'an account' : 'a wallet'} name.`;
+    if (!validCharacters)
+      newError = 'Name must only contain alphanumeric characters.';
+    if (!validLength) newError = 'Name must be 3 to 15 alphanumeric characters.';
+    if (!name)
+      newError = `Please enter ${
+        accountType === 'account' ? 'an account' : 'a wallet'
+      } name.`;
     if (!newError) {
       // If we are in the recovery page, nuke all existing data
       if (flowTypeRecover) {
@@ -76,8 +97,8 @@ export const NewAccountName = ({ previousUrl, nextUrl, flowType, progress }: Pro
       updateTempAccount({
         name,
         hdPath,
-        ...((flowTypeSub && parentHdPath) && { parentHdPath }),
-        ...((flowTypeSub && parentMasterKey) && { parentMasterKey })
+        ...(flowTypeSub && parentHdPath && { parentHdPath }),
+        ...(flowTypeSub && parentMasterKey && { parentMasterKey }),
       });
       // Move to next step
       navigate(nextUrl);
@@ -88,16 +109,24 @@ export const NewAccountName = ({ previousUrl, nextUrl, flowType, progress }: Pro
   const renderAddressIndexError = () => (
     <>
       <Alert type="error" title="Error">
-        Unable to create additional account with account "{parentAccountName}". "{parentAccountName}" is an "addressIndex" level account.
+        Unable to create additional account with account "{parentAccountName}". "
+        {parentAccountName}" is an "addressIndex" level account.
       </Alert>
       <BottomFloat>
-        <Button onClick={() => {navigate(previousUrl);}}>Back</Button>
+        <Button
+          onClick={() => {
+            navigate(previousUrl);
+          }}
+        >
+          Back
+        </Button>
       </BottomFloat>
-  </>
+    </>
   );
   const renderRecoverClearWarning = () => (
     <Alert type="warning" title="Warning">
-      Continuing will remove all accounts and keys from this wallet. They cannot be recovered without a seed phase.
+      Continuing will remove all accounts and keys from this wallet. They cannot be
+      recovered without a seed phase.
     </Alert>
   );
 
@@ -112,7 +141,7 @@ export const NewAccountName = ({ previousUrl, nextUrl, flowType, progress }: Pro
     }
     // Open the advanced menu
     else setShowAdvanced(true);
-  }
+  };
 
   const handleInputChange = (value: string) => {
     setError('');
@@ -122,17 +151,25 @@ export const NewAccountName = ({ previousUrl, nextUrl, flowType, progress }: Pro
   // TODO: If the user closes this, we need to clear out the temp account information
 
   // If an 'addressIndex' is trying to add an account, don't let it -- not possible.
-  const createAccountDisabled = (flowTypeSub && parentAccountLevel === 'addressIndex');
-  const recoverClearWallet = (flowTypeRecover && !!accounts.length);
+  const createAccountDisabled = flowTypeSub && parentAccountLevel === 'addressIndex';
+  const recoverClearWallet = flowTypeRecover && !!accounts.length;
 
   return (
     <Content>
-      <Header iconLeft={ICON_NAMES.CLOSE} progress={progress} title={`Name Your ${accountType}`} backLocation={previousUrl} />
-      {createAccountDisabled ? renderAddressIndexError() : (
+      <Header
+        iconLeft={ICON_NAMES.CLOSE}
+        progress={progress}
+        title={`Name Your ${accountType}`}
+        backLocation={previousUrl}
+      />
+      {createAccountDisabled ? (
+        renderAddressIndexError()
+      ) : (
         <>
           {recoverClearWallet && renderRecoverClearWarning()}
           <Typo type="body" marginBottom="36px">
-            Name this {accountType} to easily identify it while using the Provenance Blockchain Wallet.
+            Name this {accountType} to easily identify it while using the Provenance
+            Blockchain Wallet.
           </Typo>
           <Input
             id={`${accountType}Name`}
@@ -141,16 +178,28 @@ export const NewAccountName = ({ previousUrl, nextUrl, flowType, progress }: Pro
             value={name}
             onChange={handleInputChange}
             error={error}
+            autoFocus
           />
-          <AdvancedTextButton enabled={showAdvanced} onClick={toggleShowAdvanced}>Advanced Settings ({showAdvanced ? 'Enabled' : 'Disabled'})</AdvancedTextButton>
-          {showAdvanced && <AdvancedSettings
-            setResults={(newHdPath) => {setHdPath(newHdPath)}}
-            parentHdPath={flowTypeSub ? parentHdPath : undefined}
-            setContinueDisabled={setContinueDisabled}
-          />
-          }
+          <AdvancedTextButton enabled={showAdvanced} onClick={toggleShowAdvanced}>
+            Advanced Settings ({showAdvanced ? 'Enabled' : 'Disabled'})
+          </AdvancedTextButton>
+          {showAdvanced && (
+            <AdvancedSettings
+              setResults={(newHdPath) => {
+                setHdPath(newHdPath);
+              }}
+              parentHdPath={flowTypeSub ? parentHdPath : undefined}
+              setContinueDisabled={setContinueDisabled}
+            />
+          )}
           <BottomFloat>
-            <Button onClick={handleContinue} disabled={continueDisabled} title={`${continueDisabled ? 'Required HD Path value missing' : ''}`}>Continue</Button>
+            <Button
+              onClick={handleContinue}
+              disabled={continueDisabled}
+              title={`${continueDisabled ? 'Required HD Path value missing' : ''}`}
+            >
+              Continue
+            </Button>
           </BottomFloat>
         </>
       )}

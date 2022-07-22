@@ -29,7 +29,8 @@ export const Unlock = ({ nextUrl }: Props) => {
     setError('');
     let newError = '';
     // Make sure password is at least 5 characters
-    if (password.length < PASSWORD_MIN_LENGTH) newError = `Password must be a minimum of ${PASSWORD_MIN_LENGTH} characters.`;
+    if (password.length < PASSWORD_MIN_LENGTH)
+      newError = `Password must be a minimum of ${PASSWORD_MIN_LENGTH} characters.`;
     if (!password) newError = 'Enter a password';
     // No error so far
     if (!newError) {
@@ -51,11 +52,16 @@ export const Unlock = ({ nextUrl }: Props) => {
   const handleInputChange = (value: string) => {
     setError('');
     setPassword(value);
-  }
+  };
 
   return (
     <Content>
-      <Header iconLeft={ICON_NAMES.CLOSE} progress={100} title="Unlock Wallet" backLocation={APP_URL} />
+      <Header
+        iconLeft={ICON_NAMES.CLOSE}
+        progress={100}
+        title="Unlock Wallet"
+        backLocation={APP_URL}
+      />
       <BodyContent>Enter your password to unlock wallet</BodyContent>
       <Input
         id="wallet-password"
@@ -65,11 +71,19 @@ export const Unlock = ({ nextUrl }: Props) => {
         value={password}
         onChange={handleInputChange}
         error={error}
+        autoFocus
       />
       <BottomFloat>
         <ButtonGroup>
           <Button onClick={handleSubmit}>Continue</Button>
-          <Button variant='secondary' onClick={() => {navigate(RESET_WALLET_URL)}}>Destroy Wallet</Button>
+          <Button
+            variant="secondary"
+            onClick={() => {
+              navigate(RESET_WALLET_URL);
+            }}
+          >
+            Destroy Wallet
+          </Button>
         </ButtonGroup>
       </BottomFloat>
     </Content>

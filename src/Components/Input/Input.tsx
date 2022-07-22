@@ -4,16 +4,16 @@ import { COLORS } from 'theme/colors';
 interface InputProps {
   autoFocus?: boolean;
   children?: React.ReactNode;
-  disabled?: boolean,
-  error?: string,
+  disabled?: boolean;
+  error?: string;
   id: string;
   label?: string;
   onChange?: (e: any) => void;
   onKeyDown?: (e: any) => void;
   placeholder?: string;
   type?: string;
-  value?: string | number,
-  background?: string,
+  value?: string | number;
+  background?: string;
 }
 
 const InputGroup = styled.div`
@@ -32,15 +32,17 @@ const Label = styled.label`
   text-transform: capitalize;
 `;
 
-const InputEl = styled.input<{error?: string, background?: string}>`
+const InputEl = styled.input<{ error?: string; background?: string }>`
   padding: 10px;
-  border: 1px solid ${({ error }) => error ? COLORS.NEGATIVE_300 : COLORS.NEUTRAL_300 };
+  border: 1px solid
+    ${({ error }) => (error ? COLORS.NEGATIVE_300 : COLORS.NEUTRAL_300)};
   border-radius: 4px;
   color: ${COLORS.WHITE};
   font-size: 1.4rem;
   font-weight: 500;
   line-height: 2.24rem;
-  background: ${({ background }) => background ? background : 'transparent' };
+  background: ${({ background }) => (background ? background : 'transparent')};
+  appearance: none;
 
   &::placeholder {
     color: ${COLORS.NEUTRAL_300};
@@ -53,13 +55,13 @@ const InputEl = styled.input<{error?: string, background?: string}>`
   }
 `;
 
-const InputError = styled.div<{hasLabel?: boolean}>`
+const InputError = styled.div<{ hasLabel?: boolean }>`
   color: ${COLORS.NEGATIVE_300};
   column-gap: 1px;
   font-size: 1.2rem;
   position: absolute;
   right: 3px;
-  top: ${({ hasLabel }) => hasLabel ? '22px' : '-12px' };
+  top: ${({ hasLabel }) => (hasLabel ? '22px' : '-12px')};
 `;
 
 export const Input = ({
@@ -81,7 +83,7 @@ export const Input = ({
       id={id}
       type={type}
       value={value}
-      onChange={(event) => (event?.target && onChange) && onChange(event.target.value)}
+      onChange={(event) => event?.target && onChange && onChange(event.target.value)}
       error={error}
       disabled={disabled}
       autoComplete="off"

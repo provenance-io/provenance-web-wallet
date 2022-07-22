@@ -7,13 +7,13 @@ const AssetItem = styled.div`
   padding: 20px 16px;
   width: 100%;
   text-align: left;
-  border-bottom: 1px solid #3D4151;
+  border-bottom: 1px solid #3d4151;
   display: flex;
   align-items: center;
   font-family: 'Gothic A1';
   cursor: pointer;
   &:first-of-type {
-    border-top: 1px solid #3D4151;
+    border-top: 1px solid #3d4151;
   }
 `;
 const AssetImg = styled.img`
@@ -31,7 +31,7 @@ const AssetName = styled.div`
 const AssetAmount = styled.div`
   font-size: 1.2rem;
   font-weight: 400;
-  color: #B9BDCA;
+  color: #b9bdca;
 `;
 const AssetArrow = styled.div`
   flex-grow: 1;
@@ -39,24 +39,23 @@ const AssetArrow = styled.div`
 `;
 
 interface Props {
-  img: string,
-  title: string,
-  onClick?: () => void,
-  actionIcon?: string,
-  subtitle?: string,
+  img?: string;
+  title: string;
+  onClick?: () => void;
+  actionIcon?: string;
+  subtitle?: string;
 }
 
-export const RowItem:React.FC<Props> = ({
+export const RowItem: React.FC<Props> = ({
   img,
   title,
   subtitle,
   onClick,
-  actionIcon=`${ICON_NAMES.CHEVRON}`,
+  actionIcon = `${ICON_NAMES.CHEVRON}`,
 }) => {
-
   return (
     <AssetItem onClick={onClick}>
-      <AssetImg src={`/images/assets/${img}.svg`} />
+      {!!img && <AssetImg src={`/images/assets/${img}.svg`} />}
       <AssetDetails>
         <AssetName>{title}</AssetName>
         <AssetAmount>{subtitle}</AssetAmount>

@@ -52,26 +52,34 @@ export const Dashboard = () => {
 
   const calculatePortfolioValue = () => {
     let totalValue = 0;
-    const assetValues = assets.map(({ usdPrice, amount }) => usdPrice * Number(amount));
-    assetValues.forEach((value) => { totalValue += value });
+    const assetValues = assets.map(
+      ({ usdPrice, amount }) => usdPrice * Number(amount)
+    );
+    assetValues.forEach((value) => {
+      totalValue += value;
+    });
     return totalValue;
   };
 
-  const renderAssets = () => assets.map(({ display, displayAmount }) => (
-    <RowItem
-      onClick={() => navigate(`/asset/${display}`)}
-      img={display}
-      title={display}
-      subtitle={displayAmount}
-      key={display}
-    />
-  ));
+  const renderAssets = () =>
+    assets.map(({ display, displayAmount }) => (
+      <RowItem
+        onClick={() => navigate(`/asset/${display}`)}
+        img={display}
+        title={display}
+        subtitle={Number(displayAmount).toFixed(3)}
+        key={display}
+      />
+    ));
 
   return (
     <Content>
       <DashboardHeader />
       <PortfolioTitle>Portfolio Value</PortfolioTitle>
-      <Value><Denom>$</Denom>{calculatePortfolioValue().toFixed(2)}</Value>
+      <Value>
+        <Denom>$</Denom>
+        {calculatePortfolioValue().toFixed(2)}
+      </Value>
       <ButtonGroup direction="row">
         <Button
           icon={ICON_NAMES.ARROW}
@@ -94,7 +102,7 @@ export const Dashboard = () => {
       </ButtonGroup>
       <AssetsTitle>My Assets</AssetsTitle>
       <AssetsContainer>
-        {assets.length ? renderAssets(): 'Address has no assets...'}
+        {assets.length ? renderAssets() : 'Address has no assets...'}
       </AssetsContainer>
       <FooterNav />
     </Content>

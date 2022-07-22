@@ -1,4 +1,4 @@
-import { getJSType } from 'utils';
+import { getJSType } from 'utils/getJSType';
 
 const testData = [
   { value: 'test', result: 'string' },
@@ -6,7 +6,7 @@ const testData = [
   { value: [1, 2], result: 'array' },
   { value: { test: 1 }, result: 'object' },
   { value: null, result: 'null' },
-  { value: false, result: 'boolean'},
+  { value: false, result: 'boolean' },
   { result: 'undefined' },
 ];
 
@@ -14,6 +14,6 @@ describe('Make sure util correctly returns proper types', () => {
   testData.forEach(({ value, result }) => {
     test(`testing ${value}`, () => {
       expect(getJSType(value)).toBe(result);
-    })
+    });
   });
 });

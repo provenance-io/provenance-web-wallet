@@ -2,19 +2,31 @@
 * _(Priority: 1 - 10)_
 
 ## Current Branch Tasks/Changes
+* Cleanup chain.ts file in utils [DONE]
+  - Split out each function to its own subfile within a chain folder
 * Whenever we fail to get gas estimate display error (same error as an invalid address) [DONE]
   - When adding marker and we send through a duplicated marker
   - When using an invalid address
   - Just display the error and reject the tx.
 * Use updated recent transactions api to show recent tx addresses on send [DONE]
 * Finish building out Transactions Page [DONE]
-* Build out transaction details page (when you click a single tx row) [IN_PROGRESS]
+* Build out transaction details page (when you click a single tx row) [DONE]
+* Update hashFormat util function. [DONE]
+* Update all tests to pull directly from util function [DONE]
+  - Previously pulling in all due to the way it was imported
+* Asset details page [IN_PROGRESS]
+  - Chart value missing (all display 0.00 currently) [DONE]
+  - Missing information in statistics box [IN_PROGRESS]
+  - Pull recent transactions [DONE]
+* Format Dashboard page assets
+  - Show price
+  - Trim number size fixed digits
+* Asset chart, when selecting Year and All get error:
+  - "Error: 1647129480889 and 1658528281279 are too far apart with stepSize of 1 minute"
 
 ## Bugs
 * If dApp disconnects while ext is signing message/approving tx currently goes to empty page [10]
   - Change the page, say "You've been disconnected" and just allow pressing "ok" to close extension
-* Wallet-utils not correctly converting numbers to strings (example: permissionsList) [0_3RD_PARTY]
-  - This will need to be fixed within wallet-utils, not here in web-wallet.
 
 ## Features
 * Handle blockchain broadcast failures & display reasons (instead of success page) [2]

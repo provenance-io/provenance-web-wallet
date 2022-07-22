@@ -1,13 +1,8 @@
 import styled from 'styled-components';
+import { Typo } from 'Components';
 
-const SectionTitle = styled.div`
-  font-size: 1.9rem;
-  font-weight: 700;
-  margin: 30px 0 10px 0;
-  text-align: left;
-`;
 const Container = styled.div`
-  background: #2C2F3A;
+  background: #2c2f3a;
   padding: 16px;
   border-radius: 4px;
   display: flex;
@@ -22,7 +17,7 @@ const StatsItem = styled.div`
 `;
 const StatTitle = styled.div`
   margin-bottom: 10px;
-  color: #B9BDCA;
+  color: #b9bdca;
   font-size: 1.2rem;
   font-family: 'Gothic A1', sans-serif;
 `;
@@ -30,10 +25,12 @@ const StatValue = styled.div`
   font-size: 1.4rem;
 `;
 
-export const AssetStats:React.FC = () => {
+export const AssetStats: React.FC = () => {
   return (
     <>
-      <SectionTitle>Statistics</SectionTitle>
+      <Typo type="title" marginTop="30px" marginBottom="10px" align="left">
+        Statistics
+      </Typo>
       <Container>
         <StatsItem>
           <StatTitle>Day Volume</StatTitle>

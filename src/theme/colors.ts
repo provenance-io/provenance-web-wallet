@@ -101,6 +101,9 @@ export const COLOR_VARIABLES = {
   FOCUS: '--focus',
   FOCUS_DARK: '--focus-dark',
   BACKGROUND_1: '--background-1',
+  CHART_POSITIVE: '--chart-positive',
+  CHART_NEGATIVE: '--chart-negative',
+  CHART_NEUTRAL: '--chart-neutral',
 };
 
 export const baseColors = css`
@@ -208,14 +211,18 @@ export const baseColors = css`
   ${COLOR_VARIABLES.SECONDARY_100}: #DCFFFE;
   ${COLOR_VARIABLES.SECONDARY_50}: #EBFFFE;
 
+  ${COLOR_VARIABLES.CHART_POSITIVE}: #04F19C;
+  ${COLOR_VARIABLES.CHART_NEGATIVE}: #F16F04;
+  ${COLOR_VARIABLES.CHART_NEUTRAL}: #A6A6A6;
+
   ${COLOR_VARIABLES.FOCUS}: var(${COLOR_VARIABLES.PRIMARY_500});
   ${COLOR_VARIABLES.FOCUS_DARK}: var(${COLOR_VARIABLES.PRIMARY_700});
   ${COLOR_VARIABLES.BACKGROUND_1}: var(${COLOR_VARIABLES.NEUTRAL_750});
 `;
 
-export const COLORS = (Object.keys(COLOR_VARIABLES) as Array<keyof typeof COLOR_VARIABLES>).reduce<
-  { [key in keyof typeof COLOR_VARIABLES]: string }
->(
+export const COLORS = (
+  Object.keys(COLOR_VARIABLES) as Array<keyof typeof COLOR_VARIABLES>
+).reduce<{ [key in keyof typeof COLOR_VARIABLES]: string }>(
   (acc, key) => ({
     ...acc,
     [key]: `var(${COLOR_VARIABLES[key]})`,

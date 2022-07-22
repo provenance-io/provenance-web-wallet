@@ -1,10 +1,18 @@
 import { getJSType } from './getJSType';
 import { trimAddress } from './trimString';
 import { hashFormat } from './hashFormat';
+import { capitalize } from './capitalize';
+import { numberFormat } from './numberFormat';
+import { format } from 'date-fns';
 
-interface Amount { denom: string, amount: string };
+interface Amount {
+  denom: string;
+  amount: string;
+}
 type AmountList = Amount[];
-interface MessageObject { [fieldName: string]: any };
+interface MessageObject {
+  [fieldName: string]: any;
+}
 
 type FieldValue = MessageObject | string | number | AmountList;
 
@@ -16,21 +24,37 @@ const formatField = (fieldKey: string, fieldValue: FieldValue): FieldValue => {
     case 'manager': // fallthrough
     case 'fromAddress': // fallthrough
     case 'toAddress': // fallthrough
+    case 'senderAddress': // fallthrough
+    case 'recipientAddress': // fallthrough
+    case 'signer': // fallthrough
       return trimAddress(fieldValue as string);
     // amountList is an array of objects: amountList: [{ denom: 'a', amount: '1' }, {...}]
     // Note: If the denom is nhash, autoconvert to hash
-    case 'amountList': 
-      return (fieldValue as AmountList)
-        .map(({amount, denom}) => `${denom === 'nhash' ?
-          `${hashFormat(amount)} Hash` :
-          `${amount} ${denom}`}`
-        );
+    case 'amountList':
+      return (fieldValue as AmountList).map(
+        ({ amount, denom }) =>
+          `${
+            denom === 'nhash' ? `${hashFormat(amount)} Hash` : `${amount} ${denom}`
+          }`
+      );
+    case 'feeAmount':
+      return `${hashFormat(fieldValue as string).toFixed(5)} Hash`;
     case 'amount': {
+      if (typeof fieldValue === 'string')
+        return numberFormat(fieldValue as string, 5);
       const { denom, amount } = fieldValue as Amount;
-      return `${denom === 'nhash' ? `${hashFormat(amount)} Hash` : `${amount} ${denom}`}`;
+      return `${
+        denom === 'nhash' ? `${hashFormat(amount)} Hash` : `${amount} ${denom}`
+      }`;
     }
+    case 'type': // fallthrough
+    case 'status':
+      return capitalize(`${fieldValue}`);
+    case 'time':
+      return format(new Date(fieldValue as string), 'MMM d, h:mm:ss a');
     // No matches, just return what was passed in
-    default: return fieldValue;
+    default:
+      return fieldValue;
   }
 };
 
@@ -47,39 +71,50 @@ export const txMessageFormat = (messageShape: MessageObject) => {
       // What type is the current value we're looking at
       const currentFieldValueJSType = getJSType(currentFieldValue);
       // No more looping (non array/obj), just write to finalMessage object
-      if (currentFieldValueJSType !== 'array' && currentFieldValueJSType !== 'object') {
-        parentFieldKey ? finalMessage[parentFieldKey][currentField] = currentFieldValue :
-        finalMessage[currentField] = currentFieldValue;
-      };
+      if (
+        currentFieldValueJSType !== 'array' &&
+        currentFieldValueJSType !== 'object'
+      ) {
+        parentFieldKey
+          ? (finalMessage[parentFieldKey][currentField] = currentFieldValue)
+          : (finalMessage[currentField] = currentFieldValue);
+      }
 
       // Value is an array []
       if (currentFieldValueJSType === 'array') {
-        const currentFieldValueArray = (currentFieldValue as any[]);
+        const currentFieldValueArray = currentFieldValue as any[];
         // Determine if we need to display multiple items from the array
         const multiItem = currentFieldValueArray.length > 1;
         // End the loop if array consists of strings or numbers
-        const endLoop = !currentFieldValueArray.find(val => getJSType(val) !== 'string' && getJSType(val) !== 'number');
+        const endLoop = !currentFieldValueArray.find(
+          (val) => getJSType(val) !== 'string' && getJSType(val) !== 'number'
+        );
         // Array is all string/numbers (combine and display)
         if (endLoop) {
           const currentFieldCombinedValue = currentFieldValueArray.join(`\n`);
-          parentFieldKey ? finalMessage[parentFieldKey][currentField] = currentFieldCombinedValue :
-          finalMessage[currentField] = currentFieldCombinedValue;
-        } else { // Array needs additional looping (object/array children)
+          parentFieldKey
+            ? (finalMessage[parentFieldKey][currentField] =
+                currentFieldCombinedValue)
+            : (finalMessage[currentField] = currentFieldCombinedValue);
+        } else {
+          // Array needs additional looping (object/array children)
           currentFieldValueArray.forEach((cfArrayVal: any, index: number) => {
-            const newCfName = `${multiItem ? `${currentField} ${index + 1}` : currentField}`;
+            const newCfName = `${
+              multiItem ? `${currentField} ${index + 1}` : currentField
+            }`;
             finalMessage[newCfName] = {};
             pullValueLoop(cfArrayVal, newCfName);
           });
         }
-      };
+      }
 
       // Value is an object {}
       if (currentFieldValueJSType === 'object') {
         // Create this entry in the finalMessage, then repeat loop targeting it
         finalMessage[currentField] = {};
         pullValueLoop(currentFieldValue as MessageObject, currentField);
-      };
-    })
+      }
+    });
   };
   pullValueLoop(messageShape);
 

@@ -1,14 +1,20 @@
+export interface AmountObject {
+  amount: string | number;
+  denom: string;
+}
+
 export type Transaction = {
-  hash: string,
-  signer: string,
-  type: string,
-  feeAmount: string,
-  time: string,
-  status: string,
-  block: number,
-  denom: string,
-  senderAddress: string,
-  recipientAddress?: string,
+  hash: string;
+  signer: string;
+  type: string;
+  feeAmount: string;
+  time: string;
+  status: string;
+  block: number;
+  denom?: string;
+  senderAddress: string;
+  recipientAddress?: string;
+  amount?: string | number | AmountObject;
 };
 
 export type Asset = {
@@ -28,10 +34,10 @@ export interface Address {
   assetsLoading: boolean;
   assetsError?: any;
   assets: Array<Asset>;
-  
-  transactionsTotalCount: number,
-  transactionsPages: number,
-  transactions: Transaction[],
-  transactionsLoading: boolean,
-  transactionsError: boolean,
-};
+
+  transactionsTotalCount: number;
+  transactionsPages: number;
+  transactions: Transaction[];
+  transactionsLoading: boolean;
+  transactionsError: boolean;
+}

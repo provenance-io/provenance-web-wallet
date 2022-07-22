@@ -1,13 +1,11 @@
-interface NumberFormat {
-  rawValue?: number | string,
-  digits?: number,
-  extraOptions?: {
+export const numberFormat = (
+  rawValue: number | string,
+  digits: number = 1,
+  extraOptions: {
     shorthand?: boolean,
     maximumFractionDigits?: number,
-  }
-}
-
-export const numberFormat = ({rawValue, digits = 1, extraOptions = {} }: NumberFormat) => {
+  } = {}
+) => {
   // If we don't have a value to start with just return it
   if (rawValue === null || rawValue === undefined || rawValue === '' || rawValue === '--')
     return rawValue;

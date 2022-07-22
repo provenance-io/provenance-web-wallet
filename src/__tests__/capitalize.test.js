@@ -1,4 +1,4 @@
-import { capitalize } from 'utils';
+import { capitalize } from 'utils/capitalize';
 
 // Eg: "hello world" => "Hello World"
 // Eg: "hEllO" => "Hello"
@@ -55,6 +55,6 @@ describe('Capitalize a list of words properly', () => {
   testData.forEach(({ type, string, result }) => {
     test(`capitalize "${string}" to be "${result}"`, () => {
       expect(capitalize(string, type)).toBe(result);
-    })
+    });
   });
 });

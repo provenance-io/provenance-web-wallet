@@ -42,10 +42,10 @@ export const Transactions = () => {
   // Return 10 txs at a time each page
   const count = 6;
   const maxPage = Math.ceil(transactionsTotalCount / count);
-  
+
   // Fetch the current page of txs
   useEffect(() => {
-    getAddressTx({ address: address!, count, page })
+    getAddressTx({ address: address!, count, page });
   }, [address, getAddressTx, page]);
 
   // Get the next page of transactions
@@ -53,19 +53,20 @@ export const Transactions = () => {
     setPage(page + amount);
   };
 
-  const renderTxRows = () => transactions.map(({ type, time, denom, hash }, index) => {
-    const date = time ? format(new Date(time), 'MMM dd, h:mm:ss a') : 'N/A'
+  const renderTxRows = () =>
+    transactions.map(({ type, time, denom, hash }) => {
+      const date = time ? format(new Date(time), 'MMM dd, h:mm:ss a') : 'N/A';
 
-    return (
-      <RowItem
-        key={index}
-        img={denom === 'nhash' ? 'hash' : 'provenance'}
-        title={denom === 'nhash' ? 'hash' : denom}
-        subtitle={`${capitalize(type)} • ${date}`}
-        onClick={() => navigate(`${TRANSACTION_DETAILS_URL}/${hash}`)}
-      />
-    )
-  });
+      return (
+        <RowItem
+          key={hash}
+          img={denom === 'nhash' ? 'hash' : 'provenance'}
+          title={denom === 'nhash' ? 'hash' : denom!}
+          subtitle={`${capitalize(type)} • ${date}`}
+          onClick={() => navigate(`${TRANSACTION_DETAILS_URL}/${hash}`)}
+        />
+      );
+    });
 
   const renderPagination = () => (
     <ButtonGroup direction="row" marginTop="20px">
@@ -94,17 +95,21 @@ export const Transactions = () => {
 
   return (
     <Container>
-      <Typo type='title'>Transaction History</Typo>
-      <Typo type="displayBody">Page {page} / {maxPage}</Typo>
+      <Typo type="title">Transaction History</Typo>
+      <Typo type="displayBody">
+        Page {page} / {maxPage}
+      </Typo>
       <AssetsContainer>
-        {transactionsError ?
-          <Typo type="error">{transactionsError}</Typo> :
-          transactionsLoading ? <Loading /> :
+        {transactionsError ? (
+          <Typo type="error">{transactionsError}</Typo>
+        ) : transactionsLoading ? (
+          <Loading />
+        ) : (
           <>
             {renderTxRows()}
             {renderPagination()}
           </>
-        }
+        )}
       </AssetsContainer>
       <FooterNav />
     </Container>

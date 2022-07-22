@@ -111,7 +111,6 @@ export const TransactionRequest:React.FC<Props> = ({ payload, closeWindow, setFa
             setTxFeeEstimate(txFeeEstimate);
             setTxGasEstimate(txGasEstimate);
           } catch(err) {
-            console.log('err: ', err);
             setFailedMessage(`${err}`);
           }
         }

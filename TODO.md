@@ -2,30 +2,6 @@
 * _(Priority: 1 - 10)_
 
 ## Current Branch Tasks/Changes
-* Cleanup chain.ts file in utils [DONE]
-  - Split out each function to its own subfile within a chain folder
-* Whenever we fail to get gas estimate display error (same error as an invalid address) [DONE]
-  - When adding marker and we send through a duplicated marker
-  - When using an invalid address
-  - Just display the error and reject the tx.
-* Use updated recent transactions api to show recent tx addresses on send [DONE]
-* Finish building out Transactions Page [DONE]
-* Build out transaction details page (when you click a single tx row) [DONE]
-* Update hashFormat util function. [DONE]
-* Add autofocus and keyboard events to unlock page [DONE]
-  - Auto select input, and pressing "enter" while in input will submit
-  - Create new keyPress util to handle keyboard events
-* Update all tests to pull directly from util function [DONE]
-  - Previously pulling in all due to the way it was imported
-* Asset details page [DONE]
-  - Chart value missing (all display 0.00 currently) [DONE]
-  - Remove stats section (ios removed this section), missing data [DONE]
-  - Pull recent transactions [DONE]
-* Format Dashboard page assets [DONE]
-  - Show price
-  - Trim number size fixed digits
-* Asset chart, when selecting Year and All get error: [DONE]
-* Update receive page to use active account address for QR code [DONE]
 
 ## Bugs
 * If dApp disconnects while ext is signing message/approving tx currently goes to empty page [10]
@@ -36,6 +12,7 @@
 * When a tx message (walletconnect-js) comes through, auto switch to the target wallet (maybe...ask JD) [2]
   - Should already be connected to wcjs which is connected to a wallet, active wallet shouldn't matter
   - Make sure sign msg and send tx don't pull anything from "active wallet"
+* When viewing tx details, ability to go to explorer when clicking on txhash [3]
 * Batch action/message (single sign for paginated list of things to take action on) [3]
 * Create txSend complete success page [4]
 * When connecting into a dApp, user should be able to select target account to connect (and set active) [4]

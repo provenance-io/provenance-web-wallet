@@ -7,7 +7,8 @@ import type { InterpolationWithProps } from './Styled';
  * where to add ${combineCss()} in the interpolation string depending on priority of styles.
  */
 export const combineCss = () => css`
-  ${({ $css }: { $css?: FlattenSimpleInterpolation | InterpolationWithProps }) => $css && $css}
+  ${({ $css }: { $css?: FlattenSimpleInterpolation | InterpolationWithProps }) =>
+    $css && $css}
 `;
 
 /**
@@ -15,6 +16,7 @@ export const combineCss = () => css`
  */
 export const combineStrictCss = () => css`
   && {
-    ${({ $css }: { $css?: FlattenSimpleInterpolation | InterpolationWithProps }) => $css && $css};
+    ${({ $css }: { $css?: FlattenSimpleInterpolation | InterpolationWithProps }) =>
+      $css && $css};
   }
 `;

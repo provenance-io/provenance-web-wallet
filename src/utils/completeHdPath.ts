@@ -1,13 +1,21 @@
-import { DEFAULT_MAINNET_HD_PATH, DEFAULT_TESTNET_HD_PATH, TESTNET_WALLET_COIN_TYPE } from 'consts';
+import {
+  DEFAULT_MAINNET_HD_PATH,
+  DEFAULT_TESTNET_HD_PATH,
+  TESTNET_WALLET_COIN_TYPE,
+} from 'consts';
 
 // Tests for this util live here: src/__tests__/completeHdPath.test.js
 
 // Complete a partial hd path all the way down to account index
 // Allow user to pass in addressIndex (as string, which will allow them to harden/unharded if needed)
-export const completeHdPath = (partialHdPath: string, addressIndex?: string, child?: boolean): string => {
+export const completeHdPath = (
+  partialHdPath: string,
+  addressIndex?: string,
+  child?: boolean
+): string => {
   // MAINNET: partialHdPath: m/44'/505'/0' => finalHdPath: m/44'/505'/0'/0/0
   // TESTNET: partialHdPath: m/44'/1'/0' => finalHdPath: m/44'/505'/0'/0/0'
-  // If we are looking for a child, we are going to return the difference: egs: 
+  // If we are looking for a child, we are going to return the difference: egs:
   // - MAINNET: partialHdPath: m/44'/505'/0' => finalHdPath: 0/0
   // - TESTNET: partialHdPath: m/44'/1'/0' => finalHdPath: 0/0'
   // Full hdPath to addressIndex length is 6
@@ -19,23 +27,26 @@ export const completeHdPath = (partialHdPath: string, addressIndex?: string, chi
   if (partialLength >= fullHdPathLength) return partialHdPath;
   // Determine to use mainnet or testnet default paths (use mainnet by default)
   // Path must be at least length 3, and the index 2 is the coinType which we check against
-  const defaultPath = partialLength >= 3 ?
-    partialHdPathArray[2].includes(`${TESTNET_WALLET_COIN_TYPE}`) ?
-    DEFAULT_TESTNET_HD_PATH :
-    DEFAULT_MAINNET_HD_PATH :
-    DEFAULT_MAINNET_HD_PATH;
+  const defaultPath =
+    partialLength >= 3
+      ? partialHdPathArray[2].includes(`${TESTNET_WALLET_COIN_TYPE}`)
+        ? DEFAULT_TESTNET_HD_PATH
+        : DEFAULT_MAINNET_HD_PATH
+      : DEFAULT_MAINNET_HD_PATH;
   // Get the default mainnet/testnet path
   const defaultPathArray = defaultPath.split('/'); // [m, 44', 505', 0', 0, 0] or [m, 44', 1', 0', 0, 0']
   const defaultLength = defaultPathArray.length; // 6 (fullHdPathLength)
   // Copy the partial path array to make edits to it
   let completedHdPathArray = partialHdPathArray;
   // If the partial length is less than the default length, we need to use default fill in values from DEFAULT_MAINNET_HD_PATH
-  if (partialLength < defaultLength) { // eg: m/44'/505' => m/44'/505'/0'
+  if (partialLength < defaultLength) {
+    // eg: m/44'/505' => m/44'/505'/0'
     // Go index by index and fill default values where needed
     defaultPathArray.forEach((defaultValue, index) => {
       const partialValue = partialHdPathArray[index];
       // If the partial array doesn't have a value at the index, get it from default
-      if (partialValue === undefined || partialValue === '' || partialValue === null) completedHdPathArray[index] = defaultValue;
+      if (partialValue === undefined || partialValue === '' || partialValue === null)
+        completedHdPathArray[index] = defaultValue;
     });
   }
   // If a user passed in an addressIndex, use it in the addressIndex slot

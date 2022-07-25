@@ -28,7 +28,7 @@ const messageSlice = createSlice({
     setTxSendAddress(state, action) {
       state.txSendAddress = action.payload;
     },
-    
+
     setTxFromAddress(state, action) {
       state.txFromAddress = action.payload;
     },

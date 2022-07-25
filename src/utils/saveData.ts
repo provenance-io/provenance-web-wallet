@@ -1,18 +1,14 @@
-import {
-  AccountStorage,
-  SettingsStorage,
-  WalletConnectStorage,
-} from 'types';
+import { AccountStorage, SettingsStorage, WalletConnectStorage } from 'types';
 
 // ----------------------
 // Types
 // ----------------------
 type StorageData = {} | [];
 interface StorageItems {
-  account: AccountStorage,
-  settings?: SettingsStorage,
-  walletconnect?: WalletConnectStorage,
-};
+  account: AccountStorage;
+  settings?: SettingsStorage;
+  walletconnect?: WalletConnectStorage;
+}
 type StorageItemKey = keyof StorageItems;
 type ChromeStorageKeys = string | string[];
 // -------------------------------------------------------------
@@ -35,7 +31,7 @@ const getChromeStorage = async (keyValue?: StorageItemKey) => {
     const result = await chrome.storage.local.get(keyValue);
     return result[keyValue];
   } else return await chrome.storage.local.get();
-}
+};
 const addChromeStorage = async (newData: StorageData) => {
   await chrome.storage.local.set(newData);
 };

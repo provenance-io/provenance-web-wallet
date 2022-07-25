@@ -6,12 +6,16 @@ export const PROVENANCE_WEB_DOCS_URL = 'https://docs.provenance.io';
 // ---------
 // API URLS
 // ---------
-export const SERVICE_MOBILE_WALLET_TESTNET = process.env.REACT_APP_SERVICE_MOBILE_WALLET_TESTNET;
-export const SERVICE_MOBILE_WALLET_MAINNET = process.env.REACT_APP_SERVICE_MOBILE_WALLET_MAINNET;
+export const SERVICE_MOBILE_WALLET_TESTNET =
+  process.env.REACT_APP_SERVICE_MOBILE_WALLET_TESTNET;
+export const SERVICE_MOBILE_WALLET_MAINNET =
+  process.env.REACT_APP_SERVICE_MOBILE_WALLET_MAINNET;
 export const GRPC_CLIENT_ADDRESS_TESTNET = 'https://wallet.test.figure.tech/proxy';
 export const GRPC_CLIENT_ADDRESS_MAINNET = 'https://wallet.figure.tech/proxy';
-export const SERVICE_PRICING_ENGINE_TESTNET = 'https://test.figure.tech/service-pricing-engine/external/api/v1';
-export const SERVICE_PRICING_ENGINE_MAINNET = 'https://www.figure.tech/service-pricing-engine/external/api/v1';
+export const SERVICE_PRICING_ENGINE_TESTNET =
+  'https://test.figure.tech/service-pricing-engine/external/api/v1';
+export const SERVICE_PRICING_ENGINE_MAINNET =
+  'https://www.figure.tech/service-pricing-engine/external/api/v1';
 export const ADDRESS_URL = '/address';
 export const PRICING_API_URL = `${SERVICE_MOBILE_WALLET_MAINNET}/pricing`;
 export const STATISTICS_API_URL = `${SERVICE_MOBILE_WALLET_MAINNET}/statistics`;

@@ -1,4 +1,7 @@
-export function paramsToObj(paramsString: string, removePlus = true): { [key: string]: string } {
+export function paramsToObj(
+  paramsString: string,
+  removePlus = true
+): { [key: string]: string } {
   return paramsString
     .replace(/(^\?)/, '')
     .split('&')
@@ -7,11 +10,16 @@ export function paramsToObj(paramsString: string, removePlus = true): { [key: st
       if (key && val)
         return {
           ...acc,
-          [key]: removePlus ? decodeURIComponent(val).replace(/\+/g, ' ') : decodeURIComponent(val),
+          [key]: removePlus
+            ? decodeURIComponent(val).replace(/\+/g, ' ')
+            : decodeURIComponent(val),
         };
       return acc;
     }, {});
 }
 
 export const queryParams = paramsToObj(window.document.location.search);
-export const queryParamsWithPlus = paramsToObj(window.document.location.search, false);
+export const queryParamsWithPlus = paramsToObj(
+  window.document.location.search,
+  false
+);

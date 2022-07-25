@@ -1,6 +1,6 @@
 export type Statistics = {
-  marketCap?: number,
-  validators?: number,
-  transactions?: number,
-  averageBlockTime?: number,
+  marketCap?: number;
+  validators?: number;
+  transactions?: number;
+  averageBlockTime?: number;
 };

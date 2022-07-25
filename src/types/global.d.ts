@@ -1,5 +1,5 @@
 interface Window {
   provenanceWallet: {
-    version: string,
-  }
+    version: string;
+  };
 }

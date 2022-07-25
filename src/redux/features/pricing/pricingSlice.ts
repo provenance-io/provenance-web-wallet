@@ -113,7 +113,6 @@ export const queryPricingEngine = createAsyncThunk(
 
 export const pricingActions = { getDenomPrice, getGasPrice, queryPricingEngine };
 
-
 /**
  * SLICE
  */

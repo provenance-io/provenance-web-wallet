@@ -30,12 +30,12 @@ const GET_ADDRESS_TX = 'GET_ADDRESS_TX';
 /**
  * SPECIAL ASYNC ACTIONS
  */
-const getAddressAssetsCount = async (addr: string):Promise<number> => {
+const getAddressAssetsCount = async (addr: string): Promise<number> => {
   const result = await api({
     url: `${getServiceMobileApi(addr, ADDRESS_URL)}/${addr}/assets`,
   });
   return result?.data?.length || 0;
-}
+};
 
 /**
  * ASYNC ACTIONS
@@ -50,15 +50,17 @@ export const getAddressAssets = createAsyncThunk(
 
 export const getAddressTx = createAsyncThunk(
   GET_ADDRESS_TX,
-  (params: {address: string, page?: number, count?: number}) => {
-    const {address, page, count} = params;
-    const urlObj = new URL(`${getServiceMobileApi(address, ADDRESS_URL)}/${address}/transactions/all`);
+  (params: { address: string; page?: number; count?: number }) => {
+    const { address, page, count } = params;
+    const urlObj = new URL(
+      `${getServiceMobileApi(address, ADDRESS_URL)}/${address}/transactions/all`
+    );
     const searchParamsObj = new URLSearchParams();
     if (page) searchParamsObj.append('page', `${page}`);
     if (count) searchParamsObj.append('count', `${count}`);
     urlObj.search = searchParamsObj.toString();
     const url = urlObj.toString();
-    return api({url});
+    return api({ url });
   }
 );
 

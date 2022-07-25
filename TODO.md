@@ -12,17 +12,19 @@
 * Finish building out Transactions Page [DONE]
 * Build out transaction details page (when you click a single tx row) [DONE]
 * Update hashFormat util function. [DONE]
+* Add autofocus and keyboard events to unlock page [DONE]
+  - Auto select input, and pressing "enter" while in input will submit
+  - Create new keyPress util to handle keyboard events
 * Update all tests to pull directly from util function [DONE]
   - Previously pulling in all due to the way it was imported
-* Asset details page [IN_PROGRESS]
+* Asset details page [DONE]
   - Chart value missing (all display 0.00 currently) [DONE]
-  - Missing information in statistics box [IN_PROGRESS]
+  - Remove stats section (ios removed this section), missing data [DONE]
   - Pull recent transactions [DONE]
-* Format Dashboard page assets
+* Format Dashboard page assets [DONE]
   - Show price
   - Trim number size fixed digits
-* Asset chart, when selecting Year and All get error:
-  - "Error: 1647129480889 and 1658528281279 are too far apart with stepSize of 1 minute"
+* Asset chart, when selecting Year and All get error: [DONE]
 
 ## Bugs
 * If dApp disconnects while ext is signing message/approving tx currently goes to empty page [10]

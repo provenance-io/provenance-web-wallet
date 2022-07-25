@@ -18,17 +18,17 @@ const ChartContainer = styled.div`
 const ChartCanvas = styled.canvas``;
 
 interface Props {
-  values: ChartValuesType,
-  labels: ChartLabelsType,
-  diffs: ChartValueDiffsType,
-  diffPercents: ChartValueDiffPercentsType,
-  options?: ChartOptions,
-  type?: string,
-  timePeriod: TimePeriodType,
-  onValueChange?: ChangeValueType,
+  values: ChartValuesType;
+  labels: ChartLabelsType;
+  diffs: ChartValueDiffsType;
+  diffPercents: ChartValueDiffPercentsType;
+  options?: ChartOptions;
+  type?: string;
+  timePeriod: TimePeriodType;
+  onValueChange?: ChangeValueType;
 }
 
-export const Chart:React.FC<Props> = ({
+export const Chart: React.FC<Props> = ({
   values: chartValues,
   labels: chartLabels,
   diffs: chartValueDiffs,
@@ -45,12 +45,14 @@ export const Chart:React.FC<Props> = ({
       // Put together chart data
       const data = {
         labels: chartLabels,
-        datasets: [{
-          data: chartValues,
-          borderColor: '#04F1ED',
-          pointHitRadius: 2,
-          radius: 0,
-        }]
+        datasets: [
+          {
+            data: chartValues,
+            borderColor: '#04F1ED',
+            pointHitRadius: 2,
+            radius: 0,
+          },
+        ],
       };
       const customPlugins = [
         {
@@ -70,7 +72,7 @@ export const Chart:React.FC<Props> = ({
               ctx.strokeStyle = '#FFFFFF';
               ctx.stroke();
               // Create shadow to darken rest of chart
-              ctx.globalCompositeOperation='source-atop';
+              ctx.globalCompositeOperation = 'source-atop';
               ctx.fillStyle = 'rgba(0, 0, 0, 0.70)';
               ctx.fillRect(x, yAxis.top, 900, yAxis.bottom + 100);
               ctx.restore();
@@ -85,16 +87,18 @@ export const Chart:React.FC<Props> = ({
               const lastDataValue = chartValues[chartValues.length - 1];
               const latestDate = chartLabels[chartLabels.length - 1];
               const latestDiff = chartValueDiffs[chartValueDiffs.length - 1];
-              const latestDiffPercent = chartValueDiffPercents[chartValueDiffPercents.length - 1];
-              if (onValueChange) onValueChange({
-                value: lastDataValue,
-                date: latestDate,
-                diff: latestDiff,
-                diffPercent: latestDiffPercent,
-                timePeriod,
-              });
+              const latestDiffPercent =
+                chartValueDiffPercents[chartValueDiffPercents.length - 1];
+              if (onValueChange)
+                onValueChange({
+                  value: lastDataValue,
+                  date: latestDate,
+                  diff: latestDiff,
+                  diffPercent: latestDiffPercent,
+                  timePeriod,
+                });
             }
-          }
+          },
         },
       ];
       const options = {
@@ -104,31 +108,42 @@ export const Chart:React.FC<Props> = ({
         },
         scales: {
           y: { ticks: { display: false }, grid: { display: false } },
-          x: { type: 'time', time: { unit: 'minute' }, ticks: { display: false, }, grid: { display: false } },
+          x: {
+            type: 'time',
+            time: { unit: 'hour' },
+            ticks: { display: false },
+            grid: { display: false },
+          },
         },
         responsive: true,
-        plugins:{
+        plugins: {
           legend: { display: false },
           tooltip: {
             enabled: false,
-            external: function() {},
+            external: function () {},
             callbacks: {
-              label: (data: {raw: number, dataIndex: number}) => {
-                if (onValueChange) onValueChange({
-                  value: data.raw,
-                  diff: chartValueDiffs[data.dataIndex],
-                  diffPercent: chartValueDiffPercents[data.dataIndex],
-                  date: chartLabels[data.dataIndex],
-                  timePeriod
-                });
-              }
+              label: (data: { raw: number; dataIndex: number }) => {
+                if (onValueChange)
+                  onValueChange({
+                    value: data.raw,
+                    diff: chartValueDiffs[data.dataIndex],
+                    diffPercent: chartValueDiffPercents[data.dataIndex],
+                    date: chartLabels[data.dataIndex],
+                    timePeriod,
+                  });
+              },
             },
           },
         },
         ...chartOptions,
       };
       // Full config object to use
-      const config = { type: chartType as ChartType, data, options: options as ChartOptions, plugins: customPlugins };
+      const config = {
+        type: chartType as ChartType,
+        data,
+        options: options as ChartOptions,
+        plugins: customPlugins,
+      };
       // Build the chart
       new ChartJS(chartElement.current!, config);
     }

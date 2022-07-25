@@ -97,32 +97,27 @@ export const AssetChart: React.FC<Props> = ({
         const newValueDiffs: ChartValueDiffsType = [];
         const newValueDiffPercents: ChartValueDiffPercentsType = [];
         // Loop through each api value and split into chart data arrays
-        sortedMarkerData.forEach(
-          ({ timestamp, price }: FetchMarkerType, index: number) => {
-            // Convert nhash to hash if needed
-            console.log('price :', price);
-            const finalPrice = isHash ? hashFormat(price, 'hash') : price;
-            console.log('finalPrice :', finalPrice);
-            // Calculate price change from first price
-            const diff = price - sortedMarkerData[0].price;
-            // Calculate percent change
-            const finalValueDiffPercents = percentChange(
-              sortedMarkerData[0].price,
-              price
-            );
-            const finalValueDiffs = isHash ? hashFormat(diff, 'hash') : diff;
-            // Add data to appropriate array
-            newValueDiffPercents.push(finalValueDiffPercents);
-            newLabels.push(timestamp);
-            newValues.push(finalPrice);
-            newValueDiffs.push(finalValueDiffs);
-          }
-        );
+        sortedMarkerData.forEach(({ timestamp, price }: FetchMarkerType) => {
+          // Convert nhash to hash if needed
+          const finalPrice = isHash ? hashFormat(price, 'hash') : price;
+          // Calculate price change from first price
+          const diff = price - sortedMarkerData[0].price;
+          // Calculate percent change
+          const finalValueDiffPercents = percentChange(
+            sortedMarkerData[0].price,
+            price
+          );
+          const finalValueDiffs = isHash ? hashFormat(diff, 'hash') : diff;
+          // Add data to appropriate array
+          newValueDiffPercents.push(finalValueDiffPercents);
+          newLabels.push(timestamp);
+          newValues.push(finalPrice);
+          newValueDiffs.push(finalValueDiffs);
+        });
         setChartLabels(newLabels);
         setChartValues(newValues);
         setChartValueDiffs(newValueDiffs);
         setChartValueDiffPercents(newValueDiffPercents);
-        console.log('newValues: ', newValues);
 
         // Update the price to be the latest value
         onValueChange({

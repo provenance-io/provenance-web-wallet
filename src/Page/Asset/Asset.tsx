@@ -4,7 +4,6 @@ import styled from 'styled-components';
 import { FooterNav, Header, Sprite as BaseSprite, Content, Typo } from 'Components';
 import { ICON_NAMES } from 'consts';
 import { AssetChart } from './AssetChart';
-import { AssetStats } from './AssetStats';
 import { AssetTxs } from './AssetTxs';
 import { ChangeValueArgs, TimePeriodType } from 'types';
 import { generateLabels } from 'utils';
@@ -108,7 +107,6 @@ export const Asset: React.FC = () => {
         loading={loading}
         setLoading={setLoading}
       />
-      <AssetStats />
       <AssetTxs assetName={assetName} />
       <FooterNav />
     </Content>

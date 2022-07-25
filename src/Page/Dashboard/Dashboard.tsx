@@ -62,13 +62,14 @@ export const Dashboard = () => {
   };
 
   const renderAssets = () =>
-    assets.map(({ display, displayAmount }) => (
+    assets.map(({ display, displayAmount, amount, usdPrice }) => (
       <RowItem
         onClick={() => navigate(`/asset/${display}`)}
         img={display}
         title={display}
-        subtitle={Number(displayAmount).toFixed(3)}
+        subtitle={`$${(Number(amount) * usdPrice).toFixed(2)}`}
         key={display}
+        detailsTop={Number(displayAmount).toFixed(6)}
       />
     ));
 

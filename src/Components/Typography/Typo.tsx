@@ -12,7 +12,7 @@ interface StyledProps {
   marginTop?: string;
   marginBottom?: string;
   textStyle: 'italic' | 'normal';
-  color: keyof typeof COLORS;
+  color?: keyof typeof COLORS;
   bold?: boolean;
   italic?: boolean;
 }
@@ -23,7 +23,7 @@ const StylingMixin = css<StyledProps>`
   ${({ marginBottom }) => !!marginBottom && `margin-bottom: ${marginBottom};`}
   text-align: ${({ align }) => align};
   font-style: ${({ textStyle }) => textStyle};
-  color: ${({ color }) => COLORS[color]};
+  color: ${({ color }) => (color ? COLORS[color] : COLORS.WHITE)};
   ${({ bold }) => bold && `font-weight: 700;`}
   ${({ italic }) => italic && `font-style: italic;`}
 `;
@@ -97,8 +97,9 @@ const FootnoteStyle = styled.p`
   font-weight: 400;
   font-size: 1.2rem;
   line-height: 1.92rem;
-  letter-spacing: 0.4em;
+  letter-spacing: 0.04em;
   ${StylingMixin}
+  color: ${({ color }) => (color ? COLORS[color] : COLORS.NEUTRAL_200)};
 `;
 
 type TypoType =
@@ -132,7 +133,7 @@ export const Typo: React.FC<Props> = ({
   marginTop,
   marginBottom,
   textStyle = 'normal',
-  color = 'WHITE',
+  color,
   bold,
   italic,
 }) => {

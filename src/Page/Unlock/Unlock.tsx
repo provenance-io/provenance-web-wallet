@@ -10,7 +10,7 @@ import {
 } from 'Components';
 import { APP_URL, ICON_NAMES, PASSWORD_MIN_LENGTH, RESET_WALLET_URL } from 'consts';
 import { useNavigate } from 'react-router-dom';
-import { decryptKey } from 'utils';
+import { decryptKey, keyPress } from 'utils';
 import { useActiveAccount, useSettings } from 'redux/hooks';
 
 interface Props {
@@ -29,7 +29,8 @@ export const Unlock = ({ nextUrl }: Props) => {
     setError('');
     let newError = '';
     // Make sure password is at least 5 characters
-    if (password.length < PASSWORD_MIN_LENGTH) newError = `Password must be a minimum of ${PASSWORD_MIN_LENGTH} characters.`;
+    if (password.length < PASSWORD_MIN_LENGTH)
+      newError = `Password must be a minimum of ${PASSWORD_MIN_LENGTH} characters.`;
     if (!password) newError = 'Enter a password';
     // No error so far
     if (!newError) {
@@ -51,11 +52,16 @@ export const Unlock = ({ nextUrl }: Props) => {
   const handleInputChange = (value: string) => {
     setError('');
     setPassword(value);
-  }
+  };
 
   return (
     <Content>
-      <Header iconLeft={ICON_NAMES.CLOSE} progress={100} title="Unlock Wallet" backLocation={APP_URL} />
+      <Header
+        iconLeft={ICON_NAMES.CLOSE}
+        progress={100}
+        title="Unlock Wallet"
+        backLocation={APP_URL}
+      />
       <BodyContent>Enter your password to unlock wallet</BodyContent>
       <Input
         id="wallet-password"
@@ -64,12 +70,23 @@ export const Unlock = ({ nextUrl }: Props) => {
         placeholder="Enter Password"
         value={password}
         onChange={handleInputChange}
+        autoFocus
+        onKeyUp={(e) => {
+          keyPress(e, 'Enter', handleSubmit);
+        }}
         error={error}
       />
       <BottomFloat>
         <ButtonGroup>
           <Button onClick={handleSubmit}>Continue</Button>
-          <Button variant='secondary' onClick={() => {navigate(RESET_WALLET_URL)}}>Destroy Wallet</Button>
+          <Button
+            variant="secondary"
+            onClick={() => {
+              navigate(RESET_WALLET_URL);
+            }}
+          >
+            Destroy Wallet
+          </Button>
         </ButtonGroup>
       </BottomFloat>
     </Content>

@@ -10,6 +10,7 @@ export * from './getChainId';
 export * from './getJSType';
 export * from './hashFormat';
 export * from './isMnemonic';
+export * from './keyPress';
 export * from './localChromeSpoof';
 export * from './numberFormat';
 export * from './percentChange';

@@ -1,7 +1,7 @@
 {
   "name": "Provenance Blockchain Wallet",
   "description": "Provenance Blockchain Wallet Browser Extension",
-  "author": "Figure Tech",
+  "author": "Provenance Blockchain Foundation",
   "version": "1.0.0",
   "manifest_version": 3,
   "icons": {
@@ -14,15 +14,13 @@
     "default_popup": "index.html"
   },
   "permissions": [
-    "storage",
-    "tabs",
-    "activeTab",
-    "notifications",
-    "management"
+    "storage"
   ],
   "web_accessible_resources": [
     {
-      "resources": [ "background.js" ],
+      "resources": [
+        "background.js"
+      ],
       "matches": [
         "*://*.figure.tech/*",
         "http://localhost:3000/*"
@@ -39,20 +37,26 @@
   "content_scripts": [
     {
       "all_frames": true,
-      "js": [ "content-script.js" ],
-      "matches": [ "file://*/*", "http://*/*", "https://*/*" ],
+      "js": [
+        "content-script.js"
+      ],
+      "matches": [
+        "file://*/*",
+        "http://*/*",
+        "https://*/*"
+      ],
       "run_at": "document_start"
     }
   ],
   "commands": {
     "_execute_action": {
-       "suggested_key": {
-          "default": "Alt+Shift+P",
-          "chromeos": "Alt+Shift+P",
-          "linux": "Alt+Shift+P",
-          "mac": "Alt+Shift+P",
-          "windows": "Alt+Shift+P"
-       }
+      "suggested_key": {
+        "default": "Alt+Shift+P",
+        "chromeos": "Alt+Shift+P",
+        "linux": "Alt+Shift+P",
+        "mac": "Alt+Shift+P",
+        "windows": "Alt+Shift+P"
+      }
     }
- }
+  }
 }

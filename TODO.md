@@ -25,6 +25,7 @@
   - Show price
   - Trim number size fixed digits
 * Asset chart, when selecting Year and All get error: [DONE]
+* Update receive page to use active account address for QR code [DONE]
 
 ## Bugs
 * If dApp disconnects while ext is signing message/approving tx currently goes to empty page [10]

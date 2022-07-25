@@ -24,7 +24,6 @@ interface Props {
   progress: number;
 }
 
-// TODO: Would like to rewrite this functino... straight copied it from stack overflow
 const getRandomSubarray = (arr: string[] = [], size: number = 0) => {
   var shuffled = arr.slice(0),
     i = arr.length,
@@ -89,7 +88,7 @@ export const SeedphraseVerify = ({ nextUrl, previousUrl, progress }: Props) => {
     }
   }, [mnemonicArray, verifyWords, mnemonic]);
 
-  const handleContinue = (event:React.MouseEvent) => {
+  const handleContinue = (event: React.MouseEvent) => {
     // Pressing the shift + option keys will override any verification
     const verificationBypass = event.shiftKey && event.altKey;
     if (!verificationBypass && !termsAgree) {
@@ -120,8 +119,12 @@ export const SeedphraseVerify = ({ nextUrl, previousUrl, progress }: Props) => {
   };
 
   return (
-    <Content padBottom='120px'>
-      <Header progress={progress} title="Verify Passphrase" backLocation={previousUrl} />
+    <Content padBottom="120px">
+      <Header
+        progress={progress}
+        title="Verify Passphrase"
+        backLocation={previousUrl}
+      />
       {createButtonGroups()}
       <Checkbox
         checked={termsAgree}
@@ -130,11 +133,11 @@ export const SeedphraseVerify = ({ nextUrl, previousUrl, progress }: Props) => {
         }}
         label="I agree that I'm solely responsible for my wallet and cannot recover the passphrase if lost."
       />
-      {errorMsg && (
-        <Typo type='error'>{errorMsg}</Typo>
-      )}
+      {errorMsg && <Typo type="error">{errorMsg}</Typo>}
       <BottomFloat>
-        <Button onClick={handleContinue} variant="primary">Continue</Button>
+        <Button onClick={handleContinue} variant="primary">
+          Continue
+        </Button>
       </BottomFloat>
     </Content>
   );

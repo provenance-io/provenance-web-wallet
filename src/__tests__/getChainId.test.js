@@ -1,5 +1,5 @@
 import { CHAINID_MAINNET, CHAINID_TESTNET } from 'consts';
-import { getChainId } from 'utils';
+import { getChainId } from 'utils/getChainId';
 
 const testData = [
   { address: 'tp1grxskh6mlkt488wgnhqmaymdguyp5exn49uvw4', result: CHAINID_TESTNET },
@@ -11,6 +11,6 @@ describe('Get the chainid based on address', () => {
   testData.forEach(({ address, result }) => {
     test(`chainid for "${address}"`, () => {
       expect(getChainId(address)).toStrictEqual(result);
-    })
+    });
   });
 });

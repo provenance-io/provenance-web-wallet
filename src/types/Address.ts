@@ -1,11 +1,20 @@
-export type AllTransactions = {
-  block: number;
-  feeAmount: string;
+export interface AmountObject {
+  amount: string | number;
+  denom: string;
+}
+
+export type Transaction = {
   hash: string;
   signer: string;
-  status: string;
-  time: string;
   type: string;
+  feeAmount: string;
+  time: string;
+  status: string;
+  block: number;
+  denom?: string;
+  senderAddress: string;
+  recipientAddress?: string;
+  amount?: string | number | AmountObject;
 };
 
 export type Asset = {
@@ -21,31 +30,14 @@ export type Asset = {
   usdPrice: number;
 };
 
-export type Transaction = {
-  amount: number;
-  block: number;
-  denom: string;
-  exponent: number;
-  hash: string;
-  pricePerUnit: number;
-  recipientAddress: string;
-  senderAddress: string;
-  status: string;
-  timestamp: string;
-  totalPrice: number;
-  txFee: number;
-};
-
 export interface Address {
-  allTransactionsLoading: boolean;
   assetsLoading: boolean;
-  transactionsLoading: boolean;
-  allTransactionsPages: number;
-  allTransactionsTotalCount: number;
-  allTransactions: Array<AllTransactions>;
-  assets: Array<Asset>;
-  transactions: Array<Transaction>;
-  allTransactionsError: any;
   assetsError?: any;
-  transactionsError?: any;
-};
+  assets: Array<Asset>;
+
+  transactionsTotalCount: number;
+  transactionsPages: number;
+  transactions: Transaction[];
+  transactionsLoading: boolean;
+  transactionsError: boolean;
+}

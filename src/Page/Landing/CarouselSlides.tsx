@@ -37,7 +37,7 @@ const StatValueSmall = styled.span`
 `;
 
 const formatNumber = (value: number, digits = 1) =>
-    numberFormat({ rawValue: value, digits, extraOptions: { shorthand: true } });
+    numberFormat(value, digits, { shorthand: true });
 
 const valueText = (
   value?: string | number,

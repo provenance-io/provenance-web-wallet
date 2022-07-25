@@ -12,7 +12,7 @@ import { useAccount, useWalletConnect } from 'redux/hooks';
 import { List, Authenticate, Content, FullData } from 'Components';
 import { useEffect, useState } from 'react';
 import { format } from 'date-fns';
-import { txMessageFormat, getTxFeeEstimate, getGrpcApi, getChainId, convertHexToUtf8, hashFormat, validateAddress } from 'utils';
+import { txMessageFormat, getTxFeeEstimate, getGrpcApi, getChainId, convertHexToUtf8, hashFormat } from 'utils';
 import { BIP32Interface } from 'types';
 
 const Title = styled.div`
@@ -55,7 +55,7 @@ interface ParsedMetadata {
 }
 interface ParsedTxMessage { [fieldName: string]: any };
 
-export const SendTransaction:React.FC<Props> = ({ payload, closeWindow, setFailedMessage }) => {
+export const TransactionRequest:React.FC<Props> = ({ payload, closeWindow, setFailedMessage }) => {
   const {
     connector,
     connectionEXP,
@@ -97,39 +97,22 @@ export const SendTransaction:React.FC<Props> = ({ payload, closeWindow, setFaile
       setParsedTxMessage(txMsg as ParsedTxMessage);
       // Calculate the tx and gas fees
       (async () => {
-        const {
-          toAddress,
-          fromAddress,
-          delegatorAddress,
-          validatorAddress,
-          address: txMsgAddress,
-        } = msgObj as {[key: string]: any} || {};
         const metadataAddress = newParsedMetadata.address!
-        const potentialAddresses = [
-          metadataAddress,
-          toAddress,
-          fromAddress,
-          delegatorAddress,
-          validatorAddress,
-          txMsgAddress,
-        ];
-        // Build a list of all possible address values and validate all of them.  Must all be valid to calculate txFees w/o errors
-        const addressesToValidate = potentialAddresses.filter(address => !!address);
-        const allAddressValid = !addressesToValidate.filter((address:string) => !validateAddress(address)).length;
         const targetAccount = accounts.find(({ address: storeAddress }) => storeAddress === metadataAddress);
-        if (targetAccount && allAddressValid) {
-          const {txFeeEstimate, txGasEstimate} = await getTxFeeEstimate({
-            address: metadataAddress,
-            publicKey: targetAccount.publicKey!,
-            msgAny,
-            gasPrice: newParsedMetadata?.gasPrice?.gasPrice,
-            gasPriceDenom: newParsedMetadata?.gasPrice?.gasPriceDenom,
-          });
-          setTxFeeEstimate(txFeeEstimate);
-          setTxGasEstimate(txGasEstimate);
-        } else {
-          // Missing or invalid address for tx, display a message to the user and stop the transaction
-          setFailedMessage('Missing or invalid address received, please review all addresses in the transaction request and try again.');
+        if (targetAccount) {
+          try {
+            const {txFeeEstimate, txGasEstimate} = await getTxFeeEstimate({
+              address: metadataAddress,
+              publicKey: targetAccount.publicKey!,
+              msgAny,
+              gasPrice: newParsedMetadata?.gasPrice?.gasPrice,
+              gasPriceDenom: newParsedMetadata?.gasPrice?.gasPriceDenom,
+            });
+            setTxFeeEstimate(txFeeEstimate);
+            setTxGasEstimate(txGasEstimate);
+          } catch(err) {
+            setFailedMessage(`${err}`);
+          }
         }
       })();
     }

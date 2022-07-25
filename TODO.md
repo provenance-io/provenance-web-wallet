@@ -1,46 +1,37 @@
-# TODO
+# TODO (Move these todo items into GH issues)
 * _(Priority: 1 - 10)_
 
 ## Current Branch Tasks/Changes
-* Add "backCallback" to header component to run on click (before navigating) [DONE]
-* When leaving send flow back to dashboard, reset/clear out coin redux store data. [DONE]
-* Move notification page redirect into App.tsx instead of RequiresAuth.tsx
-* Unable to connect [DONE]
-  - Error 01: 'Session currently connected' [DONE]
-    - Only happens on close (check event listener for close)
-  - Error 02: 'Uncaught (in promise) Error: Missing or invalid topic field' [DONE]
-    - Load, async chrome storage check, which checking, notification creates connector which adds it to the storage, async finishes by finding existing connection
-      - Essentially a race condition.
-      - Nothing should be allowed to happen until all initial fetch/loadings have finished
-        - Show a loading bar until that happens (add to app.tsx)
-
-## Bugs
-* Whenever we fail to get gas estimate display error (same error as an invalid address) [1]
+* Cleanup chain.ts file in utils [DONE]
+  - Split out each function to its own subfile within a chain folder
+* Whenever we fail to get gas estimate display error (same error as an invalid address) [DONE]
   - When adding marker and we send through a duplicated marker
   - When using an invalid address
   - Just display the error and reject the tx.
-* Wallet-utils not correctly converting numbers to strings (example: permissionsList) [2]
-  - This will need to be fixed within wallet-utils, not here in web-wallet.
-* Unable to reject pending tx if connection is dead (should auto reject somehow if disconnected) [3]
-* If dApp disconnects while a user is signing a message, auto reject on ext if possible [3]
-  - Change the page, say "You've been disconnected" and just allow pressing "ok" to leave
-* If you select extension in the popup, then close the extension, dApp still things the current connection type is "extension" [3]
-  - If you connect with mobile, on action, both mobile and extension receive the request
-  - If the tab changes, reset the extension type (if not connected)
-* Sometimes extension shows pending action when there is none [3]
-  - At very least, if there is none, when opened, remove pending notice from ext icon
-* Occationally/rarely, when clicking to connect or an action, popup opens with no content [DONE*MAYBE*WATCH]
-  - Hard to recreate, loads basic popup with no content (just a page background)
-* dApp connection request takes two clicks to cause popup to open [DONE*MAYBE*WATCH]
-  - Sometimes, not always, hard to debug/reproduce
-  - "Error: Could not establish connection. Receiving end does not exist." (first click)
-  - Look into the setting of localStorage, value changes, no popup, on second click, value exists, popup opens
-  - Potentially a walletconnect-js issue
+* Use updated recent transactions api to show recent tx addresses on send [DONE]
+* Finish building out Transactions Page [DONE]
+* Build out transaction details page (when you click a single tx row) [DONE]
+* Update hashFormat util function. [DONE]
+* Add autofocus and keyboard events to unlock page [DONE]
+  - Auto select input, and pressing "enter" while in input will submit
+  - Create new keyPress util to handle keyboard events
+* Update all tests to pull directly from util function [DONE]
+  - Previously pulling in all due to the way it was imported
+* Asset details page [DONE]
+  - Chart value missing (all display 0.00 currently) [DONE]
+  - Remove stats section (ios removed this section), missing data [DONE]
+  - Pull recent transactions [DONE]
+* Format Dashboard page assets [DONE]
+  - Show price
+  - Trim number size fixed digits
+* Asset chart, when selecting Year and All get error: [DONE]
+* Update receive page to use active account address for QR code [DONE]
+
+## Bugs
+* If dApp disconnects while ext is signing message/approving tx currently goes to empty page [10]
+  - Change the page, say "You've been disconnected" and just allow pressing "ok" to close extension
 
 ## Features
-* Popup should use custom html page (instead of using index and getting js-redirected) [1]
-  - Causes extra rendering and a flash of new content when a popup notification is opened
-* Use updated recent transactions api to show recent tx addresses on send [1]
 * Handle blockchain broadcast failures & display reasons (instead of success page) [2]
 * When a tx message (walletconnect-js) comes through, auto switch to the target wallet (maybe...ask JD) [2]
   - Should already be connected to wcjs which is connected to a wallet, active wallet shouldn't matter
@@ -78,6 +69,8 @@
   - Auto Faucet to add hash to tp address
 * Metrics/Logging [10]
   - Anon track errors, performance, etc.
+* Account Address book [10]
 
 ## Cleanup
 * Clean up chain.ts util file, make a chain folder and split out the actions into separate files, too messy currently [10]
+* Walletconnect-js doesn't need to handle extensionId anymore due to content-script [0_3RD_PARTY]

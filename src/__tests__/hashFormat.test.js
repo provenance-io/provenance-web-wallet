@@ -1,4 +1,4 @@
-import { hashFormat } from 'utils';
+import { hashFormat } from 'utils/hashFormat';
 
 const testData = [
   {
@@ -19,7 +19,12 @@ const testData = [
   {
     amount: 1,
     amountType: 'nhash',
-    result: .000000001,
+    result: 0.000000001,
+  },
+  {
+    amount: 3.8e-11,
+    amountType: 'hash',
+    result: 0.038,
   },
 ];
 
@@ -27,9 +32,9 @@ const testData = [
 // Test various amounts of nhash to see proper conversion to hash
 // -------------------------------------------------------------------
 describe('Convert nhash to hash and hash to nhash correctly', () => {
-  testData.forEach(({ amount, amountType, result }) => {
+  testData.forEach(({ amount, amountType, result, fixedAmount }) => {
     test(`convert ${amount} ${amountType}`, () => {
-      expect(hashFormat(amount, amountType)).toBe(result);
-    })
+      expect(hashFormat(amount, amountType, fixedAmount)).toBe(result);
+    });
   });
 });

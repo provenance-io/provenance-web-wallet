@@ -1,4 +1,4 @@
-import { isMnemonic } from 'utils';
+import { isMnemonic } from 'utils/isMnemonic';
 
 const mnemonicTestItems = [
   { mnemonic: '', result: false, length: 24 },
@@ -24,6 +24,6 @@ describe('Create new accounts at each possible HD level', () => {
   mnemonicTestItems.forEach(({ mnemonic, result, length }) => {
     test(`is "${mnemonic}" a valid mnemonic and length`, () => {
       expect(isMnemonic(mnemonic, length)).toBe(result);
-    })
+    });
   });
 });

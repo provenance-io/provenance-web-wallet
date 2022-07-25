@@ -2,10 +2,9 @@ import { useState, useEffect } from 'react';
 import { Header, AssetDropdown, Input, Sprite, Button, Content, BottomFloat, Loading, Typo } from 'Components';
 import styled from 'styled-components';
 import { DASHBOARD_URL, ICON_NAMES, SEND_AMOUNT_URL } from 'consts';
-import { trimString, validateAddress } from 'utils';
+import { trimAddress, validateAddress } from 'utils';
 import { useNavigate } from 'react-router';
 import { useActiveAccount, useAddress, useMessage } from 'redux/hooks';
-import { format, parseISO } from 'date-fns';
 
 const SectionTitle = styled.div`
   font-size: 1.4rem;
@@ -52,12 +51,14 @@ const Address = styled.div`
   font-size: 1.4rem;
   margin-bottom: 6px;
 `;
-const Date = styled.div`
-  font-size: 1.2rem;
-  color: #B9BDCA;
-`;
 
 export const Send: React.FC = () => {
+  const [error, setError] = useState('');
+  const [recentAddressLimit, setRecentAddressLimit] = useState(3);
+  const [totalUniqueAddresses, setTotalUniqueAddresses] = useState(0);
+  const [recentTxAddresses, setRecentTxAddresses] = useState<string[]>([]);
+  const [txHaveBeenFetched, setTxHaveBeenFetched] = useState(false);
+  const [txsHaveBeenFiltered, setTxsHaveBeenFiltered] = useState(false);
   const navigate = useNavigate();
   const {
     assets,
@@ -66,9 +67,6 @@ export const Send: React.FC = () => {
     transactionsLoading,
     transactionsError,
   } = useAddress();
-  const recentAddresses = [...transactions].splice(0, 4);
-  const [error, setError] = useState('');
-  const [initialLoad, setInitialLoad] = useState(true);
   const {
     txSendAddress,
     setTxSendAddress,
@@ -79,32 +77,49 @@ export const Send: React.FC = () => {
   } = useMessage();
   const { address } = useActiveAccount();
 
-  // Initial load fetch all transactions
+  // Initial load fetch all transactions (Only do this once)
   useEffect(() => {
-    if (initialLoad && address) {
-      setInitialLoad(false);
-      setTxFromAddress(address);
-      getAddressTx(address);
+    if (!txHaveBeenFetched && address) {
+      (async () => {
+        await getAddressTx({address, count: 50});
+        setTxHaveBeenFetched(true);
+      })()
     }
-  }, [initialLoad, address, getAddressTx, setTxFromAddress]);
+  }, [txHaveBeenFetched, address, getAddressTx]);
 
+  // Update message fields
   useEffect(() => {
     setCoin(assets[0]);
-  }, [assets, setCoin]);
+    setTxFromAddress(address);
+  }, [assets, setCoin, address, setTxFromAddress]);
 
-  const renderRecentAddresses = () =>
-    recentAddresses.map(({ recipientAddress, timestamp }, index) => (
-      <RecentAddressItem
-        key={`${recipientAddress}_${index}`}
-        onClick={() => setTxSendAddress(recipientAddress)}
-      >
+  // Build array of recent addresses (Only do this once)
+  useEffect(() => {
+    // Only run after txs have been pulled (initialLoad)
+    if (txHaveBeenFetched && !txsHaveBeenFiltered) {
+      setTxsHaveBeenFiltered(true);
+      // Pull txs with recipient, create array from just those addresses
+      const txsRecipientList = transactions.filter(({ recipientAddress }) => !!recipientAddress).map(({ recipientAddress }) => recipientAddress);
+      // Remove duplicate addresses
+      const txsDupsFiltered = [...new Set(txsRecipientList)];
+      setTotalUniqueAddresses(txsDupsFiltered.length);
+      setRecentTxAddresses(txsDupsFiltered as string[]);
+    }
+  }, [transactions, txsHaveBeenFiltered, txHaveBeenFetched]);
+
+  const renderRecentAddresses = () => {
+    // Limit the amount of recent addresses rendered by the current limit
+    const limitedTxList = [...recentTxAddresses].splice(0, recentAddressLimit);
+    // Render recent addresses from created array
+    return limitedTxList.map((address, index) => (
+      <RecentAddressItem key={`${address}_${index}`} onClick={() => setTxSendAddress(address)}>
         <AddressInfo>
-          <Address>{trimString(recipientAddress, 11, 4)}</Address>
-          <Date>{format(parseISO(timestamp), 'M/d/yy')}</Date>
+          <Address>{trimAddress(address!)}</Address>
         </AddressInfo>
         <Sprite icon={ICON_NAMES.CHEVRON} size="1.3rem" />
       </RecentAddressItem>
     ));
+  }
 
   const validateAndNavigate = () => {
     if (!txSendAddress) return setError('An address is required');
@@ -137,10 +152,9 @@ export const Send: React.FC = () => {
               <Typo type="body" align='left' textStyle='italic'>No recent addresses available</Typo> :
               renderRecentAddresses()
             }
-            {!!transactions.length &&
+            {!!transactions.length && (recentAddressLimit < totalUniqueAddresses) &&
               <RecentAddressItem>
-                <AddressInfo>View All</AddressInfo>
-                <Sprite icon={ICON_NAMES.CHEVRON} size="1.3rem" />
+                <AddressInfo onClick={() => setRecentAddressLimit(recentAddressLimit + 3)}>View More</AddressInfo>
               </RecentAddressItem>
             }
           </RecentAddressSection>

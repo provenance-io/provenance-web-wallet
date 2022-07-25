@@ -7,7 +7,7 @@ import { EventPayload, WCNotification } from 'types';
 import { Content, Loading } from 'Components';
 import { WalletConnectInit } from './WalletConnectInit';
 import { SignRequest } from './SignRequest';
-import { SendTransaction } from './SendTransaction';
+import { TransactionRequest } from './TransactionRequest';
 import { RequestFailed } from './RequestFailed';
 
 type ExtensionTypes = 'extension' | 'browser' | '';
@@ -123,7 +123,7 @@ export const Notification:React.FC = () => {
 
     switch(notificationType) {
       case 'session_request': return <WalletConnectInit {...pageProps as PageProps} />
-      case 'provenance_sendTransaction': return <SendTransaction {...pageProps as PageProps} />
+      case 'provenance_sendTransaction': return <TransactionRequest {...pageProps as PageProps} />
       case 'provenance_sign': return <SignRequest {...pageProps as PageProps} />;
       case 'connect': // fallthrough
       case 'disconnect': return '' // Return empty since this would only show up for a split second before the popup closes/changes

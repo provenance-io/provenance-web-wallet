@@ -9,19 +9,23 @@ import { COLORS, FONTS } from 'theme';
 
 interface StyledProps {
   align: 'left' | 'right' | 'center';
-  marginTop?: string,
-  marginBottom?: string,
-  textStyle: 'italic' | 'normal',
-  color: keyof typeof COLORS,
+  marginTop?: string;
+  marginBottom?: string;
+  textStyle: 'italic' | 'normal';
+  color?: keyof typeof COLORS;
+  bold?: boolean;
+  italic?: boolean;
 }
 
 const StylingMixin = css<StyledProps>`
   margin: 0;
-  ${({ marginTop }) => !!marginTop && `margin-top: ${marginTop};` }
-  ${({ marginBottom }) => !!marginBottom && `margin-bottom: ${marginBottom};` }
-  text-align: ${({ align }) => align };
-  font-style: ${({ textStyle }) => textStyle };
-  color: ${({ color }) => COLORS[color] };
+  ${({ marginTop }) => !!marginTop && `margin-top: ${marginTop};`}
+  ${({ marginBottom }) => !!marginBottom && `margin-bottom: ${marginBottom};`}
+  text-align: ${({ align }) => align};
+  font-style: ${({ textStyle }) => textStyle};
+  color: ${({ color }) => (color ? COLORS[color] : COLORS.WHITE)};
+  ${({ bold }) => bold && `font-weight: 700;`}
+  ${({ italic }) => italic && `font-style: italic;`}
 `;
 
 const TitleStyle = styled.p`
@@ -39,6 +43,15 @@ const DisplayBodyStyle = styled.p`
   font-size: 1.6rem;
   line-height: 2.48rem;
   letter-spacing: 0.04em;
+  ${StylingMixin}
+`;
+
+const Display1Style = styled.p`
+  ${FONTS.SECONDARY_FONT};
+  font-weight: 300;
+  font-size: 4.4rem;
+  line-height: 5.36rem;
+  letter-spacing: 0.02em;
   ${StylingMixin}
 `;
 
@@ -60,7 +73,7 @@ const BodyStyle = styled.p`
   ${StylingMixin}
 `;
 const ErrorStyle = styled(BodyStyle)`
-  color: #ED6E74;
+  color: #ed6e74;
 `;
 const SubheadStyle = styled.p`
   ${FONTS.PRIMARY_FONT};
@@ -79,20 +92,40 @@ const Headline2Style = styled.p`
   text-transform: uppercase;
   ${StylingMixin}
 `;
+const FootnoteStyle = styled.p`
+  ${FONTS.PRIMARY_FONT};
+  font-weight: 400;
+  font-size: 1.2rem;
+  line-height: 1.92rem;
+  letter-spacing: 0.04em;
+  ${StylingMixin}
+  color: ${({ color }) => (color ? COLORS[color] : COLORS.NEUTRAL_200)};
+`;
 
-type TypoType = 'body' | 'subhead' | 'headline2' | 'error' | 'displayBody' | 'title' | 'display2';
+type TypoType =
+  | 'body'
+  | 'subhead'
+  | 'headline2'
+  | 'error'
+  | 'displayBody'
+  | 'title'
+  | 'display1'
+  | 'display2'
+  | 'footnote';
 interface Props {
-  className?: string,
+  className?: string;
   children: React.ReactNode;
   align?: 'left' | 'right' | 'center';
   type: TypoType;
-  marginTop?: string,
-  marginBottom?: string,
-  textStyle?: 'italic' | 'normal',
-  color?: keyof typeof COLORS,
+  marginTop?: string;
+  marginBottom?: string;
+  textStyle?: 'italic' | 'normal';
+  color?: keyof typeof COLORS;
+  bold?: boolean;
+  italic?: boolean;
 }
 
-export const Typo:React.FC<Props> = ({
+export const Typo: React.FC<Props> = ({
   className,
   children,
   align = 'center',
@@ -100,20 +133,43 @@ export const Typo:React.FC<Props> = ({
   marginTop,
   marginBottom,
   textStyle = 'normal',
-  color = 'WHITE',
+  color,
+  bold,
+  italic,
 }) => {
-  const allProps = { className, align, type, marginTop, marginBottom, textStyle, color };
+  const allProps = {
+    className,
+    align,
+    type,
+    marginTop,
+    marginBottom,
+    textStyle,
+    color,
+    bold,
+    italic,
+  };
   const getStyledType = () => {
     switch (type) {
-      case 'body': return <BodyStyle {...allProps}>{children}</BodyStyle>
-      case 'subhead': return <SubheadStyle {...allProps}>{children}</SubheadStyle>
-      case 'headline2': return <Headline2Style {...allProps}>{children}</Headline2Style>
-      case 'error': return <ErrorStyle {...allProps}>{children}</ErrorStyle>
-      case 'displayBody': return <DisplayBodyStyle {...allProps}>{children}</DisplayBodyStyle>
-      case 'display2': return <Display2Style {...allProps}>{children}</Display2Style>
-      case 'title': return <TitleStyle {...allProps}>{children}</TitleStyle>
+      case 'body':
+        return <BodyStyle {...allProps}>{children}</BodyStyle>;
+      case 'subhead':
+        return <SubheadStyle {...allProps}>{children}</SubheadStyle>;
+      case 'headline2':
+        return <Headline2Style {...allProps}>{children}</Headline2Style>;
+      case 'error':
+        return <ErrorStyle {...allProps}>{children}</ErrorStyle>;
+      case 'displayBody':
+        return <DisplayBodyStyle {...allProps}>{children}</DisplayBodyStyle>;
+      case 'display1':
+        return <Display1Style {...allProps}>{children}</Display1Style>;
+      case 'display2':
+        return <Display2Style {...allProps}>{children}</Display2Style>;
+      case 'title':
+        return <TitleStyle {...allProps}>{children}</TitleStyle>;
+      case 'footnote':
+        return <FootnoteStyle {...allProps}>{children}</FootnoteStyle>;
     }
-  }
-  
+  };
+
   return getStyledType();
-}
+};

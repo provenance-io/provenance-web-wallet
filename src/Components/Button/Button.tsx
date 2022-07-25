@@ -92,6 +92,7 @@ const StyledButton = styled.button<StyledButtonProps>`
   cursor: pointer;
   pointer-events:auto;
   font-family: 'Gothic A1', sans-serif;
+  justify-content: center;
   &:hover,
   &:focus {
     border-color: ${({ variant }) => variations[variant].hoverBorder};
@@ -121,7 +122,7 @@ type SvgProps = {
 };
 
 type Props = {
-  children: React.ReactNode;
+  children?: React.ReactNode;
   onClick?: (event:React.MouseEvent) => void;
   variant?: 'default' | 'primary' | 'secondary' | 'transparent',
   layout?: 'column' | 'row',
@@ -151,7 +152,7 @@ export const Button = ({
   <ButtonWrapper title={title}>
     <StyledButton variant={variant} layout={layout} onClick={onClick} {...rest} disabled={disabled} icon={icon} iconGap={iconGap} iconLocation={iconLocation}>
       {!!icon && (iconLocation === 'top' || iconLocation === 'left') && <Sprite icon={icon} size={iconSize} {...iconProps} />}
-      {children}
+      {!!children && children}
       {!!icon && (iconLocation === 'bottom' || iconLocation === 'right') && <Sprite icon={icon} size={iconSize} {...iconProps} />}
     </StyledButton>
   </ButtonWrapper>

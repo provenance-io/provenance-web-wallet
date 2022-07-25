@@ -3,12 +3,16 @@ import styled from 'styled-components';
 interface StyledProps {
   direction: 'column' | 'row';
   childWidth: string,
+  marginTop?: string;
+  marginBottom?: string;
 }
 
 const Wrapper = styled.div<StyledProps>`
   display: flex;
   flex-direction: ${({ direction }) => direction};
   width: 100%;
+  ${({ marginTop }) => !!marginTop && `margin-top: ${marginTop};` }
+  ${({ marginBottom }) => !!marginBottom && `margin-bottom: ${marginBottom};` }
   div { // Div is the button wrappers
     ${({ direction }) => direction === 'column' && `
       margin-top: 10px;
@@ -29,11 +33,13 @@ interface Props {
   children: React.ReactNode;
   direction?: 'column' | 'row';
   childWidth?: string;
+  marginTop?: string;
+  marginBottom?: string;
 }
 
-export const ButtonGroup:React.FC<Props> = ({ children, direction = 'column', childWidth = '50%' }) => {
+export const ButtonGroup:React.FC<Props> = ({ children, direction = 'column', childWidth = '50%', marginTop, marginBottom }) => {
   return (
-    <Wrapper direction={direction} childWidth={childWidth}>
+    <Wrapper direction={direction} childWidth={childWidth} marginTop={marginTop} marginBottom={marginBottom}>
       {children}
     </Wrapper>
   )

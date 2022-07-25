@@ -13,7 +13,7 @@ import {
   RENAME_ACCOUNT_URL,
 } from 'consts';
 import { useAccount } from 'redux/hooks';
-import { trimString } from 'utils';
+import { trimAddress } from 'utils';
 import { AccountNetwork } from 'types';
 import { COLORS } from 'theme';
 
@@ -111,7 +111,7 @@ export const DashboardMenu:React.FC = () => {
       <WalletInfo>
         <WalletText>
           <AccountName>{name}</AccountName>
-          <AccountAddress>{trimString(address!, 7, 3)}</AccountAddress>
+          <AccountAddress>{trimAddress(address!)}</AccountAddress>
         </WalletText>
         <Pill network={network!}>{network}</Pill>
       </WalletInfo>

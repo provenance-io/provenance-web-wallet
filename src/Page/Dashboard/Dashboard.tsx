@@ -1,4 +1,4 @@
-import { Button, ButtonGroup, FooterNav, AssetRow, Content, Denom } from 'Components';
+import { Button, ButtonGroup, FooterNav, RowItem, Content, Denom } from 'Components';
 import { SEND_URL, DASHBOARD_RECEIVE_URL, ICON_NAMES } from 'consts';
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
@@ -52,26 +52,35 @@ export const Dashboard = () => {
 
   const calculatePortfolioValue = () => {
     let totalValue = 0;
-    const assetValues = assets.map(({ usdPrice, amount }) => usdPrice * Number(amount));
-    assetValues.forEach((value) => { totalValue += value });
+    const assetValues = assets.map(
+      ({ usdPrice, amount }) => usdPrice * Number(amount)
+    );
+    assetValues.forEach((value) => {
+      totalValue += value;
+    });
     return totalValue;
   };
 
-  const renderAssets = () => assets.map(({ display, displayAmount }) => (
-    <AssetRow
-      onClick={() => navigate(`/asset/${display}`)}
-      img={display}
-      name={display}
-      amount={{ count: displayAmount }}
-      key={display}
-    />
-  ));
+  const renderAssets = () =>
+    assets.map(({ display, displayAmount, amount, usdPrice }) => (
+      <RowItem
+        onClick={() => navigate(`/asset/${display}`)}
+        img={display}
+        title={display}
+        subtitle={`$${(Number(amount) * usdPrice).toFixed(2)}`}
+        key={display}
+        detailsTop={Number(displayAmount).toFixed(6)}
+      />
+    ));
 
   return (
     <Content>
       <DashboardHeader />
       <PortfolioTitle>Portfolio Value</PortfolioTitle>
-      <Value><Denom>$</Denom>{calculatePortfolioValue().toFixed(2)}</Value>
+      <Value>
+        <Denom>$</Denom>
+        {calculatePortfolioValue().toFixed(2)}
+      </Value>
       <ButtonGroup direction="row">
         <Button
           icon={ICON_NAMES.ARROW}
@@ -94,7 +103,7 @@ export const Dashboard = () => {
       </ButtonGroup>
       <AssetsTitle>My Assets</AssetsTitle>
       <AssetsContainer>
-        {assets.length ? renderAssets(): 'Address has no assets...'}
+        {assets.length ? renderAssets() : 'Address has no assets...'}
       </AssetsContainer>
       <FooterNav />
     </Content>

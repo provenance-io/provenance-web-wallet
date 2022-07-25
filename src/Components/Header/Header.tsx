@@ -5,22 +5,23 @@ import { COLORS } from 'theme';
 import { ICON_NAMES } from 'consts';
 import React from 'react';
 
-const Wrapper = styled.header<{marginBottom: string}>`
+const Wrapper = styled.header<{ marginBottom: string }>`
   display: flex;
   flex-direction: column;
   gap: 18px;
-  margin-bottom: ${({ marginBottom }) => marginBottom };
+  margin-bottom: ${({ marginBottom }) => marginBottom};
   width: 100%;
 `;
 
-const Content = styled.div<{excludeBackButton: boolean}>`
+const Content = styled.div<{ excludeBackButton: boolean }>`
   display: grid;
-  grid-template-columns: ${({ excludeBackButton }) => excludeBackButton ? '1fe' : '1.4rem 1fr 1.4rem' };
+  grid-template-columns: ${({ excludeBackButton }) =>
+    excludeBackButton ? '1fe' : '1.4rem 1fr 1.4rem'};
   align-items: center;
   text-transform: capitalize;
 `;
 
-const ProgressBar = styled.div<{progress?: number}>`
+const ProgressBar = styled.div<{ progress?: number }>`
   position: relative;
   height: 3px;
   width: 100%;
@@ -54,12 +55,16 @@ const LinkOrButton = styled.button`
 `;
 
 interface BackButtonProps {
-  children: React.ReactNode,
-  backLocation?: string,
-  backCallback?: () => void,
+  children: React.ReactNode;
+  backLocation?: string;
+  backCallback?: () => void;
 }
 
-const BackButton:React.FC<BackButtonProps> = ({ children, backLocation, backCallback }) => {
+const BackButton: React.FC<BackButtonProps> = ({
+  children,
+  backLocation,
+  backCallback,
+}) => {
   const navigate = useNavigate();
   const handleBackClick = () => {
     if (backCallback) backCallback();
@@ -78,8 +83,16 @@ interface HeaderProps {
   backCallback?: () => void;
 }
 
-export const Header = ({ iconLeft = ICON_NAMES.ARROW, progress, title, marginBottom = '32px', backLocation, backCallback }: HeaderProps) => {
-  const excludeBackButton = iconLeft === 'false' || iconLeft === 'none' || iconLeft === 'off';
+export const Header = ({
+  iconLeft = ICON_NAMES.ARROW,
+  progress,
+  title,
+  marginBottom = '32px',
+  backLocation,
+  backCallback,
+}: HeaderProps) => {
+  const excludeBackButton =
+    iconLeft === 'false' || iconLeft === 'none' || iconLeft === 'off';
 
   return (
     <Wrapper marginBottom={marginBottom}>

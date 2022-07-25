@@ -4,6 +4,8 @@ import QRCode from 'qrcode';
 import styled from 'styled-components';
 import { trimString } from 'utils';
 import { ICON_NAMES } from 'consts';
+import { useActiveAccount } from 'redux/hooks';
+import { COLORS } from 'theme';
 
 const Wrapper = styled.div`
   width: 100%;
@@ -23,7 +25,7 @@ const QRImage = styled.img`
   display: block;
   margin-bottom: 60px;
 `;
-const CopyButton = styled.div<{justCopied: boolean}>`
+const CopyButton = styled.div<{ justCopied: boolean }>`
   position: absolute;
   top: 34px;
   padding: 10px;
@@ -33,30 +35,30 @@ const CopyButton = styled.div<{justCopied: boolean}>`
   display: flex;
   align-items: center;
   justify-content: center;
-  background: ${({ justCopied }) => justCopied ? '#086709' : '#2C2F3A' };
+  background: ${({ justCopied }) =>
+    justCopied ? COLORS.POSITIVE_700 : COLORS.NEUTRAL_700};
   z-index: 10;
   border-radius: 0 3px 3px 0;
   transition: 250ms all;
-  cursor: ${({ justCopied }) => justCopied ? 'initial' : 'pointer' };
+  cursor: ${({ justCopied }) => (justCopied ? 'initial' : 'pointer')};
   &:hover {
-    background: ${({ justCopied }) => !justCopied && '#3D3F4B' };
+    background: ${({ justCopied }) => !justCopied && COLORS.NEUTRAL_600};
   }
 `;
 
-export const DashboardReceive:React.FC = () => {
-  // TODO: Pull address from redux store
-  const address = 'tp14lm3egzp8mkc3xu8z6c007agg4fnltar9f2vz2';
+export const DashboardReceive: React.FC = () => {
+  const { address } = useActiveAccount();
   const [qrcode, setQrcode] = useState('');
   const [justCopied, setJustCopied] = useState(false);
   const [timeoutInstance, setTimeoutInstance] = useState(0);
 
   useEffect(() => {
     async function generateQRCode() {
-      const newQrcode = await QRCode.toDataURL(address);
+      const newQrcode = await QRCode.toDataURL(address!);
       setQrcode(newQrcode);
     }
     if (!qrcode) generateQRCode();
-  }, [qrcode]);
+  }, [qrcode, address]);
 
   // Kill any times when unmounted (prevent memory leaks w/running timers)
   useEffect(
@@ -68,7 +70,7 @@ export const DashboardReceive:React.FC = () => {
 
   const copyAddress = () => {
     if (!justCopied) {
-      window.navigator.clipboard.writeText(address).then(() => {
+      window.navigator.clipboard.writeText(address!).then(() => {
         window.clearTimeout(timeoutInstance);
         setJustCopied(true);
         const newTimeoutInstance = window.setTimeout(() => {
@@ -84,9 +86,26 @@ export const DashboardReceive:React.FC = () => {
       <Header title="Receive" />
       <Text>Show this QR code or share account address to receive assets</Text>
       {qrcode && <QRImage src={qrcode} alt="Address QR Code" />}
-      <Input placeholder={trimString(address, 20, 10)} label="Wallet Address" disabled id="address">
+      <Input
+        placeholder={trimString(address!, 32, 16)}
+        label="Wallet Address"
+        disabled
+        id="address"
+      >
         <CopyButton onClick={copyAddress} justCopied={justCopied}>
-          {justCopied ? <Sprite icon={ICON_NAMES.CHECK} size="1.4rem" color='#CACC5D' /> : <Sprite icon={ICON_NAMES.COPY} size="1.4rem" color="#A2A7B9" />}
+          {justCopied ? (
+            <Sprite
+              icon={ICON_NAMES.CHECK}
+              size="1.4rem"
+              color={COLORS.NOTICE_450}
+            />
+          ) : (
+            <Sprite
+              icon={ICON_NAMES.COPY}
+              size="1.4rem"
+              color={COLORS.NEUTRAL_250}
+            />
+          )}
         </CopyButton>
       </Input>
     </Wrapper>

@@ -20,6 +20,7 @@ import {
 import { REMOVE_ACCOUNT } from './removeAccount';
 import { RENAME_ACCOUNT } from './renameAccount';
 import { SEND } from './send';
+import { TRANSACTION_DETAILS } from './transactionDetails';
 
 export const routes = [
   {
@@ -33,6 +34,7 @@ export const routes = [
       ACTIONS,
       ASSET,
       TRANSACTIONS,
+      TRANSACTION_DETAILS,
       PROFILE,
       CONNECT,
     ],

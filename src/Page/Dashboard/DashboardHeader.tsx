@@ -3,7 +3,7 @@ import { ICON_NAMES, DASHBOARD_CONNECTION_DETAILS_URL, DASHBOARD_MENU_URL } from
 import { Sprite, CopyValue } from 'Components';
 import { useNavigate } from 'react-router-dom';
 import { useActiveAccount, useWalletConnect } from 'redux/hooks';
-import { trimString } from 'utils';
+import { trimAddress } from 'utils';
 
 const HeaderRow = styled.div`
   display: flex;
@@ -46,7 +46,7 @@ export const DashboardHeader:React.FC = () => {
         <WalletInfo>
           <CopyValue value={address} title="Copy account address">
             <AccountName>{name}</AccountName>
-            <WalletAddress>({trimString(address, 11, 4)})</WalletAddress>
+            <WalletAddress>({trimAddress(address)})</WalletAddress>
           </CopyValue>
         </WalletInfo>
       <WalletConnect>

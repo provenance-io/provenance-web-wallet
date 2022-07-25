@@ -36,6 +36,7 @@ const ListContent = styled.div`
   &:nth-child(1) {
     margin-right: 6px;
     min-width: 80px;
+    text-align: left;
   }
   &:nth-child(2) {
     margin-left: 6px;

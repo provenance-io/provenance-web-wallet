@@ -8,11 +8,12 @@
 // trimString('fantastic', 3, 0) => '...tic'
 
 export const trimString = (
-  text: string,
+  text: string = '',
   maxLength: number,
   ellipsisIndex: number = -1, // Note: 0 is start of text, -1 is end of text.
   ellipsisValue: string = '...'
 ) => {
+  if (!text) return text;
   const textLength = text.length;
   // If maxLength is 0, just return the ellipsis
   if (!maxLength) return ellipsisValue;
@@ -41,4 +42,5 @@ export const trimString = (
   return ''.concat(front, ellipsisValue, back);
 };
 
-export const trimAddress = (fullAddress: string) => trimString(fullAddress, 11, 3);
+export const trimAddress = (fullAddress: string = '') =>
+  fullAddress ? trimString(fullAddress, 11, 3) : fullAddress;

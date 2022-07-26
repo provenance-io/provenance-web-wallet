@@ -2,21 +2,20 @@ import { Sprite } from 'Components/Sprite';
 import { Typo } from 'Components/Typography/Typo';
 import { ICON_NAMES } from 'consts';
 import styled from 'styled-components';
-import { capitalize } from 'utils';
-// import { currencyFormat } from 'utils';
+import { COLORS } from 'theme';
 
-const AssetItem = styled.div`
+const AssetItem = styled.div<{ onClick?: () => void }>`
   padding: 20px 16px;
   width: 100%;
   text-align: left;
-  border-bottom: 1px solid #3d4151;
+  border-bottom: 1px solid ${COLORS.NEUTRAL_600};
   display: flex;
   align-items: center;
   font-family: 'Gothic A1';
-  cursor: pointer;
-  &:first-of-type {
-    border-top: 1px solid #3d4151;
+  &&:first-of-type {
+    border-top: 1px solid ${COLORS.NEUTRAL_600};
   }
+  cursor: ${({ onClick }) => (!!onClick ? 'pointer' : 'initial')};
 `;
 const AssetImg = styled.img`
   margin-right: 16px;
@@ -62,7 +61,7 @@ export const RowItem: React.FC<Props> = ({
       <AssetDetails>
         <DetailsGroup>
           <Typo type="body" bold align="left">
-            {capitalize(title, 'uppercase')}
+            {title}
           </Typo>
           <Typo type="footnote" align="left">
             {subtitle}
@@ -83,9 +82,11 @@ export const RowItem: React.FC<Props> = ({
           </DetailsGroup>
         )}
       </AssetDetails>
-      <AssetArrow>
-        <Sprite icon={actionIcon} size="1.2rem" />
-      </AssetArrow>
+      {!!actionIcon && (
+        <AssetArrow>
+          <Sprite icon={actionIcon} size="1.2rem" />
+        </AssetArrow>
+      )}
     </AssetItem>
   );
 };

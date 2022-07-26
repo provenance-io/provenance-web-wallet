@@ -1,10 +1,10 @@
-import WalletConnectClient from "@walletconnect/client";
+import WalletConnectClient from '@walletconnect/client';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { ACTIONS_URL, WC_NOTIFICATION_TYPES } from 'consts';
 import { useEffect, useState } from 'react';
 import { useWalletConnect } from 'redux/hooks';
 import { EventPayload, WCNotification } from 'types';
-import { Content, Loading } from 'Components';
+import { Loading } from 'Components';
 import { WalletConnectInit } from './WalletConnectInit';
 import { SignRequest } from './SignRequest';
 import { TransactionRequest } from './TransactionRequest';
@@ -12,12 +12,12 @@ import { RequestFailed } from './RequestFailed';
 
 type ExtensionTypes = 'extension' | 'browser' | '';
 interface PageProps {
-  payload: EventPayload,
-  closeWindow: () => void,
-  setFailedMessage: (value: string) => void,
+  payload: EventPayload;
+  closeWindow: () => void;
+  setFailedMessage: (value: string) => void;
 }
 
-export const Notification:React.FC = () => {
+export const Notification: React.FC = () => {
   const [notificationType, setNotificationType] = useState<WCNotification>('');
   const [eventPayload, setEventPayload] = useState<EventPayload | null>(null);
   const [extensionType, setExtensionType] = useState<ExtensionTypes>('');
@@ -31,7 +31,7 @@ export const Notification:React.FC = () => {
     saveWalletconnectData,
     addPendingRequest,
   } = useWalletConnect();
-  const wcUriParam = searchParams.get('wc')
+  const wcUriParam = searchParams.get('wc');
   // On load, attempt to detect the way the extension loaded
   useEffect(() => {
     const asyncExtensionType = async () => {
@@ -41,7 +41,11 @@ export const Notification:React.FC = () => {
       if (newExtensionType === 'browser') {
         // If we're attempting to connect (session_request) and we're not already connected when we "x" out of the popup, reject the request
         window.addEventListener('beforeunload', () => {
-          if (connector && notificationType === 'session_request' && !connector.connected) {
+          if (
+            connector &&
+            notificationType === 'session_request' &&
+            !connector.connected
+          ) {
             connector.rejectSession({ message: 'Connection rejected by user' });
           }
         });
@@ -49,17 +53,18 @@ export const Notification:React.FC = () => {
     };
     asyncExtensionType();
   }, [connector, notificationType]);
-  
+
   // On page load, if a payloadId was passed in, search for that payload in storage
   // Also check url search params for wc session or pending requests
   useEffect(() => {
     const pendingRequestId = searchParams.get('pid');
     if (pendingRequestId) {
-        const targetPendingRequest: EventPayload = pendingRequests[pendingRequestId];
-        if (targetPendingRequest) {
-          setEventPayload(targetPendingRequest);
-          if (targetPendingRequest?.method) setNotificationType(targetPendingRequest.method as WCNotification);
-        }
+      const targetPendingRequest: EventPayload = pendingRequests[pendingRequestId];
+      if (targetPendingRequest) {
+        setEventPayload(targetPendingRequest);
+        if (targetPendingRequest?.method)
+          setNotificationType(targetPendingRequest.method as WCNotification);
+      }
     }
   }, [searchParams, pendingRequests]);
 
@@ -68,7 +73,7 @@ export const Notification:React.FC = () => {
     // Connector must exist to create events
     if (connector) {
       // Loop through each notification type and create event listener
-      WC_NOTIFICATION_TYPES.forEach(NOTE_TYPE => {
+      WC_NOTIFICATION_TYPES.forEach((NOTE_TYPE) => {
         connector.on(NOTE_TYPE, (error, payload) => {
           setNotificationType(NOTE_TYPE as WCNotification);
           // Save the request locally
@@ -78,18 +83,24 @@ export const Notification:React.FC = () => {
           const { id } = payload;
           setEventPayload(payload);
           // Only add 'provenance_sign' and 'provenance_sendTransaction' to pendingRequest list
-          if (NOTE_TYPE === 'provenance_sign' || NOTE_TYPE === 'provenance_sendTransaction') {
+          if (
+            NOTE_TYPE === 'provenance_sign' ||
+            NOTE_TYPE === 'provenance_sendTransaction'
+          ) {
             // Add current date to the pending request data
-            const newPendingRequestData = { id, pendingRequest: { ...payload, date: Date.now() } };
+            const newPendingRequestData = {
+              id,
+              pendingRequest: { ...payload, date: Date.now() },
+            };
             addPendingRequest(newPendingRequestData);
           }
           // If we get a disconnect, remove all pending requests
-          if (NOTE_TYPE === 'disconnect') saveWalletconnectData({ pendingRequests: {}, totalPendingRequests: 0 });
+          if (NOTE_TYPE === 'disconnect')
+            saveWalletconnectData({ pendingRequests: {}, totalPendingRequests: 0 });
         });
       });
     }
-  }, [connector, saveWalletconnectData, addPendingRequest]
-  );
+  }, [connector, saveWalletconnectData, addPendingRequest]);
 
   // Listen for a new walletConnect URI.  When one is passed, create a new connector
   useEffect(() => {
@@ -118,22 +129,37 @@ export const Notification:React.FC = () => {
 
   const renderNotificationContent = () => {
     const pageProps = { payload: eventPayload, closeWindow, setFailedMessage };
-    if (!eventPayload) return <RequestFailed failedMessage="Missing event payload, close this popup and retry the action from the dApp." title="Unknown Error" {...pageProps} />;
-    if (failedMessage) return <RequestFailed failedMessage={failedMessage} {...pageProps} />;
+    if (!eventPayload)
+      return (
+        <RequestFailed
+          failedMessage="Missing event payload, close this popup and retry the action from the dApp."
+          title="Unknown Error"
+          {...pageProps}
+        />
+      );
+    if (failedMessage)
+      return <RequestFailed failedMessage={failedMessage} {...pageProps} />;
 
-    switch(notificationType) {
-      case 'session_request': return <WalletConnectInit {...pageProps as PageProps} />
-      case 'provenance_sendTransaction': return <TransactionRequest {...pageProps as PageProps} />
-      case 'provenance_sign': return <SignRequest {...pageProps as PageProps} />;
+    switch (notificationType) {
+      case 'session_request':
+        return <WalletConnectInit {...(pageProps as PageProps)} />;
+      case 'provenance_sendTransaction':
+        return <TransactionRequest {...(pageProps as PageProps)} />;
+      case 'provenance_sign':
+        return <SignRequest {...(pageProps as PageProps)} />;
       case 'connect': // fallthrough
-      case 'disconnect': return '' // Return empty since this would only show up for a split second before the popup closes/changes
-      default: return <RequestFailed failedMessage={`Unknown notification type: ${notificationType}, close this popup and retry the action from the dApp.`} title="Unknown Notification" {...pageProps} />;
+      case 'disconnect':
+        return <></>; // Return empty since this would only show up for a split second before the popup closes/changes
+      default:
+        return (
+          <RequestFailed
+            failedMessage={`Unknown notification type: ${notificationType}, close this popup and retry the action from the dApp.`}
+            title="Unknown Notification"
+            {...pageProps}
+          />
+        );
     }
   };
 
-  return (
-    <Content>
-      {notificationType ? renderNotificationContent() : <Loading />}
-    </Content>
-  );
+  return notificationType ? renderNotificationContent() : <Loading />;
 };

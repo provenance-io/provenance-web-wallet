@@ -40,7 +40,7 @@ export const AssetTxs: React.FC<Props> = ({ assetName }) => {
           <RowItem
             key={hash}
             img={denom === 'nhash' ? 'hash' : 'provenance'}
-            title={denom === 'nhash' ? 'hash' : denom!}
+            title={denom === 'nhash' ? 'hash' : capitalize(denom!, 'uppercase')}
             subtitle={`${capitalize(type)} • ${date}`}
             onClick={() => navigate(`${TRANSACTION_DETAILS_URL}/${hash}`)}
           />

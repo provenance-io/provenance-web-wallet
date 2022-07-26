@@ -6,13 +6,13 @@ import { useActiveAccount, useSettings } from 'redux/hooks';
 import { BIP32Interface, fromBase58 as bip32FromB58 } from 'bip32';
 
 interface Props {
-  handleApprove: (masterKey: BIP32Interface) => void,
-  handleDecline: () => void,
-  approveText?: string,
-  rejectText?: string,
+  handleApprove: (masterKey: BIP32Interface) => void;
+  handleDecline: () => void;
+  approveText?: string;
+  rejectText?: string;
 }
 
-export const Authenticate:React.FC<Props> = ({
+export const Authenticate: React.FC<Props> = ({
   handleApprove: approveCallback,
   handleDecline: declineCallback,
   approveText = 'Approve',
@@ -28,7 +28,8 @@ export const Authenticate:React.FC<Props> = ({
     // Wallet password must exist
     if (!walletPassword) newPasswordError = 'Enter password';
     // Wallet password must be min length
-    if (walletPassword.length < Number(PASSWORD_MIN_LENGTH)) newPasswordError = 'Invalid password';
+    if (walletPassword.length < Number(PASSWORD_MIN_LENGTH))
+      newPasswordError = 'Invalid password';
     // No errors so far and we have a local key to decrypt
     if (!newPasswordError && key) {
       // Wallet password must be correct
@@ -51,7 +52,7 @@ export const Authenticate:React.FC<Props> = ({
     // reset error, set new value
     setPasswordError('');
     setWalletPassword(value);
-  }
+  };
 
   return (
     <BottomFloat>
@@ -65,7 +66,9 @@ export const Authenticate:React.FC<Props> = ({
           type="password"
         />
         <Button onClick={handleApprove}>{approveText}</Button>
-        <Button variant='transparent' onClick={declineCallback}>{rejectText}</Button>
+        <Button variant="transparent" onClick={declineCallback}>
+          {rejectText}
+        </Button>
       </ButtonGroup>
     </BottomFloat>
   );

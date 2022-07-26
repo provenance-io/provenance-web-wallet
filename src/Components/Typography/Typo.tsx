@@ -15,6 +15,7 @@ interface StyledProps {
   color?: keyof typeof COLORS;
   bold?: boolean;
   italic?: boolean;
+  maxWidth?: string;
 }
 
 const StylingMixin = css<StyledProps>`
@@ -26,6 +27,13 @@ const StylingMixin = css<StyledProps>`
   color: ${({ color }) => (color ? COLORS[color] : COLORS.WHITE)};
   ${({ bold }) => bold && `font-weight: 700;`}
   ${({ italic }) => italic && `font-style: italic;`}
+  ${({ maxWidth }) =>
+    maxWidth &&
+    `
+    max-width: ${maxWidth};
+    margin-left: auto;
+    margin-right: auto;
+  `}
 `;
 
 const TitleStyle = styled.p`
@@ -123,6 +131,7 @@ interface Props {
   color?: keyof typeof COLORS;
   bold?: boolean;
   italic?: boolean;
+  maxWidth?: string;
 }
 
 export const Typo: React.FC<Props> = ({
@@ -136,6 +145,7 @@ export const Typo: React.FC<Props> = ({
   color,
   bold,
   italic,
+  maxWidth,
 }) => {
   const allProps = {
     className,
@@ -147,6 +157,7 @@ export const Typo: React.FC<Props> = ({
     color,
     bold,
     italic,
+    maxWidth,
   };
   const getStyledType = () => {
     switch (type) {

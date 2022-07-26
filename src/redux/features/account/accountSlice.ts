@@ -41,6 +41,7 @@ const initialState: State = {
 const RESET_ACCOUNT_DATA = 'RESET_ACCOUNT_DATA';
 const PULL_INITIAL_ACCOUNT_DATA = 'PULL_INITIAL_ACCOUNT_DATA';
 const SAVE_ACCOUNT_DATA = 'SAVE_ACCOUNT_DATA';
+const SET_ACTIVE_ACCOUNT = 'SET_ACTIVE_ACCOUNT';
 const ADD_ACCOUNT = 'ADD_ACCOUNT';
 const REMOVE_ACCOUNT = 'REMOVE_ACCOUNT';
 const RENAME_ACCOUNT = 'RENAME_ACCOUNT';
@@ -83,6 +84,20 @@ export const saveAccountData = createAsyncThunk(
     await addSavedData({ account: newData });
     // Return new combined values to update redux store
     return newData;
+  }
+);
+// Set/Save a new active account
+export const setActiveAccount = createAsyncThunk(
+  SET_ACTIVE_ACCOUNT,
+  async (activeAccountId: string) => {
+    // Get existing saved data (to merge into)
+    const existingData = await getSavedData('account');
+    // Combine existing data with new data (will overwrite existing data)
+    const newData = { ...existingData, activeAccountId };
+    // Save to chrome storage
+    await addSavedData({ account: newData });
+    // Return new combined values to update redux store
+    return activeAccountId;
   }
 );
 // Add to and save account data into the chrome store (will combine data instead of overriding ex accounts array)
@@ -205,6 +220,9 @@ const accountSlice = createSlice({
         const { accounts, activeAccountId } = payload;
         if (accounts) state.accounts = accounts;
         if (activeAccountId !== undefined) state.activeAccountId = activeAccountId;
+      })
+      .addCase(setActiveAccount.fulfilled, (state, { payload }) => {
+        state.activeAccountId = payload;
       });
   },
   reducers: {
@@ -224,6 +242,7 @@ export const accountActions = {
   ...accountSlice.actions,
   pullInitialAccountData,
   saveAccountData,
+  setActiveAccount,
   addAccount,
   removeAccount,
   renameAccount,

@@ -7,10 +7,7 @@ import {
   Typo,
   BottomFloat,
 } from 'Components';
-import {
-  ICON_NAMES,
-  PASSWORD_MIN_LENGTH,
-} from 'consts';
+import { ICON_NAMES, PASSWORD_MIN_LENGTH } from 'consts';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import { useAccount, useSettings } from 'redux/hooks';
@@ -30,10 +27,15 @@ interface Props {
   nextUrl: string;
   previousUrl: string;
   flowType: FlowType;
-  progress: number,
+  progress: number;
 }
 
-export const NewAccountPassword = ({ nextUrl, previousUrl, flowType, progress }: Props) => {
+export const NewAccountPassword = ({
+  nextUrl,
+  previousUrl,
+  flowType,
+  progress,
+}: Props) => {
   const navigate = useNavigate();
   const { tempAccount, addAccount } = useAccount();
   const { bumpUnlockDuration } = useSettings();
@@ -68,21 +70,34 @@ export const NewAccountPassword = ({ nextUrl, previousUrl, flowType, progress }:
       if (!repeatedPassword) latestErrors[1] = 'Please confirm your password.';
     }
     // Check password min-length
-    if (!password || password.length < passwordMinLength) latestErrors[0] = `Password must be a minimum of ${passwordMinLength} characters.`;
+    if (!password || password.length < passwordMinLength)
+      latestErrors[0] = `Password must be a minimum of ${passwordMinLength} characters.`;
     // If there are no errors, continue
     if (!latestErrors.length) {
       let fullNewAccountData = {} as Account;
-      const isChildAccount = !!tempAccount?.parentMasterKey && !!tempAccount?.parentHdPath;
+      const isChildAccount =
+        !!tempAccount?.parentMasterKey && !!tempAccount?.parentHdPath;
       // Are we creating a new account or adding an account to a parent? (check for tempaccount parentMasterKey & parentHdPath)
       if (isChildAccount) {
         // Take the password entered and decode the parent masterKey for use
-        const decodedParentMasterKey = decryptKey(tempAccount!.parentMasterKey!, password);
-        fullNewAccountData = createChildAccount(decodedParentMasterKey, tempAccount!.parentHdPath!, tempAccount!.hdPath);
+        const decodedParentMasterKey = decryptKey(
+          tempAccount!.parentMasterKey!,
+          password
+        );
+        fullNewAccountData = createChildAccount(
+          decodedParentMasterKey,
+          tempAccount!.parentHdPath!,
+          tempAccount!.hdPath
+        );
       } else {
         // Create main root account based on the HD path
-        fullNewAccountData = createRootAccount(tempAccount!.mnemonic!, tempAccount!.hdPath!);
+        fullNewAccountData = createRootAccount(
+          tempAccount!.mnemonic!,
+          tempAccount!.hdPath!
+        );
       }
-      const { masterKey, publicKey, address, network, hdPath, accountLevel } = fullNewAccountData;
+      const { masterKey, publicKey, address, network, hdPath, accountLevel } =
+        fullNewAccountData;
       const encryptedMasterKey = encryptKey(masterKey!, password);
       // Save data to redux store and clear out tempAccount data
       const newAccountData = {
@@ -105,7 +120,11 @@ export const NewAccountPassword = ({ nextUrl, previousUrl, flowType, progress }:
     setErrors(latestErrors);
   };
 
-  const handleInputChange = (value: string, errorIndex: number, passwordConfirm?: boolean) => {
+  const handleInputChange = (
+    value: string,
+    errorIndex: number,
+    passwordConfirm?: boolean
+  ) => {
     const updatedErrors = [...errors];
     updatedErrors[errorIndex] = '';
     updatePassword(value, passwordConfirm);
@@ -113,11 +132,16 @@ export const NewAccountPassword = ({ nextUrl, previousUrl, flowType, progress }:
 
   return (
     <Content>
-      <Header iconLeft={ICON_NAMES.CLOSE} progress={progress} title="Wallet Password" backLocation={previousUrl} />
-      <Typo type='body'>
-        {additionalAccount ?
-        'Existing wallet password. Your password is required to add/import additional accounts.' :
-        'Enter a wallet password. This password will be used for permissions, authentication, and unlocking. This password is only stored locally.'}
+      <Header
+        iconLeft={ICON_NAMES.CLOSE}
+        progress={progress}
+        title="Wallet Password"
+        backLocation={previousUrl}
+      />
+      <Typo type="body" marginBottom="40px">
+        {additionalAccount
+          ? 'Existing wallet password. Your password is required to add/import additional accounts.'
+          : 'Enter a wallet password. This password will be used for permissions, authentication, and unlocking. This password is only stored locally.'}
       </Typo>
 
       <Input
@@ -140,7 +164,7 @@ export const NewAccountPassword = ({ nextUrl, previousUrl, flowType, progress }:
           error={errors[1]}
         />
       )}
-      
+
       <BottomFloat>
         <Button onClick={handleContinue}>Continue</Button>
       </BottomFloat>

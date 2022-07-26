@@ -5,6 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import { useAddress, useActiveAccount } from 'redux/hooks';
 import styled from 'styled-components';
 import { DashboardHeader } from './DashboardHeader';
+import { capitalize } from 'utils';
 
 const PortfolioTitle = styled.div`
   font-size: 1.4rem;
@@ -66,7 +67,7 @@ export const Dashboard = () => {
       <RowItem
         onClick={() => navigate(`/asset/${display}`)}
         img={display}
-        title={display}
+        title={capitalize(display, 'uppercase')}
         subtitle={`$${(Number(amount) * usdPrice).toFixed(2)}`}
         key={display}
         detailsTop={Number(displayAmount).toFixed(6)}

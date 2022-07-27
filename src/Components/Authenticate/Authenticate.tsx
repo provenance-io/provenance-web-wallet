@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Input, Button, ButtonGroup, BottomFloat } from 'Components';
 import { PASSWORD_MIN_LENGTH } from 'consts';
-import { decryptKey } from 'utils';
+import { decryptKey, keyPress } from 'utils';
 import { useActiveAccount, useSettings } from 'redux/hooks';
 import { BIP32Interface, fromBase58 as bip32FromB58 } from 'bip32';
 
@@ -62,8 +62,10 @@ export const Authenticate: React.FC<Props> = ({
           id="Wallet-Pasword"
           value={walletPassword}
           onChange={handleChange}
+          onKeyDown={(e) => keyPress(e, 'Enter', handleApprove)}
           error={passwordError}
           type="password"
+          autoFocus
         />
         <Button onClick={handleApprove}>{approveText}</Button>
         <Button variant="transparent" onClick={declineCallback}>

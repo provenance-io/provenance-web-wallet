@@ -2,21 +2,32 @@
 * _(Priority: 1 - 10)_
 
 ## Current Branch Tasks/Changes
-* When connecting into a dApp, user should be able to select target account to connect (and set active) [DONE]
-  - If switching active account, disconnect from dApp
+* Tx fees are different from mobile IOS by 10x.
+  - Extension wallet: .2014 HASH
+  - iOS wallet: 2.014 HASH
+* Batch action/message (single sign for paginated list of things to take action on) [DONE]
+  - Handle multiple encoded messages in payload
+  - Pagination for each message  (1 / n)
+    - Arrows for next page/previous page
+  - Full JSON should change based on active message page
+  - Gas Fee should be total gas fee for all txs (doesn't change with page change)
+  - Platform doesn't change with page change
+  - Changes:
+    - @type, FromAddress, ToAddress, Amount
 
 ## Bugs
 * If dApp disconnects while ext is signing message/approving tx currently goes to empty page [10]
   - Change the page, say "You've been disconnected" and just allow pressing "ok" to close extension
 
 ## Features
-* Batch action/message (single sign for paginated list of things to take action on) [1]
 * Handle blockchain broadcast failures & display reasons (instead of success page) [2]
 * When a tx message (walletconnect-js) comes through, auto switch to the target wallet (maybe...ask JD) [2]
   - Should already be connected to wcjs which is connected to a wallet, active wallet shouldn't matter
   - Make sure sign msg and send tx don't pull anything from "active wallet"
 * When viewing tx details, ability to go to explorer when clicking on txhash [3]
 * Run through and cleanup all TODO: items [3]
+* Change chrome icon when connected to a dApp [3]
+  - chrome.action.setIcon({ path: "/example/path/image.png" })
 * Create txSend complete success page [4]
 * Allow pressing "enter" on an input to automatically submit (accessability) [4]
   - Will need additional accessability features (tab index, titles, etc)

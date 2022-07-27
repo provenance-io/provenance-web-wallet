@@ -15,7 +15,6 @@ export const getTxFeeEstimate = async ({
   gasPriceDenom = 'nhash',
   gasAdjustment = 1.25,
 }: GetTxFeeEstimate): Promise<GetTxFeeEstimateResponse> => {
-  console.log(gasPrice);
   const grpcAddress = getGrpcApi(address);
   const { baseAccount } = await getAccountInfo(address, grpcAddress);
   const calculateTxFeeRequest = buildCalculateTxFeeRequest({

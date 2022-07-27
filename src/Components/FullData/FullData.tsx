@@ -11,10 +11,11 @@ const DataButton = styled.div`
   cursor: pointer;
   color: ${COLORS.PRIMARY_500};
   font-size: 1.4rem;
+  z-index: 50;
 `;
 const DataOverlay = styled.div`
   position: fixed;
-  z-index: 100;
+  z-index: 300;
   top: 0;
   left: 0;
   width: 100%;
@@ -55,11 +56,11 @@ const DataContent = styled.div`
 interface Props {
   data: {
     [key: string]: string | number | object | undefined;
-  }
-  title?: string,
+  };
+  title?: string;
 }
 
-export const FullData:React.FC<Props> = ({ data, title = 'Full Data JSON' }) => {
+export const FullData: React.FC<Props> = ({ data, title = 'Full Data JSON' }) => {
   const [isOpen, setIsOpen] = useState(false);
 
   const toggleOpen = () => {
@@ -69,12 +70,17 @@ export const FullData:React.FC<Props> = ({ data, title = 'Full Data JSON' }) => 
   return isOpen ? (
     <DataOverlay>
       {title}
-      <CloseIcon icon={ICON_NAMES.CLOSE} size="1.4rem" color={COLORS.PRIMARY_400} onClick={toggleOpen} />
+      <CloseIcon
+        icon={ICON_NAMES.CLOSE}
+        size="1.4rem"
+        color={COLORS.PRIMARY_400}
+        onClick={toggleOpen}
+      />
       <DataContent>
         <pre>{JSON.stringify(data, null, 2)}</pre>
       </DataContent>
     </DataOverlay>
-   ) : (
+  ) : (
     <DataButton onClick={toggleOpen}>Data</DataButton>
-   );
+  );
 };

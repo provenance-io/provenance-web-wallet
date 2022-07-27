@@ -63,7 +63,7 @@ export interface CreateWalletProps {
 
 export interface GetTxFeeEstimate {
   publicKey: string;
-  msgAny: any;
+  msgAny: any | any[];
   address: string;
   gasPrice?: number;
   gasPriceDenom?: SupportedDenoms;

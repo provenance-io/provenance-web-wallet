@@ -69,13 +69,11 @@ export const WalletConnectInit: React.FC<Props> = ({ payload, closeWindow }) => 
     if (connector) {
       const jwt = buildJWT(masterKey, activeAccountAddress!);
       const data = {
-        // TODO: This needs to be based on the selected account(s)
-        // NOTE: Don't allow selecting both testnet and mainnet accounts at the same time
         chainId: CHAINID_TESTNET,
         accounts: [
           {
             publicKey,
-            activeAccountAddress,
+            address: activeAccountAddress,
             jwt,
             walletInfo: {
               id: 'id',

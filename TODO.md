@@ -2,9 +2,6 @@
 * _(Priority: 1 - 10)_
 
 ## Current Branch Tasks/Changes
-* Tx fees are different from mobile IOS by 10x.
-  - Extension wallet: .2014 HASH
-  - iOS wallet: 2.014 HASH
 * Batch action/message (single sign for paginated list of things to take action on) [DONE]
   - Handle multiple encoded messages in payload
   - Pagination for each message  (1 / n)

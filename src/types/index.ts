@@ -3,6 +3,7 @@ export * from './Address';
 export * from './Chain';
 export * from './ChartTypes';
 export * from './Message';
+export * from './Notification';
 export * from './Routing';
 export * from './Settings';
 export * from './Statistics';

@@ -9,7 +9,7 @@ import {
   msgAnyB64toAny,
 } from '@provenanceio/wallet-utils';
 import { useActiveAccount, useWalletConnect } from 'redux/hooks';
-import { List, Authenticate, Content, FullData, Sprite } from 'Components';
+import { List, Authenticate, Content, FullData, Sprite, Loading } from 'Components';
 import { useEffect, useState } from 'react';
 import { format } from 'date-fns';
 import {
@@ -20,7 +20,7 @@ import {
   convertHexToUtf8,
   hashFormat,
 } from 'utils';
-import { BIP32Interface } from 'types';
+import { BIP32Interface, NotificationType } from 'types';
 import { ICON_NAMES } from 'consts';
 import { COLORS } from 'theme';
 
@@ -55,7 +55,7 @@ const PaginationDisplay = styled.div`
 interface Props {
   payload: EventPayload;
   closeWindow: () => void;
-  setFailedMessage: (value: string) => void;
+  changeNotificationPage: (type: NotificationType, data: {}) => void;
 }
 interface ParsedMetadata {
   address?: string;
@@ -76,7 +76,7 @@ interface ParsedTxMessage {
 export const TransactionRequest: React.FC<Props> = ({
   payload,
   closeWindow,
-  setFailedMessage,
+  changeNotificationPage,
 }) => {
   const {
     connector,
@@ -92,6 +92,7 @@ export const TransactionRequest: React.FC<Props> = ({
   const [txFeeEstimate, setTxFeeEstimate] = useState<number>(0);
   const [txGasEstimate, setTxGasEstimate] = useState<number>(0);
   const [initialLoad, setInitialLoad] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
   // New states
   const [msgPage, setMsgPage] = useState(0);
   const [parsedTxMessages, setParsedTxMessages] = useState<ParsedTxMessage[]>([]);
@@ -152,7 +153,10 @@ export const TransactionRequest: React.FC<Props> = ({
             setTxFeeEstimate(newTxFeeEstimate);
             setTxGasEstimate(newTxGasEstimate);
           } catch (err) {
-            setFailedMessage(`${err}`);
+            changeNotificationPage('failed', {
+              failedMessage: `${err}`,
+              title: 'Transaction Failed',
+            });
           }
         }
       })();
@@ -165,7 +169,7 @@ export const TransactionRequest: React.FC<Props> = ({
     payload,
     txMsgAny,
     initialLoad,
-    setFailedMessage,
+    changeNotificationPage,
     activeAccountAddress,
     activeAccountPublicKey,
     parsedTxMessages,
@@ -183,6 +187,15 @@ export const TransactionRequest: React.FC<Props> = ({
     }
   };
 
+  const formatMetadataGasFee = () => {
+    const gasPriceDenom = parsedMetadata?.gasPrice?.gasPriceDenom || 'nhash';
+    return gasPriceDenom === 'nhash'
+      ? `${(
+          hashFormat(txFeeEstimate, 'nhash') + hashFormat(txGasEstimate!, 'nhash')
+        ).toFixed(4)} Hash`
+      : `${(txFeeEstimate + txGasEstimate).toFixed(3)} ${gasPriceDenom}`;
+  };
+
   const handleApprove = async (masterKey: BIP32Interface) => {
     // Connector must exist to respond to request
     if (connector) {
@@ -196,13 +209,14 @@ export const TransactionRequest: React.FC<Props> = ({
       const broadcastTxRequest = buildBroadcastTxRequest({
         account: baseAccount,
         chainId,
-        feeDenom: parsedMetadata!.gasPrice!.gasPriceDenom || 'nhash',
+        feeDenom: parsedMetadata?.gasPrice?.gasPriceDenom || 'nhash',
         feeEstimate: txFeeEstimate,
         gasEstimate: txGasEstimate,
         memo: parsedMetadata.memo || '',
         msgAny: txMsgAny,
         wallet,
       });
+      setIsLoading(true);
       const result = await broadcastTx(grpcAddress, broadcastTxRequest);
       await connector.approveRequest({
         id: payload.id,
@@ -211,8 +225,17 @@ export const TransactionRequest: React.FC<Props> = ({
       });
       await removePendingRequest(payload.id);
       await bumpWalletConnectTimeout();
-      // TODO: Create success page
-      closeWindow();
+      setIsLoading(false);
+      changeNotificationPage('complete', {
+        result: {
+          ...result.txResponse,
+          ...parsedMetadata,
+          date: parsedMetadata?.date
+            ? format(new Date(parsedMetadata.date), 'MMM d, h:mm a')
+            : 'N/A',
+          gasFee: formatMetadataGasFee(),
+        },
+      });
     }
   };
   const handleDecline = async () => {
@@ -226,15 +249,6 @@ export const TransactionRequest: React.FC<Props> = ({
       await bumpWalletConnectTimeout();
       closeWindow();
     }
-  };
-
-  const formatMetadataGasFee = () => {
-    const gasPriceDenom = parsedMetadata?.gasPrice?.gasPriceDenom || 'nhash';
-    return gasPriceDenom === 'nhash'
-      ? `${(
-          hashFormat(txFeeEstimate, 'nhash') + hashFormat(txGasEstimate!, 'nhash')
-        ).toFixed(4)} Hash`
-      : `${(txFeeEstimate + txGasEstimate).toFixed(3)} ${gasPriceDenom}`;
   };
 
   const renderMessagePage = () => {
@@ -297,6 +311,7 @@ export const TransactionRequest: React.FC<Props> = ({
         handleDecline={handleDecline}
         approveText="Sign Message"
       />
+      {isLoading && <Loading fullscreen />}
     </Content>
   );
 };

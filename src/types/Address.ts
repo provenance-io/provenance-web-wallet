@@ -4,7 +4,7 @@ export interface AmountObject {
 }
 
 export type Transaction = {
-  hash: string;
+  hash?: string;
   signer: string;
   type: string;
   feeAmount: string;
@@ -15,6 +15,7 @@ export type Transaction = {
   senderAddress: string;
   recipientAddress?: string;
   amount?: string | number | AmountObject;
+  'transaction hash'?: string;
 };
 
 export type Asset = {

@@ -1,4 +1,12 @@
-import { Button, ButtonGroup, FooterNav, RowItem, Content, Denom } from 'Components';
+import {
+  Button,
+  ButtonGroup,
+  FooterNav,
+  RowItem,
+  Content,
+  Denom,
+  Loading,
+} from 'Components';
 import { SEND_URL, DASHBOARD_RECEIVE_URL, ICON_NAMES } from 'consts';
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
@@ -42,7 +50,7 @@ const AssetsContainer = styled.div`
 
 export const Dashboard = () => {
   const navigate = useNavigate();
-  const { getAddressAssets, assets } = useAddress();
+  const { getAddressAssets, assets, assetsLoading } = useAddress();
   const activeAccount = useActiveAccount();
   const { address } = activeAccount;
 
@@ -80,7 +88,7 @@ export const Dashboard = () => {
       <PortfolioTitle>Portfolio Value</PortfolioTitle>
       <Value>
         <Denom>$</Denom>
-        {calculatePortfolioValue().toFixed(2)}
+        {assetsLoading ? <Loading /> : calculatePortfolioValue().toFixed(2)}
       </Value>
       <ButtonGroup direction="row">
         <Button
@@ -104,7 +112,13 @@ export const Dashboard = () => {
       </ButtonGroup>
       <AssetsTitle>My Assets</AssetsTitle>
       <AssetsContainer>
-        {assets.length ? renderAssets() : 'Address has no assets...'}
+        {assetsLoading ? (
+          <Loading />
+        ) : assets.length ? (
+          renderAssets()
+        ) : (
+          'Address has no assets...'
+        )}
       </AssetsContainer>
       <FooterNav />
     </Content>

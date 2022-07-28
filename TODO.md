@@ -2,15 +2,16 @@
 * _(Priority: 1 - 10)_
 
 ## Current Branch Tasks/Changes
-* Batch action/message (single sign for paginated list of things to take action on) [DONE]
-  - Handle multiple encoded messages in payload
-  - Pagination for each message  (1 / n)
-    - Arrows for next page/previous page
-  - Full JSON should change based on active message page
-  - Gas Fee should be total gas fee for all txs (doesn't change with page change)
-  - Platform doesn't change with page change
-  - Changes:
-    - @type, FromAddress, ToAddress, Amount
+* Tx details rows, add administrator as trim address type [DONE]
+* Create txSend complete success page [DONE]
+  - Create loading icon as TX is processing [DONE]
+    - Create new "overlay" loading option (block everything out) [DONE]
+    - Since changing from SYNC to BLOCK it's significantly slower (gets more data back) [DONE]
+  - Transaction details should show special display properties (after tx and looking at tx history) [DONE]
+    - txHash should have a link to view the tx on explorer (note test vs mainnet) [DONE]
+  - Format tx success page to look similar to send success page [DONE]
+* Tx details needs a list of properties to show (currently shows too much crap) [DONE]
+  - Detect type of tx and load the keys we want to display [DONE]
 
 ## Bugs
 * If dApp disconnects while ext is signing message/approving tx currently goes to empty page [10]
@@ -18,14 +19,9 @@
 
 ## Features
 * Handle blockchain broadcast failures & display reasons (instead of success page) [2]
-* When a tx message (walletconnect-js) comes through, auto switch to the target wallet (maybe...ask JD) [2]
-  - Should already be connected to wcjs which is connected to a wallet, active wallet shouldn't matter
-  - Make sure sign msg and send tx don't pull anything from "active wallet"
-* When viewing tx details, ability to go to explorer when clicking on txhash [3]
 * Run through and cleanup all TODO: items [3]
 * Change chrome icon when connected to a dApp [3]
   - chrome.action.setIcon({ path: "/example/path/image.png" })
-* Create txSend complete success page [4]
 * Allow pressing "enter" on an input to automatically submit (accessability) [4]
   - Will need additional accessability features (tab index, titles, etc)
 * When user doesn't have a wallet created but does have the extension, no popup is triggered [5]

@@ -2,16 +2,7 @@
 * _(Priority: 1 - 10)_
 
 ## Current Branch Tasks/Changes
-* Tx details rows, add administrator as trim address type [DONE]
-* Create txSend complete success page [DONE]
-  - Create loading icon as TX is processing [DONE]
-    - Create new "overlay" loading option (block everything out) [DONE]
-    - Since changing from SYNC to BLOCK it's significantly slower (gets more data back) [DONE]
-  - Transaction details should show special display properties (after tx and looking at tx history) [DONE]
-    - txHash should have a link to view the tx on explorer (note test vs mainnet) [DONE]
-  - Format tx success page to look similar to send success page [DONE]
-* Tx details needs a list of properties to show (currently shows too much crap) [DONE]
-  - Detect type of tx and load the keys we want to display [DONE]
+* Recover Account endless spin after adding name [DONE]
 
 ## Bugs
 * If dApp disconnects while ext is signing message/approving tx currently goes to empty page [10]

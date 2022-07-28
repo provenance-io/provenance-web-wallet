@@ -17,6 +17,7 @@ const initialState: State = {
   unlockEST: 0,
   unlockEXP: 0,
   initialDataPulled: false,
+  initialAppLoad: true,
 };
 
 /**
@@ -120,7 +121,11 @@ const settingsSlice = createSlice({
         state.unlockEXP = unlockEXP;
       });
   },
-  reducers: {},
+  reducers: {
+    setInitialAppLoad: (state, { payload }: { payload: boolean }) => {
+      state.initialAppLoad = payload;
+    },
+  },
 });
 
 /**

@@ -6,6 +6,8 @@ import {
   SERVICE_PRICING_ENGINE_MAINNET,
   SERVICE_PRICING_ENGINE_TESTNET,
   ADDRESS_PREFIX_TESTNET,
+  EXPLORER_WEB_TESTNET,
+  EXPLORER_WEB_MAINNET,
 } from 'consts';
 
 const isTestnet = (address: string) => address.startsWith(ADDRESS_PREFIX_TESTNET!);
@@ -31,4 +33,8 @@ export const getGrpcApi = (address: string) => {
   return isTestnet(address)
     ? (GRPC_CLIENT_ADDRESS_TESTNET as string)
     : (GRPC_CLIENT_ADDRESS_MAINNET as string);
+};
+
+export const getExplorerApi = (address: string) => {
+  return isTestnet(address) ? EXPLORER_WEB_TESTNET : EXPLORER_WEB_MAINNET;
 };

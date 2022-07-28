@@ -9,6 +9,10 @@ interface Amount {
   denom: string;
   amount: string;
 }
+interface GasPrice {
+  gasPrice: number;
+  gasPriceDenom: string;
+}
 type AmountList = Amount[];
 interface MessageObject {
   [fieldName: string]: any;
@@ -27,6 +31,7 @@ const formatField = (fieldKey: string, fieldValue: FieldValue): FieldValue => {
     case 'senderAddress': // fallthrough
     case 'recipientAddress': // fallthrough
     case 'signer': // fallthrough
+    case 'administrator':
       return trimAddress(fieldValue as string);
     // amountList is an array of objects: amountList: [{ denom: 'a', amount: '1' }, {...}]
     // Note: If the denom is nhash, autoconvert to hash
@@ -45,6 +50,16 @@ const formatField = (fieldKey: string, fieldValue: FieldValue): FieldValue => {
       const { denom, amount } = fieldValue as Amount;
       return `${
         denom === 'nhash' ? `${hashFormat(amount)} Hash` : `${amount} ${denom}`
+      }`;
+    }
+    case 'gasPrice': {
+      if (typeof fieldValue === 'string')
+        return numberFormat(fieldValue as string, 5);
+      const { gasPrice, gasPriceDenom } = fieldValue as GasPrice;
+      return `${
+        gasPriceDenom === 'nhash'
+          ? `${hashFormat(gasPrice)} Hash`
+          : `${gasPrice} ${gasPriceDenom}`
       }`;
     }
     case 'type': // fallthrough

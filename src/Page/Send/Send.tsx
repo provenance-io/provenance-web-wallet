@@ -1,5 +1,15 @@
 import { useState, useEffect } from 'react';
-import { Header, AssetDropdown, Input, Sprite, Button, Content, BottomFloat, Loading, Typo } from 'Components';
+import {
+  Header,
+  AssetDropdown,
+  Input,
+  Sprite,
+  Button,
+  Content,
+  BottomFloat,
+  Loading,
+  Typo,
+} from 'Components';
 import styled from 'styled-components';
 import { DASHBOARD_URL, ICON_NAMES, SEND_AMOUNT_URL } from 'consts';
 import { trimAddress, validateAddress } from 'utils';
@@ -32,11 +42,11 @@ const RecentAddressItem = styled.div`
   padding: 20px;
   align-items: center;
   justify-content: space-between;
-  border-top: 1px solid #3D4151;
+  border-top: 1px solid #3d4151;
   cursor: pointer;
   transition: 250ms all;
   &:hover {
-    background: #2C3040;
+    background: #2c3040;
   }
   &:last-of-type {
     margin-bottom: 60px;
@@ -81,9 +91,9 @@ export const Send: React.FC = () => {
   useEffect(() => {
     if (!txHaveBeenFetched && address) {
       (async () => {
-        await getAddressTx({address, count: 50});
+        await getAddressTx({ address, count: 50 });
         setTxHaveBeenFetched(true);
-      })()
+      })();
     }
   }, [txHaveBeenFetched, address, getAddressTx]);
 
@@ -99,7 +109,9 @@ export const Send: React.FC = () => {
     if (txHaveBeenFetched && !txsHaveBeenFiltered) {
       setTxsHaveBeenFiltered(true);
       // Pull txs with recipient, create array from just those addresses
-      const txsRecipientList = transactions.filter(({ recipientAddress }) => !!recipientAddress).map(({ recipientAddress }) => recipientAddress);
+      const txsRecipientList = transactions
+        .filter(({ recipientAddress }) => !!recipientAddress)
+        .map(({ recipientAddress }) => recipientAddress);
       // Remove duplicate addresses
       const txsDupsFiltered = [...new Set(txsRecipientList)];
       setTotalUniqueAddresses(txsDupsFiltered.length);
@@ -112,29 +124,44 @@ export const Send: React.FC = () => {
     const limitedTxList = [...recentTxAddresses].splice(0, recentAddressLimit);
     // Render recent addresses from created array
     return limitedTxList.map((address, index) => (
-      <RecentAddressItem key={`${address}_${index}`} onClick={() => setTxSendAddress(address)}>
+      <RecentAddressItem
+        key={`${address}_${index}`}
+        onClick={() => setTxSendAddress(address)}
+      >
         <AddressInfo>
           <Address>{trimAddress(address!)}</Address>
         </AddressInfo>
         <Sprite icon={ICON_NAMES.CHEVRON} size="1.3rem" />
       </RecentAddressItem>
     ));
-  }
+  };
 
   const validateAndNavigate = () => {
     if (!txSendAddress) return setError('An address is required');
-    if (!validateAddress(txSendAddress)) return setError('Address entered is invalid');
+    if (!validateAddress(txSendAddress))
+      return setError('Address entered is invalid');
 
     navigate(SEND_AMOUNT_URL);
   };
 
   return (
     <Content>
-      <Header title="Send" iconLeft={ICON_NAMES.CLOSE} backLocation={DASHBOARD_URL} backCallback={() => { resetMessage() }} />
+      <Header
+        title="Send"
+        iconLeft={ICON_NAMES.CLOSE}
+        backLocation={DASHBOARD_URL}
+        backCallback={() => {
+          resetMessage();
+        }}
+      />
       {assets.length ? (
         <>
           <SectionTitle>{assets.length > 1 ? 'Select Asset' : 'Asset'}</SectionTitle>
-          <AssetDropdown assets={assets} activeDenom={coin?.denom} onChange={setCoin} />
+          <AssetDropdown
+            assets={assets}
+            activeDenom={coin?.denom}
+            onChange={setCoin}
+          />
           <SectionTitle>Send to Address</SectionTitle>
           <Input
             placeholder="Enter or select address below"
@@ -145,18 +172,29 @@ export const Send: React.FC = () => {
           />
           <SectionTitle>Recent Addresses</SectionTitle>
           <RecentAddressSection>
-            {!!transactionsError && <Typo type="error">Error fetching recent addresses: {transactionsError}</Typo>}
-            {transactionsLoading ?
-              <Loading /> :
-              !transactions.length ?
-              <Typo type="body" align='left' textStyle='italic'>No recent addresses available</Typo> :
+            {!!transactionsError && (
+              <Typo type="error">
+                Error fetching recent addresses: {transactionsError}
+              </Typo>
+            )}
+            {transactionsLoading ? (
+              <Loading />
+            ) : !transactions.length ? (
+              <Typo type="body" align="left" textStyle="italic">
+                No recent addresses available
+              </Typo>
+            ) : (
               renderRecentAddresses()
-            }
-            {!!transactions.length && (recentAddressLimit < totalUniqueAddresses) &&
+            )}
+            {!!transactions.length && recentAddressLimit < totalUniqueAddresses && (
               <RecentAddressItem>
-                <AddressInfo onClick={() => setRecentAddressLimit(recentAddressLimit + 3)}>View More</AddressInfo>
+                <AddressInfo
+                  onClick={() => setRecentAddressLimit(recentAddressLimit + 3)}
+                >
+                  View More
+                </AddressInfo>
               </RecentAddressItem>
-            }
+            )}
           </RecentAddressSection>
           <BottomFloat>
             <Button onClick={validateAndNavigate}>Next</Button>
@@ -170,7 +208,6 @@ export const Send: React.FC = () => {
           </BottomFloat>
         </>
       )}
-      
     </Content>
-  )
+  );
 };

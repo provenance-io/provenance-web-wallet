@@ -18,6 +18,7 @@ const initialState: MessageSlice = {
   txMsgAny: undefined,
   txSendAddress: undefined,
   txType: 'MsgSend', // TODO: Make Dynamic
+  txResponse: '',
 };
 
 const messageSlice = createSlice({
@@ -57,6 +58,10 @@ const messageSlice = createSlice({
 
     setTxMsgAny(state, action) {
       state.txMsgAny = action.payload;
+    },
+
+    setTxResponse(state, { payload }) {
+      state.txResponse = payload;
     },
 
     resetMessage: () => initialState,

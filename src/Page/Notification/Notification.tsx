@@ -9,19 +9,21 @@ import { WalletConnectInit } from './WalletConnectInit';
 import { SignRequest } from './SignRequest';
 import { TransactionRequest } from './TransactionRequest';
 import { RequestFailed } from './RequestFailed';
+import { ExtensionTypes, NotificationType } from 'types';
+import { TransactionComplete } from './TransactionComplete';
 
-type ExtensionTypes = 'extension' | 'browser' | '';
 interface PageProps {
   payload: EventPayload;
   closeWindow: () => void;
-  setFailedMessage: (value: string) => void;
+  changeNotificationPage: (type: NotificationType, data: {}) => void;
+  pageData: {};
 }
 
 export const Notification: React.FC = () => {
-  const [notificationType, setNotificationType] = useState<WCNotification>('');
+  const [notificationType, setNotificationType] = useState<NotificationType>('');
   const [eventPayload, setEventPayload] = useState<EventPayload | null>(null);
   const [extensionType, setExtensionType] = useState<ExtensionTypes>('');
-  const [failedMessage, setFailedMessage] = useState('');
+  const [pageData, setPageData] = useState({});
   const [searchParams, setSearchParams] = useSearchParams();
   const navigate = useNavigate();
   const {
@@ -75,13 +77,13 @@ export const Notification: React.FC = () => {
       // Loop through each notification type and create event listener
       WC_NOTIFICATION_TYPES.forEach((NOTE_TYPE) => {
         connector.on(NOTE_TYPE, (error, payload) => {
+          setEventPayload(payload);
           setNotificationType(NOTE_TYPE as WCNotification);
           // Save the request locally
           // - If the user closes the window/popup or doesn't notice it in the background it can be retreived
           //    - Clicking QR Code modal connect button again
           //    - Opening extension directly (which should be showing a "1" notification in the icon)
           const { id } = payload;
-          setEventPayload(payload);
           // Only add 'provenance_sign' and 'provenance_sendTransaction' to pendingRequest list
           if (
             NOTE_TYPE === 'provenance_sign' ||
@@ -127,19 +129,19 @@ export const Notification: React.FC = () => {
     }
   };
 
-  const renderNotificationContent = () => {
-    const pageProps = { payload: eventPayload, closeWindow, setFailedMessage };
-    if (!eventPayload)
-      return (
-        <RequestFailed
-          failedMessage="Missing event payload, close this popup and retry the action from the dApp."
-          title="Unknown Error"
-          {...pageProps}
-        />
-      );
-    if (failedMessage)
-      return <RequestFailed failedMessage={failedMessage} {...pageProps} />;
+  // Manually change the notification page and pass along any data
+  const changeNotificationPage = (noteType: NotificationType, data: {}) => {
+    setPageData(data);
+    setNotificationType(noteType);
+  };
 
+  const renderNotificationContent = () => {
+    const pageProps = {
+      payload: eventPayload,
+      closeWindow,
+      changeNotificationPage,
+      pageData,
+    };
     switch (notificationType) {
       case 'session_request':
         return <WalletConnectInit {...(pageProps as PageProps)} />;
@@ -147,17 +149,15 @@ export const Notification: React.FC = () => {
         return <TransactionRequest {...(pageProps as PageProps)} />;
       case 'provenance_sign':
         return <SignRequest {...(pageProps as PageProps)} />;
+      case 'failed':
+        return <RequestFailed {...(pageProps as PageProps)} />;
+      case 'complete':
+        return <TransactionComplete {...(pageProps as PageProps)} />;
       case 'connect': // fallthrough
-      case 'disconnect':
-        return <></>; // Return empty since this would only show up for a split second before the popup closes/changes
+      case 'disconnect': // fallthrough
       default:
-        return (
-          <RequestFailed
-            failedMessage={`Unknown notification type: ${notificationType}, close this popup and retry the action from the dApp.`}
-            title="Unknown Notification"
-            {...pageProps}
-          />
-        );
+        // Just return empty since we are changing the note type to bounce into 'failed'
+        return <></>;
     }
   };
 

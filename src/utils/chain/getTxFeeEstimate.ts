@@ -11,8 +11,8 @@ export const getTxFeeEstimate = async ({
   publicKey,
   msgAny,
   address,
-  gasPrice = 19050,
-  gasPriceDenom = 'nhash',
+  gasPrice = 19050, // TODO: This should come from an API - Not hardcoded
+  gasPriceDenom = 'nhash', // TODO: This should come from an API - Not hardcoded
   gasAdjustment = 1.25,
 }: GetTxFeeEstimate): Promise<GetTxFeeEstimateResponse> => {
   const grpcAddress = getGrpcApi(address);
@@ -25,13 +25,13 @@ export const getTxFeeEstimate = async ({
     gasPrice,
     gasAdjustment,
   });
-  const { totalFeesList, estimatedGas: txGasEstimate } = await calculateTxFees(
+  const { estimatedGas: txGasEstimate } = await calculateTxFees(
     grpcAddress,
     calculateTxFeeRequest
   );
-  const txFeeEstimate = Number(
-    totalFeesList.find((fee) => fee.denom === 'nhash')?.amount
-  );
 
-  return { txFeeEstimate: txFeeEstimate || 0, txGasEstimate: txGasEstimate || 0 };
+  return {
+    txFeeEstimate: txGasEstimate * gasPrice,
+    txGasEstimate: txGasEstimate || 0,
+  };
 };

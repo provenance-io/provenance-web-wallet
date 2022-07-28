@@ -1,17 +1,20 @@
 import styled from 'styled-components';
-import { capitalize, getJSType } from 'utils';
+import { capitalize, getExplorerApi, getJSType, hashFormat } from 'utils';
 import { COLORS } from 'theme';
 import { Typo } from '../Typography/Typo';
 import React from 'react';
+import { useActiveAccount } from 'redux/hooks';
+import { EXPLORER_WEB_BLOCK, EXPLORER_WEB_TX_HASH } from 'consts';
 
 const ListContainer = styled.div<{
-  marginBottom?: string,
-  marginTop?: string,
-  maxHeight?: string
+  marginBottom?: string;
+  marginTop?: string;
+  maxHeight?: string;
 }>`
-  ${({ marginBottom }) => !!marginBottom && `margin-bottom: ${marginBottom};` }
-  ${({ marginTop }) => !!marginTop && `margin-top: ${marginTop};` }
-  ${({ maxHeight }) => !!maxHeight && `max-height: ${maxHeight}; overflow-y: scroll;` }
+  ${({ marginBottom }) => !!marginBottom && `margin-bottom: ${marginBottom};`}
+  ${({ marginTop }) => !!marginTop && `margin-top: ${marginTop};`}
+  ${({ maxHeight }) =>
+    !!maxHeight && `max-height: ${maxHeight}; overflow-y: scroll;`}
   // Attempt to style the scrollbar
   &::-webkit-scrollbar-thumb {
     background-color: ${COLORS.PRIMARY_500};
@@ -45,14 +48,17 @@ const ListContent = styled.div`
   }
 `;
 
+type MessageValue = string | number | object | undefined;
+
 interface MessageObject {
-  [key: string]: string | number | object | undefined;
+  [key: string]: MessageValue;
 }
 interface ListProps {
   message: MessageObject;
   marginBottom?: string;
   marginTop?: string;
   maxHeight?: string;
+  type?: 'txcomplete';
 }
 
 export const List = ({
@@ -60,46 +66,132 @@ export const List = ({
   marginBottom,
   marginTop,
   maxHeight,
+  type,
 }: ListProps) => {
+  const { address } = useActiveAccount();
+  // Format specific names
+  const formatKey = (key: string) => {
+    switch (key.toLowerCase()) {
+      case 'hash': // fallthrough
+      case 'txhash':
+        return 'Tx Hash';
+      case 'height':
+        return 'Block Height';
+      default:
+        return key;
+    }
+  };
+  const formatValue = (key: string, value: MessageValue) => {
+    if (value === undefined) return 'N/A';
+    if (getJSType(value) === 'boolean') return !!value ? 'Yes' : 'No';
+    switch (key.toLowerCase()) {
+      case 'tx hash':
+        return (
+          <a
+            href={`${getExplorerApi(address!)}${EXPLORER_WEB_TX_HASH}/${value}`}
+            title="View transaction on Provenance Blockchain Explorer"
+            target="_blank"
+            rel="noreferrer"
+          >
+            {value}
+          </a>
+        );
+      case 'block height':
+        return (
+          <a
+            href={`${getExplorerApi(address!)}${EXPLORER_WEB_BLOCK}/${value}`}
+            title="View block on Provenance Blockchain Explorer"
+            target="_blank"
+            rel="noreferrer"
+          >
+            {value}
+          </a>
+        );
+      case 'gaswanted': // fallthrough
+      case 'gasused':
+        return `${hashFormat(value as number)} Hash`;
+      default:
+        return value;
+    }
+  };
+
+  // Certain message types only need to display certain information and discard the rest
+  // Users can always click "data" button to see full message
+  const txCompleteKeys = [
+    'platform',
+    'gasfee',
+    'gaswanted',
+    'gasused',
+    'txhash',
+    'height',
+    'date',
+  ];
+  const filterKeysByType = (key: string) => {
+    let result = true;
+    if (!type) return result;
+    switch (type) {
+      case 'txcomplete':
+        result = txCompleteKeys.includes(key.toLowerCase());
+        break;
+      default:
+        break;
+    }
+    return result;
+  };
 
   const createListContent = (listObject: MessageObject) => {
     const listObjKeys = Object.keys(listObject);
-    return listObjKeys.map(key => {
+    return listObjKeys.map((key) => {
       const listObjValue = listObject[key];
-      const listObjValueJSType = getJSType(listObjValue);
-      // TODO: Not do this...
-      const displayValue = listObjValue === undefined ?
-        'N/A' :
-        listObjValueJSType === 'boolean' ?
-        !!listObjValue ?
-        'Yes' :
-        'No' :
-        listObjValue;
+      // Format the key and value if needed
+      const formattedKey = formatKey(key);
+      const formattedValue = formatValue(formattedKey, listObjValue);
       return (
         <ListRow key={key}>
-          <ListContent>{capitalize(key, 'camelcase')}</ListContent>
-          <ListContent>{displayValue}</ListContent>
+          <ListContent>{capitalize(formattedKey, 'camelcase')}</ListContent>
+          <ListContent>{formattedValue}</ListContent>
         </ListRow>
-      )
+      );
     });
   };
 
-  const createListRows = () => Object.keys(message).map(messageRowKey => {
-    const messageRowValue = message[messageRowKey];
-    const messageRowValueJSType = getJSType(messageRowValue);
-    // If the item's child is an object, then set a title above the row (section)
-    const messageRowValueIsObject = messageRowValueJSType === 'object';
-    return (
-      <React.Fragment key={messageRowKey}>
-        {messageRowValueIsObject && <Typo type='displayBody' align='left' marginTop='20px' marginBottom='10px'>{capitalize(messageRowKey, 'camelcase')}</Typo>}
-        {createListContent(messageRowValueIsObject ? messageRowValue as MessageObject: { [messageRowKey]: messageRowValue })}
-      </React.Fragment>
-    )
-  });
+  const createListRows = () =>
+    Object.keys(message)
+      .filter(filterKeysByType)
+      .sort()
+      .map((messageRowKey) => {
+        const messageRowValue = message[messageRowKey];
+        const messageRowValueJSType = getJSType(messageRowValue);
+        // If the item's child is an object, then set a title above the row (section)
+        const messageRowValueIsObject = messageRowValueJSType === 'object';
+        return (
+          <React.Fragment key={messageRowKey}>
+            {messageRowValueIsObject && (
+              <Typo
+                type="displayBody"
+                align="left"
+                marginTop="20px"
+                marginBottom="10px"
+              >
+                {capitalize(messageRowKey, 'camelcase')}
+              </Typo>
+            )}
+            {createListContent(
+              messageRowValueIsObject
+                ? (messageRowValue as MessageObject)
+                : { [messageRowKey]: messageRowValue }
+            )}
+          </React.Fragment>
+        );
+      });
 
   return (
-    <ListContainer marginBottom={marginBottom} maxHeight={maxHeight} marginTop={marginTop}>
+    <ListContainer
+      marginBottom={marginBottom}
+      maxHeight={maxHeight}
+      marginTop={marginTop}
+    >
       {createListRows()}
     </ListContainer>
-  )
+  );
 };

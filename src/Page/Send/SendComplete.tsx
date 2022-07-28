@@ -5,7 +5,7 @@ import { useNavigate } from 'react-router';
 import checkSuccessIcon from 'images/check-success.svg';
 import { useMessage } from 'redux/hooks';
 import { format } from 'date-fns';
-import { capitalize } from 'utils';
+import { capitalize, trimAddress } from 'utils';
 
 const SuccessIcon = styled.img`
   height: 80px;
@@ -25,6 +25,7 @@ export const SendComplete = () => {
     txFromAddress,
     txSendAddress,
     txDate,
+    txResponse,
   } = useMessage();
 
   const handleContinueClick = () => {
@@ -37,14 +38,19 @@ export const SendComplete = () => {
   return (
     <Content>
       <SuccessIcon src={checkSuccessIcon} />
-      <Typo type="display2" align="center" marginTop="20px">{coinAmount} {capitalize(coin?.display, 'uppercase')}</Typo>
-      <Typo type="displayBody" align="center" marginTop="14px">Your transfer details are below</Typo>
+      <Typo type="display2" align="center" marginTop="20px">
+        {coinAmount} {capitalize(coin?.display, 'uppercase')}
+      </Typo>
+      <Typo type="displayBody" align="center" marginTop="14px">
+        Your transfer details are below
+      </Typo>
       <List
         message={{
           date: format(txDate!, 'MMM dd, yyyy'),
-          from: txFromAddress,
-          to: txSendAddress,
-          ...(!!txMemo && { note: txMemo })
+          from: trimAddress(txFromAddress),
+          to: trimAddress(txSendAddress),
+          ...(!!txMemo && { note: txMemo }),
+          ...(!!txResponse?.txhash && { 'Transaction Hash': txResponse.txhash }),
         }}
         marginTop="40px"
         marginBottom="80px"

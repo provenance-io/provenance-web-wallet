@@ -68,6 +68,14 @@ export const GlobalStyles = createGlobalStyle<{
     letter-spacing: 0.04rem;
   }
 
+  a {
+    color: ${COLORS.PRIMARY_400};
+    text-decoration: none;
+    &:hover{
+      color: ${COLORS.PRIMARY_450};
+    }
+  }
+
   #root {
     height: 100%;
   }

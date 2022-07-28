@@ -19,4 +19,5 @@ export interface Message {
   txMsgAny?: any;
   txSendAddress?: string;
   txType?: ReadableMessageNames;
+  txResponse?: any;
 }

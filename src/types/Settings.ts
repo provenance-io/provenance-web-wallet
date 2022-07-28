@@ -6,4 +6,5 @@ export interface SettingsStorage {
 
 export type SettingsState = SettingsStorage & {
   initialDataPulled: boolean; // On load, have we pulled all the saved settings data and added it back to redux?
+  initialAppLoad: boolean; // Should we treat the app as if it were freshly opened?
 };

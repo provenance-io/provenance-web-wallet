@@ -8,12 +8,9 @@ import { Content, Loading } from 'Components';
 import { Page } from 'Page';
 
 function App() {
-  const [initialAppLoad, setInitialAppLoad] = useState(true);
   const [allInitialDataLoaded, setAllInitialDataLoaded] = useState(false);
-  const {
-    pullInitialAccountData,
-    initialDataPulled: initialAccountDataPulled,
-  } = useAccount();
+  const { pullInitialAccountData, initialDataPulled: initialAccountDataPulled } =
+    useAccount();
   const {
     connector,
     createConnectionTimer,
@@ -24,13 +21,19 @@ function App() {
     walletconnectDisconnect,
     initialDataPulled: initialWCDataPulled,
   } = useWalletConnect();
-  const { pullInitialSettingsData, initialDataPulled: initialSettingsDataPulled } = useSettings();
+  const {
+    pullInitialSettingsData,
+    initialDataPulled: initialSettingsDataPulled,
+    initialAppLoad,
+    setInitialAppLoad,
+  } = useSettings();
   const navigate = useNavigate();
 
   // Check if the app is still loading on startup
   useEffect(() => {
     // Check to see that all initial data pulls have finished
-    const hasInitialDataLoaded = initialAccountDataPulled && initialSettingsDataPulled && initialWCDataPulled;
+    const hasInitialDataLoaded =
+      initialAccountDataPulled && initialSettingsDataPulled && initialWCDataPulled;
     setAllInitialDataLoaded(hasInitialDataLoaded);
   }, [initialAccountDataPulled, initialSettingsDataPulled, initialWCDataPulled]);
 
@@ -45,9 +48,9 @@ function App() {
         // Create and start the timer
         const callback = () => {
           // Timeout reached, disconnect the session
-          walletconnectDisconnect()
+          walletconnectDisconnect();
         };
-        createConnectionTimer({ callback, duration: timeoutDuration})
+        createConnectionTimer({ callback, duration: timeoutDuration });
       }
     }
   }, [
@@ -60,7 +63,10 @@ function App() {
 
   useEffect(() => {
     // If we have a connector, listen for the disconnect event
-    if (connector) connector.on('disconnect', async () => { walletconnectDisconnect(); });
+    if (connector)
+      connector.on('disconnect', async () => {
+        walletconnectDisconnect();
+      });
   }, [connector, walletconnectDisconnect]);
 
   // If this is the initialLoad, get and set the storage wallet values
@@ -79,15 +85,23 @@ function App() {
       // - Window localstorage (session)
       pullInitialWCData();
     }
-  }, [initialAppLoad, pullInitialAccountData, pullInitialSettingsData, pullInitialWCData]);
+  }, [
+    initialAppLoad,
+    setInitialAppLoad,
+    pullInitialAccountData,
+    pullInitialSettingsData,
+    pullInitialWCData,
+  ]);
 
   // Check settings and url search params to potentially redirect user to a new page
   useEffect(() => {
     const urlSearchParams = new URLSearchParams(window?.location?.search);
     const walletConnectURI = urlSearchParams.get('wc');
     const redirectToURL = urlSearchParams.get('redirectTo');
-    // Determine if we're being sent to the notifications page (walletconnect session or manual redirect) 
-    const redirectToNotificationsPage: boolean = !!walletConnectURI || !!(redirectToURL && redirectToURL === 'NOTIFICATION_URL');
+    // Determine if we're being sent to the notifications page (walletconnect session or manual redirect)
+    const redirectToNotificationsPage: boolean =
+      !!walletConnectURI ||
+      !!(redirectToURL && redirectToURL === 'NOTIFICATION_URL');
     if (redirectToNotificationsPage) {
       // Wallet connect request
       if (walletConnectURI) {
@@ -100,20 +114,21 @@ function App() {
         // Make sure url exists (don't allow random redirects to non-existing pages)
         if (existingURL) navigate(existingURL);
       }
-    } 
+    }
   }, [navigate]);
 
   const routing = useRoutes(routes);
-  
+
   // TODO: Create full landing Page which uses the Loading component
-  return allInitialDataLoaded ? routing :
-    (
-      <Page bgImage>
-        <Content>
-          <Loading />
-        </Content>
-      </Page>
-    );
+  return allInitialDataLoaded ? (
+    routing
+  ) : (
+    <Page bgImage>
+      <Content>
+        <Loading />
+      </Content>
+    </Page>
+  );
 }
 
 export default App;

@@ -2,15 +2,9 @@
 * _(Priority: 1 - 10)_
 
 ## Current Branch Tasks/Changes
-* Recover Account endless spin after adding name [DONE]
-* Allow pressing "enter" on all inputs to automatically submit (accessability) [DONE]
-* Add a significant amount of accessability controls on all pages [DONE]
-* Build production code with no minification and no obfuscation [3]
+* Build production code with no minification and no obfuscation [DONE]
   - This won't effect production times as the user downloads the entire repo into chrome from the webstore
   - This should (in theory and chrome documentation) speed up the app approval process and times
-* Timeout on clicking homepage slider [DONE]
-  - Spamming can cause it to bug out
-  - Set a timeout for the animation length
 
 ## Bugs
 * If dApp disconnects while ext is signing message/approving tx currently goes to empty page [10]

@@ -18,19 +18,25 @@ import {
   useSettings,
   useWalletConnect,
 } from 'redux/hooks';
-import { completeHdPath } from 'utils';
+import { completeHdPath, keyPress } from 'utils';
 import { FlowType } from 'types';
+import { COLORS } from 'theme';
 
 interface StyledProps {
   enabled?: boolean;
 }
 
 const AdvancedTextButton = styled.div<StyledProps>`
-  color: ${({ enabled }) => (enabled ? '#357EFD' : '#AAAAAA')};
+  color: ${({ enabled }) => (enabled ? COLORS.PRIMARY_500 : COLORS.NEUTRAL_250)};
   font-weight: bold;
   margin: 20px 0;
   cursor: pointer;
   user-select: none;
+  &:focus {
+    outline: none;
+    text-decoration: underline;
+    color: ${({ enabled }) => (enabled ? COLORS.PRIMARY_400 : COLORS.NEUTRAL_150)};
+  }
 `;
 
 interface Props {
@@ -166,7 +172,7 @@ export const NewAccountName = ({
       ) : (
         <>
           {recoverClearWallet && renderRecoverClearWarning()}
-          <Typo type="body" marginBottom="36px">
+          <Typo type="body" marginBottom="36px" marginTop="30px">
             Name this {accountType} to easily identify it while using the Provenance
             Blockchain Wallet.
           </Typo>
@@ -177,8 +183,15 @@ export const NewAccountName = ({
             value={name}
             onChange={handleInputChange}
             error={error}
+            onKeyPress={(e) => keyPress(e, 'Enter', handleContinue)}
+            autoFocus
           />
-          <AdvancedTextButton enabled={showAdvanced} onClick={toggleShowAdvanced}>
+          <AdvancedTextButton
+            enabled={showAdvanced}
+            onClick={toggleShowAdvanced}
+            onKeyPress={(e) => keyPress(e, 'Enter', toggleShowAdvanced)}
+            tabIndex={0}
+          >
             Advanced Settings ({showAdvanced ? 'Enabled' : 'Disabled'})
           </AdvancedTextButton>
           {showAdvanced && (

@@ -16,6 +16,7 @@ import {
   createRootAccount,
   createChildAccount,
   decryptKey,
+  keyPress,
 } from 'utils';
 import { Account, FlowType } from 'types';
 
@@ -152,6 +153,8 @@ export const NewAccountPassword = ({
         value={password}
         onChange={(value) => handleInputChange(value, 0)}
         error={errors[0]}
+        onKeyPress={(e) => keyPress(e, 'Enter', handleContinue)}
+        autoFocus
       />
       {enterNewPassword && (
         <Input
@@ -162,6 +165,7 @@ export const NewAccountPassword = ({
           value={repeatedPassword}
           onChange={(value) => handleInputChange(value, 1, true)}
           error={errors[1]}
+          onKeyPress={(e) => keyPress(e, 'Enter', handleContinue)}
         />
       )}
 

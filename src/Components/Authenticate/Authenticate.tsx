@@ -62,7 +62,7 @@ export const Authenticate: React.FC<Props> = ({
           id="Wallet-Pasword"
           value={walletPassword}
           onChange={handleChange}
-          onKeyDown={(e) => keyPress(e, 'Enter', handleApprove)}
+          onKeyPress={(e) => keyPress(e, 'Enter', handleApprove)}
           error={passwordError}
           type="password"
           autoFocus

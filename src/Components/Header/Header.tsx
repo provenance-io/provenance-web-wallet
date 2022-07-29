@@ -52,6 +52,13 @@ const LinkOrButton = styled.button`
   color: inherit;
   background: none;
   cursor: pointer;
+  &:focus {
+    outline: none;
+    color: ${COLORS.PRIMARY_400};
+    svg {
+      stroke-width: 4px;
+    }
+  }
 `;
 
 interface BackButtonProps {

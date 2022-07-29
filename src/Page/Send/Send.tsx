@@ -12,7 +12,7 @@ import {
 } from 'Components';
 import styled from 'styled-components';
 import { DASHBOARD_URL, ICON_NAMES, SEND_AMOUNT_URL } from 'consts';
-import { trimAddress, validateAddress } from 'utils';
+import { keyPress, trimAddress, validateAddress } from 'utils';
 import { useNavigate } from 'react-router';
 import { useActiveAccount, useAddress, useMessage } from 'redux/hooks';
 
@@ -169,6 +169,7 @@ export const Send: React.FC = () => {
             value={txSendAddress}
             onChange={setTxSendAddress}
             error={error}
+            onKeyPress={(e) => keyPress(e, 'Enter', validateAndNavigate)}
           />
           <SectionTitle>Recent Addresses</SectionTitle>
           <RecentAddressSection>

@@ -10,8 +10,7 @@ interface InputProps {
   id: string;
   label?: string;
   onChange?: (e: any) => void;
-  onKeyDown?: (e: any) => void;
-  onKeyUp?: (e: any) => void;
+  onKeyPress?: (e: React.KeyboardEvent) => void;
   placeholder?: string;
   type?: string;
   value?: string | number;
@@ -61,7 +60,7 @@ const InputError = styled.div<{ hasLabel?: boolean }>`
   font-size: 1.2rem;
   position: absolute;
   right: 3px;
-  top: ${({ hasLabel }) => (hasLabel ? '22px' : '-12px')};
+  top: ${({ hasLabel }) => (hasLabel ? '20px' : '-12px')};
 `;
 
 export const Input = ({
@@ -73,7 +72,7 @@ export const Input = ({
   id,
   label,
   onChange,
-  onKeyUp,
+  onKeyPress,
   type = 'text',
   value,
   ...rest
@@ -90,7 +89,7 @@ export const Input = ({
       disabled={disabled}
       autoComplete="off"
       background={background}
-      onKeyUp={onKeyUp}
+      onKeyPress={onKeyPress}
       autoFocus={autoFocus}
       {...rest}
     />

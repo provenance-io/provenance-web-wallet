@@ -3,18 +3,27 @@
 
 ## Current Branch Tasks/Changes
 * Recover Account endless spin after adding name [DONE]
+* Allow pressing "enter" on all inputs to automatically submit (accessability) [DONE]
+* Add a significant amount of accessability controls on all pages [DONE]
+* Build production code with no minification and no obfuscation [3]
+  - This won't effect production times as the user downloads the entire repo into chrome from the webstore
+  - This should (in theory and chrome documentation) speed up the app approval process and times
+* Timeout on clicking homepage slider [5]
+  - Spamming can cause it to bug out
+  - Set a timeout for the animation length
 
 ## Bugs
 * If dApp disconnects while ext is signing message/approving tx currently goes to empty page [10]
   - Change the page, say "You've been disconnected" and just allow pressing "ok" to close extension
 
 ## Features
-* Handle blockchain broadcast failures & display reasons (instead of success page) [2]
 * Run through and cleanup all TODO: items [3]
-* Change chrome icon when connected to a dApp [3]
+* Create tests to render pages and flows [3]
+  - Will require spoofing chrome storage and chrome functions (tests will run outside of chrome env)
+  - Takes too long to publish an app store update, can't deploy with bugs and fix them fast like websites.
+  - Need to simulate flows to ensure everything renders properly.
+* Change chrome icon when connected to a dApp [4]
   - chrome.action.setIcon({ path: "/example/path/image.png" })
-* Allow pressing "enter" on an input to automatically submit (accessability) [4]
-  - Will need additional accessability features (tab index, titles, etc)
 * When user doesn't have a wallet created but does have the extension, no popup is triggered [5]
   - Instead open the popup and prompt the user to go through the account creation flow
     - This would only apply to initiating a walletconnect-init connection

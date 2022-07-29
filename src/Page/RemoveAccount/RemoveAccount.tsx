@@ -4,17 +4,18 @@ import { useState } from 'react';
 import { useParams, useNavigate } from 'react-router';
 import { useAccount } from 'redux/hooks';
 import styled from 'styled-components';
+import { COLORS } from 'theme';
 import { Account } from 'types';
-import { decryptKey } from 'utils';
+import { decryptKey, keyPress } from 'utils';
 
 const StyledAddress = styled.div`
-  color: rgb(217 217 217);
+  color: ${COLORS.NEUTRAL_150};
   font-weight: bold;
   font-size: 1.2rem;
   width: 100%;
   text-align: center;
   margin-bottom: 8px;
-  background: rgb(72 73 73);
+  background: ${COLORS.NEUTRAL_550};
   padding: 10px;
   border-radius: 3px;
 `;
@@ -32,18 +33,20 @@ export const RemoveAccount: React.FC = () => {
   const navigate = useNavigate();
   const { address: removeAddress } = useParams();
   const { removeAccount, accounts } = useAccount();
-  const { name, masterKey } = accounts.find((account:Account) => account.address! === removeAddress) || {};
+  const { name, masterKey } =
+    accounts.find((account: Account) => account.address! === removeAddress) || {};
 
   const validateInputFields = () => {
     const newErrors = [];
     const validLast4 = removeAddress!.slice(-4);
-    if (validLast4 !== confirmAddress) newErrors[0] = 'Invalid account address values entered.'
+    if (validLast4 !== confirmAddress)
+      newErrors[0] = 'Invalid account address values entered.';
     const masterKeyB64 = decryptKey(masterKey!, walletPassword);
     if (!masterKeyB64) newErrors[1] = 'Invalid wallet password';
     // Savbe new errors to state
     setInputErrors(newErrors);
     return !newErrors.length; // No errors length means success
-  }
+  };
 
   const handleRemoveAccount = () => {
     if (validateInputFields()) {
@@ -52,7 +55,11 @@ export const RemoveAccount: React.FC = () => {
     }
   };
 
-  const handleInputChange = (value: string, errorIndex: number, type: 'wallet' | 'address') => {
+  const handleInputChange = (
+    value: string,
+    errorIndex: number,
+    type: 'wallet' | 'address'
+  ) => {
     // clear any errors out
     const updatedErrors = [...inputErrors];
     updatedErrors[errorIndex] = '';
@@ -62,17 +69,16 @@ export const RemoveAccount: React.FC = () => {
 
   return (
     <>
-      <Header title='Remove Account' iconLeft={ICON_NAMES.CLOSE} backLocation={DASHBOARD_MENU_URL} />
+      <Header
+        title="Remove Account"
+        iconLeft={ICON_NAMES.CLOSE}
+        backLocation={DASHBOARD_MENU_URL}
+      />
       <StyledAddress>{removeAddress}</StyledAddress>
       <Alert type="warning" title="Warning">
         Without its seed phase, account "{name}" cannot be recovered.
       </Alert>
-      <Typo
-        type="headline2"
-        align='left'
-        marginTop='20px'
-        marginBottom='20px'
-      >
+      <Typo type="headline2" align="left" marginTop="20px" marginBottom="20px">
         Confirm Removal
       </Typo>
       <InputSection>
@@ -81,7 +87,7 @@ export const RemoveAccount: React.FC = () => {
           value={confirmAddress}
           onChange={(value) => handleInputChange(value, 0, 'address')}
           placeholder="Last 4 address characters"
-          label='Last 4 Address Characters'
+          label="Last 4 Address Characters"
           error={inputErrors[0]}
         />
         <Input
@@ -89,13 +95,14 @@ export const RemoveAccount: React.FC = () => {
           value={walletPassword}
           onChange={(value) => handleInputChange(value, 1, 'wallet')}
           placeholder="Wallet password"
-          label='Wallet Password'
+          label="Wallet Password"
           error={inputErrors[1]}
+          onKeyPress={(e) => keyPress(e, 'Enter', handleRemoveAccount)}
         />
       </InputSection>
       <BottomFloat>
         <Button onClick={handleRemoveAccount}>Remove Account</Button>
       </BottomFloat>
     </>
-  )
+  );
 };

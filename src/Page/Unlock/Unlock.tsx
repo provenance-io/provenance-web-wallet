@@ -71,7 +71,7 @@ export const Unlock = ({ nextUrl }: Props) => {
         value={password}
         onChange={handleInputChange}
         autoFocus
-        onKeyUp={(e) => {
+        onKeyPress={(e) => {
           keyPress(e, 'Enter', handleSubmit);
         }}
         error={error}

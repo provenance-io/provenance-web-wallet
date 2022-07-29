@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { useParams, useNavigate } from 'react-router';
 import { useAccount } from 'redux/hooks';
 import styled from 'styled-components';
+import { keyPress } from 'utils';
 
 const InputSection = styled.div`
   width: 100%;
@@ -34,17 +35,18 @@ export const RenameAccount: React.FC = () => {
     const validLength = newName.length > 2 && newName.length < 16;
     const validCharacters = /^([a-zA-Z0-9-_]+\s)*[a-zA-Z0-9-_]+$/.test(newName);
     let newError = '';
-    if (!validCharacters) newError = 'Name must only contain alphanumeric characters.'
-    if (!validLength) newError = 'Name must be 3 to 15 alphanumeric characters.'
+    if (!validCharacters)
+      newError = 'Name must only contain alphanumeric characters.';
+    if (!validLength) newError = 'Name must be 3 to 15 alphanumeric characters.';
     if (!newName) newError = 'Enter an account name.';
     // Save new errors to state
     setInputError(newError);
     return !newError;
-  }
+  };
 
   const submitAccountRename = () => {
     if (validateInputField()) {
-      renameAccount({address: renameAddress!, name: newName!});
+      renameAccount({ address: renameAddress!, name: newName! });
       navigate(DASHBOARD_MENU_URL);
     }
   };
@@ -52,11 +54,15 @@ export const RenameAccount: React.FC = () => {
   const handleInputChange = (value: string) => {
     setInputError('');
     setNewName(value);
-  }
+  };
 
   return (
     <>
-      <Header title='Rename Account' iconLeft={ICON_NAMES.CLOSE} backLocation={DASHBOARD_MENU_URL} />
+      <Header
+        title="Rename Account"
+        iconLeft={ICON_NAMES.CLOSE}
+        backLocation={DASHBOARD_MENU_URL}
+      />
       <StyledAddress>{renameAddress}</StyledAddress>
       <InputSection>
         <Input
@@ -64,13 +70,14 @@ export const RenameAccount: React.FC = () => {
           value={newName}
           onChange={handleInputChange}
           placeholder="Account Name"
-          label='Enter New Account Name'
+          label="Enter New Account Name"
           error={inputError}
+          onKeyPress={(e) => keyPress(e, 'Enter', submitAccountRename)}
         />
       </InputSection>
       <BottomFloat>
         <Button onClick={submitAccountRename}>Rename Account</Button>
       </BottomFloat>
     </>
-  )
+  );
 };

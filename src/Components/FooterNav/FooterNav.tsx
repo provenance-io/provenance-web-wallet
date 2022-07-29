@@ -1,8 +1,15 @@
-import { ACTIONS_URL, DASHBOARD_URL, ICON_NAMES, PROFILE_URL, TRANSACTIONS_URL } from 'consts';
+import {
+  ACTIONS_URL,
+  DASHBOARD_URL,
+  ICON_NAMES,
+  PROFILE_URL,
+  TRANSACTIONS_URL,
+} from 'consts';
 import { Sprite } from 'Components';
 import { useNavigate, useLocation } from 'react-router-dom';
 import styled from 'styled-components';
 import { useWalletConnect } from 'redux/hooks';
+import { keyPress } from 'utils';
 
 const Footer = styled.footer`
   position: fixed;
@@ -18,7 +25,7 @@ const Footer = styled.footer`
   z-index: 100;
   box-sizing: border-box;
   justify-content: space-between;
-  width:inherit;
+  width: inherit;
 `;
 const NavItem = styled.div<{ active?: boolean }>`
   font-size: 1.2rem;
@@ -60,6 +67,8 @@ export const FooterNav: React.FC = () => {
       <NavItem
         active={location?.pathname?.includes('dashboard')}
         onClick={() => navigate(DASHBOARD_URL)}
+        onKeyPress={(e) => keyPress(e, 'Enter', () => navigate(DASHBOARD_URL))}
+        tabIndex={0}
       >
         <Sprite icon={ICON_NAMES.DASHBOARD} size="1.6rem" />
         Dashboard
@@ -67,14 +76,20 @@ export const FooterNav: React.FC = () => {
       <NavItem
         active={location?.pathname?.includes('actions')}
         onClick={() => navigate(ACTIONS_URL)}
+        onKeyPress={(e) => keyPress(e, 'Enter', () => navigate(ACTIONS_URL))}
+        tabIndex={0}
       >
         <Sprite icon={ICON_NAMES.CUBES} size="1.6rem" />
-        {!!totalPendingRequests && <Notification>{totalPendingRequests}</Notification>}
+        {!!totalPendingRequests && (
+          <Notification>{totalPendingRequests}</Notification>
+        )}
         Actions
       </NavItem>
       <NavItem
         active={location?.pathname?.includes('transactions')}
         onClick={() => navigate(TRANSACTIONS_URL)}
+        onKeyPress={(e) => keyPress(e, 'Enter', () => navigate(TRANSACTIONS_URL))}
+        tabIndex={0}
       >
         <Sprite icon={ICON_NAMES.TRANSACTIONS} size="1.6rem" />
         Txs
@@ -82,6 +97,8 @@ export const FooterNav: React.FC = () => {
       <NavItem
         active={location?.pathname?.includes('profile')}
         onClick={() => navigate(PROFILE_URL)}
+        onKeyPress={(e) => keyPress(e, 'Enter', () => navigate(PROFILE_URL))}
+        tabIndex={0}
       >
         <Sprite icon={ICON_NAMES.PROFILE} size="1.6rem" />
         Profile

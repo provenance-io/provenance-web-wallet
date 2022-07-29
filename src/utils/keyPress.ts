@@ -4,5 +4,10 @@ export const keyPress = (
   targetKey: string,
   callback: () => void
 ) => {
-  if (event.key === targetKey) callback();
+  if (event.key === targetKey) {
+    event.preventDefault();
+    event.stopPropagation();
+    event.nativeEvent.stopImmediatePropagation();
+    callback();
+  }
 };

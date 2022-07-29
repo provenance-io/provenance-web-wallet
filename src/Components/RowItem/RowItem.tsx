@@ -3,8 +3,11 @@ import { Typo } from 'Components/Typography/Typo';
 import { ICON_NAMES } from 'consts';
 import styled from 'styled-components';
 import { COLORS } from 'theme';
+import { keyPress } from 'utils';
 
-const AssetItem = styled.div<{ onClick?: () => void }>`
+const AssetItem = styled.div<{
+  onClick?: (e: React.KeyboardEvent | React.MouseEvent) => void;
+}>`
   padding: 20px 16px;
   width: 100%;
   text-align: left;
@@ -41,7 +44,7 @@ interface Props {
   detailsBottom?: string;
   detailsTop?: string;
   img?: string;
-  onClick?: () => void;
+  onClick?: (e: React.KeyboardEvent | React.MouseEvent) => void;
   subtitle?: string;
   title: string;
 }
@@ -55,8 +58,16 @@ export const RowItem: React.FC<Props> = ({
   subtitle,
   title,
 }) => {
+  const handleClick = (e: React.MouseEvent | React.KeyboardEvent) => {
+    if (!!onClick) onClick(e);
+  };
+
   return (
-    <AssetItem onClick={onClick}>
+    <AssetItem
+      tabIndex={0}
+      onClick={handleClick}
+      onKeyDown={(e) => keyPress(e, 'Enter', () => handleClick(e))}
+    >
       {!!img && <AssetImg src={`/images/assets/${img}.svg`} />}
       <AssetDetails>
         <DetailsGroup>

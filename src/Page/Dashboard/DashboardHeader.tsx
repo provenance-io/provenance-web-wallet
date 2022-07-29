@@ -1,9 +1,13 @@
 import styled from 'styled-components';
-import { ICON_NAMES, DASHBOARD_CONNECTION_DETAILS_URL, DASHBOARD_MENU_URL } from 'consts';
+import {
+  ICON_NAMES,
+  DASHBOARD_CONNECTION_DETAILS_URL,
+  DASHBOARD_MENU_URL,
+} from 'consts';
 import { Sprite, CopyValue } from 'Components';
 import { useNavigate } from 'react-router-dom';
 import { useActiveAccount, useWalletConnect } from 'redux/hooks';
-import { trimAddress } from 'utils';
+import { keyPress, trimAddress } from 'utils';
 
 const HeaderRow = styled.div`
   display: flex;
@@ -17,6 +21,8 @@ const Menu = styled.div`
 const WalletInfo = styled.div`
   font-size: 1.4rem;
   text-align: left;
+  flex-grow: 1;
+  text-align: 1;
 `;
 const AccountName = styled.p`
   font-weight: 700;
@@ -30,7 +36,7 @@ const WalletConnect = styled.div`
   cursor: pointer;
 `;
 
-export const DashboardHeader:React.FC = () => {
+export const DashboardHeader: React.FC = () => {
   const navigate = useNavigate();
   const { session, connector } = useWalletConnect();
   const { connected } = session;
@@ -43,15 +49,21 @@ export const DashboardHeader:React.FC = () => {
       <Menu onClick={() => navigate(DASHBOARD_MENU_URL)}>
         <Sprite icon={ICON_NAMES.MENU} size="2rem" />
       </Menu>
-        <WalletInfo>
-          <CopyValue value={address} title="Copy account address">
-            <AccountName>{name}</AccountName>
-            <WalletAddress>({trimAddress(address)})</WalletAddress>
-          </CopyValue>
-        </WalletInfo>
-      <WalletConnect>
-        {!!connected && !!connector && <Sprite onClick={viewNotifications} icon={ICON_NAMES.CHAIN} size="4.8rem" />}
-      </WalletConnect>
+      <WalletInfo>
+        <CopyValue value={address} title="Copy account address">
+          <AccountName>{name}</AccountName>
+          <WalletAddress>({trimAddress(address)})</WalletAddress>
+        </CopyValue>
+      </WalletInfo>
+      {!!connected && !!connector && (
+        <WalletConnect
+          onClick={viewNotifications}
+          onKeyPress={(e) => keyPress(e, 'Enter', viewNotifications)}
+          tabIndex={0}
+        >
+          <Sprite icon={ICON_NAMES.CHAIN} size="4.8rem" />
+        </WalletConnect>
+      )}
     </HeaderRow>
   );
 };

@@ -8,7 +8,7 @@
 * Build production code with no minification and no obfuscation [3]
   - This won't effect production times as the user downloads the entire repo into chrome from the webstore
   - This should (in theory and chrome documentation) speed up the app approval process and times
-* Timeout on clicking homepage slider [5]
+* Timeout on clicking homepage slider [DONE]
   - Spamming can cause it to bug out
   - Set a timeout for the animation length
 
@@ -29,6 +29,9 @@
     - This would only apply to initiating a walletconnect-init connection
     - Potentially just display a static page stating that the user needs to create an account/wallet before using a dApp with the extension
 * Dashboard menu - child accounts indented (tree) [7]
+* Check all accessability items [7]
+  - Make sure all tabs and keyboard events work
+  - Be able to navigate entire app without a mouse
 * Create an address book with account names [7]
   - Any time we render an address check for existing contact in address book
 * Replace all inline-infile styled typography components with the Typo component [7]

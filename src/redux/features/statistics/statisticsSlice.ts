@@ -25,7 +25,7 @@ const initialState: InitialState = {
   },
 };
 
-const productionStatsApiUrl = `${SMW_MAINNET}/${SMW_STATS_URL}`;
+const productionStatsApiUrl = `${SMW_MAINNET}${SMW_STATS_URL}`;
 
 /**
  * ACTION TYPES

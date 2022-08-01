@@ -33,10 +33,8 @@ const BUMP_UNLOCK_DURATION = 'BUMP_UNLOCK_DURATION';
  */
 // Remove all existing values from chrome storage
 export const resetSettingsData = createAsyncThunk(RESET_SETTINGS_DATA, async () => {
-  console.log('resetSettingsData | start');
   // Remove all existing values from chrome storage
   await removeSavedData('settings');
-  console.log('resetSettingsData | end');
   // Reset initial chrome state values
   return await addSavedData({ settings: initialState });
 });

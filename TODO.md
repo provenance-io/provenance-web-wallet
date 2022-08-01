@@ -2,6 +2,10 @@
 * _(Priority: 1 - 10)_
 
 ## Current Branch Tasks/Changes
+* Create tests to render pages and flows [IN_PROGRESS]
+  - Takes too long to publish an app store update, can't deploy with bugs and fix them fast like websites.
+  - Need to simulate flows to ensure everything renders properly.
+* When running locally, create chrome spoof for storage functions [DONE]
 * Update all app icons to be square [DONE]
   - Previously non-square rectangle causing stretched appearance
 * Destroy wallet functionality not working [DONE]
@@ -27,10 +31,6 @@
   - Change the page, say "You've been disconnected" and just allow pressing "ok" to close extension
 
 ## Features
-* Create tests to render pages and flows [2]
-  - Will require spoofing chrome storage and chrome functions (tests will run outside of chrome env)
-  - Takes too long to publish an app store update, can't deploy with bugs and fix them fast like websites.
-  - Need to simulate flows to ensure everything renders properly.
 * When user doesn't have a wallet created but does have the extension, no popup is triggered [3]
   - Instead open the popup and prompt the user to go through the account creation flow
     - This would only apply to initiating a walletconnect-init connection

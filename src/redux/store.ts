@@ -11,7 +11,7 @@ export const store = configureStore({
   ...(process.env.REACT_APP_ENV === 'staging' && {
     enhancers: [devToolsEnhancer({ realtime: true, port: 8000 })],
   }),
-  devTools: false,
+  devTools: process.env.REACT_APP_ENV === 'development',
   reducer: {
     account: accountReducer,
     api_address: addressReducer,

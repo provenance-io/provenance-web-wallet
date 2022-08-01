@@ -50,10 +50,8 @@ const RENAME_ACCOUNT = 'RENAME_ACCOUNT';
  * ASYNC ACTIONS
  */
 export const resetAccountData = createAsyncThunk(RESET_ACCOUNT_DATA, async () => {
-  console.log('resetAccountData | start');
   // Remove all existing values from chrome storage
   await removeSavedData('account');
-  console.log('resetAccountData | end');
   // Reset initial chrome state values
   return await addSavedData({ account: chromeInitialState });
 });

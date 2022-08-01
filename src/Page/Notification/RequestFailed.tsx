@@ -19,13 +19,7 @@ export const RequestFailed: React.FC<Props> = ({
   pageData,
 }) => {
   const [initialLoad, setInitialLoad] = useState(true);
-  const {
-    connector,
-    connectionEXP,
-    connectionDuration,
-    saveWalletconnectData,
-    removePendingRequest,
-  } = useWalletConnect();
+  const { connector, removePendingRequest, bumpWCDuration } = useWalletConnect();
   const { failedMessage = 'Unknown Error Message', title = 'Unknown Error' } =
     pageData;
 
@@ -45,23 +39,8 @@ export const RequestFailed: React.FC<Props> = ({
     }
   }, [connector, failedMessage, payload, removePendingRequest, initialLoad]);
 
-  // TODO: Move bumpWalletConnectTimeout to redux method (DRY)
-  // Connection to the dApp is on a timer, whenever the user interacts with the dApp (approve/deny) reset the timer
-  const bumpWalletConnectTimeout = async () => {
-    // Only bump/update the time if all connection values exist and are not already expired
-    const connectionTimersExist = connectionEXP && connectionDuration;
-    if (connectionTimersExist) {
-      const now = Date.now();
-      const hasExpired = now > connectionEXP;
-      if (!hasExpired) {
-        const newConnectionEXP = now + connectionDuration;
-        await saveWalletconnectData({ connectionEXP: newConnectionEXP });
-      }
-    }
-  };
-
   const handleClose = async () => {
-    await bumpWalletConnectTimeout();
+    await bumpWCDuration();
     closeWindow();
   };
 

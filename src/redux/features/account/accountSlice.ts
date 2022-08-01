@@ -229,7 +229,7 @@ const accountSlice = createSlice({
   },
   reducers: {
     updateTempAccount: (state, { payload }: UpdateTempAccount) => {
-      state.tempAccount = { ...payload, ...state.tempAccount };
+      state.tempAccount = { ...state.tempAccount, ...payload };
     },
     clearTempAccount: (state) => {
       state.tempAccount = undefined;

@@ -3,7 +3,6 @@ import accountReducer from './features/account/accountSlice';
 import addressReducer from './features/address/addressSlice';
 import devToolsEnhancer from 'remote-redux-devtools';
 import messageReducer from './features/message/messageSlice';
-import pricingReducer from './features/pricing/pricingSlice';
 import settingsReducer from './features/settings/settingsSlice';
 import statisticsReducer from './features/statistics/statisticsSlice';
 import walletConnectReducer from './features/walletConnect/walletConnectSlice';
@@ -16,7 +15,6 @@ export const store = configureStore({
   reducer: {
     account: accountReducer,
     api_address: addressReducer,
-    api_pricing: pricingReducer,
     api_statistics: statisticsReducer,
     message: messageReducer,
     settings: settingsReducer,

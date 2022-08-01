@@ -12,9 +12,6 @@ export interface Message {
   txFromAddress?: string;
   txGasAdjustment?: number;
   txGasEstimate?: number;
-  txGasPrice: number;
-  txGasPriceAdjustment: number;
-  txGasPriceDenom: SupportedDenoms;
   txMemo?: string;
   txMsgAny?: any;
   txSendAddress?: string;

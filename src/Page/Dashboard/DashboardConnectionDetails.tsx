@@ -5,9 +5,10 @@ import { useNavigate } from 'react-router';
 import { useEffect, useState } from 'react';
 import { DASHBOARD_URL, ICON_NAMES } from 'consts';
 import { format } from 'date-fns';
+import { COLORS } from 'theme';
 
 const DataRow = styled.div`
-  border-top: 2px solid #2C2F3A;
+  border-top: 2px solid ${COLORS.NEUTRAL_700};
   padding: 25px 8px;
   display: flex;
   justify-content: space-between;
@@ -24,22 +25,20 @@ const DataContent = styled.div`
   }
 `;
 
-export const DashboardConnectionDetails:React.FC = () => {
-  const {
-    session,
-    connector,
-    connectionEST,
-    connectionEXP,
-  } = useWalletConnect();
+export const DashboardConnectionDetails: React.FC = () => {
+  const { session, connector, connectionEST, connectionEXP } = useWalletConnect();
   const [formattedEXP, setFormattedEXP] = useState('N/A');
   const [formattedEST, setFormattedEST] = useState('N/A');
   const { connected } = session;
   const navigate = useNavigate();
 
   useEffect(() => {
-    setFormattedEXP(connectionEXP ? format(new Date(connectionEXP), 'MMM dd, h:mm:ssa') : 'N/A');
-    setFormattedEST(connectionEST ? format(new Date(connectionEST), 'MMM dd, h:mm:ssa') : 'N/A');
-
+    setFormattedEXP(
+      connectionEXP ? format(new Date(connectionEXP), 'MMM dd, h:mm:ssa') : 'N/A'
+    );
+    setFormattedEST(
+      connectionEST ? format(new Date(connectionEST), 'MMM dd, h:mm:ssa') : 'N/A'
+    );
   }, [connectionEST, connectionEXP]);
 
   // If we are not connected or there is no connector go back to the dashboard
@@ -51,13 +50,20 @@ export const DashboardConnectionDetails:React.FC = () => {
     if (connector) connector.killSession();
   };
 
-  const renderConnectedAccounts = () => (session && session.accounts) ?
-  session.accounts.map(({ walletInfo = {} }, index) => `${walletInfo.name}${index ? ',' : ''}`) :
-  'N/A';
+  const renderConnectedAccounts = () =>
+    session && session.accounts
+      ? session.accounts.map(
+          ({ walletInfo = {} }, index) => `${walletInfo.name}${index ? ',' : ''}`
+        )
+      : 'N/A';
 
   return (
     <Content>
-      <Header title='Connection Details' iconLeft={ICON_NAMES.CLOSE} backLocation={DASHBOARD_URL} />
+      <Header
+        title="Connection Details"
+        iconLeft={ICON_NAMES.CLOSE}
+        backLocation={DASHBOARD_URL}
+      />
       <DataRow>
         <DataContent>Platform</DataContent>
         <DataContent>{session?.peerMeta?.name || 'N/A'}</DataContent>
@@ -86,5 +92,5 @@ export const DashboardConnectionDetails:React.FC = () => {
         <Button onClick={handleDisconnect}>Disconnect</Button>
       </BottomFloat>
     </Content>
-  )
+  );
 };

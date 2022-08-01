@@ -103,11 +103,10 @@ function App() {
       !!walletConnectURI ||
       !!(redirectToURL && redirectToURL === 'NOTIFICATION_URL');
     if (redirectToNotificationsPage) {
-      // Wallet connect request
-      if (walletConnectURI) {
-        // New walletconnect session request
-        navigate(`${NOTIFICATION_URL}?wc=${encodeURIComponent(walletConnectURI)}`);
-      }
+      const wcParam = walletConnectURI
+        ? `?wc=${encodeURIComponent(walletConnectURI)}`
+        : '';
+      navigate(`${NOTIFICATION_URL}${wcParam}`);
     }
   }, [navigate]);
 

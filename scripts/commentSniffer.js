@@ -8,9 +8,7 @@ const getDirectories = function (src, callback) {
 };
 
 const fileTypes = ['.ts', '.tsx', '.js', '.jsx', '.md', '.mdx'];
-const warningComments = [
-  'TODO:',
-];
+const warningComments = ['TODO:'];
 const errorComments = [
   'TEMP:',
   'TEMPONLY:',
@@ -36,19 +34,22 @@ const checkIfValidFile = function (fileSrc) {
     }
   });
   return valid;
-}
+};
 
 const checkIfCommentMatches = function (fileData, commentArray) {
-  let commentExists = false;
+  let commentCount = 0;
   commentArray.forEach((comment) => {
-    if (fileData.includes(comment)) {
-      commentExists = true;
-    }
+    const matchArray = [...fileData.matchAll(comment)];
+    commentCount += matchArray.length;
   });
-  return commentExists;
-}
+  return commentCount;
+};
 
-const createPrettyError = function (message, bgColor = 'red', textColor = 'bright-white') {
+const createPrettyError = function (
+  message,
+  bgColor = 'red',
+  textColor = 'bright-white'
+) {
   /*
     type PrettyErrorColors =
     'black' | 'red' | 'green' | 'yellow' | 'blue' |
@@ -62,7 +63,7 @@ const createPrettyError = function (message, bgColor = 'red', textColor = 'brigh
     'pretty-error > header > title > kind': { display: 'none' },
     'pretty-error > header > colon': { display: 'none' },
     'pretty-error > trace > item': { display: 'none' },
-  }
+  };
   pe.appendStyle({
     ...peGenericStyle,
     'pretty-error > header > message': {
@@ -73,56 +74,66 @@ const createPrettyError = function (message, bgColor = 'red', textColor = 'brigh
   });
   const renderedError = pe.render(new Error(message));
   console.log(renderedError);
-}
+};
 
 module.exports.commentSniffer = function () {
   const allErrors = [];
   const allWarnings = [];
+  let totalErrors = 0;
+  let totalWarnings = 0;
   let totalDirectoriesChecked = 0;
-  rootDirs.forEach(rootDir => {
+  rootDirs.forEach((rootDir) => {
     getDirectories(rootDir, function (res) {
       // Look at each file
-      res.forEach(fileLocation => {
-        totalDirectoriesChecked ++;
+      res.forEach((fileLocation) => {
+        totalDirectoriesChecked++;
         const valid = checkIfValidFile(fileLocation);
         if (valid) {
-          const data = fs.readFileSync(fileLocation);
-          const hasErrorComment = checkIfCommentMatches(data, errorComments);
-          const hasWarningComment = checkIfCommentMatches(data, warningComments);
-          if (hasErrorComment) {
-            allErrors.push(fileLocation);
+          const data = fs.readFileSync(fileLocation, 'utf-8');
+          const errorCommentCount = checkIfCommentMatches(data, errorComments);
+          const warningCommentCount = checkIfCommentMatches(data, warningComments);
+          if (errorCommentCount) {
+            // Add to totalErrors
+            totalErrors += errorCommentCount;
+            allErrors.push(`${fileLocation} (${errorCommentCount})`);
           }
-          if (hasWarningComment) {
-            allWarnings.push(fileLocation);
+          if (warningCommentCount) {
+            // Add to totalWarnings
+            totalWarnings += warningCommentCount;
+            allWarnings.push(`${fileLocation} (${warningCommentCount})`);
           }
-        };
+        }
       });
     });
-  })
+  });
   // Let the user know how many files we just checked
-  createPrettyError(`CommentSniffer checked ${totalDirectoriesChecked} total files\n`, 'grey', 'bright-white');
-  if (allErrors.length || allWarnings.length) {
+  createPrettyError(
+    `CommentSniffer checked ${totalDirectoriesChecked} total files\n`,
+    'grey',
+    'bright-white'
+  );
+  if (totalErrors || totalWarnings) {
     let errorMessage = '';
     let warningMessage = '';
     // Check error comments first
-    if (allErrors.length) {
-      errorMessage = `${allErrors.length} Dev Local Only Comments Found!  Please Fix/Remove:\n --------------------------------------------------\n`;
-      allErrors.forEach(msg => {
+    if (totalErrors) {
+      errorMessage = `${totalErrors} Dev Local Only Comments Found!  Please Fix/Remove:\n --------------------------------------------------\n`;
+      allErrors.forEach((msg) => {
         errorMessage += ` \n • ${msg}`;
       });
       createPrettyError(errorMessage, 'red', 'bright-white');
     }
     // Check for warning comments
-    if (allWarnings.length) {
-      const warningTitle = `${allWarnings.length} Warning Comments Found:\n --------------------------------------------------\n`;
+    if (totalWarnings) {
+      const warningTitle = `${totalWarnings} Warning Comments Found:\n --------------------------------------------------\n`;
       warningMessage += errorMessage ? `\n${warningTitle}` : `${warningTitle}`;
-      allWarnings.forEach(msg => {
+      allWarnings.forEach((msg) => {
         warningMessage += ` \n • ${msg}`;
       });
       createPrettyError(warningMessage, 'yellow', 'black');
     }
     // If we had any errors, send back a failure
-    if (allErrors.length) process.exit(1);
+    if (totalErrors) process.exit(1);
   } else {
     // No errors or warnings to display
     const successMessage = 'All comment checks passed';

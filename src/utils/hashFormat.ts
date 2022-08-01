@@ -1,4 +1,3 @@
-// TODO: There's no way this is accurate or safe to use, replace this
 export const hashFormat = (
   amount: number | string,
   amountType: 'nhash' | 'hash' = 'nhash',

@@ -5,26 +5,39 @@
 * Update all app icons to be square [DONE]
   - Previously non-square rectangle causing stretched appearance
 * Destroy wallet functionality not working [DONE]
-* Run through and cleanup TODO: items [IN_PROGRESS]
+* Update comment sniffer to find multiple comments in same file [DONE]
+* Pull all API urls into separate consts file [DONE]
+* Cleanup unused APIs [DONE]
+* Move all api values out of env vars [DONE]
+  - Determined by wallet network, not build type
+* Run through and cleanup most TODO items [DONE]
   - App loading will take fullscreen (loading component prop) [DONE]
   - Remove ALL_URLS from consts and remove ability to redirect page (only redirect comes from background.js to notifications) [DONE]
   - User must click on text to copy, instead have user click anywhere on entire button row [DONE]
+  - Move bumpWalletConnectTimeout to redux method (DRY) [DONE]
+  - If the user closes newAccountName, we need to clear out the temp account information [DONE]
+  - Needs to get tx fee Denom (currently hardcoded).  When ability to send other coins exists
+    - Create new util to pull from api [DONE]
+    - Update with wcjs tx [DONE]
+    - Update with manual send from all [DONE]
+      - Message slice
 
 ## Bugs
 * If dApp disconnects while ext is signing message/approving tx currently goes to empty page [10]
   - Change the page, say "You've been disconnected" and just allow pressing "ok" to close extension
 
 ## Features
-* Create tests to render pages and flows [3]
+* Create tests to render pages and flows [2]
   - Will require spoofing chrome storage and chrome functions (tests will run outside of chrome env)
   - Takes too long to publish an app store update, can't deploy with bugs and fix them fast like websites.
   - Need to simulate flows to ensure everything renders properly.
-* Change chrome icon when connected to a dApp [4]
-  - chrome.action.setIcon({ path: "/example/path/image.png" })
-* When user doesn't have a wallet created but does have the extension, no popup is triggered [5]
+* When user doesn't have a wallet created but does have the extension, no popup is triggered [3]
   - Instead open the popup and prompt the user to go through the account creation flow
     - This would only apply to initiating a walletconnect-init connection
     - Potentially just display a static page stating that the user needs to create an account/wallet before using a dApp with the extension
+* All scrollable items should center scroll with blue scrollbar (vs page scrolling w/o scrollbar) [3]
+* Change chrome icon when connected to a dApp [4]
+  - chrome.action.setIcon({ path: "/example/path/image.png" })
 * Dashboard menu - child accounts indented (tree) [7]
 * Check all accessability items [7]
   - Make sure all tabs and keyboard events work
@@ -47,7 +60,3 @@
   - Auto Faucet to add hash to tp address
 * Metrics/Logging [10]
   - Anon track errors, performance, etc.
-
-## Cleanup
-* Clean up chain.ts util file, make a chain folder and split out the actions into separate files, too messy currently [10]
-* Walletconnect-js doesn't need to handle extensionId anymore due to content-script [0_3RD_PARTY]

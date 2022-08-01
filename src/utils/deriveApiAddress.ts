@@ -1,10 +1,8 @@
 import {
   GRPC_CLIENT_ADDRESS_MAINNET,
   GRPC_CLIENT_ADDRESS_TESTNET,
-  SERVICE_MOBILE_WALLET_MAINNET,
-  SERVICE_MOBILE_WALLET_TESTNET,
-  SERVICE_PRICING_ENGINE_MAINNET,
-  SERVICE_PRICING_ENGINE_TESTNET,
+  SMW_MAINNET,
+  SMW_TESTNET,
   ADDRESS_PREFIX_TESTNET,
   EXPLORER_WEB_TESTNET,
   EXPLORER_WEB_MAINNET,
@@ -12,20 +10,8 @@ import {
 
 const isTestnet = (address: string) => address.startsWith(ADDRESS_PREFIX_TESTNET!);
 
-export const getServiceMobileApi = (address: string, additionalPath: string) => {
-  const serviceUrl = isTestnet(address)
-    ? SERVICE_MOBILE_WALLET_TESTNET
-    : SERVICE_MOBILE_WALLET_MAINNET;
-  return `${serviceUrl}${additionalPath}`;
-};
-
-export const getServicePricingEngineApi = (
-  address: string,
-  additionalPath: string
-) => {
-  const serviceUrl = isTestnet(address)
-    ? SERVICE_PRICING_ENGINE_TESTNET
-    : SERVICE_PRICING_ENGINE_MAINNET;
+export const getServiceMobileApi = (address: string, additionalPath?: string) => {
+  const serviceUrl = isTestnet(address) ? SMW_TESTNET : SMW_MAINNET;
   return `${serviceUrl}${additionalPath}`;
 };
 
@@ -35,6 +21,9 @@ export const getGrpcApi = (address: string) => {
     : (GRPC_CLIENT_ADDRESS_MAINNET as string);
 };
 
-export const getExplorerApi = (address: string) => {
-  return isTestnet(address) ? EXPLORER_WEB_TESTNET : EXPLORER_WEB_MAINNET;
+export const getExplorerApi = (address: string, additionalPath?: string) => {
+  const explorerUrl = isTestnet(address)
+    ? EXPLORER_WEB_TESTNET
+    : EXPLORER_WEB_MAINNET;
+  return `${explorerUrl}${additionalPath}`;
 };

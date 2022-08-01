@@ -12,8 +12,6 @@ import {
 } from '@provenanceio/wallet-utils';
 import { BIP32Interface } from 'types';
 
-// TODO: Needs to get tx fee Denom (currently hardcoded).  When ability to send other coins exists
-
 export const SendReview = () => {
   const navigate = useNavigate();
   const {

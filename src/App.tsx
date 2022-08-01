@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { useRoutes } from 'react-router-dom';
 import { useAccount, useSettings, useWalletConnect } from 'redux/hooks';
 import { routes } from 'routes';
-import { NOTIFICATION_URL, ALL_URLS } from 'consts';
+import { NOTIFICATION_URL } from 'consts';
 import { useNavigate } from 'react-router-dom';
 import { Content, Loading } from 'Components';
 import { Page } from 'Page';
@@ -108,24 +108,17 @@ function App() {
         // New walletconnect session request
         navigate(`${NOTIFICATION_URL}?wc=${encodeURIComponent(walletConnectURI)}`);
       }
-      // Other Notification reason
-      else if (redirectToURL) {
-        const existingURL = ALL_URLS[redirectToURL as keyof typeof ALL_URLS];
-        // Make sure url exists (don't allow random redirects to non-existing pages)
-        if (existingURL) navigate(existingURL);
-      }
     }
   }, [navigate]);
 
   const routing = useRoutes(routes);
 
-  // TODO: Create full landing Page which uses the Loading component
   return allInitialDataLoaded ? (
     routing
   ) : (
     <Page bgImage>
       <Content>
-        <Loading />
+        <Loading fullscreen />
       </Content>
     </Page>
   );

@@ -2,16 +2,19 @@
 * _(Priority: 1 - 10)_
 
 ## Current Branch Tasks/Changes
-* Build production code with no minification and no obfuscation [DONE]
-  - This won't effect production times as the user downloads the entire repo into chrome from the webstore
-  - This should (in theory and chrome documentation) speed up the app approval process and times
+* Update all app icons to be square [DONE]
+  - Previously non-square rectangle causing stretched appearance
+* Destroy wallet functionality not working [DONE]
+* Run through and cleanup TODO: items [IN_PROGRESS]
+  - App loading will take fullscreen (loading component prop) [DONE]
+  - Remove ALL_URLS from consts and remove ability to redirect page (only redirect comes from background.js to notifications) [DONE]
+  - User must click on text to copy, instead have user click anywhere on entire button row [DONE]
 
 ## Bugs
 * If dApp disconnects while ext is signing message/approving tx currently goes to empty page [10]
   - Change the page, say "You've been disconnected" and just allow pressing "ok" to close extension
 
 ## Features
-* Run through and cleanup all TODO: items [3]
 * Create tests to render pages and flows [3]
   - Will require spoofing chrome storage and chrome functions (tests will run outside of chrome env)
   - Takes too long to publish an app store update, can't deploy with bugs and fix them fast like websites.

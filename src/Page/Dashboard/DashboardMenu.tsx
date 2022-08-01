@@ -1,4 +1,4 @@
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 import { useState } from 'react';
 import {
   CopyValue,
@@ -29,13 +29,15 @@ const WalletItem = styled.div<{ active?: boolean }>`
   align-items: center;
   justify-content: space-between;
   width: 100%;
-  background: ${({ active }) => (active ? '#01504F' : '#2C2F3A')};
+  background: ${({ active }) =>
+    active ? COLORS.SECONDARY_650 : COLORS.NEUTRAL_700};
   margin-bottom: 2px;
   padding: 16px 24px;
   transition: 250ms all;
   cursor: pointer;
   &:hover {
-    background: ${({ active }) => (active ? '#12615F' : '#3D3F4B')};
+    background: ${({ active }) =>
+      active ? COLORS.SECONDARY_550 : COLORS.NEUTRAL_600};
   }
 `;
 const WalletInfo = styled.div`
@@ -54,7 +56,7 @@ const AccountName = styled.div`
 `;
 const AccountAddress = styled.div`
   font-size: 1.2rem;
-  color: #aaaaaa;
+  color: ${COLORS.NEUTRAL_250};
   line-height: 1.2rem;
 `;
 const WalletSubMenuIcon = styled.div`
@@ -73,23 +75,30 @@ const WalletActionsPopup = styled.div`
   align-items: center;
   justify-content: flex-end;
 `;
-const WalletAction = styled.div`
+const WalletActionMixin = css`
   width: 100%;
   font-family: 'Gothic A1', sans-serif;
   padding: 24px 16px;
-  background: #2c2f3a;
+  background: ${COLORS.NEUTRAL_700};
   text-align: center;
   font-size: 1.4rem;
   font-weight: bold;
-  border-bottom: 2px solid #3d4151;
+  border-bottom: 2px solid ${COLORS.NEUTRAL_600};
   cursor: pointer;
   transition: 250ms all;
+  height: auto;
   &:hover {
-    background: #3d3f4b;
+    background: ${COLORS.NEUTRAL_600};
   }
   &:last-of-type {
     border-bottom: none;
   }
+`;
+const WalletAction = styled.div`
+  ${WalletActionMixin}
+`;
+const WalletCopy = styled(CopyValue)`
+  ${WalletActionMixin}
 `;
 
 const Pill = styled.div<{ network: AccountNetwork }>`
@@ -162,16 +171,13 @@ export const DashboardMenu: React.FC = () => {
           {activeAccountId !== accountMenuTargetId && (
             <WalletAction onClick={handleSelectAccount}>Select Account</WalletAction>
           )}
-          {/* TODO: User must click on text to copy, instead have user click on entire button row */}
-          <WalletAction>
-            <CopyValue
-              value={menuTargetAddress}
-              successText="Address Copied!"
-              noPopup
-            >
-              Copy Account Address
-            </CopyValue>
-          </WalletAction>
+          <WalletCopy
+            value={menuTargetAddress}
+            successText="Address Copied!"
+            noPopup
+          >
+            Copy Account Address
+          </WalletCopy>
           {menuTargetAccountLevel !== 'addressIndex' && (
             <WalletAction onClick={() => navigate(NEW_ACCOUNT_SUB_URL)}>
               Create Sub Account

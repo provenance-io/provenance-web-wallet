@@ -44,6 +44,7 @@ interface Props {
   successText?: string;
   children?: React.ReactNode;
   noPopup?: boolean;
+  className?: string;
 }
 
 export const CopyValue: React.FC<Props> = ({
@@ -52,6 +53,7 @@ export const CopyValue: React.FC<Props> = ({
   children,
   successText = 'Copied!',
   noPopup = false,
+  className,
 }) => {
   const [justCopied, setJustCopied] = useState(false);
   const [timeoutInstance, setTimeoutInstance] = useState(0);
@@ -83,6 +85,7 @@ export const CopyValue: React.FC<Props> = ({
 
   return (
     <CopyArea
+      className={className}
       title={title}
       onClick={handleCopyClick}
       tabIndex={0}

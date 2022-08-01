@@ -82,8 +82,10 @@ const updateChromeBadge = async (totalPendingRequests: number) => {
 export const resetWalletConnectData = createAsyncThunk(
   RESET_WALLETCONNECT_DATA,
   async () => {
+    console.log('resetWalletConnectData | start');
     // Remove all existing values from chrome storage
     await removeSavedData('walletconnect');
+    console.log('resetWalletConnectData | end');
     // Reset initial chrome state values
     await addSavedData({ walletconnect: chromeInitialState });
   }

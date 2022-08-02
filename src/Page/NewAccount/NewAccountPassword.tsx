@@ -10,7 +10,7 @@ import {
 import { ICON_NAMES, PASSWORD_MIN_LENGTH } from 'consts';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
-import { useAccount, useSettings } from 'redux/hooks';
+import { useAccount, useSettings, useActiveAccount } from 'redux/hooks';
 import {
   encryptKey,
   createRootAccount,
@@ -38,10 +38,11 @@ export const NewAccountPassword = ({
   progress,
 }: Props) => {
   const navigate = useNavigate();
-  const { tempAccount, addAccount } = useAccount();
+  const { tempAccount, addAccount, accounts } = useAccount();
   const { bumpUnlockDuration } = useSettings();
-  const [walletPassword, setWalletPassword] = useState<string[]>([]); // [password, repeated-password]
+  const [walletPassword, setWalletPassword] = useState<string[]>(['', '']); // [password, repeated-password]
   const [errors, setErrors] = useState<string[]>([]); // [password-error, repeated-password-error]
+  const { masterKey: key } = useActiveAccount();
 
   const passwordMinLength = Number(PASSWORD_MIN_LENGTH)!;
   // Check for each flotType
@@ -54,6 +55,7 @@ export const NewAccountPassword = ({
   const enterNewPassword = isCreateAccount || isRecoverAccount;
   const password = walletPassword[0];
   const repeatedPassword = walletPassword[1];
+  const accountsExist = accounts.length;
 
   // Password is stored as an array [password, repeated-password]
   const updatePassword = (value: string, passwordConfirm?: boolean) => {
@@ -73,6 +75,11 @@ export const NewAccountPassword = ({
     // Check password min-length
     if (!password || password.length < passwordMinLength)
       latestErrors[0] = `Password must be a minimum of ${passwordMinLength} characters.`;
+    // Check to make sure the password is correct (when not creating first account)
+    if (accountsExist) {
+      const decodedParentMasterKey = decryptKey(key!, password);
+      if (!decodedParentMasterKey) latestErrors[0] = 'Invalid password';
+    }
     // If there are no errors, continue
     if (!latestErrors.length) {
       let fullNewAccountData = {} as Account;
@@ -116,9 +123,10 @@ export const NewAccountPassword = ({
       await addAccount(newAccountData);
       await bumpUnlockDuration();
       navigate(nextUrl);
+    } else {
+      // Update error
+      setErrors(latestErrors);
     }
-    // Update error
-    setErrors(latestErrors);
   };
 
   const handleInputChange = (

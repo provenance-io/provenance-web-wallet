@@ -117,6 +117,7 @@ function App() {
   ) : (
     <Page bgImage>
       <Content>
+        test 0123
         <Loading fullscreen />
       </Content>
     </Page>

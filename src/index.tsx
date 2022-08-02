@@ -21,7 +21,7 @@ const Router =
 
 ReactDOM.render(
   <React.StrictMode>
-    <Provider store={store}>
+    <Provider store={store()}>
       <Router>
         <Theme>
           <App />

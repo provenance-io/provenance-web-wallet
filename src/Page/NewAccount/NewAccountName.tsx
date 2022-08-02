@@ -112,8 +112,9 @@ export const NewAccountName = ({
       });
       // Move to next step
       navigate(nextUrl);
+    } else {
+      setError(newError);
     }
-    setError(newError);
   };
 
   const renderAddressIndexError = () => (
@@ -195,6 +196,8 @@ export const NewAccountName = ({
             onClick={toggleShowAdvanced}
             onKeyPress={(e) => keyPress(e, 'Enter', toggleShowAdvanced)}
             tabIndex={0}
+            role="button"
+            data-testid="advanced-settings"
           >
             Advanced Settings ({showAdvanced ? 'Enabled' : 'Disabled'})
           </AdvancedTextButton>

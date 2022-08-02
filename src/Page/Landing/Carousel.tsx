@@ -66,11 +66,6 @@ export const Carousel: React.FC = () => {
       ); // If we are looping, instantly go back to slide 1;
       // Save timer to state
       setSlideTimeout(newSlideTimeout);
-
-      // Kill any existing timers when changing page (no mem-leaks)
-      return () => {
-        clearTimeout(slideTimeout);
-      };
     },
     [currentSlideRef, slideTimeout]
   );
@@ -87,8 +82,9 @@ export const Carousel: React.FC = () => {
     // Kill any existing timers when changing page (no mem-leaks)
     return () => {
       clearTimeout(slideTimeout);
+      clearTimeout(sliderClickTimeout);
     };
-  }, [changeSlide, slideTimeout]);
+  }, [changeSlide, slideTimeout, sliderClickTimeout]);
   // Pull stats from API
   useEffect(() => {
     getStatistics();

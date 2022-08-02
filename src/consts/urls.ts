@@ -1,30 +1,3 @@
-// ---------
-// WEB URLS
-// ---------
-export const PROVENANCE_WEB_URL = 'https://provenance.io';
-export const PROVENANCE_WEB_DOCS_URL = 'https://docs.provenance.io';
-// BLOCKCHAIN EXPLORER
-export const EXPLORER_WEB_TESTNET = 'https://explorer.test.provenance.io';
-export const EXPLORER_WEB_MAINNET = 'https://explorer.provenance.io';
-export const EXPLORER_WEB_TX_HASH = `/tx`;
-export const EXPLORER_WEB_BLOCK = `/block`;
-// ---------
-// API URLS
-// ---------
-export const SERVICE_MOBILE_WALLET_TESTNET =
-  process.env.REACT_APP_SERVICE_MOBILE_WALLET_TESTNET;
-export const SERVICE_MOBILE_WALLET_MAINNET =
-  process.env.REACT_APP_SERVICE_MOBILE_WALLET_MAINNET;
-export const GRPC_CLIENT_ADDRESS_TESTNET = 'https://wallet.test.figure.tech/proxy';
-export const GRPC_CLIENT_ADDRESS_MAINNET = 'https://wallet.figure.tech/proxy';
-export const SERVICE_PRICING_ENGINE_TESTNET =
-  'https://test.figure.tech/service-pricing-engine/external/api/v1';
-export const SERVICE_PRICING_ENGINE_MAINNET =
-  'https://www.figure.tech/service-pricing-engine/external/api/v1';
-export const ADDRESS_URL = '/address';
-export const PRICING_API_URL = `${SERVICE_MOBILE_WALLET_MAINNET}/pricing`;
-export const STATISTICS_API_URL = `${SERVICE_MOBILE_WALLET_MAINNET}/statistics`;
-export const MARKER_API_URL = `${PRICING_API_URL}/marker`;
 // ---------------------
 // INNER-APP PATH URLS
 // ---------------------
@@ -99,34 +72,3 @@ export const REMOVE_ACCOUNT_URL = '/remove';
 export const RENAME_ACCOUNT_URL = '/rename';
 // RESET WALLET
 export const RESET_WALLET_URL = '/reset';
-
-// TODO: Check what ALL_URLS is used for and if it's really needed...
-// ALL URLS
-export const ALL_URLS = {
-  SUB_ACCOUNT_PASSWORD_URL,
-  SUB_ACCOUNT_SUCCESS_URL,
-  APP_URL,
-  ASSET_URL,
-  CONNECT_URL,
-  CREATE_ACCOUNT_PASSWORD_URL,
-  CREATE_ACCOUNT_SEED_INFO_URL,
-  CREATE_ACCOUNT_SEED_VALUE_URL,
-  CREATE_ACCOUNT_SEED_VERIFY_URL,
-  CREATE_ACCOUNT_SUCCESS_URL,
-  DASHBOARD_CONNECTION_DETAILS_URL,
-  DASHBOARD_MENU_URL,
-  DASHBOARD_RECEIVE_URL,
-  DASHBOARD_SEND_URL,
-  DASHBOARD_URL,
-  NEW_ACCOUNT_SUB_URL,
-  NEW_ACCOUNT_CREATE_URL,
-  NEW_ACCOUNT_RECOVER_URL,
-  NOTIFICATION_URL,
-  PROFILE_URL,
-  RECOVER_ACCOUNT_PASSWORD_URL,
-  RECOVER_ACCOUNT_SEED_INFO_URL,
-  RECOVER_ACCOUNT_SEED_INPUT_URL,
-  RECOVER_ACCOUNT_SUCCESS_URL,
-  TRANSACTIONS_URL,
-  UNLOCK_URL,
-};

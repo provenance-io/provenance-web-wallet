@@ -50,7 +50,9 @@ export const SeedphraseInfo = ({
     <Content>
       <Header progress={progress} title={headerTitle} backLocation={previousUrl} />
       <Typo type="headline2">{pageTitle}</Typo>
-      <Typo type="body">{pageBody}</Typo>
+      <Typo type="body" marginTop="30px" marginBottom="60px">
+        {pageBody}
+      </Typo>
       <ImageContainer
         size="140px"
         centered

@@ -78,13 +78,7 @@ export const TransactionRequest: React.FC<Props> = ({
   closeWindow,
   changeNotificationPage,
 }) => {
-  const {
-    connector,
-    connectionEXP,
-    connectionDuration,
-    saveWalletconnectData,
-    removePendingRequest,
-  } = useWalletConnect();
+  const { connector, removePendingRequest, bumpWCDuration } = useWalletConnect();
   const { address: activeAccountAddress, publicKey: activeAccountPublicKey } =
     useActiveAccount();
   const [parsedMetadata, setParsedMetadata] = useState<ParsedMetadata>({});
@@ -176,17 +170,6 @@ export const TransactionRequest: React.FC<Props> = ({
     unpackedTxMessageAnys,
   ]);
 
-  // TODO: Move bumpWalletConnectTimeout to redux method (DRY)
-  // Connection to the dApp is on a timer, whenever the user interacts with the dApp (approve/deny) reset the timer
-  const bumpWalletConnectTimeout = async () => {
-    // Only bump/update the time if all connection values exist
-    if (connectionEXP && connectionDuration) {
-      const now = Date.now();
-      const newConnectionEXP = now + connectionDuration;
-      await saveWalletconnectData({ connectionEXP: newConnectionEXP });
-    }
-  };
-
   const formatMetadataGasFee = () => {
     const gasPriceDenom = parsedMetadata?.gasPrice?.gasPriceDenom || 'nhash';
     return gasPriceDenom === 'nhash'
@@ -224,7 +207,7 @@ export const TransactionRequest: React.FC<Props> = ({
         result,
       });
       await removePendingRequest(payload.id);
-      await bumpWalletConnectTimeout();
+      await bumpWCDuration();
       setIsLoading(false);
       changeNotificationPage('complete', {
         result: {
@@ -246,7 +229,7 @@ export const TransactionRequest: React.FC<Props> = ({
         jsonrpc: payload.jsonrpc,
       });
       await removePendingRequest(payload.id);
-      await bumpWalletConnectTimeout();
+      await bumpWCDuration();
       closeWindow();
     }
   };

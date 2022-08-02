@@ -88,7 +88,7 @@ export const List = ({
       case 'tx hash':
         return (
           <a
-            href={`${getExplorerApi(address!)}${EXPLORER_WEB_TX_HASH}/${value}`}
+            href={`${getExplorerApi(address!, EXPLORER_WEB_TX_HASH)}/${value}`}
             title="View transaction on Provenance Blockchain Explorer"
             target="_blank"
             rel="noreferrer"
@@ -99,7 +99,7 @@ export const List = ({
       case 'block height':
         return (
           <a
-            href={`${getExplorerApi(address!)}${EXPLORER_WEB_BLOCK}/${value}`}
+            href={`${getExplorerApi(address!, EXPLORER_WEB_BLOCK)}/${value}`}
             title="View block on Provenance Blockchain Explorer"
             target="_blank"
             rel="noreferrer"

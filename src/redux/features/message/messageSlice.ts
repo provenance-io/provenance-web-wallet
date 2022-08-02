@@ -11,13 +11,10 @@ const initialState: MessageSlice = {
   txFeeEstimate: undefined,
   txFromAddress: undefined,
   txGasEstimate: undefined,
-  txGasPrice: 19050, // TODO: Dynamically get gas price
-  txGasPriceAdjustment: 1.25, // TODO: Dynamically get gas price adjustment
-  txGasPriceDenom: 'nhash',
   txMemo: undefined,
   txMsgAny: undefined,
   txSendAddress: undefined,
-  txType: 'MsgSend', // TODO: Make Dynamic
+  txType: 'MsgSend',
   txResponse: '',
 };
 

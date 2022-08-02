@@ -20,9 +20,8 @@ const Menu = styled.div`
 `;
 const WalletInfo = styled.div`
   font-size: 1.4rem;
-  text-align: left;
+  text-align: center;
   flex-grow: 1;
-  text-align: 1;
 `;
 const AccountName = styled.p`
   font-weight: 700;

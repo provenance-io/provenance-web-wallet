@@ -67,16 +67,21 @@ export const NewAccountName = ({
     ? completeHdPath(parentHdPath!, "0'", true)
     : DEFAULT_MAINNET_HD_PATH;
 
-  const [name, setName] = useState('');
   const [error, setError] = useState('');
   const [hdPath, setHdPath] = useState(defaultHdPath);
   const [continueDisabled, setContinueDisabled] = useState(false);
   const [showAdvanced, setShowAdvanced] = useState(false);
   const navigate = useNavigate();
-  const { updateTempAccount, accounts, resetAccountData } = useAccount();
+  const {
+    updateTempAccount,
+    accounts,
+    resetAccountData,
+    tempAccount,
+    clearTempAccount,
+  } = useAccount();
+  const [name, setName] = useState(tempAccount?.name || '');
   const { resetSettingsData } = useSettings();
   const { resetWalletConnectData } = useWalletConnect();
-  // const accountType: 'wallet' | 'account' = flowType === 'create' ? 'wallet' : 'account';
   const accountType = 'account';
 
   const handleContinue = async () => {
@@ -107,8 +112,9 @@ export const NewAccountName = ({
       });
       // Move to next step
       navigate(nextUrl);
+    } else {
+      setError(newError);
     }
-    setError(newError);
   };
 
   const renderAddressIndexError = () => (
@@ -153,8 +159,6 @@ export const NewAccountName = ({
     setName(value);
   };
 
-  // TODO: If the user closes this, we need to clear out the temp account information
-
   // If an 'addressIndex' is trying to add an account, don't let it -- not possible.
   const createAccountDisabled = flowTypeSub && parentAccountLevel === 'addressIndex';
   const recoverClearWallet = flowTypeRecover && !!accounts.length;
@@ -166,6 +170,7 @@ export const NewAccountName = ({
         progress={progress}
         title={`Name Your ${accountType}`}
         backLocation={previousUrl}
+        backCallback={clearTempAccount}
       />
       {createAccountDisabled ? (
         renderAddressIndexError()
@@ -191,6 +196,8 @@ export const NewAccountName = ({
             onClick={toggleShowAdvanced}
             onKeyPress={(e) => keyPress(e, 'Enter', toggleShowAdvanced)}
             tabIndex={0}
+            role="button"
+            data-testid="advanced-settings"
           >
             Advanced Settings ({showAdvanced ? 'Enabled' : 'Disabled'})
           </AdvancedTextButton>

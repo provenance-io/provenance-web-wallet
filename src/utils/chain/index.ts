@@ -5,6 +5,7 @@ export * from './createChildAccount';
 export * from './createMnemonic';
 export * from './createRootAccount';
 export * from './createWalletFromMasterKey';
+export * from './getDefaultMsgFees';
 export * from './getHDPathData';
 export * from './getMessageAny';
 export * from './getTxFeeEstimate';

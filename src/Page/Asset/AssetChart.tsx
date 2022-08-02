@@ -2,7 +2,7 @@ import { useParams } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { Chart, Loading } from 'Components';
-import { MARKER_API_URL } from 'consts';
+import { SMW_MARKER_URL, SMW_MAINNET } from 'consts';
 import { hashFormat, generateStartDate, percentChange } from 'utils';
 import {
   FetchMarkerType,
@@ -13,6 +13,7 @@ import {
   ChangeValueType,
   ChartValueDiffPercentsType,
 } from 'types';
+import { useActiveAccount } from 'redux/hooks';
 
 const ChartArea = styled.div`
   min-height: 250px;
@@ -63,6 +64,8 @@ export const AssetChart: React.FC<Props> = ({
   const dateNow = new Date().toISOString();
   // Page Asset
   const { assetName } = useParams();
+  // Active Account Info
+  const { address } = useActiveAccount();
   // Api Fetch
   const [fetchData, setFetchData] = useState(true);
   const [timePeriod, setTimePeriod] = useState<TimePeriodType>('HOURLY');
@@ -80,7 +83,8 @@ export const AssetChart: React.FC<Props> = ({
     async function fetchMarkerData() {
       const isHash = assetName === 'hash';
       const fetchName = isHash ? 'nhash' : assetName;
-      const fetchUrl = `${MARKER_API_URL}/${fetchName}?period=${timePeriod}&startDate=${startDate}&endDate=${endDate}`;
+      const SMWApiUrl = `${SMW_MAINNET}/${SMW_MARKER_URL}`;
+      const fetchUrl = `${SMWApiUrl}/${fetchName}?period=${timePeriod}&startDate=${startDate}&endDate=${endDate}`;
       setLoading(true);
       setError(false);
       // TODO: Move this data into the redux store and pull from there instead (remove promise chain within component here)
@@ -147,6 +151,7 @@ export const AssetChart: React.FC<Props> = ({
     chartValues,
     setError,
     setLoading,
+    address,
   ]);
 
   const changeTimePeriod = (value: TimePeriodType) => {

@@ -7,16 +7,13 @@ import { useActiveAccount } from 'redux/hooks';
 export const Landing: React.FC = () => {
   const navigate = useNavigate();
   const { masterKey } = useActiveAccount();
-  
-  const renderLandingActions = () => masterKey ? (
-    <Button onClick={() => navigate(UNLOCK_URL)}>
-      Unlock
-    </Button>
-  ) : (
-    <Button onClick={() => navigate(NEW_ACCOUNT_CREATE_URL)}>
-      Create Wallet
-    </Button>
-  );
+
+  const renderLandingActions = () =>
+    masterKey ? (
+      <Button onClick={() => navigate(UNLOCK_URL)}>Unlock</Button>
+    ) : (
+      <Button onClick={() => navigate(NEW_ACCOUNT_CREATE_URL)}>Create Wallet</Button>
+    );
 
   return (
     <>
@@ -24,7 +21,12 @@ export const Landing: React.FC = () => {
       <BottomFloat>
         <ButtonGroup>
           {renderLandingActions()}
-          <Button variant="transparent" onClick={() => navigate(NEW_ACCOUNT_RECOVER_URL)}>Recover Wallet</Button>
+          <Button
+            variant="transparent"
+            onClick={() => navigate(NEW_ACCOUNT_RECOVER_URL)}
+          >
+            Recover Wallet
+          </Button>
         </ButtonGroup>
       </BottomFloat>
     </>

@@ -67,6 +67,7 @@ const WALLETCONNECT_DISCONNECT = 'WALLETCONNECT_DISCONNECT';
 const ADD_PENDING_REQUESTS = 'ADD_PENDING_REQUESTS';
 const REMOVE_PENDING_REQUESTS = 'REMOVE_PENDING_REQUESTS';
 const RESET_WALLETCONNECT_DATA = 'RESET_WALLETCONNECT_DATA';
+const BUMP_WC_DURATION = 'BUMP_WC_DURATION';
 
 /**
  * ASYNC ACTIONS
@@ -192,6 +193,28 @@ export const walletconnectDisconnect = createAsyncThunk(
     return;
   }
 );
+// Bump the wallet connect connection duration due to an action
+export const bumpWCDuration = createAsyncThunk(BUMP_WC_DURATION, async () => {
+  // Get existing saved data (to merge into)
+  const existingData = await getSavedData('walletconnect');
+  // Get existing unlock duration
+  const { connectionEXP } = existingData;
+  // Only bump/update the time if all connection values exist and are not already expired
+  const connectionTimersExist = connectionEXP && WC_CONNECTION_TIMEOUT;
+  if (connectionTimersExist) {
+    // Current time
+    const now = Date.now();
+    const hasExpired = now > connectionEXP;
+    if (!hasExpired) {
+      const newConnectionEXP = now + WC_CONNECTION_TIMEOUT;
+      // Save updated unlock data (and add back all other existing data)
+      const newData = { ...existingData, connectionEXP: newConnectionEXP };
+      await addSavedData({ walletconnect: newData });
+      return { connectionEXP: newConnectionEXP };
+    }
+  }
+  return {};
+});
 
 /**
  * SLICE
@@ -294,6 +317,24 @@ const walletConnectSlice = createSlice({
           state.pendingRequests = pendingRequests;
           state.totalPendingRequests = totalPendingRequests;
         }
+      )
+      .addCase(
+        bumpWCDuration.fulfilled,
+        (
+          state,
+          {
+            payload,
+          }: {
+            payload: {
+              connectionEXP?: number;
+            };
+          }
+        ) => {
+          const { connectionEXP } = payload;
+          if (connectionEXP) {
+            state.connectionEXP = connectionEXP;
+          }
+        }
       );
   },
   reducers: {
@@ -335,6 +376,7 @@ export const walletConnectActions = {
   addPendingRequest,
   removePendingRequest,
   resetWalletConnectData,
+  bumpWCDuration,
 };
 
 /**

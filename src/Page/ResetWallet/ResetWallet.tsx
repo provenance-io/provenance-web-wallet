@@ -46,10 +46,10 @@ export const ResetWallet: React.FC = () => {
   const submitDestroyWallet = async () => {
     if (validateInputField()) {
       // Destroy all accounts/settings/data
-      await resetSettingsData();
       await resetWalletConnectData();
       await resetAccountData();
-      // Navigate to landing page
+      await resetSettingsData();
+      // Navigate to landing page (Note: This will probably happen automatically due to store changes)
       navigate(APP_URL);
     }
   };

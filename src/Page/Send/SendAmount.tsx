@@ -4,12 +4,7 @@ import styled from 'styled-components';
 import { BottomFloat, Button, Content, Header, Input, Typo } from 'Components';
 import { ICON_NAMES, SEND_REVIEW_URL, SEND_URL } from 'consts';
 import { useActiveAccount, useMessage, useAddress } from 'redux/hooks';
-import {
-  capitalize,
-  hashFormat,
-  getTxFeeEstimate,
-  getMessageAny,
-} from 'utils';
+import { capitalize, hashFormat, getTxFeeEstimate, getMessageAny } from 'utils';
 import { COLORS } from 'theme';
 
 const AssetImg = styled.img`
@@ -60,26 +55,24 @@ export const SendAmount = () => {
     txFeeEstimate,
     txGasEstimate,
     setTxFees,
-    txGasPrice,
-    txGasPriceAdjustment,
     txFromAddress,
     txSendAddress,
-    txGasPriceDenom,
     txType,
     setTxMsgAny,
   } = useMessage();
   const { assets } = useAddress();
   const { publicKey } = useActiveAccount();
-  
+
   // Any time coin amount changes (and it's >0), calculate the txFeeEstimates
   useEffect(() => {
     if (!errors[0]) {
       if (coinAmount) {
         const asyncAction = async () => {
           // If coinAmount is referring to 'HASH' convery amount to nhash
-          const finalCoinAmount = coin?.denom === 'nhash' ? hashFormat(coinAmount, 'hash') : coinAmount;
+          const finalCoinAmount =
+            coin?.denom === 'nhash' ? hashFormat(coinAmount, 'hash') : coinAmount;
           const sendMessage = {
-            amountList: [{ denom: coin!.denom, amount: `${finalCoinAmount}`}],
+            amountList: [{ denom: coin!.denom, amount: `${finalCoinAmount}` }],
             fromAddress: txFromAddress!,
             toAddress: txSendAddress!,
           };
@@ -89,14 +82,11 @@ export const SendAmount = () => {
             address: txFromAddress!,
             msgAny,
             publicKey: publicKey!,
-            gasAdjustment: txGasPriceAdjustment,
-            gasPrice: txGasPrice,
-            gasPriceDenom: txGasPriceDenom,
           });
           setTxFees({ txFeeEstimate, txGasEstimate });
         };
         asyncAction();
-      } else setTxFees({ txFeeEstimate: 0, txGasEstimate: 0 })
+      } else setTxFees({ txFeeEstimate: 0, txGasEstimate: 0 });
     }
   }, [
     coinAmount,
@@ -104,9 +94,6 @@ export const SendAmount = () => {
     setTxFees,
     coin,
     txFromAddress,
-    txGasPrice,
-    txGasPriceAdjustment,
-    txGasPriceDenom,
     txSendAddress,
     txType,
     setTxMsgAny,
@@ -123,7 +110,7 @@ export const SendAmount = () => {
 
   const calculatePriceUSD = () => {
     let value = '0.00';
-    const assetData = assets.find(({denom}) => coin!.denom === denom);
+    const assetData = assets.find(({ denom }) => coin!.denom === denom);
     if (coinAmount && assetData) {
       const nhashAmount = hashFormat(coinAmount, 'hash');
       value = `${(assetData.usdPrice * nhashAmount).toFixed(2)}`;
@@ -133,7 +120,13 @@ export const SendAmount = () => {
 
   const handleAmountChange = (amount: string) => {
     const newErrors = [...errors];
-    newErrors[0] = (Number(amount) + Number(hashFormat(txFeeEstimate || 0, 'nhash')) + Number(hashFormat(txGasEstimate || 0, 'nhash'))) > Number(coin!.displayAmount) ? 'Insufficient funds' : '';
+    newErrors[0] =
+      Number(amount) +
+        Number(hashFormat(txFeeEstimate || 0, 'nhash')) +
+        Number(hashFormat(txGasEstimate || 0, 'nhash')) >
+      Number(coin!.displayAmount)
+        ? 'Insufficient funds'
+        : '';
     setErrors(newErrors);
     setCoinAmount(amount);
   };
@@ -156,15 +149,24 @@ export const SendAmount = () => {
         type="number"
       />
       <Typo type="displayBody">
-        {Number(coin.displayAmount).toFixed(2)} <Uppercase>{coin.display}</Uppercase> available
+        {Number(coin.displayAmount).toFixed(2)} <Uppercase>{coin.display}</Uppercase>{' '}
+        available
       </Typo>
-      <Typo type="displayBody" marginBottom="64px">{calculatePriceUSD()}</Typo>
+      <Typo type="displayBody" marginBottom="64px">
+        {calculatePriceUSD()}
+      </Typo>
       <StyledRow>
         <RowTitle>
           <Typo type="body">Note</Typo>
         </RowTitle>
         <RowValue>
-          <TxMemo id="txMemo" placeholder="Click to add note (optional)" value={txMemo} onChange={setMemo} error={errors[1]} />
+          <TxMemo
+            id="txMemo"
+            placeholder="Click to add note (optional)"
+            value={txMemo}
+            onChange={setMemo}
+            error={errors[1]}
+          />
         </RowValue>
       </StyledRow>
       <StyledRow>
@@ -174,7 +176,12 @@ export const SendAmount = () => {
         <RowValue>
           <Typo type="body" align="right">
             <Uppercase>
-              {txFeeEstimate ? `${(hashFormat(txFeeEstimate, 'nhash') + hashFormat(txGasEstimate!, 'nhash')).toFixed(4)} ${coin.display}` : 'N/A'}
+              {txFeeEstimate
+                ? `${(
+                    hashFormat(txFeeEstimate, 'nhash') +
+                    hashFormat(txGasEstimate!, 'nhash')
+                  ).toFixed(4)} ${coin.display}`
+                : 'N/A'}
             </Uppercase>
           </Typo>
         </RowValue>

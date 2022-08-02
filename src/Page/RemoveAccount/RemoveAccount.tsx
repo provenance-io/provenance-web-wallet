@@ -97,6 +97,7 @@ export const RemoveAccount: React.FC = () => {
           placeholder="Wallet password"
           label="Wallet Password"
           error={inputErrors[1]}
+          type="password"
           onKeyPress={(e) => keyPress(e, 'Enter', handleRemoveAccount)}
         />
       </InputSection>

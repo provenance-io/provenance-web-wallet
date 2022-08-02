@@ -18,3 +18,5 @@ export const HD_PATH_KEYS = [
   'change',
   'addressIndex',
 ] as const;
+export const TEST_WALLET =
+  'bleak alpha bunker give message direct powder general issue awesome animal ice entry parade invest sausage tragic away nuclear gaze learn during crew benefit';

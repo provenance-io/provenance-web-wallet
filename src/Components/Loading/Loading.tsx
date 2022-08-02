@@ -51,13 +51,13 @@ interface Props {
 
 export const Loading: React.FC<Props> = ({ className, size, fullscreen }) =>
   fullscreen ? (
-    <FullscreenLoading>
+    <FullscreenLoading data-testid="loading">
       <RotationContainer>
         <Sprite icon={ICON_NAMES.IN_PROGRESS} size={size || '100px'} />
       </RotationContainer>
     </FullscreenLoading>
   ) : (
-    <InlineLoading className={className}>
+    <InlineLoading className={className} data-testid="loading">
       <RotationContainer>
         <Sprite icon={ICON_NAMES.IN_PROGRESS} size={size || '5rem'} />
       </RotationContainer>

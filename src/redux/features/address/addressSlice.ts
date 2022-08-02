@@ -1,5 +1,5 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-import { ADDRESS_URL } from 'consts';
+import { SMW_ADDRESS_URL } from 'consts';
 import { RootState } from 'redux/store';
 import { api } from '../api';
 import { getServiceMobileApi } from 'utils';
@@ -32,7 +32,7 @@ const GET_ADDRESS_TX = 'GET_ADDRESS_TX';
  */
 const getAddressAssetsCount = async (addr: string): Promise<number> => {
   const result = await api({
-    url: `${getServiceMobileApi(addr, ADDRESS_URL)}/${addr}/assets`,
+    url: `${getServiceMobileApi(addr, SMW_ADDRESS_URL)}/${addr}/assets`,
   });
   return result?.data?.length || 0;
 };
@@ -44,7 +44,7 @@ export const getAddressAssets = createAsyncThunk(
   GET_ADDRESS_ASSETS,
   (addr: string) =>
     api({
-      url: `${getServiceMobileApi(addr, ADDRESS_URL)}/${addr}/assets`,
+      url: `${getServiceMobileApi(addr, SMW_ADDRESS_URL)}/${addr}/assets`,
     })
 );
 
@@ -53,7 +53,7 @@ export const getAddressTx = createAsyncThunk(
   (params: { address: string; page?: number; count?: number }) => {
     const { address, page, count } = params;
     const urlObj = new URL(
-      `${getServiceMobileApi(address, ADDRESS_URL)}/${address}/transactions/all`
+      `${getServiceMobileApi(address, SMW_ADDRESS_URL)}/${address}/transactions/all`
     );
     const searchParamsObj = new URLSearchParams();
     if (page) searchParamsObj.append('page', `${page}`);

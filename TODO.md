@@ -2,9 +2,9 @@
 * _(Priority: 1 - 10)_
 
 ## Current Branch Tasks/Changes
-* Create tests to render pages and flows [IN_PROGRESS]
-  - Takes too long to publish an app store update, can't deploy with bugs and fix them fast like websites.
-  - Need to simulate flows to ensure everything renders properly.
+* Create integration tests to render pages and flows [DONE]
+  - Landing page (New Account) [DONE]
+  - Recovery Flow (New Account) [DONE]
 * Random react errors when running locally [DONE]
 * When running locally, create chrome spoof for storage functions [DONE]
 * Update all app icons to be square [DONE]

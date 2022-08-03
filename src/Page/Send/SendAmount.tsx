@@ -86,7 +86,7 @@ export const SendAmount = () => {
           setTxFees({ txFeeEstimate, txGasEstimate });
         };
         asyncAction();
-      } else setTxFees({ txFeeEstimate: 0, txGasEstimate: 0 });
+      } else setTxFees({ txFeeEstimate: [], txGasEstimate: 0 });
     }
   }, [
     coinAmount,
@@ -122,7 +122,8 @@ export const SendAmount = () => {
     const newErrors = [...errors];
     newErrors[0] =
       Number(amount) +
-        Number(hashFormat(txFeeEstimate || 0, 'nhash')) +
+        // FIXME: @vig fix me
+        // Number(hashFormat(txFeeEstimate, 'nhash')) +
         Number(hashFormat(txGasEstimate || 0, 'nhash')) >
       Number(coin!.displayAmount)
         ? 'Insufficient funds'
@@ -177,10 +178,11 @@ export const SendAmount = () => {
           <Typo type="body" align="right">
             <Uppercase>
               {txFeeEstimate
-                ? `${(
-                    hashFormat(txFeeEstimate, 'nhash') +
-                    hashFormat(txGasEstimate!, 'nhash')
-                  ).toFixed(4)} ${coin.display}`
+                ? `${
+                    // FIXME: @vig fix me please
+                    // hashFormat(txFeeEstimate, 'nhash') +
+                    hashFormat(txGasEstimate!, 'nhash').toFixed(4)
+                  } ${coin.display}`
                 : 'N/A'}
             </Uppercase>
           </Typo>

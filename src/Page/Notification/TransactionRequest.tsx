@@ -7,6 +7,7 @@ import {
   SupportedDenoms,
   getAccountInfo,
   msgAnyB64toAny,
+  CoinAsObject,
 } from '@provenanceio/wallet-utils';
 import { useActiveAccount, useWalletConnect } from 'redux/hooks';
 import { List, Authenticate, Content, FullData, Sprite, Loading } from 'Components';
@@ -83,7 +84,7 @@ export const TransactionRequest: React.FC<Props> = ({
     useActiveAccount();
   const [parsedMetadata, setParsedMetadata] = useState<ParsedMetadata>({});
   const [txMsgAny, setTxMsgAny] = useState<any[]>([]);
-  const [txFeeEstimate, setTxFeeEstimate] = useState<number>(0);
+  const [txFeeEstimate, setTxFeeEstimate] = useState<CoinAsObject[]>([]);
   const [txGasEstimate, setTxGasEstimate] = useState<number>(0);
   const [initialLoad, setInitialLoad] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
@@ -171,12 +172,17 @@ export const TransactionRequest: React.FC<Props> = ({
   ]);
 
   const formatMetadataGasFee = () => {
-    const gasPriceDenom = parsedMetadata?.gasPrice?.gasPriceDenom || 'nhash';
-    return gasPriceDenom === 'nhash'
-      ? `${(
-          hashFormat(txFeeEstimate, 'nhash') + hashFormat(txGasEstimate!, 'nhash')
-        ).toFixed(4)} Hash`
-      : `${(txFeeEstimate + txGasEstimate).toFixed(3)} ${gasPriceDenom}`;
+    // TODO: @vig check and make sure that this seems right
+    const fees = txFeeEstimate.filter((i) => i.denom === 'nhash');
+    const amount = fees.reduce((agg, curr) => agg + +curr.amount, txGasEstimate);
+    return hashFormat(amount, 'nhash');
+
+    // const gasPriceDenom = parsedMetadata?.gasPrice?.gasPriceDenom || 'nhash';
+    // return gasPriceDenom === 'nhash'
+    //   ? `${(
+    //       hashFormat(txFeeEstimate, 'nhash') + hashFormat(txGasEstimate!, 'nhash')
+    //     ).toFixed(4)} Hash`
+    //   : `${(txFeeEstimate + txGasEstimate).toFixed(3)} ${gasPriceDenom}`;
   };
 
   const handleApprove = async (masterKey: BIP32Interface) => {
@@ -194,7 +200,7 @@ export const TransactionRequest: React.FC<Props> = ({
         chainId,
         feeDenom: parsedMetadata?.gasPrice?.gasPriceDenom || 'nhash',
         feeEstimate: txFeeEstimate,
-        gasEstimate: txGasEstimate,
+        gasLimit: txGasEstimate,
         memo: parsedMetadata.memo || '',
         msgAny: txMsgAny,
         wallet,

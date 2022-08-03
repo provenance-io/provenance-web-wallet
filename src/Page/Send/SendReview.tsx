@@ -54,7 +54,7 @@ export const SendReview = () => {
           chainId,
           feeDenom: txFeeDenom,
           feeEstimate: txFeeEstimate!,
-          gasEstimate: txGasEstimate!,
+          gasLimit: txGasEstimate!,
           memo: txMemo || '',
           msgAny: txMsgAny,
           wallet,
@@ -71,13 +71,15 @@ export const SendReview = () => {
   };
 
   const transactionFeeHash = txFeeEstimate
-    ? `${hashFormat(txFeeEstimate, 'nhash').toFixed(2)}`
+    ? // FIXME: @vig brah no can do witout u
+      // `${hashFormat(txFeeEstimate, 'nhash').toFixed(2)}`
+      0 // remove this extra 0...
     : 0;
   const gasFeeHash = txGasEstimate
     ? `${hashFormat(txGasEstimate, 'nhash').toFixed(2)}`
     : 0;
   const totalFees = Number(transactionFeeHash) + Number(gasFeeHash);
-  const total = `${txFeeEstimate ? Number(coinAmount) + totalFees : coinAmount}`;
+  const total = 0; //FIXME: @vig make this not 0 pls `${txFeeEstimate ? Number(coinAmount) + totalFees : coinAmount}`;
 
   return !coin ? null : (
     <Content>

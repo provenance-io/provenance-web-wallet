@@ -1,4 +1,8 @@
-import { ReadableMessageNames, SupportedDenoms } from '@provenanceio/wallet-utils';
+import {
+  CoinAsObject,
+  ReadableMessageNames,
+  SupportedDenoms,
+} from '@provenanceio/wallet-utils';
 import { Asset } from './Address';
 
 export interface Message {
@@ -8,7 +12,7 @@ export interface Message {
   txBaseAccount?: string;
   txDate?: number;
   txFeeDenom: SupportedDenoms;
-  txFeeEstimate?: number;
+  txFeeEstimate?: CoinAsObject[];
   txFromAddress?: string;
   txGasAdjustment?: number;
   txGasEstimate?: number;

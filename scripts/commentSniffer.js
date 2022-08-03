@@ -8,7 +8,7 @@ const getDirectories = function (src, callback) {
 };
 
 const fileTypes = ['.ts', '.tsx', '.js', '.jsx', '.md', '.mdx'];
-const warningComments = ['TODO:', 'FIXME:'];
+const warningComments = ['TODO:'];
 const errorComments = [
   'TEMP:',
   'TEMPONLY:',
@@ -23,6 +23,7 @@ const errorComments = [
   'REMOVE ME:',
   'REMOVE:',
   'HACK:',
+  'FIXME:',
 ];
 const rootDirs = ['src'];
 

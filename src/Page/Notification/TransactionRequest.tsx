@@ -172,17 +172,13 @@ export const TransactionRequest: React.FC<Props> = ({
   ]);
 
   const formatMetadataGasFee = () => {
-    // TODO: @vig check and make sure that this seems right
-    const fees = txFeeEstimate.filter((i) => i.denom === 'nhash');
-    const amount = fees.reduce((agg, curr) => agg + +curr.amount, txGasEstimate);
-    return hashFormat(amount, 'nhash');
-
-    // const gasPriceDenom = parsedMetadata?.gasPrice?.gasPriceDenom || 'nhash';
-    // return gasPriceDenom === 'nhash'
-    //   ? `${(
-    //       hashFormat(txFeeEstimate, 'nhash') + hashFormat(txGasEstimate!, 'nhash')
-    //     ).toFixed(4)} Hash`
-    //   : `${(txFeeEstimate + txGasEstimate).toFixed(3)} ${gasPriceDenom}`;
+    // Pull out all nhash fees into an array
+    const nhashFeesArray = txFeeEstimate.filter((i) => i.denom === 'nhash');
+    const nhashFeeTotal = nhashFeesArray.reduce(
+      (total, { amount: nhashAmount }) => total + Number(nhashAmount),
+      txGasEstimate
+    );
+    return `${hashFormat(nhashFeeTotal, 'nhash').toFixed(3)} Hash`;
   };
 
   const handleApprove = async (masterKey: BIP32Interface) => {

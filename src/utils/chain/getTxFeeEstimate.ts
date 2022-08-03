@@ -26,6 +26,14 @@ export const getTxFeeEstimate = async ({
   }
   const grpcAddress = getGrpcApi(address);
   const { baseAccount } = await getAccountInfo(address, grpcAddress);
+  console.log('buildCalculateTxFeeRequest: ', {
+    msgAny,
+    baseAccount,
+    publicKey: bufferToBytes(convertUtf8ToBuffer(publicKey)),
+    finalGasPriceDenom,
+    finalGasPrice,
+    gasAdjustment,
+  });
   const calculateTxFeeRequest = buildCalculateTxFeeRequest({
     msgAny,
     account: baseAccount,
@@ -38,6 +46,7 @@ export const getTxFeeEstimate = async ({
     grpcAddress,
     calculateTxFeeRequest
   );
+  console.log('calculateTxFees: ', { txGasEstimate });
 
   return {
     txFeeEstimate: txGasEstimate * finalGasPrice,

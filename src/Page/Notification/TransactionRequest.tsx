@@ -173,9 +173,7 @@ export const TransactionRequest: React.FC<Props> = ({
   const formatMetadataGasFee = () => {
     const gasPriceDenom = parsedMetadata?.gasPrice?.gasPriceDenom || 'nhash';
     return gasPriceDenom === 'nhash'
-      ? `${(
-          hashFormat(txFeeEstimate, 'nhash') + hashFormat(txGasEstimate!, 'nhash')
-        ).toFixed(4)} Hash`
+      ? `${hashFormat(txFeeEstimate + txGasEstimate!, 'nhash').toFixed(4)} Hash`
       : `${(txFeeEstimate + txGasEstimate).toFixed(3)} ${gasPriceDenom}`;
   };
 

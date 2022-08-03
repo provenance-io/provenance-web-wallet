@@ -2,30 +2,17 @@
 * _(Priority: 1 - 10)_
 
 ## Current Branch Tasks/Changes
-* Create integration tests to render pages and flows [DONE]
-  - Landing page (New Account) [DONE]
-  - Recovery Flow (New Account) [DONE]
-* Random react errors when running locally [DONE]
-* When running locally, create chrome spoof for storage functions [DONE]
-* Update all app icons to be square [DONE]
-  - Previously non-square rectangle causing stretched appearance
-* Destroy wallet functionality not working [DONE]
-* Update comment sniffer to find multiple comments in same file [DONE]
-* Pull all API urls into separate consts file [DONE]
-* Cleanup unused APIs [DONE]
-* Move all api values out of env vars [DONE]
-  - Determined by wallet network, not build type
-* Run through and cleanup most TODO items [DONE]
-  - App loading will take fullscreen (loading component prop) [DONE]
-  - Remove ALL_URLS from consts and remove ability to redirect page (only redirect comes from background.js to notifications) [DONE]
-  - User must click on text to copy, instead have user click anywhere on entire button row [DONE]
-  - Move bumpWalletConnectTimeout to redux method (DRY) [DONE]
-  - If the user closes newAccountName, we need to clear out the temp account information [DONE]
-  - Needs to get tx fee Denom (currently hardcoded).  When ability to send other coins exists
-    - Create new util to pull from api [DONE]
-    - Update with wcjs tx [DONE]
-    - Update with manual send from all [DONE]
-      - Message slice
+* Marker add not adding enough fees [IN_PROGRESS]
+  - Even when using Figure gas price of 19050
+  - "not enough fees; after deducting fees required,got: "-98198860600nhash", required fees: "100180113940nhash" = "180113940nhash"(base-fee) +"100000000000nhash"(additional-fees): insufficient fee: insufficient fee"
+  - gasWanted: 94548
+  - gasUsed: 1249
+* MsgExecuteContractGeneric method displays 'unidentified unidentified' for amount in funds list
+* Permissions list needs each item separated by comma
+  - Currently separated by a space, use comma space
+* If blockheight is returned as '0' don't create a link, show N/A
+  - Why is blockheight returned as '0'?
+    - Typically, if blockheight is 0, the tx failed...
 
 ## Bugs
 * If dApp disconnects while ext is signing message/approving tx currently goes to empty page [10]

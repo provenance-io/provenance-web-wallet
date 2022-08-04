@@ -2,9 +2,15 @@ import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router';
 import styled from 'styled-components';
 import { BottomFloat, Button, Content, Header, Input, Typo } from 'Components';
-import { ICON_NAMES, SEND_REVIEW_URL, SEND_URL } from 'consts';
+import { ICON_NAMES, SEND_REVIEW_URL, SEND_URL, ASSET_IMAGE_NAMES } from 'consts';
 import { useActiveAccount, useMessage, useAddress } from 'redux/hooks';
-import { capitalize, hashFormat, getTxFeeEstimate, getMessageAny } from 'utils';
+import {
+  capitalize,
+  hashFormat,
+  getTxFeeEstimate,
+  getMessageAny,
+  currencyFormat,
+} from 'utils';
 import { COLORS } from 'theme';
 
 const AssetImg = styled.img`
@@ -112,8 +118,14 @@ export const SendAmount = () => {
     let value = '0.00';
     const assetData = assets.find(({ denom }) => coin!.denom === denom);
     if (coinAmount && assetData) {
-      const nhashAmount = hashFormat(coinAmount, 'hash');
-      value = `${(assetData.usdPrice * nhashAmount).toFixed(2)}`;
+      // HASH
+      if (coin!.denom === 'nhash' || coin!.denom === 'hash') {
+        const nhashAmount = hashFormat(coinAmount, 'hash');
+        value = currencyFormat(assetData.usdPrice * nhashAmount);
+      } else {
+        // NON-HASH
+        value = currencyFormat(assetData.usdPrice * Number(coinAmount));
+      }
     }
     return `~$${value} USD`;
   };
@@ -131,6 +143,11 @@ export const SendAmount = () => {
     setCoinAmount(amount);
   };
 
+  const assetIconName =
+    coin?.display && ASSET_IMAGE_NAMES.includes(coin.display)
+      ? coin.display
+      : 'provenance';
+
   return !coin ? null : (
     <Content>
       <Header
@@ -138,7 +155,7 @@ export const SendAmount = () => {
         iconLeft={ICON_NAMES.ARROW}
         backLocation={SEND_URL}
       />
-      <AssetImg src={`/images/assets/${coin.display}.svg`} />
+      <AssetImg src={`/images/assets/${assetIconName}.svg`} />
       <AssetAmount
         autoFocus
         id="sendAmount"
@@ -179,7 +196,7 @@ export const SendAmount = () => {
               {txFeeEstimate
                 ? `${hashFormat(txFeeEstimate + txGasEstimate!, 'nhash').toFixed(
                     4
-                  )} ${coin.display}`
+                  )} Hash`
                 : 'N/A'}
             </Uppercase>
           </Typo>

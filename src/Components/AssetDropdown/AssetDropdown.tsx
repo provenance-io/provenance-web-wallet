@@ -1,20 +1,21 @@
 import { useState } from 'react';
 import { Sprite } from 'Components';
-import { ICON_NAMES } from 'consts';
+import { ICON_NAMES, ASSET_IMAGE_NAMES } from 'consts';
 import styled from 'styled-components';
 import { Asset } from 'types';
+import { currencyFormat } from 'utils';
 
 const Wrapper = styled.div`
   position: relative;
 `;
-const AssetItem = styled.div<{option: boolean}>`
-  border: 1px solid #A2A7B9;
-  border-radius: ${({ option }) => option ? '0px' : '4px' };
+const AssetItem = styled.div<{ option: boolean }>`
+  border: 1px solid #a2a7b9;
+  border-radius: ${({ option }) => (option ? '0px' : '4px')};
   padding: 16px;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  background: ${({ option }) => option ? '#2C2F3A' : '#1B1E29' };
+  background: ${({ option }) => (option ? '#2C2F3A' : '#1B1E29')};
   cursor: pointer;
   width: 100%;
   user-select: none;
@@ -47,7 +48,7 @@ const AssetValue = styled.div`
 const AssetCount = styled.div`
   font-weight: 400;
   font-size: 1.2rem;
-  color: #A2A7B9;
+  color: #a2a7b9;
 `;
 const FloatingOptions = styled.div`
   position: absolute;
@@ -81,14 +82,15 @@ export const AssetDropdown: React.FC<Props> = ({
   const activeAsset = assets.find(({ denom }) => denom === activeDenom) || assets[0];
 
   const renderDropdown = (asset: Asset, option: boolean = false) => {
-    const { denom, display, usdPrice, displayAmount, exponent } = asset;
-
-    const price = (usdPrice / Number(`1e-${exponent}`)).toFixed(3);
+    const { denom, display, usdPrice, displayAmount, amount } = asset;
+    const price = currencyFormat(Number(amount) * usdPrice);
+    const assetIconName =
+      display && ASSET_IMAGE_NAMES.includes(display) ? display : 'provenance';
 
     return (
       <AssetItem onClick={() => handleAssetClick(asset)} key={denom} option={option}>
         <Right>
-          <AssetImg src={`/images/assets/${display}.svg`} />
+          <AssetImg src={`/images/assets/${assetIconName}.svg`} />
           <AssetName>{display}</AssetName>
         </Right>
         <Left>
@@ -98,12 +100,14 @@ export const AssetDropdown: React.FC<Props> = ({
               {Number(displayAmount).toFixed(2)} {display}
             </AssetCount>
           </Amounts>
-          {!option && assets.length > 1 && <Sprite icon={ICON_NAMES.CARET} size="1rem" />}
+          {!option && assets.length > 1 && (
+            <Sprite icon={ICON_NAMES.CARET} size="1rem" />
+          )}
         </Left>
       </AssetItem>
     );
   };
-  
+
   // Don't render the currently active dropdown in all options
   const renderAllDropdowns = () =>
     assets
@@ -113,7 +117,9 @@ export const AssetDropdown: React.FC<Props> = ({
   return (
     <Wrapper className={className}>
       {!!activeAsset && renderDropdown(activeAsset)}
-      {dropdownOpen && !!assets.length && <FloatingOptions>{renderAllDropdowns()}</FloatingOptions>}
+      {dropdownOpen && !!assets.length && (
+        <FloatingOptions>{renderAllDropdowns()}</FloatingOptions>
+      )}
     </Wrapper>
   );
 };

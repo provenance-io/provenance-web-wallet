@@ -2,11 +2,6 @@
 * _(Priority: 1 - 10)_
 
 ## Current Branch Tasks/Changes
-* Marker add not adding enough fees [IN_PROGRESS]
-  - Even when using Figure gas price of 19050
-  - "not enough fees; after deducting fees required,got: "-98198860600nhash", required fees: "100180113940nhash" = "180113940nhash"(base-fee) +"100000000000nhash"(additional-fees): insufficient fee: insufficient fee"
-  - gasWanted: 94548
-  - gasUsed: 1249
 * MsgExecuteContractGeneric method displays 'unidentified unidentified' for amount in funds list
 * Permissions list needs each item separated by comma
   - Currently separated by a space, use comma space

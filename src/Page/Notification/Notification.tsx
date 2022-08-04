@@ -1,98 +1,120 @@
+import WalletConnectClient from '@walletconnect/client';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { ACTIONS_URL, WC_NOTIFICATION_TYPES } from 'consts';
 import { useEffect, useState } from 'react';
 import { useWalletConnect } from 'redux/hooks';
-import { EventPayload } from 'types';
-import { Content } from 'Components';
+import { EventPayload, WCNotification } from 'types';
+import { Loading } from 'Components';
 import { WalletConnectInit } from './WalletConnectInit';
 import { SignRequest } from './SignRequest';
-import { getPendingRequest, addPendingRequest, removeAllPendingRequests } from 'utils';
+import { TransactionRequest } from './TransactionRequest';
+import { RequestFailed } from './RequestFailed';
+import { ExtensionTypes, NotificationType } from 'types';
+import { TransactionComplete } from './TransactionComplete';
 
-type ExtensionTypes = 'extension' | 'browser' | '';
+interface PageProps {
+  payload: EventPayload;
+  closeWindow: () => void;
+  changeNotificationPage: (type: NotificationType, data: {}) => void;
+  pageData: {};
+}
 
-export const Notification:React.FC = () => {
-  const [notificationType, setNotificationType] = useState<string>('');
+export const Notification: React.FC = () => {
+  const [notificationType, setNotificationType] = useState<NotificationType>('');
   const [eventPayload, setEventPayload] = useState<EventPayload | null>(null);
   const [extensionType, setExtensionType] = useState<ExtensionTypes>('');
+  const [pageData, setPageData] = useState({});
   const [searchParams, setSearchParams] = useSearchParams();
   const navigate = useNavigate();
-  const { createConnector, connector, setSession } = useWalletConnect();
-  const wcUriParam = searchParams.get('wc')
+  const {
+    setConnector,
+    connector,
+    pendingRequests,
+    saveWalletconnectData,
+    addPendingRequest,
+  } = useWalletConnect();
+  const wcUriParam = searchParams.get('wc');
   // On load, attempt to detect the way the extension loaded
   useEffect(() => {
     const asyncExtensionType = async () => {
       const tabsExist = await chrome?.tabs?.getCurrent();
       const newExtensionType = tabsExist ? 'browser' : 'extension';
       setExtensionType(newExtensionType);
+      if (newExtensionType === 'browser') {
+        // If we're attempting to connect (session_request) and we're not already connected when we "x" out of the popup, reject the request
+        window.addEventListener('beforeunload', () => {
+          if (
+            connector &&
+            notificationType === 'session_request' &&
+            !connector.connected
+          ) {
+            connector.rejectSession({ message: 'Connection rejected by user' });
+          }
+        });
+      }
     };
     asyncExtensionType();
-  });
-  
+  }, [connector, notificationType]);
+
   // On page load, if a payloadId was passed in, search for that payload in storage
   // Also check url search params for wc session or pending requests
   useEffect(() => {
     const pendingRequestId = searchParams.get('pid');
-    const asyncPayloadFetch = async (id: string) => {
-      const targetPendingRequest: EventPayload = await getPendingRequest(id);
+    if (pendingRequestId) {
+      const targetPendingRequest: EventPayload = pendingRequests[pendingRequestId];
       if (targetPendingRequest) {
         setEventPayload(targetPendingRequest);
-        if (targetPendingRequest?.method) setNotificationType(targetPendingRequest.method);
+        if (targetPendingRequest?.method)
+          setNotificationType(targetPendingRequest.method as WCNotification);
       }
     }
-    if (pendingRequestId) {
-      asyncPayloadFetch(pendingRequestId);
-    }
-  }, [searchParams, wcUriParam, setSession]);
+  }, [searchParams, pendingRequests]);
 
   // On load, create the walletConnect event listeners
   useEffect(() => {
     // Connector must exist to create events
     if (connector) {
       // Loop through each notification type and create event listener
-      WC_NOTIFICATION_TYPES.forEach(NOTE_TYPE => {
-        connector.on(NOTE_TYPE, async (error, payload) => {
-          setNotificationType(NOTE_TYPE);
+      WC_NOTIFICATION_TYPES.forEach((NOTE_TYPE) => {
+        connector.on(NOTE_TYPE, (error, payload) => {
+          setEventPayload(payload);
+          setNotificationType(NOTE_TYPE as WCNotification);
           // Save the request locally
           // - If the user closes the window/popup or doesn't notice it in the background it can be retreived
           //    - Clicking QR Code modal connect button again
           //    - Opening extension directly (which should be showing a "1" notification in the icon)
           const { id } = payload;
-          // Get the current date to timestamp request
-          const date = Date.now();
-          const finalPayload = { ...payload, date };
-          setEventPayload(finalPayload);
           // Only add 'provenance_sign' and 'provenance_sendTransaction' to pendingRequest list
-          if (NOTE_TYPE === 'provenance_sign' || NOTE_TYPE === 'provenance_sendTransaction') {
-            const pendingId = `${date}_${id}`;
-            await addPendingRequest(pendingId, finalPayload);
+          if (
+            NOTE_TYPE === 'provenance_sign' ||
+            NOTE_TYPE === 'provenance_sendTransaction'
+          ) {
+            // Add current date to the pending request data
+            const newPendingRequestData = {
+              id,
+              pendingRequest: { ...payload, date: Date.now() },
+            };
+            addPendingRequest(newPendingRequestData);
           }
-          // If we get a disconnect, just remove everything
-          if (NOTE_TYPE === 'disconnect') await removeAllPendingRequests();
+          // If we get a disconnect, remove all pending requests
+          if (NOTE_TYPE === 'disconnect')
+            saveWalletconnectData({ pendingRequests: {}, totalPendingRequests: 0 });
         });
       });
-
-      return () => {
-        // Remove created event listeners
-        WC_NOTIFICATION_TYPES.forEach(NOTE_TYPE => {
-          connector.off(NOTE_TYPE);
-        });
-      }
     }
-  }, [
-    connector,
-    wcUriParam,
-    navigate,
-  ]);
+  }, [connector, saveWalletconnectData, addPendingRequest]);
 
   // Listen for a new walletConnect URI.  When one is passed, create a new connector
   useEffect(() => {
     if (!connector && wcUriParam) {
       // Create new connector
-      createConnector(wcUriParam);
+      const connector = new WalletConnectClient({ uri: wcUriParam });
+      // Save connector into redux store
+      setConnector(connector);
       // Clear out uri from search params
       setSearchParams('');
     }
-  }, [connector, wcUriParam, createConnector, setSearchParams]);
+  }, [connector, wcUriParam, setSearchParams, setConnector]);
 
   const closeWindow = async () => {
     if (extensionType === 'extension') {
@@ -107,19 +129,37 @@ export const Notification:React.FC = () => {
     }
   };
 
+  // Manually change the notification page and pass along any data
+  const changeNotificationPage = (noteType: NotificationType, data: {}) => {
+    setPageData(data);
+    setNotificationType(noteType);
+  };
+
   const renderNotificationContent = () => {
-    if (!eventPayload) return null;
-    switch(notificationType) {
-      case 'session_request': return <WalletConnectInit payload={eventPayload} closeWindow={closeWindow} />
-      case 'provenance_sendTransaction': // fallthrough
-      case 'provenance_sign': return <SignRequest payload={eventPayload} closeWindow={closeWindow} />;
-      default: return null;
+    const pageProps = {
+      payload: eventPayload,
+      closeWindow,
+      changeNotificationPage,
+      pageData,
+    };
+    switch (notificationType) {
+      case 'session_request':
+        return <WalletConnectInit {...(pageProps as PageProps)} />;
+      case 'provenance_sendTransaction':
+        return <TransactionRequest {...(pageProps as PageProps)} />;
+      case 'provenance_sign':
+        return <SignRequest {...(pageProps as PageProps)} />;
+      case 'failed':
+        return <RequestFailed {...(pageProps as PageProps)} />;
+      case 'complete':
+        return <TransactionComplete {...(pageProps as PageProps)} />;
+      case 'connect': // fallthrough
+      case 'disconnect': // fallthrough
+      default:
+        // Just return empty since we are changing the note type to bounce into 'failed'
+        return <></>;
     }
   };
 
-  return (
-    <Content>
-      {renderNotificationContent()}
-    </Content>
-  );
+  return notificationType ? renderNotificationContent() : <Loading />;
 };

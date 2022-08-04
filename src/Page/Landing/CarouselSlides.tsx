@@ -37,7 +37,7 @@ const StatValueSmall = styled.span`
 `;
 
 const formatNumber = (value: number, digits = 1) =>
-    numberFormat({ rawValue: value, digits, extraOptions: { shorthand: true } });
+    numberFormat(value, digits, { shorthand: true });
 
 const valueText = (
   value?: string | number,
@@ -93,7 +93,7 @@ export const Slide02:React.FC<Props> = ({ statistics = {} }) => {
         <StatItem>
           <StatValue>
             {averageBlockTime
-              ? valueText(formatNumber(averageBlockTime, 3), 'sec', 'back')
+              ? valueText(formatNumber(averageBlockTime, 2), 'sec', 'back')
               : 'N/A'}
           </StatValue>
           <StatTitle>Avg Block Time</StatTitle>

@@ -1,8 +1,8 @@
 import { FooterNav, Sprite } from 'Components';
 import { useNavigate } from 'react-router-dom';
-import { APP_URL, ICON_NAMES } from 'consts';
+import { APP_URL, ICON_NAMES, PROVENANCE_WEB_DOCS_URL, PROVENANCE_WEB_URL, RESET_WALLET_URL } from 'consts';
 import styled from 'styled-components';
-import { saveSettings } from 'utils';
+import { useSettings } from 'redux/hooks';
 
 const Container = styled.div`
   width: 100%;
@@ -40,9 +40,18 @@ const SectionOption = styled.div`
 
 export const Profile = () => {
   const navigate = useNavigate();
+  const { saveSettingsData } = useSettings();
 
   const createOption = (name: string, url: string, external?: boolean) => (
-    <SectionOption onClick={() => external ? window.location.replace(url) : navigate(url)}>
+    <SectionOption
+      onClick={() => {
+        if (external) {
+          chrome.tabs.update({ url });
+        } else {
+          navigate(url);
+        }
+      }}
+    >
       {name}
       <Sprite icon={ICON_NAMES.CHEVRON} size="1.3rem" />
     </SectionOption>
@@ -50,7 +59,7 @@ export const Profile = () => {
 
   const handleLockWallet = async () => {
     // Set expiration to now
-    await saveSettings({ unlockEXP: Date.now() })
+    await saveSettingsData({ unlockEXP: Date.now() })
     // Redirect user to landing page
     navigate(APP_URL);
   };
@@ -59,11 +68,10 @@ export const Profile = () => {
     <Container>
       <Title>Profile</Title>
       <SectionTitle>Security</SectionTitle>
-      {createOption('Pin Code', './pin-code')}
-      {createOption('Reset Wallets', './reset-wallets')}
+      {createOption('Destroy Wallet', RESET_WALLET_URL)}
       <SectionTitle>General</SectionTitle>
-      {createOption('About Provenance Blockchain', 'https://provenance.io', true)}
-      {createOption('More Information', 'https://docs.provenance.io', true)}
+      {createOption('About Provenance Blockchain', PROVENANCE_WEB_URL, true)}
+      {createOption('More Information', PROVENANCE_WEB_DOCS_URL, true)}
       <SectionOption onClick={handleLockWallet}>
         Lock Wallet
         <Sprite icon={ICON_NAMES.CHEVRON} size="1.3rem" />

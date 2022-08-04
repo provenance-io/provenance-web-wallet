@@ -39,6 +39,7 @@ export const GlobalStyles = createGlobalStyle<{
     max-height: ${MAX_HEIGHT};
     height: ${MAX_HEIGHT};
     width: ${MAX_WIDTH};
+    background: black;
   }
 
   *, *:before, *:after {
@@ -56,8 +57,23 @@ export const GlobalStyles = createGlobalStyle<{
     width: ${MAX_WIDTH};
   }
 
+  pre {
+    white-space: break-spaces;
+    line-height: 1.8rem;
+    font-size: 1.2rem;
+    word-break: break-word;
+  }
+
   button, div, a, p {
     letter-spacing: 0.04rem;
+  }
+
+  a {
+    color: ${COLORS.PRIMARY_400};
+    text-decoration: none;
+    &:hover{
+      color: ${COLORS.PRIMARY_450};
+    }
   }
 
   #root {

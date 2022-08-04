@@ -1,4 +1,4 @@
-import WalletConnect from "@walletconnect/client";
+import WalletConnect from '@walletconnect/client';
 
 export type WalletConnectClient = WalletConnect;
 
@@ -7,32 +7,32 @@ export type IClientMeta = {
   url: string;
   icons: string[];
   name: string;
-}
+};
 
 export type EventPayload = {
-  id: number,
-  jsonrpc: string,
-  method?: string,
-  date?: number,
-  session?: WalletConnectClient | null,
+  id: number;
+  jsonrpc: string;
+  method?: string;
+  date?: number;
+  session?: WalletConnectClient | null;
   params: {
-    peerMeta?: IClientMeta,
-  }[]
-}
+    peerMeta?: IClientMeta;
+  }[];
+};
 
 export type SavedPendingRequests = {
-  [id: string]: EventPayload,
-}
+  [id: string]: EventPayload;
+};
 
 export type ConnectionEventPayload = {
-  publicKey: string,
-  address: string,
-  jwt: string,
+  publicKey: string;
+  address: string;
+  jwt: string;
   walletInfo: {
-    id: string,
-    name: string,
-    coin: string,
-  }
+    id: string;
+    name: string;
+    coin: string;
+  };
 }[];
 
 export interface ISessionStatus {
@@ -43,17 +43,17 @@ export interface ISessionStatus {
 }
 
 export interface State {
-  connected: boolean,
-  connectionTimeout: number,
-  connectionIat: number | null,
-  connectionEat: number | null,
-  connector: WalletConnectClient | null,
-  peer: IClientMeta | null,
-  uri: string | null,
+  connected: boolean;
+  connectionTimeout: number;
+  connectionIat: number | null;
+  connectionEat: number | null;
+  connector: WalletConnectClient | null;
+  peer: IClientMeta | null;
+  uri: string | null;
 }
 
 export type SetState = (state: Partial<State>) => void;
-export type SetFullState = (state:State) => void;
+export type SetFullState = (state: State) => void;
 
 export type URI = string;
 
@@ -70,3 +70,20 @@ export interface IWalletConnectSession {
   peerId?: string;
   peerMeta?: IClientMeta | null;
 }
+
+export interface WalletConnectStorage {
+  // WalletConnect session data
+  connectionEST?: number; // When did we connect with walletconnect
+  connectionEXP?: number; // When are we predicted to expire (actions refresh EST time)
+  connectionDuration?: number; // How long from EST to EXP
+  pendingRequests?: SavedPendingRequests;
+  totalPendingRequests?: number;
+}
+
+export type WCNotification =
+  | 'connect'
+  | 'disconnect'
+  | 'session_request'
+  | 'provenance_sign'
+  | 'provenance_sendTransaction'
+  | '';

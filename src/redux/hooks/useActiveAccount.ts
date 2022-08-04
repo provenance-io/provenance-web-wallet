@@ -3,6 +3,11 @@ import { Account } from 'types';
 import { RootState } from 'redux/store';
 
 export const useActiveAccount = () => {
-  const { accounts: allAccounts, activeAccountId } = useSelector(({ account }: RootState) => account);
-  return allAccounts.filter(({ id }: Account) => activeAccountId === id)[0];
+  const { accounts: allAccounts, activeAccountId } = useSelector(
+    ({ account }: RootState) => account
+  );
+  const activeAccount = allAccounts.filter(
+    ({ address }: Account) => activeAccountId === address
+  )[0];
+  return activeAccount || {};
 };

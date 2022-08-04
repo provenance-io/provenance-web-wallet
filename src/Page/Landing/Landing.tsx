@@ -1,42 +1,34 @@
-import { useState, useEffect } from 'react';
-import { Button, ButtonGroup } from 'Components';
+import { BottomFloat, Button, ButtonGroup } from 'Components';
 import { useNavigate } from 'react-router-dom';
-import { getKey } from 'utils';
 import { Carousel } from './Carousel';
-import { CREATE_URL, RECOVER_URL, UNLOCK_URL } from 'consts';
+import { NEW_ACCOUNT_CREATE_URL, NEW_ACCOUNT_RECOVER_URL, UNLOCK_URL } from 'consts';
+import { useActiveAccount } from 'redux/hooks';
 
 export const Landing: React.FC = () => {
   const navigate = useNavigate();
-  const [loading, setLoading] = useState(true);
-  const [savedKey, setSavedKey] = useState('');
+  const { masterKey } = useActiveAccount();
 
-  useEffect(() => {
-    console.log('Landing | useEffect');
-    const asyncGetKey = async () => {
-      const key = await getKey();
-      setLoading(false);
-      setSavedKey(key);
-    };
-    asyncGetKey();
-  }, []);
-  
-  const renderLandingActions = () => savedKey ? (
-    <Button layout="default" onClick={() => navigate(UNLOCK_URL)}>
-      Unlock
-    </Button>
-  ) : (
-    <Button layout="default" onClick={() => navigate(CREATE_URL)}>
-      Create Wallet
-    </Button>
-  );
+  const renderLandingActions = () =>
+    masterKey ? (
+      <Button onClick={() => navigate(UNLOCK_URL)}>Unlock</Button>
+    ) : (
+      <Button onClick={() => navigate(NEW_ACCOUNT_CREATE_URL)}>Create Wallet</Button>
+    );
 
   return (
     <>
       <Carousel />
-      <ButtonGroup>
-        {loading ? <div>Loading...</div> : renderLandingActions()}
-        <Button layout="default" variant="transparent" onClick={() => navigate(RECOVER_URL)}>Recover Wallet</Button>
-      </ButtonGroup>
+      <BottomFloat>
+        <ButtonGroup>
+          {renderLandingActions()}
+          <Button
+            variant="transparent"
+            onClick={() => navigate(NEW_ACCOUNT_RECOVER_URL)}
+          >
+            Recover Wallet
+          </Button>
+        </ButtonGroup>
+      </BottomFloat>
     </>
   );
 };

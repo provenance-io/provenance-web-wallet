@@ -1,11 +1,9 @@
 import encUTF8 from 'crypto-js/enc-utf8';
 import AES from 'crypto-js/aes';
-import { BIP32Interface } from 'bip32';
 
-type Password = string
+type Password = string;
 
-export const encryptKey = (masterKey: BIP32Interface, password: Password) => {
-  const masterKeyB58 = masterKey.toBase58();
+export const encryptKey = (masterKeyB58: string, password: Password) => {
   const encrypted = AES.encrypt(masterKeyB58, password);
   const encryptedString = encrypted.toString();
   return encryptedString;
@@ -16,8 +14,7 @@ export const decryptKey = (encryptedMasterKeyString: string, password: Password)
   try {
     const decryptedString = encUTF8.stringify(decrypted);
     return decryptedString;
-  }
-  catch {
+  } catch {
     return '';
   }
 };

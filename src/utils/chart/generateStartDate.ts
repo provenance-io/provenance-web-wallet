@@ -1,6 +1,6 @@
 import { TimePeriodType } from 'types';
 
-export const generateStartDate = (newTimePeriod: TimePeriodType) => {  
+export const generateStartDate = (newTimePeriod: TimePeriodType) => {
   const now = new Date();
   switch (newTimePeriod) {
     case 'MINUTE': {
@@ -15,7 +15,7 @@ export const generateStartDate = (newTimePeriod: TimePeriodType) => {
     }
     case 'DAILY': {
       // Get the past 1 week (7 Day)
-      const start = now.setHours(now.getHours() - (7 * 24));
+      const start = now.setHours(now.getHours() - 7 * 24);
       return new Date(start).toISOString();
     }
     case 'WEEKLY': {
@@ -34,9 +34,10 @@ export const generateStartDate = (newTimePeriod: TimePeriodType) => {
     //   return new Date(start).toISOString();
     // }
     case 'ALL': {
-      // Get the all past data 
+      // Get the all past data
       return '2022-03-11T23:58:01.55Z';
     }
-    default: return now.toISOString();
+    default:
+      return now.toISOString();
   }
 };

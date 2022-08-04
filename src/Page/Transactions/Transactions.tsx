@@ -1,6 +1,11 @@
-import { useState } from 'react';
-import { FooterNav, Select, AssetRow } from 'Components';
+import { useEffect, useState } from 'react';
+import { FooterNav, RowItem, Typo, Button, Loading, ButtonGroup } from 'Components';
 import styled from 'styled-components';
+import { useActiveAccount, useAddress } from 'redux/hooks';
+import { ICON_NAMES, TRANSACTION_DETAILS_URL } from 'consts';
+import { format } from 'date-fns';
+import { capitalize } from 'utils';
+import { useNavigate } from 'react-router-dom';
 
 const Container = styled.div`
   text-align: center;
@@ -8,12 +13,6 @@ const Container = styled.div`
   select {
     margin-top: 12px;
   }
-`;
-const Title = styled.div`
-  font-size: 1.4rem;
-  font-weight: 700;
-  font-family: 'Gothic A1', sans-serif;
-  margin-bottom: 4px;
 `;
 const AssetsContainer = styled.div`
   width: 100%;
@@ -30,22 +29,87 @@ const AssetsContainer = styled.div`
 `;
 
 export const Transactions = () => {
-  const [selectedAsset, setSelectedAsset] = useState('');
-  const [selectedTxType, setSelectedTxType] = useState('');
-  // Temp options value, this needs to come from wallets current assets
-  const assetOptions = ['All Assets', 'HASH', 'USDF', 'ETF', 'INU'];
-  const transactionOptions = ['All Transactions', 'Success', 'Pending', 'Failed'];
+  const navigate = useNavigate();
+  const [page, setPage] = useState(1);
+  const { address } = useActiveAccount();
+  const {
+    getAddressTx,
+    transactions,
+    transactionsTotalCount,
+    transactionsLoading,
+    transactionsError,
+  } = useAddress();
+  // Return 10 txs at a time each page
+  const count = 6;
+  const maxPage = Math.ceil(transactionsTotalCount / count);
+
+  // Fetch the current page of txs
+  useEffect(() => {
+    getAddressTx({ address: address!, count, page });
+  }, [address, getAddressTx, page]);
+
+  // Get the next page of transactions
+  const changePage = (amount: number) => {
+    setPage(page + amount);
+  };
+
+  const renderTxRows = () =>
+    transactions.map(({ type, time, denom, hash }) => {
+      const date = time ? format(new Date(time), 'MMM dd, h:mm:ss a') : 'N/A';
+
+      return (
+        <RowItem
+          key={hash}
+          img={denom === 'nhash' ? 'hash' : 'provenance'}
+          title={denom === 'nhash' ? 'hash' : capitalize(denom!, 'uppercase')}
+          subtitle={`${capitalize(type)} • ${date}`}
+          onClick={() => navigate(`${TRANSACTION_DETAILS_URL}/${hash}`)}
+        />
+      );
+    });
+
+  const renderPagination = () => (
+    <ButtonGroup direction="row" marginTop="20px">
+      <Button
+        icon={ICON_NAMES.ARROW}
+        iconLocation="left"
+        iconGap="6px"
+        iconProps={{ spin: 0 }}
+        onClick={() => changePage(-1)}
+        disabled={page <= 1}
+      >
+        Previous
+      </Button>
+      <Button
+        icon={ICON_NAMES.ARROW}
+        iconLocation="right"
+        iconGap="6px"
+        iconProps={{ spin: 180 }}
+        onClick={() => changePage(1)}
+        disabled={page >= maxPage}
+      >
+        Next
+      </Button>
+    </ButtonGroup>
+  );
 
   return (
     <Container>
-      <Title>Transaction Details</Title>
-      <Select onChange={setSelectedAsset} options={assetOptions} value={selectedAsset} />
-      <Select onChange={setSelectedTxType} options={transactionOptions} value={selectedTxType} />
+      <Typo type="title">Transaction History</Typo>
+      <Typo type="displayBody">
+        Page {page} / {maxPage}
+      </Typo>
       <AssetsContainer>
-        <AssetRow img="hash" name="hash" amount={{ count: '500', change: 13.63 }} />
-        <AssetRow img="usdf" name="usdf" />
-        <AssetRow img="etf" name="etf" />
-        <AssetRow img="inu" name="inu" />
+        {transactionsError ? (
+          <Typo type="error">{transactionsError}</Typo>
+        ) : transactionsLoading ? (
+          <Loading />
+        ) : (
+          <>
+            {renderTxRows()}
+            {renderPagination()}
+          </>
+        )}
       </AssetsContainer>
       <FooterNav />
     </Container>

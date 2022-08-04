@@ -1,9 +1,14 @@
-// TODO: There's no way this is accurate or safe to use, replace this
-export const hashFormat = (type = 'nhash', value: number) => {
-  const valueString = `${value}`;
-  const exponential = 10000000000;
-  const floatAmount = 15;
-  const floatedNumber = Number(Number.parseFloat(valueString).toFixed(floatAmount));
-  const rawResult = type === 'nhash' ? floatedNumber * exponential : (floatedNumber / exponential);
-  return Number(rawResult);
+export const hashFormat = (
+  amount: number | string,
+  amountType: 'nhash' | 'hash' = 'nhash',
+  fixedAmount: number = 9
+): number => {
+  const valueString = `${amount}`;
+  const exponentialValue = 1e-9;
+  const floatedNumber = Number(Number.parseFloat(valueString));
+  const rawResult =
+    amountType === 'nhash'
+      ? floatedNumber * exponentialValue
+      : (floatedNumber / exponentialValue).toPrecision(12);
+  return Number(Number(rawResult).toFixed(fixedAmount));
 };

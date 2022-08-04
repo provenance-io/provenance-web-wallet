@@ -2,8 +2,14 @@
 // ----------------------------------------
 // Handle Notification Popup Window
 // ----------------------------------------
-const notificationPopupEvent = function(request, sender, sendResponse) {
-  chrome.windows.get(sender.tab.windowId).then((senderWindow) => {
+const notificationPopupEvent = async function(request, sender, sendResponse) {
+  const rngNum = Math.floor(Math.random() * 100);
+  // When just pinging, don't do anything else
+  if (request === 'ping' || !request) {
+    sendResponse();
+    return true;
+  };
+  await chrome.windows.get(sender.tab.windowId).then((senderWindow) => {
     // Basic popup config
     const popupConfig = {
       focused: true,
@@ -21,7 +27,7 @@ const notificationPopupEvent = function(request, sender, sendResponse) {
         // Uri is required to be included
         if (uri) {
           // update the popup config url
-          popupConfig.url = `${popupConfig.url}?wc=${uri}`;
+          popupConfig.url = `${popupConfig.url}?wc=${uri}&rng=${rngNum}`;
           chrome.windows.create(popupConfig);
         }
         break;
@@ -33,14 +39,17 @@ const notificationPopupEvent = function(request, sender, sendResponse) {
       default: break;
     }
   });
+  sendResponse();
+  return true;
 };
 
 const asyncGetStorage = async () => {
-  const allData = await chrome.storage.local.get();
-  console.log('allData :', allData);
+  const { walletconnect } = await chrome.storage.local.get('walletconnect') || {};
+  const totalPendingRequests = walletconnect?.totalPendingRequests || 0;
   // Update the badge based on the existing number of requests
-  chrome.action.setBadgeText({text: `${allData?.totalPendingRequests || ''}`});
+  chrome.action.setBadgeText({text: `${totalPendingRequests || ''}`});
   chrome.action.setBadgeBackgroundColor({ color: [255, 0, 0, 255] });
+  return true;
 };
 asyncGetStorage();
 
@@ -48,11 +57,12 @@ asyncGetStorage();
 // Setup all event listeners
 // ----------------------------------------
 const asyncSetup = async () => {
-  const walletKey = await chrome.storage.local.get('key');
-  const walletExists = walletKey?.key;
+  const { account } = await chrome.storage.local.get('account') || {};
   // Only set up listeners if user has created an extension wallet
-  if (walletExists) {
-    chrome.runtime.onMessageExternal.addListener(notificationPopupEvent);
+  // TODO: This should work even without an account, instead open a page explaining that an account is required (this way it doesn't look broken)
+  if (account?.accounts.length) {
+    chrome.runtime.onMessage.addListener(notificationPopupEvent);
   }
+  return true;
 }
 asyncSetup();

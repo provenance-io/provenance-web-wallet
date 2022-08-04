@@ -1,17 +1,11 @@
 import { EventPayload } from 'types';
 import styled from 'styled-components';
-import { convertHexToUtf8, convertHexToBuffer, convertArrayBufferToHex } from "@walletconnect/utils";
-import { Authenticate } from './Authenticate';
 import { useWalletConnect } from 'redux/hooks';
-import { List } from 'Components';
+import { List, Authenticate, Content } from 'Components';
 import { useEffect, useState } from 'react';
 import { format } from 'date-fns';
-import { signBytes } from 'utils';
-import { removePendingRequest } from 'utils';
-
-const SignContainer = styled.div`
-  padding-bottom: 300px;
-`;
+import { signBytes, convertHexToUtf8, convertHexToBuffer, convertArrayBufferToHex } from 'utils';
+import { BIP32Interface } from 'types';
 
 const Title = styled.div`
   font-weight: 600;
@@ -32,14 +26,30 @@ interface ParsedParams {
   address?: string,
   description?: string,
   payload?: string,
+  date?: number,
 }
+const PaginationDisplay = styled.div`
+  position: fixed;
+  bottom: 180px;
+  font-size: 1.4rem;
+  letter-spacing: 0.2em;
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  left: 0;
+`;
 
 export const SignRequest:React.FC<Props> = ({ payload, closeWindow }) => {
-  const { connector } = useWalletConnect();
+  const {
+    connector,
+    connectionEXP,
+    connectionDuration,
+    saveWalletconnectData,
+    removePendingRequest,
+  } = useWalletConnect();
   const [parsedParams, setParsedParams] = useState<ParsedParams>({});
   const [encodedMessage, setEncodedMessage] = useState('');
-  const [privateKey, setPrivateKey] = useState<Uint8Array>();
-    
+
   // Onload, pull out and parse payload params
   useEffect(() => {
     const { params } = payload;
@@ -53,10 +63,20 @@ export const SignRequest:React.FC<Props> = ({ payload, closeWindow }) => {
     })
   }, [payload]);
 
-  const handleApprove = async () => {
-    if (connector && privateKey && encodedMessage) {
+  // Connection to the dApp is on a timer, whenever the user interacts with the dApp (approve/deny) reset the timer
+  const bumpWalletConnectTimeout = async () => {
+    // Only bump/update the time if all connection values exist
+    if (connectionEXP && connectionDuration) {
+      const now = Date.now();
+      const newConnectionEXP = now + connectionDuration;
+      await saveWalletconnectData({ connectionEXP: newConnectionEXP });
+    }
+  };
+
+  const handleApprove = async (masterKey: BIP32Interface) => {
+    if (connector && masterKey && encodedMessage) {
       const bites = convertHexToBuffer(encodedMessage);
-      const signature = signBytes(bites, privateKey);
+      const signature = signBytes(bites, masterKey.privateKey!);
       // Convert back to hex
       const resultFull = convertArrayBufferToHex(signature);
       // Cut off the leading "0x"
@@ -66,8 +86,8 @@ export const SignRequest:React.FC<Props> = ({ payload, closeWindow }) => {
         jsonrpc: payload.jsonrpc,
         result,
       });
-      const pendingId = `${payload.date}_${payload.id}`;
-      await removePendingRequest(pendingId);
+      await removePendingRequest(payload.id);
+      await bumpWalletConnectTimeout();
       closeWindow();
     }
   }
@@ -78,34 +98,31 @@ export const SignRequest:React.FC<Props> = ({ payload, closeWindow }) => {
         id: payload.id,
         jsonrpc: payload.jsonrpc,
       });
-      const pendingId = `${payload.date}_${payload.id}`;
-      await removePendingRequest(pendingId);
-      // Close the popup
+      await removePendingRequest(payload.id);
+      await bumpWalletConnectTimeout();
       closeWindow();
     }
-  }
-  const handleAuth = (privateKey: Uint8Array) => {
-    setPrivateKey(privateKey);
   }
 
   const ListItems = {
     platform: connector?.peerMeta?.name || 'N/A',
     address: parsedParams?.address || 'N/A',
-    created: payload?.date ? format(new Date(payload.date), 'MMM d, h:mm a') : 'N/A',
+    created: parsedParams?.date ? format(new Date(parsedParams.date), 'MMM d, h:mm a') : 'N/A',
     'message type': 'provenance_sign',
     description: parsedParams?.description || 'N/A',
     payload: parsedParams?.payload || 'N/A',
   };
 
   return (
-    <SignContainer>
+    <Content>
       <Title>Sign Request</Title>
-      <List message={ListItems} />
+      <List message={ListItems} maxHeight="324px" />
+      <PaginationDisplay>1/1</PaginationDisplay>
       <Authenticate
         handleApprove={handleApprove}
         handleDecline={handleDecline}
-        handleAuth={handleAuth}
+        approveText="Sign Message"
       />
-    </SignContainer>
+    </Content>
   );
 };

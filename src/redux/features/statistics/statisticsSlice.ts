@@ -1,5 +1,5 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-import { STATISTICS_URL } from 'consts';
+import { SMW_MAINNET, SMW_STATS_URL } from 'consts';
 import { RootState } from 'redux/store';
 import { api } from '../api';
 import { Statistics } from 'types';
@@ -25,6 +25,8 @@ const initialState: InitialState = {
   },
 };
 
+const productionStatsApiUrl = `${SMW_MAINNET}${SMW_STATS_URL}`;
+
 /**
  * ACTION TYPES
  */
@@ -36,7 +38,7 @@ const GET_STATISTICS = 'GET_STATISTICS';
  */
 
 const getStatistics = createAsyncThunk(GET_STATISTICS, () =>
-  api({ url: STATISTICS_URL })
+  api({ url: productionStatsApiUrl })
 );
 
 export const statisticsActions = { getStatistics };
@@ -71,4 +73,4 @@ export default statisticsSlice.reducer;
  * SELECTORS
  */
 
-export const selectStatistics = (state: RootState) => state.statistics;
+export const selectStatistics = (state: RootState) => state.api_statistics;

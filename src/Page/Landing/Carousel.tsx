@@ -23,18 +23,18 @@ const Slider = styled.div<{ active: boolean }>`
   border-radius: 8px;
   cursor: pointer;
 `;
-const AllSlides = styled.div<{right: number, quickSwitch: boolean}>`
+const AllSlides = styled.div<{ right: number; quickSwitch: boolean }>`
   display: flex;
   overflow: visible;
   align-items: flex-start;
   position: relative;
-  right: ${({ right }) => `${right}px` };
+  right: ${({ right }) => `${right}px`};
   will-change: right;
   top: 0;
-  ${({ quickSwitch }) => !quickSwitch && 'transition: 2s all ease-out;' }
+  ${({ quickSwitch }) => !quickSwitch && 'transition: 2s all ease-out;'}
 `;
 
-export const Carousel:React.FC = () => {
+export const Carousel: React.FC = () => {
   // Total number of slides
   const slideCount = 4;
   const slideWidth = 350;
@@ -43,27 +43,32 @@ export const Carousel:React.FC = () => {
   const [currentSlide, setCurrentSlide] = useState(1);
   const currentSlideRef = useRef(currentSlide);
   const [slideTimeout, setSlideTimeout] = useState(0);
+  const [sliderClickTimeout, setSliderClickTimeout] = useState(0);
   const { getStatistics, statistics } = useStatistics();
 
-  const changeSlide = useCallback((direct?: number) => {
-    const latestCurrentSlide = currentSlideRef.current;
-    const newSlide = direct ||  ((latestCurrentSlide < slideCount) ? latestCurrentSlide + 1 : 1);
-    // Reset timer to auto-change slide
-    // Change slide
-    setCurrentSlide(newSlide);
-    currentSlideRef.current = newSlide;
-    // Kill existing slideTimeout
-    clearTimeout(slideTimeout);
-    // Start new timer
-    const newSlideTimeout = window.setTimeout(() => {
-      changeSlide();
-    }, (latestCurrentSlide === slideCount) ? -1 : slideTransition); // If we are looping, instantly go back to slide 1;
-    // Save timer to state
-    setSlideTimeout(newSlideTimeout);
-
-    // Kill any existing timers when changing page (no mem-leaks)
-    return () => { clearTimeout(slideTimeout); }
-  }, [currentSlideRef, slideTimeout]);
+  const changeSlide = useCallback(
+    (direct?: number) => {
+      const latestCurrentSlide = currentSlideRef.current;
+      const newSlide =
+        direct || (latestCurrentSlide < slideCount ? latestCurrentSlide + 1 : 1);
+      // Reset timer to auto-change slide
+      // Change slide
+      setCurrentSlide(newSlide);
+      currentSlideRef.current = newSlide;
+      // Kill existing slideTimeout
+      clearTimeout(slideTimeout);
+      // Start new timer
+      const newSlideTimeout = window.setTimeout(
+        () => {
+          changeSlide();
+        },
+        latestCurrentSlide === slideCount ? -1 : slideTransition
+      ); // If we are looping, instantly go back to slide 1;
+      // Save timer to state
+      setSlideTimeout(newSlideTimeout);
+    },
+    [currentSlideRef, slideTimeout]
+  );
 
   // Start auto-change slide timer
   useEffect(() => {
@@ -75,32 +80,54 @@ export const Carousel:React.FC = () => {
       setSlideTimeout(newSlideTimeout);
     }
     // Kill any existing timers when changing page (no mem-leaks)
-    return () => { clearTimeout(slideTimeout); }
-  }, [changeSlide, slideTimeout]);
+    return () => {
+      clearTimeout(slideTimeout);
+      clearTimeout(sliderClickTimeout);
+    };
+  }, [changeSlide, slideTimeout, sliderClickTimeout]);
   // Pull stats from API
   useEffect(() => {
-    // TODO: This needs to be cancelable to prevent memory leak when leaving landing page before load complete
     getStatistics();
   }, [getStatistics]);
 
-  const sliderClick = (event: React.MouseEvent, slideNo: number) => {
+  const sliderClick = (event: React.MouseEvent, slideNo?: number) => {
     event.stopPropagation();
-    changeSlide(slideNo);
+    // Only allow clicking the slide if previous click is finished
+    if (!sliderClickTimeout) {
+      const newSlideClickTimeout = window.setTimeout(() => {
+        // Clear timeout
+        setSliderClickTimeout(0);
+      }, 2000);
+      setSliderClickTimeout(newSlideClickTimeout);
+      changeSlide(slideNo);
+    }
   };
 
   return (
-    <CarouselContent onClick={() => changeSlide()}>
-      <AllSlides right={(currentSlide - 1) * slideWidth} quickSwitch={currentSlide === 1}>
+    <CarouselContent onClick={(e) => sliderClick(e)}>
+      <AllSlides
+        right={(currentSlide - 1) * slideWidth}
+        quickSwitch={currentSlide === 1}
+      >
         <Slide01 />
         <Slide02 statistics={statistics} />
         <Slide03 />
         <Slide01 />
       </AllSlides>
       <SliderControls>
-        <Slider active={currentSlide === 1 || currentSlide === slideCount} onClick={(event) => sliderClick(event, 1)} />
-        <Slider active={currentSlide === 2} onClick={(event) => sliderClick(event, 2)} />
-        <Slider active={currentSlide === 3} onClick={(event) => sliderClick(event, 3)} />
+        <Slider
+          active={currentSlide === 1 || currentSlide === slideCount}
+          onClick={(event) => sliderClick(event, 1)}
+        />
+        <Slider
+          active={currentSlide === 2}
+          onClick={(event) => sliderClick(event, 2)}
+        />
+        <Slider
+          active={currentSlide === 3}
+          onClick={(event) => sliderClick(event, 3)}
+        />
       </SliderControls>
     </CarouselContent>
-  )
+  );
 };

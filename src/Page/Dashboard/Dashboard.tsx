@@ -1,9 +1,19 @@
-import { Button, ButtonGroup, FooterNav, AssetRow, Content, Denom } from 'Components';
+import {
+  Button,
+  ButtonGroup,
+  FooterNav,
+  RowItem,
+  Content,
+  Denom,
+  Loading,
+} from 'Components';
+import { SEND_URL, DASHBOARD_RECEIVE_URL, ICON_NAMES } from 'consts';
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAddress, useActiveAccount } from 'redux/hooks';
 import styled from 'styled-components';
 import { DashboardHeader } from './DashboardHeader';
+import { capitalize } from 'utils';
 
 const PortfolioTitle = styled.div`
   font-size: 1.4rem;
@@ -40,7 +50,7 @@ const AssetsContainer = styled.div`
 
 export const Dashboard = () => {
   const navigate = useNavigate();
-  const { getAddressAssets, assets } = useAddress();
+  const { getAddressAssets, assets, assetsLoading } = useAddress();
   const activeAccount = useActiveAccount();
   const { address } = activeAccount;
 
@@ -51,33 +61,64 @@ export const Dashboard = () => {
 
   const calculatePortfolioValue = () => {
     let totalValue = 0;
-    const assetValues = assets.map(({ usdPrice, amount }) => usdPrice * Number(amount));
-    assetValues.forEach((value) => { totalValue += value });
+    const assetValues = assets.map(
+      ({ usdPrice, amount }) => usdPrice * Number(amount)
+    );
+    assetValues.forEach((value) => {
+      totalValue += value;
+    });
     return totalValue;
   };
 
-  const renderAssets = () => assets.map(({ display, displayAmount }) => (
-    <AssetRow
-      onClick={() => navigate(`/asset/${display}`)}
-      img={display}
-      name={display}
-      amount={{ count: displayAmount }}
-      key={display}
-    />
-  ));
+  const renderAssets = () =>
+    assets.map(({ display, displayAmount, amount, usdPrice }) => (
+      <RowItem
+        onClick={() => navigate(`/asset/${display}`)}
+        img={display}
+        title={capitalize(display, 'uppercase')}
+        subtitle={`$${(Number(amount) * usdPrice).toFixed(2)}`}
+        key={display}
+        detailsTop={Number(displayAmount).toFixed(6)}
+      />
+    ));
 
   return (
     <Content>
       <DashboardHeader />
       <PortfolioTitle>Portfolio Value</PortfolioTitle>
-      <Value><Denom>$</Denom>{calculatePortfolioValue().toFixed(2)}</Value>
-      <ButtonGroup layout="inline" direction="row">
-        <Button layout="default" onClick={() => navigate('./send')}>Send</Button>
-        <Button layout="default" onClick={() => navigate('./receive')}>Receive</Button>
+      <Value>
+        <Denom>$</Denom>
+        {assetsLoading ? <Loading /> : calculatePortfolioValue().toFixed(2)}
+      </Value>
+      <ButtonGroup direction="row">
+        <Button
+          icon={ICON_NAMES.ARROW}
+          iconLocation="top"
+          iconGap="6px"
+          iconProps={{ spin: 90 }}
+          onClick={() => navigate(SEND_URL)}
+        >
+          Send
+        </Button>
+        <Button
+          icon={ICON_NAMES.ARROW}
+          iconLocation="top"
+          iconGap="6px"
+          iconProps={{ spin: -90 }}
+          onClick={() => navigate(DASHBOARD_RECEIVE_URL)}
+        >
+          Receive
+        </Button>
       </ButtonGroup>
       <AssetsTitle>My Assets</AssetsTitle>
       <AssetsContainer>
-        {assets.length ? renderAssets(): 'Address has no assets...'}
+        {assetsLoading ? (
+          <Loading />
+        ) : assets.length ? (
+          renderAssets()
+        ) : (
+          'Address has no assets...'
+        )}
       </AssetsContainer>
       <FooterNav />
     </Content>

@@ -5,18 +5,13 @@ import {
   Input,
   Content,
   BodyContent,
+  BottomFloat,
+  ButtonGroup,
 } from 'Components';
-import { APP_URL, ICON_NAMES, PASSWORD_MIN_LENGTH } from 'consts';
+import { APP_URL, ICON_NAMES, PASSWORD_MIN_LENGTH, RESET_WALLET_URL } from 'consts';
 import { useNavigate } from 'react-router-dom';
-import {
-  getKey,
-  getAccounts,
-  decryptKey,
-  getSavedData,
-  getSettings,
-  saveSettings,
-} from 'utils';
-import { useAccount } from 'redux/hooks';
+import { decryptKey, keyPress } from 'utils';
+import { useActiveAccount, useSettings } from 'redux/hooks';
 
 interface Props {
   nextUrl: string;
@@ -26,33 +21,26 @@ export const Unlock = ({ nextUrl }: Props) => {
   const navigate = useNavigate();
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
-  const { addAccounts } = useAccount();
-  const passwordMinLength = Number(PASSWORD_MIN_LENGTH)!;
+  const { unlockDuration, saveSettingsData } = useSettings();
+  const { masterKey: key } = useActiveAccount();
 
   const handleSubmit = async () => {
     // Clear out any previous error
     setError('');
     let newError = '';
     // Make sure password is at least 5 characters
-    if (password.length < passwordMinLength) newError = `Password must be a minimum of ${passwordMinLength} characters.`;
+    if (password.length < PASSWORD_MIN_LENGTH)
+      newError = `Password must be a minimum of ${PASSWORD_MIN_LENGTH} characters.`;
     if (!password) newError = 'Enter a password';
     // No error so far
     if (!newError) {
-      const localKey = await getKey();
       // Attempt to decrypt the key with the provided password
-      const masterKey = decryptKey(localKey, password);
+      const masterKey = decryptKey(key!, password);
       if (!masterKey) newError = 'Invalid password';
       else {
-        // Password was correct, build the wallets
-        const localAccounts = await getAccounts();
-        const activeAccountId = await getSavedData('activeAccountId');
-        // Pull all settings
+        // Bump the unlock duration
         const now = Date.now();
-        // TODO: Keep settings defaults in consts file
-        const unlockDuration = await getSettings('unlockDuration') || 300000; // default 5min
-        saveSettings({ unlockEST: now, unlockEXP: now + unlockDuration }); // Save settings to browser
-        addAccounts({ accounts: localAccounts, activeAccountId }); // Save wallet to browser
-        
+        await saveSettingsData({ unlockEST: now, unlockEXP: now + unlockDuration! });
         // Redirect to dashboard
         navigate(nextUrl);
       }
@@ -61,20 +49,46 @@ export const Unlock = ({ nextUrl }: Props) => {
     setError(newError);
   };
 
+  const handleInputChange = (value: string) => {
+    setError('');
+    setPassword(value);
+  };
+
   return (
     <Content>
-      <Header iconLeft={ICON_NAMES.CLOSE} progress={100} title="Unlock Wallet" backLocation={APP_URL} />
-      <BodyContent>Enter your password</BodyContent>
+      <Header
+        iconLeft={ICON_NAMES.CLOSE}
+        progress={100}
+        title="Unlock Wallet"
+        backLocation={APP_URL}
+      />
+      <BodyContent>Enter your password to unlock wallet</BodyContent>
       <Input
         id="wallet-password"
         label="Password"
         type="password"
         placeholder="Enter Password"
         value={password}
-        onChange={setPassword}
+        onChange={handleInputChange}
+        autoFocus
+        onKeyPress={(e) => {
+          keyPress(e, 'Enter', handleSubmit);
+        }}
         error={error}
       />
-      <Button onClick={handleSubmit} >Continue</Button>
+      <BottomFloat>
+        <ButtonGroup>
+          <Button onClick={handleSubmit}>Continue</Button>
+          <Button
+            variant="secondary"
+            onClick={() => {
+              navigate(RESET_WALLET_URL);
+            }}
+          >
+            Destroy Wallet
+          </Button>
+        </ButtonGroup>
+      </BottomFloat>
     </Content>
   );
 };

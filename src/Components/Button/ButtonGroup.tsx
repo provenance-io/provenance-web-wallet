@@ -1,47 +1,45 @@
 import styled from 'styled-components';
 
 interface StyledProps {
-  layout: 'float' | 'inline';
   direction: 'column' | 'row';
-  background?: string;
+  childWidth: string,
+  marginTop?: string;
+  marginBottom?: string;
 }
 
 const Wrapper = styled.div<StyledProps>`
   display: flex;
   flex-direction: ${({ direction }) => direction};
-  ${({ background }) => background && `background: ${background};` }
   width: 100%;
-  bottom: 0;
-  padding: 20px 16px 20px 16px;
-  ${({ layout }) => layout === 'float' && `
-    position: fixed;
-    bottom: 0;
-    left: 0;
-  `}
-  button {
+  ${({ marginTop }) => !!marginTop && `margin-top: ${marginTop};` }
+  ${({ marginBottom }) => !!marginBottom && `margin-bottom: ${marginBottom};` }
+  div { // Div is the button wrappers
     ${({ direction }) => direction === 'column' && `
       margin-top: 10px;
+      &:first-child { margin-top: 0; }
     `}
-    ${({ direction }) => direction === 'row' && `
-      margin-left: 10px;
+    // In a row, first item will have no margin-left, last item will have no margin-right
+    ${({ direction, childWidth }) => direction === 'row' && `
+      flex-grow: 1;
+      margin: 4px;
+      flex-basis: ${childWidth};
+      &:first-child { margin-left: 0; }
+      &:last-child { margin-right: 0; }
     `}
-  }
-  button:first-child {
-    margin-top: 0;
-    margin-left: 0;
   }
 `;
 
 interface Props {
   children: React.ReactNode;
-  layout?: 'float' | 'inline';
   direction?: 'column' | 'row';
-  background?: string,
+  childWidth?: string;
+  marginTop?: string;
+  marginBottom?: string;
 }
 
-export const ButtonGroup:React.FC<Props> = ({ children, layout = 'float', direction = 'column', background }) => {
+export const ButtonGroup:React.FC<Props> = ({ children, direction = 'column', childWidth = '50%', marginTop, marginBottom }) => {
   return (
-    <Wrapper layout={layout} direction={direction} background={background}>
+    <Wrapper direction={direction} childWidth={childWidth} marginTop={marginTop} marginBottom={marginBottom}>
       {children}
     </Wrapper>
   )

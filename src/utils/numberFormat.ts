@@ -1,15 +1,18 @@
-interface NumberFormat {
-  rawValue?: number | string,
-  digits?: number,
-  extraOptions?: {
-    shorthand?: boolean,
-    maximumFractionDigits?: number,
-  }
-}
-
-export const numberFormat = ({rawValue, digits = 1, extraOptions = {} }: NumberFormat) => {
+export const numberFormat = (
+  rawValue: number | string,
+  digits: number = 1,
+  extraOptions: {
+    shorthand?: boolean;
+    maximumFractionDigits?: number;
+  } = {}
+) => {
   // If we don't have a value to start with just return it
-  if (rawValue === null || rawValue === undefined || rawValue === '' || rawValue === '--')
+  if (
+    rawValue === null ||
+    rawValue === undefined ||
+    rawValue === '' ||
+    rawValue === '--'
+  )
     return rawValue;
 
   // If we get a string, convert it to a number
@@ -39,11 +42,11 @@ export const numberFormat = ({rawValue, digits = 1, extraOptions = {} }: NumberF
       letter = 'K';
       roundedValue = value / thousand;
     }
-    const finalValue = roundedValue.toLocaleString('en-US', { maximumFractionDigits: digits });
+    const finalValue = roundedValue.toLocaleString('en-US', {
+      maximumFractionDigits: digits,
+    });
     return `${finalValue}${letter}`;
   }
-
-  
 
   let options = {};
   // Amount of significant digits to return in string

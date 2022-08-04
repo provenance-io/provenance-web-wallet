@@ -93,9 +93,13 @@ export const SendReview = () => {
           to: trimAddress(txSendAddress) || 'N/A',
           from: trimAddress(txFromAddress) || 'N/A',
           sending: `${coinAmount} ${coin.display}`,
-          'Transaction Fee': `${totalFees} ${coin.display}`,
+          'Transaction Fee': `${totalFees} Hash`,
           ...(!!txMemo && { note: txMemo }),
-          total: `${total} ${coin.display}`,
+          // If we're sending something other than hash, just show that coin amount
+          total:
+            coin.display === 'hash'
+              ? `${total} ${coin.display}`
+              : `${coinAmount} ${coin.display}`,
         }}
         marginBottom="80px"
         maxHeight="180px"

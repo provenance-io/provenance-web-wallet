@@ -2,15 +2,9 @@
 * _(Priority: 1 - 10)_
 
 ## Current Branch Tasks/Changes
-* Dashboard Portfolio value needs to be formatted to always fit and look like a number (commas) [DONE]
-* Dashboard Portfolio Assets individual value needs to be formatted to always fit and look like a number [DONE]
-* When asset is unknown, default to provenance icon [DONE]
-  - Recent tx shows it correctly
-  - Missing in header icon for chart
-  - Missing on dashboard asset list
-* MsgExecuteContractGeneric method displays 'unidentified unidentified' for amount in funds list
-* Blockheight can be returned as '0' [DONE]
-  - Blockheight 0 means the tx failed - create messaging letting the user know
+* When selecting non hash token to send icons broken [DONE]
+* Ability to send non hash tokens from dashboard [DONE]
+  - Send screens missing proper formatting / icons
 
 ## Bugs
 * If dApp disconnects while ext is signing message/approving tx currently goes to empty page [10]

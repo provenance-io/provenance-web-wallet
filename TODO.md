@@ -3,11 +3,8 @@
 
 ## Current Branch Tasks/Changes
 * MsgExecuteContractGeneric method displays 'unidentified unidentified' for amount in funds list
-* Permissions list needs each item separated by comma
-  - Currently separated by a space, use comma space
-* If blockheight is returned as '0' don't create a link, show N/A
-  - Why is blockheight returned as '0'?
-    - Typically, if blockheight is 0, the tx failed...
+* Blockheight can be returned as '0' [DONE]
+  - Blockheight 0 means the tx failed - create messaging letting the user know
 
 ## Bugs
 * If dApp disconnects while ext is signing message/approving tx currently goes to empty page [10]

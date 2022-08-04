@@ -2,7 +2,9 @@ import { Typo, List, Content, BottomFloat, Button, FullData } from 'Components';
 import styled from 'styled-components';
 import { hashFormat, txMessageFormat } from 'utils';
 import checkSuccessIcon from 'images/check-success.svg';
+import checkWarningIcon from 'images/check-warning.svg';
 import { useWalletConnect } from 'redux/hooks';
+import { useState } from 'react';
 
 interface Amount {
   amount: string | number;
@@ -14,6 +16,7 @@ interface Props {
       amount?: string | number | Amount;
       denom?: string;
       platform?: string;
+      height?: number;
     };
   };
   closeWindow: () => void;
@@ -29,11 +32,13 @@ const SuccessIcon = styled.img`
 
 export const TransactionComplete: React.FC<Props> = ({ pageData, closeWindow }) => {
   const { connector } = useWalletConnect();
+  const [isSuccess, setIsSuccess] = useState(true);
   const { result = '' } = pageData;
   const renderTxData = () => {
     if (result) {
       // Clone targetTx to make changes if needed
       const finalTxData = { ...result };
+      if (finalTxData.height === 0) setIsSuccess(false);
       // If we have both amount and denom, combine into object and remove individual
       if (finalTxData.amount && finalTxData.denom) {
         const { amount, denom } = finalTxData;
@@ -53,12 +58,14 @@ export const TransactionComplete: React.FC<Props> = ({ pageData, closeWindow }) 
 
   return (
     <Content>
-      <SuccessIcon src={checkSuccessIcon} />
+      <SuccessIcon src={isSuccess ? checkSuccessIcon : checkWarningIcon} />
       <Typo type="title" align="center" marginTop="20px">
-        Transaction Complete
+        {isSuccess ? 'Transaction Complete' : 'Transaction Warning'}
       </Typo>
       <Typo type="displayBody" align="center" marginTop="14px" marginBottom="20px">
-        Your transaction details are below
+        {isSuccess
+          ? 'Your transaction details are below'
+          : 'Your transaction details indicate there might have been a problem, review the details below'}
       </Typo>
       <FullData data={{ txRaw: JSON.stringify(result) }} />
       {renderTxData()}

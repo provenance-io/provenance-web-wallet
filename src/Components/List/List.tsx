@@ -44,7 +44,7 @@ const ListContent = styled.div`
   &:nth-child(2) {
     margin-left: 6px;
     text-align: right;
-    word-break: break-all;
+    word-break: break-word;
   }
 `;
 

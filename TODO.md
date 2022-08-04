@@ -2,30 +2,15 @@
 * _(Priority: 1 - 10)_
 
 ## Current Branch Tasks/Changes
-* Create integration tests to render pages and flows [DONE]
-  - Landing page (New Account) [DONE]
-  - Recovery Flow (New Account) [DONE]
-* Random react errors when running locally [DONE]
-* When running locally, create chrome spoof for storage functions [DONE]
-* Update all app icons to be square [DONE]
-  - Previously non-square rectangle causing stretched appearance
-* Destroy wallet functionality not working [DONE]
-* Update comment sniffer to find multiple comments in same file [DONE]
-* Pull all API urls into separate consts file [DONE]
-* Cleanup unused APIs [DONE]
-* Move all api values out of env vars [DONE]
-  - Determined by wallet network, not build type
-* Run through and cleanup most TODO items [DONE]
-  - App loading will take fullscreen (loading component prop) [DONE]
-  - Remove ALL_URLS from consts and remove ability to redirect page (only redirect comes from background.js to notifications) [DONE]
-  - User must click on text to copy, instead have user click anywhere on entire button row [DONE]
-  - Move bumpWalletConnectTimeout to redux method (DRY) [DONE]
-  - If the user closes newAccountName, we need to clear out the temp account information [DONE]
-  - Needs to get tx fee Denom (currently hardcoded).  When ability to send other coins exists
-    - Create new util to pull from api [DONE]
-    - Update with wcjs tx [DONE]
-    - Update with manual send from all [DONE]
-      - Message slice
+* Dashboard Portfolio value needs to be formatted to always fit and look like a number (commas) [DONE]
+* Dashboard Portfolio Assets individual value needs to be formatted to always fit and look like a number [DONE]
+* When asset is unknown, default to provenance icon [DONE]
+  - Recent tx shows it correctly
+  - Missing in header icon for chart
+  - Missing on dashboard asset list
+* MsgExecuteContractGeneric method displays 'unidentified unidentified' for amount in funds list
+* Blockheight can be returned as '0' [DONE]
+  - Blockheight 0 means the tx failed - create messaging letting the user know
 
 ## Bugs
 * If dApp disconnects while ext is signing message/approving tx currently goes to empty page [10]

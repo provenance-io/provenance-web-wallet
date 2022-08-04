@@ -4,6 +4,8 @@ export const numberFormat = (
   extraOptions: {
     shorthand?: boolean;
     maximumFractionDigits?: number;
+    minimumSignificantDigits?: number;
+    maximumSignificantDigits?: number;
   } = {}
 ) => {
   // If we don't have a value to start with just return it
@@ -44,6 +46,8 @@ export const numberFormat = (
     }
     const finalValue = roundedValue.toLocaleString('en-US', {
       maximumFractionDigits: digits,
+      minimumSignificantDigits: extraOptions.minimumSignificantDigits,
+      maximumSignificantDigits: extraOptions.maximumSignificantDigits,
     });
     return `${finalValue}${letter}`;
   }

@@ -7,13 +7,18 @@ import {
   Denom,
   Loading,
 } from 'Components';
-import { SEND_URL, DASHBOARD_RECEIVE_URL, ICON_NAMES } from 'consts';
+import {
+  SEND_URL,
+  DASHBOARD_RECEIVE_URL,
+  ICON_NAMES,
+  ASSET_IMAGE_NAMES,
+} from 'consts';
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAddress, useActiveAccount } from 'redux/hooks';
 import styled from 'styled-components';
 import { DashboardHeader } from './DashboardHeader';
-import { capitalize } from 'utils';
+import { capitalize, currencyFormat } from 'utils';
 
 const PortfolioTitle = styled.div`
   font-size: 1.4rem;
@@ -67,20 +72,24 @@ export const Dashboard = () => {
     assetValues.forEach((value) => {
       totalValue += value;
     });
-    return totalValue;
+    return currencyFormat(totalValue);
   };
 
   const renderAssets = () =>
-    assets.map(({ display, displayAmount, amount, usdPrice }) => (
-      <RowItem
-        onClick={() => navigate(`/asset/${display}`)}
-        img={display}
-        title={capitalize(display, 'uppercase')}
-        subtitle={`$${(Number(amount) * usdPrice).toFixed(2)}`}
-        key={display}
-        detailsTop={Number(displayAmount).toFixed(6)}
-      />
-    ));
+    assets.map(({ display, displayAmount, amount, usdPrice }) => {
+      const assetIconName =
+        display && ASSET_IMAGE_NAMES.includes(display) ? display : 'provenance';
+      return (
+        <RowItem
+          onClick={() => navigate(`/asset/${display}`)}
+          img={assetIconName}
+          title={capitalize(display, 'uppercase')}
+          subtitle={currencyFormat(Number(amount) * usdPrice, '$')}
+          key={display}
+          detailsTop={Number(displayAmount).toFixed(5)}
+        />
+      );
+    });
 
   return (
     <Content>
@@ -88,7 +97,7 @@ export const Dashboard = () => {
       <PortfolioTitle>Portfolio Value</PortfolioTitle>
       <Value>
         <Denom>$</Denom>
-        {assetsLoading ? <Loading /> : calculatePortfolioValue().toFixed(2)}
+        {assetsLoading ? <Loading /> : calculatePortfolioValue()}
       </Value>
       <ButtonGroup direction="row">
         <Button

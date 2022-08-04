@@ -1,5 +1,9 @@
 import { RowItem, Typo, Loading } from 'Components';
-import { TRANSACTIONS_URL, TRANSACTION_DETAILS_URL } from 'consts';
+import {
+  TRANSACTIONS_URL,
+  TRANSACTION_DETAILS_URL,
+  ASSET_IMAGE_NAMES,
+} from 'consts';
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useActiveAccount, useAddress } from 'redux/hooks';
@@ -24,6 +28,9 @@ export const AssetTxs: React.FC<Props> = ({ assetName }) => {
     getAddressTx({ address: address!, count, page });
   }, [getAddressTx, address]);
 
+  const assetIconName =
+    assetName && ASSET_IMAGE_NAMES.includes(assetName) ? assetName : 'provenance';
+
   // Filter to match the asset name with denom name
   const renderTxRows = () => {
     const txRows = transactions
@@ -39,7 +46,7 @@ export const AssetTxs: React.FC<Props> = ({ assetName }) => {
         return (
           <RowItem
             key={hash}
-            img={denom === 'nhash' ? 'hash' : 'provenance'}
+            img={assetIconName}
             title={denom === 'nhash' ? 'hash' : capitalize(denom!, 'uppercase')}
             subtitle={`${capitalize(type)} • ${date}`}
             onClick={() => navigate(`${TRANSACTION_DETAILS_URL}/${hash}`)}

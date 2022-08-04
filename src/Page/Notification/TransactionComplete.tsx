@@ -2,6 +2,7 @@ import { Typo, List, Content, BottomFloat, Button, FullData } from 'Components';
 import styled from 'styled-components';
 import { hashFormat, txMessageFormat } from 'utils';
 import checkSuccessIcon from 'images/check-success.svg';
+import checkWarningIcon from 'images/check-warning.svg';
 import { useWalletConnect } from 'redux/hooks';
 
 interface Amount {
@@ -14,6 +15,7 @@ interface Props {
       amount?: string | number | Amount;
       denom?: string;
       platform?: string;
+      height?: number;
     };
   };
   closeWindow: () => void;
@@ -51,14 +53,18 @@ export const TransactionComplete: React.FC<Props> = ({ pageData, closeWindow }) 
     return <Typo type="error">Unable to show transaction result details</Typo>;
   };
 
+  const isSuccess = result && result?.height;
+
   return (
     <Content>
-      <SuccessIcon src={checkSuccessIcon} />
+      <SuccessIcon src={isSuccess ? checkSuccessIcon : checkWarningIcon} />
       <Typo type="title" align="center" marginTop="20px">
-        Transaction Complete
+        {isSuccess ? 'Transaction Complete' : 'Transaction Warning'}
       </Typo>
       <Typo type="displayBody" align="center" marginTop="14px" marginBottom="20px">
-        Your transaction details are below
+        {isSuccess
+          ? 'Your transaction details are below'
+          : 'Your transaction details indicate there might have been a problem, review the details below'}
       </Typo>
       <FullData data={{ txRaw: JSON.stringify(result) }} />
       {renderTxData()}

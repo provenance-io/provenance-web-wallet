@@ -25,7 +25,7 @@ import {
   MsgUndelegateDisplay,
   MsgCreateVestingAccountDisplay,
   SupportedDenoms,
-  CoinAsObject,
+  CoinAsObject as _CoinAsObject,
 } from '@provenanceio/wallet-utils';
 
 export type BIP32Interface = _BIP32Interface;
@@ -70,6 +70,9 @@ export interface GetTxFeeEstimate {
   gasPriceDenom?: SupportedDenoms;
   gasAdjustment?: number;
 }
+
+export type CoinAsObject = _CoinAsObject;
+
 export interface GetTxFeeEstimateResponse {
   txFeeEstimate: CoinAsObject[];
   txGasEstimate: number;

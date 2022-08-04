@@ -1,6 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit';
 import { RootState } from 'redux/store';
-import { Message as MessageSlice } from 'types';
+import { Message as MessageSlice, CoinAsObject } from 'types';
 
 const initialState: MessageSlice = {
   coin: undefined,
@@ -9,6 +9,7 @@ const initialState: MessageSlice = {
   txDate: undefined,
   txFeeDenom: 'nhash',
   txFeeEstimate: undefined,
+  txFeeEstimateCoins: undefined,
   txFromAddress: undefined,
   txGasEstimate: undefined,
   txMemo: undefined,
@@ -49,7 +50,18 @@ const messageSlice = createSlice({
 
     setTxFees(state, action) {
       const { txFeeEstimate, txGasEstimate } = action.payload;
-      state.txFeeEstimate = txFeeEstimate;
+      // txFeeEstimate comes in as an array of denoms and amounts.  Only care about nhash within messageSlice actions
+      // Pull out all nhash fees into an array
+      const nhashFeesArray = txFeeEstimate.filter(
+        ({ denom }: CoinAsObject) => denom === 'nhash'
+      );
+      const nhashFeeTotal = nhashFeesArray.reduce(
+        (total: number, { amount: nhashAmount }: CoinAsObject) =>
+          total + Number(nhashAmount),
+        txGasEstimate
+      );
+      state.txFeeEstimateCoins = txFeeEstimate;
+      state.txFeeEstimate = nhashFeeTotal;
       state.txGasEstimate = txGasEstimate;
     },
 

@@ -122,9 +122,8 @@ export const SendAmount = () => {
     const newErrors = [...errors];
     newErrors[0] =
       Number(amount) +
-        // FIXME: @vig fix me
-        // Number(hashFormat(txFeeEstimate, 'nhash')) +
-        Number(hashFormat(txGasEstimate || 0, 'nhash')) >
+        hashFormat(txFeeEstimate!, 'nhash') +
+        hashFormat(txGasEstimate || 0, 'nhash') >
       Number(coin!.displayAmount)
         ? 'Insufficient funds'
         : '';
@@ -178,11 +177,9 @@ export const SendAmount = () => {
           <Typo type="body" align="right">
             <Uppercase>
               {txFeeEstimate
-                ? `${
-                    // FIXME: @vig fix me please
-                    // hashFormat(txFeeEstimate, 'nhash') +
-                    hashFormat(txGasEstimate!, 'nhash').toFixed(4)
-                  } ${coin.display}`
+                ? `${hashFormat(txFeeEstimate + txGasEstimate!, 'nhash').toFixed(
+                    4
+                  )} ${coin.display}`
                 : 'N/A'}
             </Uppercase>
           </Typo>

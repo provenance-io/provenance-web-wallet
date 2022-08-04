@@ -12,7 +12,8 @@ export interface Message {
   txBaseAccount?: string;
   txDate?: number;
   txFeeDenom: SupportedDenoms;
-  txFeeEstimate?: CoinAsObject[];
+  txFeeEstimate?: number;
+  txFeeEstimateCoins?: CoinAsObject[];
   txFromAddress?: string;
   txGasAdjustment?: number;
   txGasEstimate?: number;

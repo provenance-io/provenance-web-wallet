@@ -39,9 +39,6 @@ export const getTxFeeEstimate = async ({
     calculateTxFeeRequest
   );
 
-  // [...totalFeesList, txGasEstimate,]
-  console.log(txGasEstimate, totalFeesList);
-
   return {
     txFeeEstimate: [
       { amount: `${txGasEstimate * finalGasPrice}`, denom: 'nhash' },

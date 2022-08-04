@@ -4,7 +4,6 @@ import { hashFormat, txMessageFormat } from 'utils';
 import checkSuccessIcon from 'images/check-success.svg';
 import checkWarningIcon from 'images/check-warning.svg';
 import { useWalletConnect } from 'redux/hooks';
-import { useState } from 'react';
 
 interface Amount {
   amount: string | number;
@@ -32,13 +31,11 @@ const SuccessIcon = styled.img`
 
 export const TransactionComplete: React.FC<Props> = ({ pageData, closeWindow }) => {
   const { connector } = useWalletConnect();
-  const [isSuccess, setIsSuccess] = useState(true);
   const { result = '' } = pageData;
   const renderTxData = () => {
     if (result) {
       // Clone targetTx to make changes if needed
       const finalTxData = { ...result };
-      if (finalTxData.height === 0) setIsSuccess(false);
       // If we have both amount and denom, combine into object and remove individual
       if (finalTxData.amount && finalTxData.denom) {
         const { amount, denom } = finalTxData;
@@ -55,6 +52,8 @@ export const TransactionComplete: React.FC<Props> = ({ pageData, closeWindow }) 
     }
     return <Typo type="error">Unable to show transaction result details</Typo>;
   };
+
+  const isSuccess = result && result?.height;
 
   return (
     <Content>

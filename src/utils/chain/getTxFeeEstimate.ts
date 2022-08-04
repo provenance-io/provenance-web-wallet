@@ -39,17 +39,20 @@ export const getTxFeeEstimate = async ({
     account: baseAccount,
     publicKey: bufferToBytes(convertUtf8ToBuffer(publicKey)),
     gasPriceDenom: finalGasPriceDenom,
-    gasPrice: finalGasPrice,
+    gasLimit: finalGasPrice,
     gasAdjustment,
   });
-  const { estimatedGas: txGasEstimate } = await calculateTxFees(
+  const { estimatedGas: txGasEstimate, totalFeesList } = await calculateTxFees(
     grpcAddress,
     calculateTxFeeRequest
   );
   console.log('calculateTxFees: ', { txGasEstimate });
 
   return {
-    txFeeEstimate: txGasEstimate * finalGasPrice,
+    txFeeEstimate: [
+      { amount: `${txGasEstimate * finalGasPrice}`, denom: 'nhash' },
+      ...totalFeesList,
+    ],
     txGasEstimate: txGasEstimate || 0,
   };
 };

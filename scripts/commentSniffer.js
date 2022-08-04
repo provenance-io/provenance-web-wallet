@@ -23,6 +23,9 @@ const errorComments = [
   'REMOVE ME:',
   'REMOVE:',
   'HACK:',
+  'FIXME:',
+  'FIX ME:',
+  'FIX:',
 ];
 const rootDirs = ['src'];
 

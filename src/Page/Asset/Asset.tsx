@@ -2,7 +2,7 @@ import { useParams } from 'react-router-dom';
 import { useState } from 'react';
 import styled from 'styled-components';
 import { FooterNav, Header, Sprite as BaseSprite, Content, Typo } from 'Components';
-import { ICON_NAMES } from 'consts';
+import { ICON_NAMES, ASSET_IMAGE_NAMES } from 'consts';
 import { AssetChart } from './AssetChart';
 import { AssetTxs } from './AssetTxs';
 import { ChangeValueArgs, TimePeriodType } from 'types';
@@ -59,13 +59,16 @@ export const Asset: React.FC = () => {
       ? 'CHART_POSITIVE'
       : 'CHART_NEGATIVE';
 
+  const assetIconName =
+    assetName && ASSET_IMAGE_NAMES.includes(assetName) ? assetName : 'provenance';
+
   return assetName ? (
     <Content padBottom="80px">
       <HeaderTitleGroup>
         <Header
           title={
             <HeaderIcon
-              src={`/images/assets/${assetName}.svg`}
+              src={`/images/assets/${assetIconName}.svg`}
               alt={`${assetName} icon`}
             />
           }

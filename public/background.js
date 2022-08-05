@@ -36,6 +36,26 @@ const notificationPopupEvent = async function(request, sender, sendResponse) {
         popupConfig.url = `${popupConfig.url}?redirectTo=NOTIFICATION_URL`;
         chrome.windows.create(popupConfig);
         break;
+      case 'walletconnect_disconnect':
+        // Reset all saved walletconnect data
+        chrome.storage.local.set({
+          walletconnect: {
+            connectionEST: 0,
+            connectionEXP: 0,
+            pendingRequests: {},
+            totalPendingRequests: 0,
+          }
+        });
+        // Revert chrome extension icon to normal colors
+        chrome.action.setIcon({
+          path: {
+            16: '16.png',
+            32: '32.png',
+            48: '48.png',
+            128: '128.png',
+          },
+        });
+        break;
       default: break;
     }
   });

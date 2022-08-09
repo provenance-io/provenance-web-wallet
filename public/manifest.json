@@ -2,7 +2,7 @@
   "name": "Provenance Blockchain Wallet",
   "description": "Provenance Blockchain Wallet Browser Extension",
   "author": "Provenance Blockchain Foundation",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "manifest_version": 3,
   "icons": {
     "16": "16.png",
@@ -19,17 +19,12 @@
   "web_accessible_resources": [
     {
       "resources": [
-        "background.js"
+        "provenance-blockchain-wallet.js"
       ],
       "matches": [
-        "*://*.figure.tech/*",
-        "http://localhost:3000/*"
+        "<all_urls>"
       ]
     }
-  ],
-  "host_permissions": [
-    "*://*.figure.tech/*",
-    "http://localhost:3000/*"
   ],
   "background": {
     "service_worker": "background.js"

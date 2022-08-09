@@ -1,5 +1,6 @@
 interface Window {
-  provenanceWallet: {
+  provenance: {
     version: string;
+    isProvenance: boolean;
   };
 }

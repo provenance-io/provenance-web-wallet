@@ -90,8 +90,23 @@ export const WalletConnectInit: React.FC<Props> = ({ payload, closeWindow }) => 
         connectionEST: now,
         connectionEXP: now + connectionDuration,
       });
-      // Close the popup
-      closeWindow();
+      // If we are successfully connected, update the chrome extension icon
+      if (connector?.connected) {
+        chrome.action.setIcon(
+          {
+            path: {
+              16: '16_active.png',
+              32: '32_active.png',
+              48: '48_active.png',
+              128: '128_active.png',
+            },
+          },
+          () => {
+            // After changing the icon, close the window.
+            closeWindow();
+          }
+        );
+      }
     }
   };
   const handleDecline = async () => {

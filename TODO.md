@@ -2,22 +2,18 @@
 * _(Priority: 1 - 10)_
 
 ## Current Branch Tasks/Changes
-* When selecting non hash token to send icons broken [DONE]
-* Ability to send non hash tokens from dashboard [DONE]
-  - Send screens missing proper formatting / icons
+* When user doesn't have a wallet created but does have the extension, no popup is triggered [DONE]
+  - Instead open the popup and display a static page stating that the user needs to create an account/wallet before using a dApp with the extension
+* Create new window.provenance value for website to check/read [DONE]
+* Change chrome icon when connected to a dApp [DONE]
+  - chrome.action.setIcon({ path: "/example/path/image.png" })
 
 ## Bugs
 * If dApp disconnects while ext is signing message/approving tx currently goes to empty page [10]
   - Change the page, say "You've been disconnected" and just allow pressing "ok" to close extension
 
 ## Features
-* When user doesn't have a wallet created but does have the extension, no popup is triggered [3]
-  - Instead open the popup and prompt the user to go through the account creation flow
-    - This would only apply to initiating a walletconnect-init connection
-    - Potentially just display a static page stating that the user needs to create an account/wallet before using a dApp with the extension
 * All scrollable items should center scroll with blue scrollbar (vs page scrolling w/o scrollbar) [3]
-* Change chrome icon when connected to a dApp [4]
-  - chrome.action.setIcon({ path: "/example/path/image.png" })
 * Dashboard menu - child accounts indented (tree) [7]
 * Check all accessability items [7]
   - Make sure all tabs and keyboard events work

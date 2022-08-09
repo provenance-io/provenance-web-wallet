@@ -16,3 +16,22 @@ function ping() {
 }
 // Run initial ping check loop
 ping();
+
+
+// Inject provenance provider object into the dApp window object
+(() => {
+  try {
+    // Injection location
+    const container = document.head || document.documentElement;
+    // Create a new script element to add onto the page
+    const scriptTag = document.createElement('script');
+    // Set the source of this new script
+    scriptTag.src = window.chrome.runtime.getURL('provenance-blockchain-wallet.js');
+    // Add the script tag into the container
+    container.insertBefore(scriptTag, container.children[0]);
+    // Remove the script tag from the container  
+    container.removeChild(scriptTag);
+  } catch (error) {
+    console.error('Provenance Blockchain Wallet: Provider injection failed.', error);
+  }
+})();

@@ -2,6 +2,7 @@
 * _(Priority: 1 - 10)_
 
 ## Current Branch Tasks/Changes
+* Create new window.provenance value for website to check/read [DONE]
 * Change chrome icon when connected to a dApp [DONE]
   - chrome.action.setIcon({ path: "/example/path/image.png" })
 

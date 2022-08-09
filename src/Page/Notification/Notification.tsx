@@ -2,7 +2,7 @@ import WalletConnectClient from '@walletconnect/client';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { ACTIONS_URL, WC_NOTIFICATION_TYPES } from 'consts';
 import { useEffect, useState } from 'react';
-import { useWalletConnect } from 'redux/hooks';
+import { useAccount, useWalletConnect } from 'redux/hooks';
 import { EventPayload, WCNotification } from 'types';
 import { Loading } from 'Components';
 import { WalletConnectInit } from './WalletConnectInit';
@@ -11,6 +11,7 @@ import { TransactionRequest } from './TransactionRequest';
 import { RequestFailed } from './RequestFailed';
 import { ExtensionTypes, NotificationType } from 'types';
 import { TransactionComplete } from './TransactionComplete';
+import { MissingAccount } from './MissingAccount';
 
 interface PageProps {
   payload: EventPayload;
@@ -33,6 +34,8 @@ export const Notification: React.FC = () => {
     saveWalletconnectData,
     addPendingRequest,
   } = useWalletConnect();
+  const { accounts } = useAccount();
+  const hasAccount = !!accounts.length;
   const wcUriParam = searchParams.get('wc');
   // On load, attempt to detect the way the extension loaded
   useEffect(() => {
@@ -72,6 +75,8 @@ export const Notification: React.FC = () => {
 
   // On load, create the walletConnect event listeners
   useEffect(() => {
+    // If we are missing an account, set the notification type to account_missing
+    if (!hasAccount) setNotificationType('missing_account');
     // Connector must exist to create events
     if (connector) {
       // Loop through each notification type and create event listener
@@ -102,7 +107,7 @@ export const Notification: React.FC = () => {
         });
       });
     }
-  }, [connector, saveWalletconnectData, addPendingRequest]);
+  }, [connector, saveWalletconnectData, addPendingRequest, hasAccount]);
 
   // Listen for a new walletConnect URI.  When one is passed, create a new connector
   useEffect(() => {
@@ -143,6 +148,8 @@ export const Notification: React.FC = () => {
       pageData,
     };
     switch (notificationType) {
+      case 'missing_account':
+        return <MissingAccount {...(pageProps as PageProps)} />;
       case 'session_request':
         return <WalletConnectInit {...(pageProps as PageProps)} />;
       case 'provenance_sendTransaction':

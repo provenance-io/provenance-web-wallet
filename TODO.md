@@ -2,7 +2,7 @@
 * _(Priority: 1 - 10)_
 
 ## Current Branch Tasks/Changes
-* When user doesn't have a wallet created but does have the extension, no popup is triggered [IN_PROGRESS]
+* When user doesn't have a wallet created but does have the extension, no popup is triggered [DONE]
   - Instead open the popup and display a static page stating that the user needs to create an account/wallet before using a dApp with the extension
 * Create new window.provenance value for website to check/read [DONE]
 * Change chrome icon when connected to a dApp [DONE]

@@ -98,7 +98,7 @@ export const RemoveAccount: React.FC = () => {
           label="Wallet Password"
           error={inputErrors[1]}
           type="password"
-          onKeyPress={(e) => keyPress(e, 'Enter', handleRemoveAccount)}
+          onKeyPress={(e) => keyPress(e, handleRemoveAccount)}
         />
       </InputSection>
       <BottomFloat>

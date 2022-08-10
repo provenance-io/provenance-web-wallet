@@ -67,7 +67,7 @@ export const FooterNav: React.FC = () => {
       <NavItem
         active={location?.pathname?.includes('dashboard')}
         onClick={() => navigate(DASHBOARD_URL)}
-        onKeyPress={(e) => keyPress(e, 'Enter', () => navigate(DASHBOARD_URL))}
+        onKeyPress={(e) => keyPress(e, () => navigate(DASHBOARD_URL))}
         tabIndex={0}
       >
         <Sprite icon={ICON_NAMES.DASHBOARD} size="1.6rem" />
@@ -76,7 +76,7 @@ export const FooterNav: React.FC = () => {
       <NavItem
         active={location?.pathname?.includes('actions')}
         onClick={() => navigate(ACTIONS_URL)}
-        onKeyPress={(e) => keyPress(e, 'Enter', () => navigate(ACTIONS_URL))}
+        onKeyPress={(e) => keyPress(e, () => navigate(ACTIONS_URL))}
         tabIndex={0}
       >
         <Sprite icon={ICON_NAMES.CUBES} size="1.6rem" />
@@ -88,7 +88,7 @@ export const FooterNav: React.FC = () => {
       <NavItem
         active={location?.pathname?.includes('transactions')}
         onClick={() => navigate(TRANSACTIONS_URL)}
-        onKeyPress={(e) => keyPress(e, 'Enter', () => navigate(TRANSACTIONS_URL))}
+        onKeyPress={(e) => keyPress(e, () => navigate(TRANSACTIONS_URL))}
         tabIndex={0}
       >
         <Sprite icon={ICON_NAMES.TRANSACTIONS} size="1.6rem" />
@@ -97,7 +97,7 @@ export const FooterNav: React.FC = () => {
       <NavItem
         active={location?.pathname?.includes('profile')}
         onClick={() => navigate(PROFILE_URL)}
-        onKeyPress={(e) => keyPress(e, 'Enter', () => navigate(PROFILE_URL))}
+        onKeyPress={(e) => keyPress(e, () => navigate(PROFILE_URL))}
         tabIndex={0}
       >
         <Sprite icon={ICON_NAMES.PROFILE} size="1.6rem" />

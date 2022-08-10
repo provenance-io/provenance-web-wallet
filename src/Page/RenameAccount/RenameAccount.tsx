@@ -72,7 +72,7 @@ export const RenameAccount: React.FC = () => {
           placeholder="Account Name"
           label="Enter New Account Name"
           error={inputError}
-          onKeyPress={(e) => keyPress(e, 'Enter', submitAccountRename)}
+          onKeyPress={(e) => keyPress(e, submitAccountRename)}
         />
       </InputSection>
       <BottomFloat>

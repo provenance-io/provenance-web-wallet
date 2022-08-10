@@ -82,7 +82,7 @@ export const ResetWallet: React.FC = () => {
           placeholder="Enter phrase"
           label="Destruction Phrase"
           error={inputError}
-          onKeyPress={(e) => keyPress(e, 'Enter', submitDestroyWallet)}
+          onKeyPress={(e) => keyPress(e, submitDestroyWallet)}
         />
       </InputSection>
       <BottomFloat>

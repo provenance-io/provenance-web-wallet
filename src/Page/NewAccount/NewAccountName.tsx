@@ -188,13 +188,13 @@ export const NewAccountName = ({
             value={name}
             onChange={handleInputChange}
             error={error}
-            onKeyPress={(e) => keyPress(e, 'Enter', handleContinue)}
+            onKeyPress={(e) => keyPress(e, handleContinue)}
             autoFocus
           />
           <AdvancedTextButton
             enabled={showAdvanced}
             onClick={toggleShowAdvanced}
-            onKeyPress={(e) => keyPress(e, 'Enter', toggleShowAdvanced)}
+            onKeyPress={(e) => keyPress(e, toggleShowAdvanced)}
             tabIndex={0}
             role="button"
             data-testid="advanced-settings"

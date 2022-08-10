@@ -69,7 +69,7 @@ export const SeedphraseInput: React.FC<Props> = ({
           value={value}
           onChange={(newValue: string) => updateInput(index, newValue)}
           error={error}
-          onKeyPress={(e) => keyPress(e, 'Enter', handleContinue)}
+          onKeyPress={(e) => keyPress(e, handleContinue)}
           // Autofocus the first input on pageload
           {...(index === 0 && { autoFocus: true })}
         />

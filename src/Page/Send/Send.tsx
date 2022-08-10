@@ -169,7 +169,7 @@ export const Send: React.FC = () => {
             value={txSendAddress}
             onChange={setTxSendAddress}
             error={error}
-            onKeyPress={(e) => keyPress(e, 'Enter', validateAndNavigate)}
+            onKeyPress={(e) => keyPress(e, validateAndNavigate)}
           />
           <SectionTitle>Recent Addresses</SectionTitle>
           <RecentAddressSection>

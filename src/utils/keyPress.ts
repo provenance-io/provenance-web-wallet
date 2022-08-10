@@ -1,8 +1,8 @@
 // Handle a keypress event on an element
 export const keyPress = (
   event: React.KeyboardEvent,
-  targetKey: string,
-  callback: () => void
+  callback: () => void,
+  targetKey: string = 'Enter'
 ) => {
   if (event.key === targetKey) {
     event.preventDefault();

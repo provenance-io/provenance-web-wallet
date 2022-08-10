@@ -2,11 +2,11 @@
 * _(Priority: 1 - 10)_
 
 ## Current Branch Tasks/Changes
-* When user doesn't have a wallet created but does have the extension, no popup is triggered [DONE]
-  - Instead open the popup and display a static page stating that the user needs to create an account/wallet before using a dApp with the extension
-* Create new window.provenance value for website to check/read [DONE]
-* Change chrome icon when connected to a dApp [DONE]
-  - chrome.action.setIcon({ path: "/example/path/image.png" })
+* Paste Mnemonic needs to work with all sorts of crazy values
+  - Create tests
+* Switching accounts should be faster [DONE]
+  - Three dots, click account, auto switch/close
+  - Three dots, three dots, account settings
 
 ## Bugs
 * If dApp disconnects while ext is signing message/approving tx currently goes to empty page [10]

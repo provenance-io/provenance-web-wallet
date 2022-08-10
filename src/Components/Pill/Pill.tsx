@@ -60,7 +60,7 @@ export const Pill: React.FC<Props> = ({ className, data, disabled }) => {
       active={data[side].active}
       title={data[side].title}
       onClick={(e) => handleClick(e, side)}
-      onKeyPress={(e) => keyPress(e, 'Enter', () => handleClick(e, side))}
+      onKeyPress={(e) => keyPress(e, () => handleClick(e, side))}
       disabled={disabled}
       tabIndex={0}
     >

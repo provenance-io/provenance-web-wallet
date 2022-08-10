@@ -72,7 +72,7 @@ export const Unlock = ({ nextUrl }: Props) => {
         onChange={handleInputChange}
         autoFocus
         onKeyPress={(e) => {
-          keyPress(e, 'Enter', handleSubmit);
+          keyPress(e, handleSubmit);
         }}
         error={error}
       />

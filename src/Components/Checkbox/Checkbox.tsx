@@ -65,7 +65,7 @@ export const Checkbox: React.FC<Props> = ({
       <StyledCheckbox
         onClick={handleClick}
         disabled={disabled}
-        onKeyPress={(e) => keyPress(e, 'Enter', handleClick)}
+        onKeyPress={(e) => keyPress(e, handleClick)}
         tabIndex={0}
       >
         {checked && <Sprite icon={ICON_NAMES.CHECK} size="1.2rem" color="#498AFD" />}

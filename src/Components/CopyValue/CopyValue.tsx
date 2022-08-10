@@ -89,7 +89,7 @@ export const CopyValue: React.FC<Props> = ({
       title={title}
       onClick={handleCopyClick}
       tabIndex={0}
-      onKeyPress={(e) => keyPress(e, 'Enter', () => handleCopyClick(e))}
+      onKeyPress={(e) => keyPress(e, () => handleCopyClick(e))}
     >
       {justCopied && noPopup ? successText : children}
       {justCopied && !noPopup && (

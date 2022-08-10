@@ -17,6 +17,14 @@ const HeaderRow = styled.div`
 `;
 const Menu = styled.div`
   cursor: pointer;
+  svg {
+    transition: 500ms all;
+  }
+  &:hover {
+    svg {
+      transform: rotate(90deg);
+    }
+  }
 `;
 const WalletInfo = styled.div`
   font-size: 1.4rem;
@@ -57,7 +65,7 @@ export const DashboardHeader: React.FC = () => {
       {!!connected && !!connector && (
         <WalletConnect
           onClick={viewNotifications}
-          onKeyPress={(e) => keyPress(e, 'Enter', viewNotifications)}
+          onKeyPress={(e) => keyPress(e, viewNotifications)}
           tabIndex={0}
         >
           <Sprite icon={ICON_NAMES.CHAIN} size="4.8rem" />

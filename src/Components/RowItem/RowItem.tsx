@@ -66,7 +66,7 @@ export const RowItem: React.FC<Props> = ({
     <AssetItem
       tabIndex={0}
       onClick={handleClick}
-      onKeyDown={(e) => keyPress(e, 'Enter', () => handleClick(e))}
+      onKeyDown={(e) => keyPress(e, () => handleClick(e))}
     >
       {!!img && <AssetImg src={`/images/assets/${img}.svg`} />}
       <AssetDetails>

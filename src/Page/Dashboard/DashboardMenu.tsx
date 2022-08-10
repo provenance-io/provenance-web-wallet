@@ -7,6 +7,7 @@ import {
   Sprite,
   BottomFloat,
   ButtonGroup,
+  Typo,
 } from 'Components';
 import { useNavigate } from 'react-router-dom';
 import {
@@ -20,7 +21,7 @@ import {
   RENAME_ACCOUNT_URL,
 } from 'consts';
 import { useAccount, useWalletConnect } from 'redux/hooks';
-import { trimAddress } from 'utils';
+import { keyPress, trimAddress } from 'utils';
 import { AccountNetwork } from 'types';
 import { COLORS } from 'theme';
 
@@ -61,6 +62,14 @@ const AccountAddress = styled.div`
 `;
 const WalletSubMenuIcon = styled.div`
   margin-left: 20px;
+  svg {
+    transition: 500ms all;
+  }
+  &:hover {
+    svg {
+      transform: rotate(90deg);
+    }
+  }
 `;
 const WalletActionsPopup = styled.div`
   position: fixed;
@@ -129,14 +138,34 @@ export const DashboardMenu: React.FC = () => {
   const { address: menuTargetAddress, accountLevel: menuTargetAccountLevel } =
     menuTargetAccount!;
 
+  const handleSelectAccount = (address: string) => {
+    // If this wallet isn't already active, make it active
+    if (activeAccountId !== address) {
+      // If we are connected to a dApp and the user changes accounts, disconnect from dApp
+      if (connector) connector.killSession();
+      // Save to redux and chrome storage
+      setActiveAccount(address);
+      // Navigate back to the dashboard
+      navigate(DASHBOARD_URL);
+    }
+  };
+  const changeAccountSubmenu = (
+    event: React.KeyboardEvent | React.MouseEvent,
+    address: string
+  ) => {
+    // Prevent event from floating up
+    event.stopPropagation();
+    setAccountMenuTargetId(address);
+  };
+
   const renderWallets = () =>
     accounts.map(({ address, name, network }) => (
       <WalletItem
         key={address}
         active={address === activeAccountId}
-        onClick={() => {
-          setAccountMenuTargetId(address!);
-        }}
+        tabIndex={0}
+        onClick={() => handleSelectAccount(address!)}
+        onKeyPress={(e) => keyPress(e, () => handleSelectAccount(address!))}
       >
         <WalletInfo>
           <WalletText>
@@ -145,18 +174,19 @@ export const DashboardMenu: React.FC = () => {
           </WalletText>
           <Pill network={network!}>{network}</Pill>
         </WalletInfo>
-        <WalletSubMenuIcon>
+        <WalletSubMenuIcon
+          tabIndex={0}
+          onClick={(e) => {
+            changeAccountSubmenu(e, address!);
+          }}
+          onKeyPress={(e) => {
+            keyPress(e, () => setAccountMenuTargetId(address!));
+          }}
+        >
           <Sprite icon={ICON_NAMES.MENU} size="2.2rem" />
         </WalletSubMenuIcon>
       </WalletItem>
     ));
-
-  const handleSelectAccount = () => {
-    // If we are connected to a dApp and the user changes accounts, disconnect from dApp
-    if (connector) connector.killSession();
-    // Save to redux and chrome storage
-    setActiveAccount(accountMenuTargetId);
-  };
 
   return (
     <>
@@ -165,12 +195,12 @@ export const DashboardMenu: React.FC = () => {
         iconLeft={ICON_NAMES.CLOSE}
         backLocation={DASHBOARD_URL}
       />
+      <Typo type="footnote" italic marginBottom="12px">
+        Clicking an account name will set it as active
+      </Typo>
       {renderWallets()}
       {accountMenuTargetId && (
         <WalletActionsPopup onClick={() => setAccountMenuTargetId('')}>
-          {activeAccountId !== accountMenuTargetId && (
-            <WalletAction onClick={handleSelectAccount}>Select Account</WalletAction>
-          )}
           <WalletCopy
             value={menuTargetAddress}
             successText="Address Copied!"
@@ -179,23 +209,43 @@ export const DashboardMenu: React.FC = () => {
             Copy Account Address
           </WalletCopy>
           {menuTargetAccountLevel !== 'addressIndex' && (
-            <WalletAction onClick={() => navigate(NEW_ACCOUNT_SUB_URL)}>
+            <WalletAction
+              onClick={() => navigate(NEW_ACCOUNT_SUB_URL)}
+              tabIndex={0}
+              onKeyPress={(e) => keyPress(e, () => navigate(NEW_ACCOUNT_SUB_URL))}
+            >
               Create Sub Account
             </WalletAction>
           )}
           <WalletAction
             onClick={() => navigate(`${RENAME_ACCOUNT_URL}/${menuTargetAddress}`)}
+            tabIndex={0}
+            onKeyPress={(e) =>
+              keyPress(e, () =>
+                navigate(`${RENAME_ACCOUNT_URL}/${menuTargetAddress}`)
+              )
+            }
           >
             Rename
           </WalletAction>
           {accounts.length > 1 && (
             <WalletAction
               onClick={() => navigate(`${REMOVE_ACCOUNT_URL}/${menuTargetAddress}`)}
+              tabIndex={0}
+              onKeyPress={(e) =>
+                keyPress(e, () =>
+                  navigate(`${REMOVE_ACCOUNT_URL}/${menuTargetAddress}`)
+                )
+              }
             >
               Remove
             </WalletAction>
           )}
-          <WalletAction onClick={() => setAccountMenuTargetId('')}>
+          <WalletAction
+            onClick={() => setAccountMenuTargetId('')}
+            tabIndex={0}
+            onKeyPress={(e) => keyPress(e, () => setAccountMenuTargetId(''))}
+          >
             Close
           </WalletAction>
         </WalletActionsPopup>

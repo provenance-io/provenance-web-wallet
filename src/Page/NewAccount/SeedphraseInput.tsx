@@ -2,7 +2,7 @@ import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
 import { useState } from 'react';
 import { Button, Header, Input, Content, BottomFloat, Typo } from 'Components';
-import { isMnemonic, validateMnemonic, keyPress } from 'utils';
+import { isMnemonic, validateMnemonic, keyPress, cleanMnemonic } from 'utils';
 import { useAccount } from 'redux/hooks';
 import { MNEMONIC_WORD_COUNT } from 'consts';
 
@@ -41,13 +41,15 @@ export const SeedphraseInput: React.FC<Props> = ({
     // Clone all inputValues
     const newInputValues = [...inputValues];
     // Check to see if the value entered is an entire pasted mnemonic
-    const wholeMnemonic = isMnemonic(value, MNEMONIC_WORD_COUNT) ? value : '';
+    const cleanedMnemonicArray = cleanMnemonic(value);
+    // After cleaning, check the length
+    const wholeMnemonic = cleanedMnemonicArray.length === MNEMONIC_WORD_COUNT;
     // Entire mnemonic was pasted in
     if (wholeMnemonic) {
       // Loop through each input and change the value to match the pasted mnemonic
-      wholeMnemonic.split(' ').forEach((word, index) => {
+      cleanedMnemonicArray.forEach((word, index) => {
         newInputValues[index].value = word;
-        newInputValues[index].error = isMnemonic(value) ? '' : 'Invalid Word';
+        newInputValues[index].error = isMnemonic(word) ? '' : 'Invalid Word';
       });
     } else {
       // Only single value (or non-mnemonic entered)

@@ -2,7 +2,7 @@
 * _(Priority: 1 - 10)_
 
 ## Current Branch Tasks/Changes
-* Paste Mnemonic needs to work with all sorts of crazy values
+* Paste Mnemonic needs to work with all sorts of crazy values [DONE]
   - Create tests
 * Switching accounts should be faster [DONE]
   - Three dots, click account, auto switch/close

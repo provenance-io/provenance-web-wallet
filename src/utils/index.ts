@@ -1,6 +1,7 @@
 export * from './capitalize';
 export * from './chain';
 export * from './chart';
+export * from './cleanMnemonic';
 export * from './completeHdPath';
 export * from './currencyFormat';
 export * from './derivationPath';

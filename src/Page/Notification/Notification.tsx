@@ -12,6 +12,7 @@ import { RequestFailed } from './RequestFailed';
 import { ExtensionTypes, NotificationType } from 'types';
 import { TransactionComplete } from './TransactionComplete';
 import { MissingAccount } from './MissingAccount';
+import { Disconnected } from './Disconnected';
 
 interface PageProps {
   payload: EventPayload;
@@ -81,7 +82,7 @@ export const Notification: React.FC = () => {
     if (connector) {
       // Loop through each notification type and create event listener
       WC_NOTIFICATION_TYPES.forEach((NOTE_TYPE) => {
-        connector.on(NOTE_TYPE, (error, payload) => {
+        connector.on(NOTE_TYPE, async (error, payload) => {
           setEventPayload(payload);
           setNotificationType(NOTE_TYPE as WCNotification);
           // Save the request locally
@@ -102,8 +103,12 @@ export const Notification: React.FC = () => {
             addPendingRequest(newPendingRequestData);
           }
           // If we get a disconnect, remove all pending requests
-          if (NOTE_TYPE === 'disconnect')
-            saveWalletconnectData({ pendingRequests: {}, totalPendingRequests: 0 });
+          if (NOTE_TYPE === 'disconnect') {
+            await saveWalletconnectData({
+              pendingRequests: {},
+              totalPendingRequests: 0,
+            });
+          }
         });
       });
     }
@@ -160,8 +165,9 @@ export const Notification: React.FC = () => {
         return <RequestFailed {...(pageProps as PageProps)} />;
       case 'complete':
         return <TransactionComplete {...(pageProps as PageProps)} />;
+      case 'disconnect':
+        return <Disconnected {...(pageProps as PageProps)} />;
       case 'connect': // fallthrough
-      case 'disconnect': // fallthrough
       default:
         // Just return empty since we are changing the note type to bounce into 'failed'
         return <></>;

@@ -99,66 +99,70 @@ export const TransactionRequest: React.FC<Props> = ({
       // Only run this once
       setInitialLoad(false);
       const { params } = payload; // payload = { ..., params: [metadata, hexMessage1, hexMessage2, hexMessageN] }
-      const [metadataString, ...hexEncodedMessages] = params as string[];
-      // Gather all messageAnys together
-      const msgAnyArray: any[] = [];
-      // Gather all parsedTxMessages
-      const unpackedTxMessageArray: any[] = [];
-      // Gather all unpackedTxMaggeAnys
-      const parsedTxMessageArray: ParsedTxMessage[] = [];
-      // First parse out and save the metadata
-      const newParsedMetadata = JSON.parse(metadataString);
-      setParsedMetadata(newParsedMetadata);
-      // Loop through each hexEncodedMessage and build it out
-      hexEncodedMessages.forEach((hexEncodedMessage) => {
-        // Messages are sent from wc-js as hex.  Convert to utf-8 (b64)
-        const messageAnyB64 = convertHexToUtf8(hexEncodedMessage);
-        // Convert the b64 message into a full/real messageAny
-        const msgAny = msgAnyB64toAny(messageAnyB64);
-        // Add to the txMsgAny array (Paginated list of messages)
-        msgAnyArray.push(msgAny);
-        // Convert the b64 message any into a readable object then add/save to store
-        const unpackedMsgAny = unpackDisplayObjectFromWalletMessage(messageAnyB64);
-        unpackedTxMessageArray.push(unpackedMsgAny);
-        // Use util to convert special fields and update how values are displayed
-        const formattedTxMsg = txMessageFormat(unpackedMsgAny);
-        // Add the txType to the formattedTxMsg
-        formattedTxMsg['@type'] = msgAny.getTypeName();
-        // Add this formatted message to the parsed tx message arrays
-        parsedTxMessageArray.push(formattedTxMsg);
-      });
-      // Calculate the tx and gas fees (must be async)
-      (async () => {
-        // Main address comes from metadata
-        const metadataAddress = newParsedMetadata.address!;
-        // Make sure this address is the same as the active account in the wallet
-        if (metadataAddress === activeAccountAddress) {
-          try {
-            const {
-              txFeeEstimate: newTxFeeEstimate,
-              txGasEstimate: newTxGasEstimate,
-            } = await getTxFeeEstimate({
-              address: metadataAddress,
-              publicKey: activeAccountPublicKey!,
-              msgAny: msgAnyArray,
-              gasPrice: newParsedMetadata?.gasPrice?.gasPrice,
-              gasPriceDenom: newParsedMetadata?.gasPrice?.gasPriceDenom,
-            });
-            // Save the returned fee/gas estimates
-            setTxFeeEstimate(newTxFeeEstimate);
-            setTxGasEstimate(newTxGasEstimate);
-          } catch (err) {
-            changeNotificationPage('failed', {
-              failedMessage: `${err}`,
-              title: 'Transaction Failed',
-            });
+      // If we are disconnected, the params are changed into an object with a message stating "Session disconnected"
+      // Normally, the message comes through and the value is a string, when it isn't do nothing
+      if (typeof params[0] === 'string') {
+        const [metadataString, ...hexEncodedMessages] = params as string[];
+        // Gather all messageAnys together
+        const msgAnyArray: any[] = [];
+        // Gather all parsedTxMessages
+        const unpackedTxMessageArray: any[] = [];
+        // Gather all unpackedTxMaggeAnys
+        const parsedTxMessageArray: ParsedTxMessage[] = [];
+        // First parse out and save the metadata
+        const newParsedMetadata = JSON.parse(metadataString);
+        setParsedMetadata(newParsedMetadata);
+        // Loop through each hexEncodedMessage and build it out
+        hexEncodedMessages.forEach((hexEncodedMessage) => {
+          // Messages are sent from wc-js as hex.  Convert to utf-8 (b64)
+          const messageAnyB64 = convertHexToUtf8(hexEncodedMessage);
+          // Convert the b64 message into a full/real messageAny
+          const msgAny = msgAnyB64toAny(messageAnyB64);
+          // Add to the txMsgAny array (Paginated list of messages)
+          msgAnyArray.push(msgAny);
+          // Convert the b64 message any into a readable object then add/save to store
+          const unpackedMsgAny = unpackDisplayObjectFromWalletMessage(messageAnyB64);
+          unpackedTxMessageArray.push(unpackedMsgAny);
+          // Use util to convert special fields and update how values are displayed
+          const formattedTxMsg = txMessageFormat(unpackedMsgAny);
+          // Add the txType to the formattedTxMsg
+          formattedTxMsg['@type'] = msgAny.getTypeName();
+          // Add this formatted message to the parsed tx message arrays
+          parsedTxMessageArray.push(formattedTxMsg);
+        });
+        // Calculate the tx and gas fees (must be async)
+        (async () => {
+          // Main address comes from metadata
+          const metadataAddress = newParsedMetadata.address!;
+          // Make sure this address is the same as the active account in the wallet
+          if (metadataAddress === activeAccountAddress) {
+            try {
+              const {
+                txFeeEstimate: newTxFeeEstimate,
+                txGasEstimate: newTxGasEstimate,
+              } = await getTxFeeEstimate({
+                address: metadataAddress,
+                publicKey: activeAccountPublicKey!,
+                msgAny: msgAnyArray,
+                gasPrice: newParsedMetadata?.gasPrice?.gasPrice,
+                gasPriceDenom: newParsedMetadata?.gasPrice?.gasPriceDenom,
+              });
+              // Save the returned fee/gas estimates
+              setTxFeeEstimate(newTxFeeEstimate);
+              setTxGasEstimate(newTxGasEstimate);
+            } catch (err) {
+              changeNotificationPage('failed', {
+                failedMessage: `${err}`,
+                title: 'Transaction Failed',
+              });
+            }
           }
-        }
-      })();
-      // Save values in store to display in UI
-      setTxMsgAny(msgAnyArray);
-      setUnpackedTxMessageAnys(unpackedTxMessageArray);
-      setParsedTxMessages(parsedTxMessageArray);
+        })();
+        // Save values in store to display in UI
+        setTxMsgAny(msgAnyArray);
+        setUnpackedTxMessageAnys(unpackedTxMessageArray);
+        setParsedTxMessages(parsedTxMessageArray);
+      }
     }
   }, [
     payload,

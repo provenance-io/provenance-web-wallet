@@ -1,4 +1,4 @@
-import { BottomFloat, Button, ButtonGroup } from 'Components';
+import { BottomFloat, Button, ButtonGroup, InputDrag } from 'Components';
 import { useNavigate } from 'react-router-dom';
 import { Carousel } from './Carousel';
 import { NEW_ACCOUNT_CREATE_URL, NEW_ACCOUNT_RECOVER_URL, UNLOCK_URL } from 'consts';
@@ -29,6 +29,13 @@ export const Landing: React.FC = () => {
           </Button>
         </ButtonGroup>
       </BottomFloat>
+      <InputDrag
+        initialValue="1.25"
+        max="5.0"
+        handleChange={(result) => {
+          console.log(`drag value: ${result}`);
+        }}
+      />
     </>
   );
 };

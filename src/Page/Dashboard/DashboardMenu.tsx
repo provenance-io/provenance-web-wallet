@@ -138,13 +138,13 @@ export const DashboardMenu: React.FC = () => {
   const { address: menuTargetAddress, accountLevel: menuTargetAccountLevel } =
     menuTargetAccount!;
 
-  const handleSelectAccount = (address: string) => {
+  const handleSelectAccount = async (address: string) => {
     // If this wallet isn't already active, make it active
     if (activeAccountId !== address) {
       // If we are connected to a dApp and the user changes accounts, disconnect from dApp
       if (connector) connector.killSession();
       // Save to redux and chrome storage
-      setActiveAccount(address);
+      await setActiveAccount(address);
       // Navigate back to the dashboard
       navigate(DASHBOARD_URL);
     }

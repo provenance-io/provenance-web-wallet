@@ -2,11 +2,8 @@
 * _(Priority: 1 - 10)_
 
 ## Current Branch Tasks/Changes
-* Paste Mnemonic needs to work with all sorts of crazy values [DONE]
-  - Create tests
-* Switching accounts should be faster [DONE]
-  - Three dots, click account, auto switch/close
-  - Three dots, three dots, account settings
+* When switching accounts, dashboard doesn't change
+  - Make sure active account is getting changed
 
 ## Bugs
 * If dApp disconnects while ext is signing message/approving tx currently goes to empty page [10]

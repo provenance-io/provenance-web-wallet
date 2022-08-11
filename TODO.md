@@ -2,14 +2,19 @@
 * _(Priority: 1 - 10)_
 
 ## Current Branch Tasks/Changes
-* When switching accounts, dashboard doesn't change
-  - Make sure active account is getting changed
-
-## Bugs
-* If dApp disconnects while ext is signing message/approving tx currently goes to empty page [10]
+* If dApp disconnects while ext is signing message/approving tx currently goes to empty page [IN_PROGRESS]
   - Change the page, say "You've been disconnected" and just allow pressing "ok" to close extension
+* Dashboard menu click sometimes copies address [DONE]
+  - When click is to the side, will copy address
+  - Make the address only copy when the text is selected
 
 ## Features
+* Potential security check to make sure this is the correct wallet app from wcjs [1]
+  - Check chrome extension ID's to make sure they match
+  - This ID is `pfcpdmimlaffecihgamfbnfffmdlhkmh`
+  - Prevent copycat app in extension store from stealing account after signing into dApp.
+* Do we want a gas adjustment slider on all transactions within the wallet? [2]
+  - Wallet-lib does this
 * All scrollable items should center scroll with blue scrollbar (vs page scrolling w/o scrollbar) [3]
 * Dashboard menu - child accounts indented (tree) [7]
 * Check all accessability items [7]

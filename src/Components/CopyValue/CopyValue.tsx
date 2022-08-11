@@ -7,8 +7,7 @@ const CopyArea = styled.div`
   cursor: pointer;
   position: relative;
   text-align: inherit;
-  height: 100%;
-  width: 100%;
+  display: inline-block;
 `;
 const CopiedNotice = styled.div<{ child: React.ReactNode }>`
   background: ${COLORS.SECONDARY_650};

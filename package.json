@@ -62,6 +62,7 @@
     "@types/styled-components": "5.1.22",
     "buffer": "6.0.3",
     "env-cmd": "10.1.0",
+    "enquirer": "2.3.6",
     "eslint-config-prettier": "8.3.0",
     "file-loader": "6.2.0",
     "grpc_tools_node_protoc_ts": "5.3.2",

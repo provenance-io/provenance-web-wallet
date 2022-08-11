@@ -2,7 +2,8 @@
 * _(Priority: 1 - 10)_
 
 ## Current Branch Tasks/Changes
-* If dApp disconnects while ext is signing message/approving tx currently goes to empty page [IN_PROGRESS]
+* Add version number to profile menu [IN_PROGRESS]
+* If dApp disconnects while ext is signing message/approving tx currently goes to empty page
   - Change the page, say "You've been disconnected" and just allow pressing "ok" to close extension
 * Dashboard menu click sometimes copies address [DONE]
   - When click is to the side, will copy address

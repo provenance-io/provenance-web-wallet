@@ -53,7 +53,7 @@ module.exports.versionUp = function () {
   let versionPatch = Number(currentVersionSplit[2]);
   let finalVersion = APP_VERSION;
   createPrettyError(
-    `---------------------------------------------------\n Current ${APP_NAME} version is ${APP_VERSION}\n ---------------------------------------------------`,
+    `--------------------------------------------------- \n Current ${APP_NAME} version is ${APP_VERSION}   \n ---------------------------------------------------`,
     'cyan'
   );
   // Prompt the user to determine what kind of version up this is (major, minor, or patch)
@@ -65,7 +65,6 @@ module.exports.versionUp = function () {
   prompt
     .run()
     .then((answer) => {
-      console.log('Answer: ', answer);
       switch (answer) {
         case 'Major':
           finalVersion = `${versionMajor + 1}.0.0`;
@@ -94,7 +93,7 @@ module.exports.versionUp = function () {
           createPrettyError(`Changed version within "${fileLocation}"`, 'blue');
         });
         createPrettyError(
-          `---------------------------------------------------\n New ${APP_NAME} version is now ${finalVersion}\n ---------------------------------------------------`,
+          `--------------------------------------------------- \n New ${APP_NAME} version is now ${finalVersion}   \n ---------------------------------------------------`,
           'green'
         );
       } else {

@@ -10,6 +10,8 @@ export * from './Content';
 export * from './CopyValue';
 export * from './FooterNav';
 export * from './FullData';
+export * from './FullPagePopup';
+export * from './GasAdjustment';
 export * from './Header';
 export * from './ImageContainer';
 export * from './Input';

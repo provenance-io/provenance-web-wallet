@@ -10,7 +10,15 @@ import {
   CoinAsObject,
 } from '@provenanceio/wallet-utils';
 import { useActiveAccount, useWalletConnect } from 'redux/hooks';
-import { List, Authenticate, Content, FullData, Sprite, Loading } from 'Components';
+import {
+  List,
+  Authenticate,
+  Content,
+  FullData,
+  Sprite,
+  Loading,
+  GasAdjustment,
+} from 'Components';
 import { useEffect, useState } from 'react';
 import { format } from 'date-fns';
 import {
@@ -22,7 +30,7 @@ import {
   hashFormat,
 } from 'utils';
 import { BIP32Interface, NotificationType } from 'types';
-import { ICON_NAMES } from 'consts';
+import { ICON_NAMES, DEFAULT_GAS_ADJUSTMENT } from 'consts';
 import { COLORS } from 'theme';
 
 const Title = styled.div`
@@ -86,8 +94,9 @@ export const TransactionRequest: React.FC<Props> = ({
   const [txMsgAny, setTxMsgAny] = useState<any[]>([]);
   const [txFeeEstimate, setTxFeeEstimate] = useState<CoinAsObject[]>([]);
   const [txGasEstimate, setTxGasEstimate] = useState<number>(0);
-  const [initialLoad, setInitialLoad] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
+  const [runFeeCalc, setRunFeeCalc] = useState(true);
+  const [gasAdjustment, setGasAdjustment] = useState(DEFAULT_GAS_ADJUSTMENT);
   // New states
   const [msgPage, setMsgPage] = useState(0);
   const [parsedTxMessages, setParsedTxMessages] = useState<ParsedTxMessage[]>([]);
@@ -95,9 +104,9 @@ export const TransactionRequest: React.FC<Props> = ({
 
   // Onload, pull out and parse payload params
   useEffect(() => {
-    if (initialLoad) {
-      // Only run this once
-      setInitialLoad(false);
+    if (runFeeCalc) {
+      // Only run this when needed
+      setRunFeeCalc(false);
       const { params } = payload; // payload = { ..., params: [metadata, hexMessage1, hexMessage2, hexMessageN] }
       // If we are disconnected, the params are changed into an object with a message stating "Session disconnected"
       // Normally, the message comes through and the value is a string, when it isn't do nothing
@@ -146,6 +155,7 @@ export const TransactionRequest: React.FC<Props> = ({
                 msgAny: msgAnyArray,
                 gasPrice: newParsedMetadata?.gasPrice?.gasPrice,
                 gasPriceDenom: newParsedMetadata?.gasPrice?.gasPriceDenom,
+                gasAdjustment: Number(gasAdjustment),
               });
               // Save the returned fee/gas estimates
               setTxFeeEstimate(newTxFeeEstimate);
@@ -167,13 +177,19 @@ export const TransactionRequest: React.FC<Props> = ({
   }, [
     payload,
     txMsgAny,
-    initialLoad,
+    runFeeCalc,
+    gasAdjustment,
     changeNotificationPage,
     activeAccountAddress,
     activeAccountPublicKey,
     parsedTxMessages,
     unpackedTxMessageAnys,
   ]);
+
+  const changeGasAdjustmentFee = (value: string) => {
+    setGasAdjustment(value);
+    setRunFeeCalc(true);
+  };
 
   const formatMetadataGasFee = () => {
     // Pull out all nhash fees into an array
@@ -273,7 +289,8 @@ export const TransactionRequest: React.FC<Props> = ({
     <Content>
       <Title>Transaction</Title>
       <FullData data={unpackedTxMessageAnys[msgPage]} />
-      <List message={renderMessagePage()} maxHeight="324px" />
+      <GasAdjustment value={gasAdjustment} onChange={changeGasAdjustmentFee} />
+      <List message={renderMessagePage()} maxHeight="274px" />
       <PaginationDisplay>
         {maxPages > 1 && (
           <Sprite

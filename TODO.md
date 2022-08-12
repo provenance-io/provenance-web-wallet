@@ -2,7 +2,11 @@
 * _(Priority: 1 - 10)_
 
 ## Current Branch Tasks/Changes
-* Gas adjustment slider on all transactions within the wallet [IN_PROGRESS]
+* Reconnecting to dApp after disconnecting causes an additional disconnect event
+  - Guessing it has something to do with a stale chrome storage/localstorage w/walletconnect
+  - Only happens if dApp sends disconnect.  Works when wallet initiates disconnect
+* Gas adjustment button on all transactions within the wallet [DONE]
+* Create new gas adjustment slider [DONE]
 * If dApp disconnects while ext is signing message/approving tx currently goes to empty page [DONE]
   - Disconnected causes instant white page.
   - Icon color changes indicating disconnect event was received.

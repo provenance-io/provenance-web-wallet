@@ -1,5 +1,4 @@
 import { Typo } from '../Typography/Typo';
-import React, { useState } from 'react';
 import styled from 'styled-components';
 import { COLORS } from 'theme';
 
@@ -8,29 +7,28 @@ const InputDragContainer = styled.div`
   position: relative;
   align-items: flex-end;
   justify-content: space-between;
-  background: black;
   width: 100%;
   height: 100px;
   padding: 10px;
-  z-index: 9999999999;
 `;
 const CurrentValueRow = styled.div`
   position: absolute;
-  top: -36px;
+  top: -40px;
+  padding-left: 27px;
   left: 0;
   z-index: 15;
   width: 100%;
   text-align: left;
 `;
-const CurrentValue = styled.div<{ left: string }>`
-  left: ${({ left }) => `${left}%`};
-  margin-left: ${({ left }) => `-${Math.round((Number(left) / 100) * 43)}px`};
-  padding: 2px 8px;
+const CurrentValue = styled.div<{ left: string; isDefault: boolean }>`
+  // This is tricky, css positions based on the top-left so we need to align that position to the middle
+  left: ${({ left, isDefault }) =>
+    `calc(${left}% - ${isDefault ? '62px' : '42px'})`};
+  padding: 4px 12px;
   font-size: 1.4rem;
   border-radius: 4px;
   background: ${COLORS.SECONDARY_350};
   text-align: center;
-  min-width: 60px;
   display: inline-block;
   position: relative;
 `;
@@ -84,38 +82,39 @@ const SliderRangeInput = styled.input<{ bgSize: string }>`
 `;
 
 interface Props {
-  initialValue: string;
+  value: string;
+  defaultValue?: string;
   min?: string;
   max: string;
   step?: string;
   id?: string;
-  handleChange: (newValue: string) => void;
+  onChange: (newValue: string) => void;
   default?: string;
 }
 
+// Note: This whole component will need to be thoroughly tested when using other browsers
+// There are lots of browser specific stylings in here
 export const InputDrag: React.FC<Props> = ({
-  initialValue,
+  value,
+  defaultValue,
   min = '0',
   max,
   step = '0.25',
   id = 'inputDrag',
-  handleChange,
+  onChange,
 }) => {
-  const [currentValue, setCurrentValue] = useState(initialValue);
-
-  const difference = Number(currentValue) - Number(min);
+  const difference = Number(value) - Number(min);
   const sliderPositionPercent = Math.floor((difference / Number(max)) * 100);
   // const currentValueLeftPosition
 
   const handleInputChange = (value: string) => {
     const finalValue = Number(value).toFixed(2);
-    setCurrentValue(finalValue);
-    handleChange(finalValue);
+    onChange(finalValue);
   };
 
   const RangeInputBackgroundSize =
-    ((Number(currentValue) - Number(min)) * 100) / (Number(max) - Number(min)) +
-    '% 100%';
+    ((Number(value) - Number(min)) * 100) / (Number(max) - Number(min)) + '% 100%';
+  const isDefaultValue = value === defaultValue;
 
   return (
     <InputDragContainer>
@@ -124,9 +123,9 @@ export const InputDrag: React.FC<Props> = ({
       </Typo>
       <SliderContainer>
         <CurrentValueRow>
-          <CurrentValue left={`${sliderPositionPercent}`}>
-            <Typo type="footnote" color="SECONDARY_700">
-              {currentValue} {initialValue === currentValue && '(default)'}
+          <CurrentValue left={`${sliderPositionPercent}`} isDefault={isDefaultValue}>
+            <Typo type="footnote" color="SECONDARY_700" bold>
+              {value} {isDefaultValue && '(default)'}
             </Typo>
             <CurrentValueArrow />
           </CurrentValue>
@@ -139,7 +138,7 @@ export const InputDrag: React.FC<Props> = ({
           step={step}
           id={id}
           onChange={(e) => handleInputChange(e.target.value)}
-          value={currentValue}
+          value={value}
         />
       </SliderContainer>
       <Typo type="body" bold>

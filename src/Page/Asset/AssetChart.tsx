@@ -61,7 +61,7 @@ export const AssetChart: React.FC<Props> = ({
   loading,
   setLoading,
 }) => {
-  const dateNow = new Date().getTime();
+  const dateNow = new Date().toISOString();
   // Page Asset
   const { assetName } = useParams();
   // Active Account Info

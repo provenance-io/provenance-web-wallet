@@ -88,7 +88,8 @@
     "reduxDev": "redux-devtools",
     "test": "env-cmd -e e2e craco test --watch --verbose --env=./src/__tests__/utils/custom-test-env.js",
     "install:local": "npm i ../wallet-utils/provenanceio-wallet-utils-0.0.0-development.tgz",
-    "version": "node -e 'require(\"./scripts/versionUp.js\").versionUp()'"
+    "version": "node -e 'require(\"./scripts/versionUp.js\").versionUp()'",
+    "package": "zip -r provenance-web-wallet-1.6.0.zip build -X"
   },
   "eslintConfig": {
     "extends": [

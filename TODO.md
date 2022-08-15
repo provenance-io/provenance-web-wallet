@@ -2,22 +2,9 @@
 * _(Priority: 1 - 10)_
 
 ## Current Branch Tasks/Changes
-* Clicking "reject" on connection request flashes "disconnected" page [DONE]
-  - Ideally just close without any flash of new content
-* Detect if popup window is already open [DONE]
-  - Auto close existing popup, only allow one notification popup at a time
-    - Should be fine to autoclose due to action queue
-* Reconnecting to dApp after disconnecting causes an additional disconnect event [DONE]
-* Gas adjustment button on all transactions within the wallet [DONE]
-* Create new gas adjustment slider [DONE]
-* If dApp disconnects while ext is signing message/approving tx currently goes to empty page [DONE]
-  - Detect disconnect and change page/clear pending events
-  - Change the page, say "You've been disconnected" and just allow pressing "ok" to close extension
-* New versionUpdate command to change all version number locations at once [DONE]
-* Add version number to profile menu [DONE]
-* Dashboard menu click sometimes copies address [DONE]
-  - When click is to the side, will copy address
-  - Make the address only copy when the text is selected
+* Create new const variable to hold the current app version (set with npm run versionUp) [DONE]
+  - Used by profile page to display wallet version
+* New package command to auto zip and name the build folder to submit to chrome web store [DONE]
 
 ## Features
 * Potential security check to make sure this is the correct wallet app from wcjs [1]

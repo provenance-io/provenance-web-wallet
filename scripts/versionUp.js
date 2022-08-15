@@ -7,11 +7,12 @@ const PrettyError = require('pretty-error');
 const APP_VERSION = process.env.npm_package_version;
 const APP_NAME = process.env.npm_package_name;
 
-const regularExpressionMatch = /"version":(.+),/i;
+const regularExpressionMatch = /"version":(.+),|version:(.+),/i;
 const filesToChange = [
   'public/manifest.json',
   'public/provenance-blockchain-wallet.js',
   'package.json',
+  'src/consts/app.ts',
 ];
 
 // Style the look of the console logs/message output

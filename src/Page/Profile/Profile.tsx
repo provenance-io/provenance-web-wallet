@@ -6,6 +6,7 @@ import {
   PROVENANCE_WEB_DOCS_URL,
   PROVENANCE_WEB_URL,
   RESET_WALLET_URL,
+  APP_DATA,
 } from 'consts';
 import styled from 'styled-components';
 import { useSettings } from 'redux/hooks';
@@ -83,7 +84,7 @@ export const Profile = () => {
         <Sprite icon={ICON_NAMES.CHEVRON} size="1.3rem" />
       </SectionOption>
       <Typo type="footnote" marginTop="72px" align="right" italic>
-        v{process.env.REACT_APP_VERSION}
+        v{APP_DATA.version}
       </Typo>
       <FooterNav />
     </Container>

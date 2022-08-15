@@ -3,6 +3,12 @@
 // Handle Notification Popup Window
 // ----------------------------------------
 const notificationPopupEvent = async function(request, sender, sendResponse) {
+  const EXTENSION_POPUP_HEIGHT = 628;
+  const EXTENSION_POPUP_WIDTH = 375;
+  const EXTENSION_POPUP_TYPE = 'popup';
+  const EXTENSION_POPUP_BASEURL = 'index.html';
+  const EXTENSION_POPUP_TOP = 0;
+
   // When just pinging, don't do anything else
   if (request === 'ping' || !request) {
     sendResponse();
@@ -12,17 +18,27 @@ const notificationPopupEvent = async function(request, sender, sendResponse) {
   const { account } = await chrome.storage.local.get('account') || {};
   const hasAccount = !!account?.accounts.length;
   // Open a new window popup as the extension
-  await chrome.windows.get(sender.tab.windowId).then((senderWindow) => {
+  await chrome.windows.get(sender.tab.windowId).then(async (senderWindow) => {
     // Basic popup config
     const popupConfig = {
       focused: true,
-      height: 628,
-      width: 375,
-      top: 0,
-      type: 'popup',
-      url: `index.html`,
+      height: EXTENSION_POPUP_HEIGHT,
+      width: EXTENSION_POPUP_WIDTH,
+      top: EXTENSION_POPUP_TOP,
+      type: EXTENSION_POPUP_TYPE,
+      url: EXTENSION_POPUP_BASEURL,
       left: (senderWindow.left + senderWindow.width) - 375,
     };
+    // If the user already has a popup open, destroy the open popup (no multiple wallet popups)
+    const existingWindows = await chrome.windows.getAll();
+    existingWindows.forEach(async ({ id, type, width, height }) => {
+      // Note: If we want to check the URL we will need to add a new 'tabs' permission to the manifect
+      // This is a work around that should be fine 99% of the time until someone has a popup already open at this exact size...
+      if (type === EXTENSION_POPUP_TYPE && width === EXTENSION_POPUP_WIDTH && height === EXTENSION_POPUP_HEIGHT) {
+        // Remove this popup
+        await chrome.windows.remove(id);
+      }
+    });
     // If the user doesn't have an account, just open a page telling them to make one
     if (!hasAccount) {
       // Redirect popup to the notifications page which will detect that the user has no accounts and show the proper messaging
@@ -47,12 +63,14 @@ const notificationPopupEvent = async function(request, sender, sendResponse) {
           break;
         case 'walletconnect_disconnect':
           // Reset all saved walletconnect data
-          chrome.storage.local.set({
+          await chrome.storage.local.set({
             walletconnect: {
               connectionEST: 0,
               connectionEXP: 0,
               pendingRequests: {},
               totalPendingRequests: 0,
+              // We don't have access to window.localStorage in background.js.  Instead, set a var to clear it out upon app load (initial load) next time the extension opens
+              killSession: true,
             }
           });
           // Revert chrome extension icon to normal colors

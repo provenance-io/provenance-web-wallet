@@ -152,6 +152,14 @@ export const Notification: React.FC = () => {
       changeNotificationPage,
       pageData,
     };
+    // If we get a disconnect due to rejecting the connection, just return nothing (don't flash content)
+    if (
+      eventPayload &&
+      eventPayload.params[0]?.message === 'Connection rejected by user'
+    ) {
+      return <></>;
+    }
+
     switch (notificationType) {
       case 'missing_account':
         return <MissingAccount {...(pageProps as PageProps)} />;

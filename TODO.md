@@ -2,15 +2,15 @@
 * _(Priority: 1 - 10)_
 
 ## Current Branch Tasks/Changes
-* Reconnecting to dApp after disconnecting causes an additional disconnect event
-  - Guessing it has something to do with a stale chrome storage/localstorage w/walletconnect
-  - Only happens if dApp sends disconnect.  Works when wallet initiates disconnect
+* Clicking "reject" on connection request flashes "disconnected" page [DONE]
+  - Ideally just close without any flash of new content
+* Detect if popup window is already open [DONE]
+  - Auto close existing popup, only allow one notification popup at a time
+    - Should be fine to autoclose due to action queue
+* Reconnecting to dApp after disconnecting causes an additional disconnect event [DONE]
 * Gas adjustment button on all transactions within the wallet [DONE]
 * Create new gas adjustment slider [DONE]
 * If dApp disconnects while ext is signing message/approving tx currently goes to empty page [DONE]
-  - Disconnected causes instant white page.
-  - Icon color changes indicating disconnect event was received.
-  - Icon still shows "1" pending action.
   - Detect disconnect and change page/clear pending events
   - Change the page, say "You've been disconnected" and just allow pressing "ok" to close extension
 * New versionUpdate command to change all version number locations at once [DONE]

@@ -17,6 +17,7 @@ export type EventPayload = {
   session?: WalletConnectClient | null;
   params: {
     peerMeta?: IClientMeta;
+    message?: string;
   }[];
 };
 

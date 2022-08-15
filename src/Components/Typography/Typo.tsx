@@ -109,6 +109,16 @@ const FootnoteStyle = styled.p`
   ${StylingMixin}
   color: ${({ color }) => (color ? COLORS[color] : COLORS.NEUTRAL_200)};
 `;
+const CodeStyle = styled.p`
+  ${StylingMixin}
+  background: ${COLORS.NEUTRAL_700};
+  padding: 8px 4px;
+  border-radius: 6px;
+  font-size: 1rem;
+  letter-spacing: 0;
+  font-family: monospace;
+  color: ${COLORS.SECONDARY_300};
+`;
 
 type TypoType =
   | 'body'
@@ -119,7 +129,8 @@ type TypoType =
   | 'title'
   | 'display1'
   | 'display2'
-  | 'footnote';
+  | 'footnote'
+  | 'code';
 interface Props {
   className?: string;
   children: React.ReactNode;
@@ -179,6 +190,8 @@ export const Typo: React.FC<Props> = ({
         return <TitleStyle {...allProps}>{children}</TitleStyle>;
       case 'footnote':
         return <FootnoteStyle {...allProps}>{children}</FootnoteStyle>;
+      case 'code':
+        return <CodeStyle {...allProps}>{children}</CodeStyle>;
     }
   };
 

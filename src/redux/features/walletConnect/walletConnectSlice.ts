@@ -2,7 +2,13 @@ import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { RootState } from 'redux/store';
 import WalletConnectClient from '@walletconnect/client';
 import { IWalletConnectSession, SavedPendingRequests } from 'types';
-import { getSavedData, getStorageData, addSavedData, removeSavedData } from 'utils';
+import {
+  getSavedData,
+  getStorageData,
+  addSavedData,
+  removeSavedData,
+  clearStorageData,
+} from 'utils';
 import { WC_CONNECTION_TIMEOUT } from 'consts';
 
 /**
@@ -15,6 +21,7 @@ interface ChromeInitialState {
   pendingRequests: SavedPendingRequests;
   totalPendingRequests: number;
   connectionTimer: number;
+  killSession: boolean;
 }
 type State = ChromeInitialState & {
   connector: WalletConnectClient | null;
@@ -38,6 +45,7 @@ const chromeInitialState: ChromeInitialState = {
   pendingRequests: {},
   totalPendingRequests: 0,
   connectionTimer: 0,
+  killSession: false,
 };
 const initialState: State = {
   ...chromeInitialState,
@@ -99,9 +107,15 @@ export const pullInitialWCData = createAsyncThunk(
       totalPendingRequests = initialState.totalPendingRequests,
       connectionEST = initialState.connectionEST,
       connectionEXP = initialState.connectionEXP,
+      killSession = initialState.killSession,
     } = (await getSavedData('walletconnect')) || {};
+    // If background.js detected a disconnect, it will have set a killSession variable
     // Local storage
-    const session = await getStorageData('walletconnect');
+    if (killSession) {
+      // Don't use the last localStorage saved value (instead, remove it)
+      clearStorageData('walletconnect');
+    }
+    const session = getStorageData('walletconnect');
     // After attemting to pull chrome saved data, populate any potentially missing chrome storage values
     await addSavedData({
       walletconnect: {
@@ -109,6 +123,7 @@ export const pullInitialWCData = createAsyncThunk(
         totalPendingRequests,
         connectionEST,
         connectionEXP,
+        killSession: false, // If we needed to kill the session, we did already above, so reset this value
       },
     });
     // Return combined values to update the redux store
@@ -238,14 +253,16 @@ const walletConnectSlice = createSlice({
         state.connectionEXP = connectionEXP;
         state.pendingRequests = pendingRequests;
         state.totalPendingRequests = totalPendingRequests;
-        // If we have a peerId, start the walletconnect connection
+        // If we have a peerId and an expiration date, start the walletconnect connection
         if (session && session.peerId) {
           const connector = new WalletConnectClient({ session });
           // Check if the session is already disconnected
           if (connector?.session?.connected) {
             // Make sure the session isn't expired, if it is we will kill the session
             const now = Date.now();
-            if (!connectionEXP || now >= connectionEXP) connector.killSession();
+            if (!connectionEXP || now >= connectionEXP) {
+              connector.killSession();
+            }
             state.session = session;
             state.connector = connector;
           }

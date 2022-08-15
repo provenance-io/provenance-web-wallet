@@ -1,6 +1,12 @@
-import { FooterNav, Sprite } from 'Components';
+import { FooterNav, Sprite, Typo } from 'Components';
 import { useNavigate } from 'react-router-dom';
-import { APP_URL, ICON_NAMES, PROVENANCE_WEB_DOCS_URL, PROVENANCE_WEB_URL, RESET_WALLET_URL } from 'consts';
+import {
+  APP_URL,
+  ICON_NAMES,
+  PROVENANCE_WEB_DOCS_URL,
+  PROVENANCE_WEB_URL,
+  RESET_WALLET_URL,
+} from 'consts';
 import styled from 'styled-components';
 import { useSettings } from 'redux/hooks';
 
@@ -59,7 +65,7 @@ export const Profile = () => {
 
   const handleLockWallet = async () => {
     // Set expiration to now
-    await saveSettingsData({ unlockEXP: Date.now() })
+    await saveSettingsData({ unlockEXP: Date.now() });
     // Redirect user to landing page
     navigate(APP_URL);
   };
@@ -76,6 +82,9 @@ export const Profile = () => {
         Lock Wallet
         <Sprite icon={ICON_NAMES.CHEVRON} size="1.3rem" />
       </SectionOption>
+      <Typo type="footnote" marginTop="72px" align="right" italic>
+        v{process.env.REACT_APP_VERSION}
+      </Typo>
       <FooterNav />
     </Container>
   );

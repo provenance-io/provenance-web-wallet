@@ -1,4 +1,17 @@
 // ---------------------
+// EXTERNAL PATH URLS
+// ---------------------
+// PROVENANCE DOCS
+export const PROVENANCE_WEB_URL = 'https://provenance.io';
+export const PROVENANCE_WEB_DOCS_URL = 'https://docs.provenance.io';
+export const PROVENANCE_DOCS_GAS_FEE = `${PROVENANCE_WEB_DOCS_URL}/blockchain/basics/gas-and-fees`;
+// BLOCKCHAIN EXPLORER
+export const EXPLORER_WEB_TESTNET = 'https://explorer.test.provenance.io';
+export const EXPLORER_WEB_MAINNET = 'https://explorer.provenance.io';
+export const EXPLORER_WEB_TX_HASH = `/tx`;
+export const EXPLORER_WEB_BLOCK = `/block`;
+
+// ---------------------
 // INNER-APP PATH URLS
 // ---------------------
 // ROOT HOMEPAGE URL

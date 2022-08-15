@@ -4,7 +4,12 @@ import { useWalletConnect } from 'redux/hooks';
 import { List, Authenticate, Content } from 'Components';
 import { useEffect, useState } from 'react';
 import { format } from 'date-fns';
-import { signBytes, convertHexToUtf8, convertHexToBuffer, convertArrayBufferToHex } from 'utils';
+import {
+  signBytes,
+  convertHexToUtf8,
+  convertHexToBuffer,
+  convertArrayBufferToHex,
+} from 'utils';
 import { BIP32Interface } from 'types';
 
 const Title = styled.div`
@@ -19,14 +24,14 @@ const Title = styled.div`
 `;
 
 interface Props {
-  payload: EventPayload,
-  closeWindow: () => void,
+  payload: EventPayload;
+  closeWindow: () => void;
 }
 interface ParsedParams {
-  address?: string,
-  description?: string,
-  payload?: string,
-  date?: number,
+  address?: string;
+  description?: string;
+  payload?: string;
+  date?: number;
 }
 const PaginationDisplay = styled.div`
   position: fixed;
@@ -39,7 +44,7 @@ const PaginationDisplay = styled.div`
   left: 0;
 `;
 
-export const SignRequest:React.FC<Props> = ({ payload, closeWindow }) => {
+export const SignRequest: React.FC<Props> = ({ payload, closeWindow }) => {
   const {
     connector,
     connectionEXP,
@@ -53,14 +58,18 @@ export const SignRequest:React.FC<Props> = ({ payload, closeWindow }) => {
   // Onload, pull out and parse payload params
   useEffect(() => {
     const { params } = payload;
-    const [detailsJSONString, hexEncodedMessage] = params as string[];
-    setEncodedMessage(hexEncodedMessage);
-    const details = JSON.parse(detailsJSONString);
-    const decodedMessage = convertHexToUtf8(hexEncodedMessage);
-    setParsedParams({
-      ...details,
-      payload: decodedMessage,
-    })
+    // If we are disconnected, the params are changed into an object with a message stating "Session disconnected"
+    // Normally, the message comes through and the value is a string, when it isn't do nothing
+    if (typeof params[0] === 'string') {
+      const [detailsJSONString, hexEncodedMessage] = params as string[];
+      setEncodedMessage(hexEncodedMessage);
+      const details = JSON.parse(detailsJSONString);
+      const decodedMessage = convertHexToUtf8(hexEncodedMessage);
+      setParsedParams({
+        ...details,
+        payload: decodedMessage,
+      });
+    }
   }, [payload]);
 
   // Connection to the dApp is on a timer, whenever the user interacts with the dApp (approve/deny) reset the timer
@@ -90,7 +99,7 @@ export const SignRequest:React.FC<Props> = ({ payload, closeWindow }) => {
       await bumpWalletConnectTimeout();
       closeWindow();
     }
-  }
+  };
   const handleDecline = async () => {
     if (connector) {
       await connector.rejectRequest({
@@ -102,12 +111,14 @@ export const SignRequest:React.FC<Props> = ({ payload, closeWindow }) => {
       await bumpWalletConnectTimeout();
       closeWindow();
     }
-  }
+  };
 
   const ListItems = {
     platform: connector?.peerMeta?.name || 'N/A',
     address: parsedParams?.address || 'N/A',
-    created: parsedParams?.date ? format(new Date(parsedParams.date), 'MMM d, h:mm a') : 'N/A',
+    created: parsedParams?.date
+      ? format(new Date(parsedParams.date), 'MMM d, h:mm a')
+      : 'N/A',
     'message type': 'provenance_sign',
     description: parsedParams?.description || 'N/A',
     payload: parsedParams?.payload || 'N/A',

@@ -22,6 +22,10 @@ export const getStorageData = (savedName: string, key?: StorageItemKey) => {
   // If no specific key is passed, just return the entire object
   return key ? data[key] : data;
 };
+// Remove a specific value (or all local storage)
+export const clearStorageData = (savedName: string) => {
+  window.localStorage.removeItem(savedName);
+};
 
 // ----------------------
 // Chrome Storage

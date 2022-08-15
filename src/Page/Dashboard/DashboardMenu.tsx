@@ -108,6 +108,8 @@ const WalletAction = styled.div`
 `;
 const WalletCopy = styled(CopyValue)`
   ${WalletActionMixin}
+  width: 100%;
+  height: auto;
 `;
 
 const Pill = styled.div<{ network: AccountNetwork }>`

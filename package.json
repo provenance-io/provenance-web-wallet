@@ -1,6 +1,6 @@
 {
   "name": "provenance-web-wallet-ts",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "private": true,
   "license": "Apache-2.0",
   "homepage": "/",
@@ -62,6 +62,7 @@
     "@types/styled-components": "5.1.22",
     "buffer": "6.0.3",
     "env-cmd": "10.1.0",
+    "enquirer": "2.3.6",
     "eslint-config-prettier": "8.3.0",
     "file-loader": "6.2.0",
     "grpc_tools_node_protoc_ts": "5.3.2",
@@ -86,7 +87,8 @@
     "build:redux": "env-cmd -e default,staging craco build && npm run reduxDev",
     "reduxDev": "redux-devtools",
     "test": "env-cmd -e e2e craco test --watch --verbose --env=./src/__tests__/utils/custom-test-env.js",
-    "install:local": "npm i ../wallet-utils/provenanceio-wallet-utils-0.0.0-development.tgz"
+    "install:local": "npm i ../wallet-utils/provenanceio-wallet-utils-0.0.0-development.tgz",
+    "version": "node -e 'require(\"./scripts/versionUp.js\").versionUp()'"
   },
   "eslintConfig": {
     "extends": [

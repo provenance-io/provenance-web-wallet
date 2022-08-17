@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback, useRef } from 'react';
 import styled from 'styled-components';
 import { useStatistics } from 'redux/hooks';
 import { Slide01, Slide02, Slide03 } from './CarouselSlides';
+import { COLORS } from 'theme';
 
 const CarouselContent = styled.div`
   cursor: pointer;
@@ -18,7 +19,7 @@ const SliderControls = styled.div`
 const Slider = styled.div<{ active: boolean }>`
   height: 4px;
   width: 30px;
-  background: ${({ active }) => (active ? '#F3F4F6' : '#8B90A7')};
+  background: ${({ active }) => (active ? COLORS.NEUTRAL_50 : COLORS.NEUTRAL_300)};
   margin: 0 5px;
   border-radius: 8px;
   cursor: pointer;

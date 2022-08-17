@@ -18,6 +18,7 @@ import {
   Sprite,
   Loading,
   GasAdjustment,
+  Typo,
 } from 'Components';
 import { useEffect, useState } from 'react';
 import { format } from 'date-fns';
@@ -33,16 +34,6 @@ import { BIP32Interface, NotificationType } from 'types';
 import { ICON_NAMES, DEFAULT_GAS_ADJUSTMENT } from 'consts';
 import { COLORS } from 'theme';
 
-const Title = styled.div`
-  font-weight: 600;
-  text-transform: uppercase;
-  font-family: 'Montserrat', sans-serif;
-  letter-spacing: 0.32em;
-  line-height: 20px;
-  font-size: 1.6rem;
-  text-align: center;
-  margin-bottom: 20px;
-`;
 const PaginationDisplay = styled.div`
   position: fixed;
   bottom: 180px;
@@ -295,7 +286,9 @@ export const TransactionRequest: React.FC<Props> = ({
 
   return (
     <Content>
-      <Title>Transaction</Title>
+      <Typo marginBottom="20px" type="headline2">
+        Transaction
+      </Typo>
       <FullData data={unpackedTxMessageAnys[msgPage]} />
       <GasAdjustment value={gasAdjustment} onChange={changeGasAdjustmentFee} />
       <List message={renderMessagePage()} maxHeight="274px" />

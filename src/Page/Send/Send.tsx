@@ -15,6 +15,7 @@ import { DASHBOARD_URL, ICON_NAMES, SEND_AMOUNT_URL } from 'consts';
 import { keyPress, trimAddress, validateAddress } from 'utils';
 import { useNavigate } from 'react-router';
 import { useActiveAccount, useAddress, useMessage } from 'redux/hooks';
+import { COLORS } from 'theme';
 
 const SectionTitle = styled.div`
   font-size: 1.4rem;
@@ -42,11 +43,11 @@ const RecentAddressItem = styled.div`
   padding: 20px;
   align-items: center;
   justify-content: space-between;
-  border-top: 1px solid #3d4151;
+  border-top: 1px solid ${COLORS.NEUTRAL_600};
   cursor: pointer;
   transition: 250ms all;
   &:hover {
-    background: #2c3040;
+    background: ${COLORS.NEUTRAL_700};
   }
   &:last-of-type {
     margin-bottom: 60px;

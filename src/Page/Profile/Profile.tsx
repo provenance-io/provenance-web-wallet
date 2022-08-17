@@ -10,26 +10,22 @@ import {
 } from 'consts';
 import styled from 'styled-components';
 import { useSettings } from 'redux/hooks';
+import { COLORS } from 'theme';
 
 const Container = styled.div`
   width: 100%;
   font-family: 'Gothic A1', sans-serif;
   font-size: 1.4rem;
 `;
-const Title = styled.div`
-  font-weight: 700;
-  margin-bottom: 8px;
-  text-align: center;
-`;
 const SectionTitle = styled.div`
   font-weight: 700;
   font-size: 1.9rem;
-  border-bottom: 1px solid #3d4151;
+  border-bottom: 1px solid ${COLORS.NEUTRAL_600};
   padding-bottom: 16px;
   margin-top: 32px;
 `;
 const SectionOption = styled.div`
-  border-bottom: 1px solid #3d4151;
+  border-bottom: 1px solid ${COLORS.NEUTRAL_600};
   padding: 20px 20px;
   font-weight: 400;
   cursor: pointer;
@@ -38,10 +34,10 @@ const SectionOption = styled.div`
   align-items: center;
   transition: 250ms all;
   &:hover {
-    background: #3d4151;
+    background: ${COLORS.NEUTRAL_600};
   }
   &:active {
-    background: #2c3040;
+    background: ${COLORS.NEUTRAL_700};
   }
 `;
 
@@ -73,7 +69,7 @@ export const Profile = () => {
 
   return (
     <Container>
-      <Title>Profile</Title>
+      <Typo type="headline2">Profile</Typo>
       <SectionTitle>Security</SectionTitle>
       {createOption('Destroy Wallet', RESET_WALLET_URL)}
       <SectionTitle>General</SectionTitle>

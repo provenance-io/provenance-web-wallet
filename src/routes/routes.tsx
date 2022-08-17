@@ -7,7 +7,6 @@ import { ASSET } from './asset';
 import { TRANSACTIONS } from './transactions';
 import { PROFILE } from './profile';
 import { RESET_WALLET } from './resetWallet';
-import { CONNECT } from './connect';
 import { UNLOCK } from './unlock';
 import { NOTIFICATION } from './notification';
 import {
@@ -25,9 +24,7 @@ import { TRANSACTION_DETAILS } from './transactionDetails';
 export const routes = [
   {
     path: APP_URL,
-    element: (
-      <RequiresAuth />
-    ),
+    element: <RequiresAuth />,
     children: [
       LANDING,
       DASHBOARD,
@@ -36,7 +33,6 @@ export const routes = [
       TRANSACTIONS,
       TRANSACTION_DETAILS,
       PROFILE,
-      CONNECT,
     ],
   },
   NEW_ACCOUNT_ADD,

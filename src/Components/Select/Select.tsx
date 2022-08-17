@@ -9,13 +9,13 @@ const Content = styled.div`
 `;
 const SelectStyled = styled.select`
   width: 100%;
-  border: 1px solid #A2A7B9;
+  border: 1px solid ${COLORS.NEUTRAL_250};
   padding: 10px 12px;
   background: transparent;
   border-radius: 4px;
   font-size: 1.4rem;
   font-family: 'Gothic A1', sans-serif;
-  color: #FFFFFF;
+  color: ${COLORS.WHITE};
   -moz-appearance: none;
   -webkit-appearance: none;
   appearance: none;
@@ -39,34 +39,40 @@ const Label = styled.label`
 `;
 
 interface Props {
-  options: string[],
-  value: string | number,
-  onChange: (e: any) => void,
-  className?: string,
-  label?: string,
+  options: string[];
+  value: string | number;
+  onChange: (e: any) => void;
+  className?: string;
+  label?: string;
 }
 
-export const Select:React.FC<Props> = ({
+export const Select: React.FC<Props> = ({
   options,
   label,
   onChange,
   className,
   value,
 }) => {
-
-  const renderOptions = () => options.map((option) => (
-    <option key={option} value={option}>{option}</option>
-  ));
+  const renderOptions = () =>
+    options.map((option) => (
+      <option key={option} value={option}>
+        {option}
+      </option>
+    ));
 
   const randomId = `${Math.floor(Math.random() * (10000 - 1 + 1) + 10000)}`;
 
   return (
     <Content className={className}>
       {label && <Label htmlFor={randomId}>{label}</Label>}
-      <SelectStyled onChange={({ target }) => {onChange(target.value)}} value={value} id={randomId}>
-        <OptionGroup>
-          {renderOptions()}
-        </OptionGroup>
+      <SelectStyled
+        onChange={({ target }) => {
+          onChange(target.value);
+        }}
+        value={value}
+        id={randomId}
+      >
+        <OptionGroup>{renderOptions()}</OptionGroup>
       </SelectStyled>
       <DropdownIcon>
         <Sprite icon={ICON_NAMES.CHEVRON} size="1.3rem" spin="90" />

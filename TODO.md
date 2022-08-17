@@ -2,7 +2,9 @@
 * _(Priority: 1 - 10)_
 
 ## Current Branch Tasks/Changes
-* Replace all inline-infile styled typography components with the Typo component [IN_PROGRESS]
+* All colors should come from theme [IN_PROGRESS]
+* Cleanup unused components [DONE]
+* Replace all inline-infile styled typography components with the Typo component [DONE]
   - Use Figma to match typography names for even faster development
 * Receiving a malformed customAction causes a broken blank white page [DONE]
   - Detect a failure to render the message and just go to an error page

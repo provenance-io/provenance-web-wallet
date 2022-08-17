@@ -14,6 +14,7 @@ import {
   ChartValueDiffPercentsType,
 } from 'types';
 import { useActiveAccount } from 'redux/hooks';
+import { COLORS } from 'theme';
 
 const ChartArea = styled.div`
   min-height: 250px;
@@ -36,7 +37,7 @@ const ChartMessage = styled.div`
 `;
 const ChartOption = styled.div<{ disabled: boolean; active: boolean }>`
   cursor: ${({ active }) => (active ? 'initial' : 'pointer')};
-  background: ${({ active }) => (active ? '#01504F' : 'transparent')};
+  background: ${({ active }) => (active ? COLORS.SECONDARY_650 : 'transparent')};
   font-size: 1.2rem;
   height: 30px;
   width: 30px;

@@ -10,6 +10,7 @@ import {
   ChartValueDiffPercentsType,
   TimePeriodType,
 } from 'types';
+import { COLORS } from 'theme';
 
 const ChartContainer = styled.div`
   width: 100%;
@@ -48,7 +49,7 @@ export const Chart: React.FC<Props> = ({
         datasets: [
           {
             data: chartValues,
-            borderColor: '#04F1ED',
+            borderColor: COLORS.SECONDARY_300,
             pointHitRadius: 2,
             radius: 0,
           },
@@ -69,7 +70,7 @@ export const Chart: React.FC<Props> = ({
               ctx.moveTo(x, yAxis.top);
               ctx.lineTo(x, yAxis.bottom);
               ctx.lineWidth = 1;
-              ctx.strokeStyle = '#FFFFFF';
+              ctx.strokeStyle = COLORS.WHITE;
               ctx.stroke();
               // Create shadow to darken rest of chart
               ctx.globalCompositeOperation = 'source-atop';

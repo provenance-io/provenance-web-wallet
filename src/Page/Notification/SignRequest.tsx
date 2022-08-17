@@ -1,7 +1,7 @@
 import { EventPayload } from 'types';
 import styled from 'styled-components';
 import { useWalletConnect } from 'redux/hooks';
-import { List, Authenticate, Content } from 'Components';
+import { List, Authenticate, Content, Typo } from 'Components';
 import { useEffect, useState } from 'react';
 import { format } from 'date-fns';
 import {
@@ -11,17 +11,6 @@ import {
   convertArrayBufferToHex,
 } from 'utils';
 import { BIP32Interface } from 'types';
-
-const Title = styled.div`
-  font-weight: 600;
-  text-transform: uppercase;
-  font-family: 'Montserrat', sans-serif;
-  letter-spacing: 0.32em;
-  line-height: 20px;
-  font-size: 1.6rem;
-  text-align: center;
-  margin-bottom: 20px;
-`;
 
 interface Props {
   payload: EventPayload;
@@ -126,7 +115,9 @@ export const SignRequest: React.FC<Props> = ({ payload, closeWindow }) => {
 
   return (
     <Content>
-      <Title>Sign Request</Title>
+      <Typo marginBottom="20px" type="headline2">
+        Sign Request
+      </Typo>
       <List message={ListItems} maxHeight="324px" />
       <PaginationDisplay>1/1</PaginationDisplay>
       <Authenticate

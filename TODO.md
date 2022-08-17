@@ -2,6 +2,9 @@
 * _(Priority: 1 - 10)_
 
 ## Current Branch Tasks/Changes
+* Receiving a malformed customAction causes a broken blank white page [DONE]
+  - Detect a failure to render the message and just go to an error page
+* Disconnecting with pending actions doesn't remove the actions counter on extension icon [DONE]
 * Create new const variable to hold the current app version (set with npm run versionUp) [DONE]
   - Used by profile page to display wallet version
 * New package command to auto zip and name the build folder to submit to chrome web store [DONE]

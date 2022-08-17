@@ -123,21 +123,29 @@ export const TransactionRequest: React.FC<Props> = ({
         setParsedMetadata(newParsedMetadata);
         // Loop through each hexEncodedMessage and build it out
         hexEncodedMessages.forEach((hexEncodedMessage) => {
-          // Messages are sent from wc-js as hex.  Convert to utf-8 (b64)
-          const messageAnyB64 = convertHexToUtf8(hexEncodedMessage);
-          // Convert the b64 message into a full/real messageAny
-          const msgAny = msgAnyB64toAny(messageAnyB64);
-          // Add to the txMsgAny array (Paginated list of messages)
-          msgAnyArray.push(msgAny);
-          // Convert the b64 message any into a readable object then add/save to store
-          const unpackedMsgAny = unpackDisplayObjectFromWalletMessage(messageAnyB64);
-          unpackedTxMessageArray.push(unpackedMsgAny);
-          // Use util to convert special fields and update how values are displayed
-          const formattedTxMsg = txMessageFormat(unpackedMsgAny);
-          // Add the txType to the formattedTxMsg
-          formattedTxMsg['@type'] = msgAny.getTypeName();
-          // Add this formatted message to the parsed tx message arrays
-          parsedTxMessageArray.push(formattedTxMsg);
+          try {
+            // Messages are sent from wc-js as hex.  Convert to utf-8 (b64)
+            const messageAnyB64 = convertHexToUtf8(hexEncodedMessage);
+            // Convert the b64 message into a full/real messageAny
+            const msgAny = msgAnyB64toAny(messageAnyB64);
+            // Add to the txMsgAny array (Paginated list of messages)
+            msgAnyArray.push(msgAny);
+            // Convert the b64 message any into a readable object then add/save to store
+            const unpackedMsgAny =
+              unpackDisplayObjectFromWalletMessage(messageAnyB64);
+            unpackedTxMessageArray.push(unpackedMsgAny);
+            // Use util to convert special fields and update how values are displayed
+            const formattedTxMsg = txMessageFormat(unpackedMsgAny);
+            // Add the txType to the formattedTxMsg
+            formattedTxMsg['@type'] = msgAny.getTypeName();
+            // Add this formatted message to the parsed tx message arrays
+            parsedTxMessageArray.push(formattedTxMsg);
+          } catch (err) {
+            changeNotificationPage('failed', {
+              failedMessage: `${err}`,
+              title: 'Transaction Failed',
+            });
+          }
         });
         // Calculate the tx and gas fees (must be async)
         (async () => {

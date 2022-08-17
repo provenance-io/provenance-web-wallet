@@ -73,6 +73,8 @@ const notificationPopupEvent = async function(request, sender, sendResponse) {
               killSession: true,
             }
           });
+          // Clear out any pending actions
+          await chrome.action.setBadgeText({text: ''});
           // Revert chrome extension icon to normal colors
           chrome.action.setIcon({
             path: {

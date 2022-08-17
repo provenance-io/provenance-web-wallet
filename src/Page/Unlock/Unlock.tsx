@@ -4,9 +4,9 @@ import {
   Header,
   Input,
   Content,
-  BodyContent,
   BottomFloat,
   ButtonGroup,
+  Typo,
 } from 'Components';
 import { APP_URL, ICON_NAMES, PASSWORD_MIN_LENGTH, RESET_WALLET_URL } from 'consts';
 import { useNavigate } from 'react-router-dom';
@@ -62,7 +62,9 @@ export const Unlock = ({ nextUrl }: Props) => {
         title="Unlock Wallet"
         backLocation={APP_URL}
       />
-      <BodyContent>Enter your password to unlock wallet</BodyContent>
+      <Typo type="body" marginBottom="32px">
+        Enter your password to unlock wallet
+      </Typo>
       <Input
         id="wallet-password"
         label="Password"

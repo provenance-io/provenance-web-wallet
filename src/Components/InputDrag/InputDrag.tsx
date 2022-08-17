@@ -1,4 +1,4 @@
-import { Typo } from '../Typography/Typo';
+import { Typo } from '../Typo/Typo';
 import styled from 'styled-components';
 import { COLORS } from 'theme';
 

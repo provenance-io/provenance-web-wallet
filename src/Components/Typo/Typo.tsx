@@ -80,8 +80,11 @@ const BodyStyle = styled.p`
   font-size: 1.4rem;
   ${StylingMixin}
 `;
+const BodyAltStyle = styled(BodyStyle)`
+  ${FONTS.SECONDARY_FONT};
+`;
 const ErrorStyle = styled(BodyStyle)`
-  color: #ed6e74;
+  color: ${COLORS.NEGATIVE_200};
 `;
 const SubheadStyle = styled.p`
   ${FONTS.PRIMARY_FONT};
@@ -91,14 +94,18 @@ const SubheadStyle = styled.p`
   letter-spacing: 0.04em;
   ${StylingMixin}
 `;
-const Headline2Style = styled.p`
+const Headline1Style = styled.p`
   ${FONTS.SECONDARY_FONT};
   font-weight: 600;
-  font-size: 1.6rem;
-  line-height: 1.95rem;
+  font-size: 2.1rem;
+  line-height: 2.56rem;
   letter-spacing: 0.32em;
   text-transform: uppercase;
   ${StylingMixin}
+`;
+const Headline2Style = styled(Headline1Style)`
+  font-size: 1.6rem;
+  line-height: 1.95rem;
 `;
 const FootnoteStyle = styled.p`
   ${FONTS.PRIMARY_FONT};
@@ -122,7 +129,9 @@ const CodeStyle = styled.p`
 
 type TypoType =
   | 'body'
+  | 'bodyAlt'
   | 'subhead'
+  | 'headline1'
   | 'headline2'
   | 'error'
   | 'displayBody'
@@ -174,8 +183,12 @@ export const Typo: React.FC<Props> = ({
     switch (type) {
       case 'body':
         return <BodyStyle {...allProps}>{children}</BodyStyle>;
+      case 'bodyAlt':
+        return <BodyAltStyle {...allProps}>{children}</BodyAltStyle>;
       case 'subhead':
         return <SubheadStyle {...allProps}>{children}</SubheadStyle>;
+      case 'headline1':
+        return <Headline1Style {...allProps}>{children}</Headline1Style>;
       case 'headline2':
         return <Headline2Style {...allProps}>{children}</Headline2Style>;
       case 'error':

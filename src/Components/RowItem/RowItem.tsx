@@ -1,5 +1,5 @@
 import { Sprite } from 'Components/Sprite';
-import { Typo } from 'Components/Typography/Typo';
+import { Typo } from 'Components/Typo';
 import { ICON_NAMES } from 'consts';
 import styled from 'styled-components';
 import { COLORS } from 'theme';

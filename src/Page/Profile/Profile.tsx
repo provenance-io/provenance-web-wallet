@@ -6,6 +6,7 @@ import {
   PROVENANCE_WEB_DOCS_URL,
   PROVENANCE_WEB_URL,
   RESET_WALLET_URL,
+  ADVANCED_SETTINGS_URL,
   APP_DATA,
 } from 'consts';
 import styled from 'styled-components';
@@ -39,6 +40,11 @@ const SectionOption = styled.div`
   &:active {
     background: ${COLORS.NEUTRAL_700};
   }
+`;
+const Version = styled(Typo)`
+  position: absolute;
+  top: 34px;
+  right: 20px;
 `;
 
 export const Profile = () => {
@@ -75,13 +81,14 @@ export const Profile = () => {
       <SectionTitle>General</SectionTitle>
       {createOption('About Provenance Blockchain', PROVENANCE_WEB_URL, true)}
       {createOption('More Information', PROVENANCE_WEB_DOCS_URL, true)}
+      {createOption('Advanced Settings', ADVANCED_SETTINGS_URL)}
       <SectionOption onClick={handleLockWallet}>
         Lock Wallet
         <Sprite icon={ICON_NAMES.CHEVRON} size="1.3rem" />
       </SectionOption>
-      <Typo type="footnote" marginTop="72px" align="right" italic>
+      <Version type="footnote" align="right" italic>
         v{APP_DATA.version}
-      </Typo>
+      </Version>
       <FooterNav />
     </Container>
   );

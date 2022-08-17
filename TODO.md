@@ -2,7 +2,12 @@
 * _(Priority: 1 - 10)_
 
 ## Current Branch Tasks/Changes
-* All colors should come from theme [IN_PROGRESS]
+* Secret testnet/dev menu [IN_PROGRESS]
+  - Auto Faucet to add hash to tp address [DONE]
+  - Allow custom gRPC url in hidden settings under profile
+    - Grants ability to use local provenance instance
+  - Log saved variables
+* All colors should come from theme [DONE]
 * Cleanup unused components [DONE]
 * Replace all inline-infile styled typography components with the Typo component [DONE]
   - Use Figma to match typography names for even faster development
@@ -15,10 +20,10 @@
 * Create cleaner/better chrome store images, videos, and other marketing information [DONE]
 
 ## Features
-* Allow custom gRPC url in hidden settings under profile [3]
-  - Grants ability to use local provenance instance
 * All scrollable items should center scroll with blue scrollbar (vs page scrolling w/o scrollbar) [3]
-* Dashboard menu - child accounts indented (tree) [7]
+* Dashboard menu [7]
+  - Child accounts indented (tree)
+  - Accounts should have details option (HD path, network, publicKey, etc listed)
 * Check all accessability items [7]
   - Make sure all tabs and keyboard events work
   - Be able to navigate entire app without a mouse
@@ -35,8 +40,5 @@
 * Create better readme with instructions on how to initialize the local extension and redux dev tools [10]
 * Profile menu to change wallet password [10]
   - Would need to unlock all master keys for all accounts and relock and save with new password
-* Secret testnet/dev menu [10]
-  - Log saved variables
-  - Auto Faucet to add hash to tp address
 * Metrics/Logging [10]
   - Anon track errors, performance, etc.

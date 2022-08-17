@@ -66,6 +66,7 @@ export const SEND_REVIEW_URL = `${SEND_URL}/review`;
 export const SEND_COMPLETE_URL = `${SEND_URL}/complete`;
 // PROFILE URLS
 export const PROFILE_URL = '/profile';
+export const ADVANCED_SETTINGS_URL = `${PROFILE_URL}/advanced-settings`;
 // TRANSACTION URLS
 export const TRANSACTIONS_URL = '/transactions';
 export const TRANSACTION_DETAILS_URL = '/transaction';

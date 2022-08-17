@@ -88,7 +88,6 @@ export const AssetChart: React.FC<Props> = ({
       const fetchUrl = `${SMWApiUrl}/${fetchName}?period=${timePeriod}&startDate=${startDate}&endDate=${endDate}`;
       setLoading(true);
       setError(false);
-      // TODO: Move this data into the redux store and pull from there instead (remove promise chain within component here)
       const newMarkerData = await fetch(fetchUrl)
         .then((response) => response.json())
         .then((data) => data);

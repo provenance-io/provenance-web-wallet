@@ -3,7 +3,7 @@ import { HelmetProvider } from 'react-helmet-async';
 import { createGlobalStyle, DefaultTheme } from 'styled-components';
 import { normalize } from 'styled-normalize';
 import { baseFonts, BaseTypographyLoader, FONTS } from './fonts';
-import { baseColors, COLORS } from './colors';
+import { COLORS } from './colors';
 import { ThemeProvider } from 'styled-components';
 import { SpriteSheet } from 'Components';
 import { MAX_HEIGHT, MAX_WIDTH } from 'consts';
@@ -26,7 +26,6 @@ export const GlobalStyles = createGlobalStyle<{
   }
 
   :root {
-    ${baseColors};
     ${baseFonts};
     ${({ $colors }) => $colors};
     ${({ $fonts }) => $fonts};

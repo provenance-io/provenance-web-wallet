@@ -74,7 +74,7 @@ export const Chart: React.FC<Props> = ({
               ctx.stroke();
               // Create shadow to darken rest of chart
               ctx.globalCompositeOperation = 'source-atop';
-              ctx.fillStyle = 'rgba(0, 0, 0, 0.70)';
+              ctx.fillStyle = COLORS.BLACK_70;
               ctx.fillRect(x, yAxis.top, 900, yAxis.bottom + 100);
               ctx.restore();
             }

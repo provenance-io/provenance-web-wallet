@@ -90,7 +90,7 @@
     "install:local": "npm i ../wallet-utils/provenanceio-wallet-utils-0.0.0-development.tgz",
     "versionUp": "node -e 'require(\"./scripts/versionUp.js\").versionUp()'",
     "vup": "npm run versionUp",
-    "package": "zip -r provenance-web-wallet-$npm_package_version.zip build -X"
+    "zip": "zip -r provenance-web-wallet-$npm_package_version.zip build -X"
   },
   "eslintConfig": {
     "extends": [

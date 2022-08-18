@@ -1,6 +1,6 @@
 {
   "name": "provenance-web-wallet-ts",
-  "version": "1.0.6",
+  "version": "1.0.7",
   "private": true,
   "license": "Apache-2.0",
   "homepage": "/",
@@ -88,7 +88,9 @@
     "reduxDev": "redux-devtools",
     "test": "env-cmd -e e2e craco test --watch --verbose --env=./src/__tests__/utils/custom-test-env.js",
     "install:local": "npm i ../wallet-utils/provenanceio-wallet-utils-0.0.0-development.tgz",
-    "version": "node -e 'require(\"./scripts/versionUp.js\").versionUp()'"
+    "versionUp": "node -e 'require(\"./scripts/versionUp.js\").versionUp()'",
+    "vup": "npm run versionUp",
+    "zip": "zip -r provenance-web-wallet-$npm_package_version.zip build -X"
   },
   "eslintConfig": {
     "extends": [

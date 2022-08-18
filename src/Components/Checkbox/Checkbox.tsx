@@ -1,7 +1,7 @@
 import { Sprite } from 'Components';
 import { ICON_NAMES } from 'consts';
 import styled from 'styled-components';
-import { COLORS } from 'theme/colors';
+import { COLORS } from 'theme';
 import { keyPress } from 'utils';
 
 interface StyledProps {
@@ -14,7 +14,7 @@ const CheckboxContainer = styled.div<StyledProps>`
 const StyledCheckbox = styled.div<StyledProps>`
   height: 20px;
   width: 20px;
-  border: 1px solid #498afd;
+  border: 1px solid ${COLORS.PRIMARY_500};
   border-radius: 2px;
   position: relative;
   display: flex;
@@ -68,7 +68,9 @@ export const Checkbox: React.FC<Props> = ({
         onKeyPress={(e) => keyPress(e, handleClick)}
         tabIndex={0}
       >
-        {checked && <Sprite icon={ICON_NAMES.CHECK} size="1.2rem" color="#498AFD" />}
+        {checked && (
+          <Sprite icon={ICON_NAMES.CHECK} size="1.2rem" color={COLORS.PRIMARY_500} />
+        )}
       </StyledCheckbox>
       {label && <Label>{label}</Label>}
     </CheckboxContainer>

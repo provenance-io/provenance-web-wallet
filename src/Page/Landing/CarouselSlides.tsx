@@ -1,8 +1,9 @@
 import styled from 'styled-components';
-import { Sprite, Title, InfoText } from 'Components';
+import { Sprite, Typo } from 'Components';
 import customizationCarousel from 'images/customization-carousel.svg';
 import { numberFormat } from 'utils';
 import { Statistics } from 'types';
+import { COLORS } from 'theme';
 
 const SlideContainer = styled.div`
   min-width: 340px;
@@ -35,9 +36,13 @@ const StatValue = styled.div`
 const StatValueSmall = styled.span`
   font-size: 2.4rem;
 `;
+const ProvLogoText = styled(Typo)`
+  font-size: 1.95rem;
+  letter-spacing: 0.5em;
+`;
 
 const formatNumber = (value: number, digits = 1) =>
-    numberFormat(value, digits, { shorthand: true });
+  numberFormat(value, digits, { shorthand: true });
 
 const valueText = (
   value?: string | number,
@@ -51,28 +56,35 @@ const valueText = (
   </>
 );
 
-export const Slide01:React.FC = () => (
+export const Slide01: React.FC = () => (
   <SlideContainer>
     <LogoImg>
-      <Sprite viewBox="-8 0 60 60" icon="ICON::PROVENANCE" size="60px" color="#3F80F3" />
+      <Sprite
+        viewBox="-8 0 60 60"
+        icon="ICON::PROVENANCE"
+        size="60px"
+        color={COLORS.PRIMARY_500}
+      />
     </LogoImg>
-    <Title margin="0">Provenance Wallet</Title>
-    <InfoText>
+    <ProvLogoText bold type="headline1">
+      Provenance Blockchain Wallet
+    </ProvLogoText>
+    <Typo type="bodyAlt" maxWidth="300px" marginTop="64px">
       A wallet provides an easy way to manage multiple blockchain accounts.
-    </InfoText>
+    </Typo>
   </SlideContainer>
 );
 
 interface Props {
-  statistics?: Statistics
+  statistics?: Statistics;
 }
 
-export const Slide02:React.FC<Props> = ({ statistics = {} }) => {
+export const Slide02: React.FC<Props> = ({ statistics = {} }) => {
   const { marketCap, validators, transactions, averageBlockTime } = statistics;
 
   return (
     <SlideContainer>
-      <Title margin="0">Strong Fundamentals</Title>
+      <Typo type="headline1">Strong Fundamentals</Typo>
       <StatsSection>
         <StatItem>
           <StatValue>
@@ -99,20 +111,22 @@ export const Slide02:React.FC<Props> = ({ statistics = {} }) => {
           <StatTitle>Avg Block Time</StatTitle>
         </StatItem>
       </StatsSection>
-      <InfoText>Contract execution in seconds instead of weeks.</InfoText>
+      <Typo type="bodyAlt" maxWidth="300px" marginTop="64px">
+        Contract execution in seconds instead of weeks.
+      </Typo>
     </SlideContainer>
   );
 };
 
-export const Slide03:React.FC = () => (
+export const Slide03: React.FC = () => (
   <SlideContainer>
-    <Title margin="0">Powerful Customization</Title>
+    <Typo type="headline1">Powerful Customization</Typo>
     <CustomizationImg
       src={customizationCarousel}
       alt="Figure and Provenance Logos"
     />
-    <InfoText>
+    <Typo type="bodyAlt" maxWidth="300px" marginTop="40px">
       Fully control your wallet and crypto, and manage it independently.
-    </InfoText>
+    </Typo>
   </SlideContainer>
 );

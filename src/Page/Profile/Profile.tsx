@@ -6,29 +6,27 @@ import {
   PROVENANCE_WEB_DOCS_URL,
   PROVENANCE_WEB_URL,
   RESET_WALLET_URL,
+  ADVANCED_SETTINGS_URL,
+  APP_DATA,
 } from 'consts';
 import styled from 'styled-components';
 import { useSettings } from 'redux/hooks';
+import { COLORS } from 'theme';
 
 const Container = styled.div`
   width: 100%;
   font-family: 'Gothic A1', sans-serif;
   font-size: 1.4rem;
 `;
-const Title = styled.div`
-  font-weight: 700;
-  margin-bottom: 8px;
-  text-align: center;
-`;
 const SectionTitle = styled.div`
   font-weight: 700;
   font-size: 1.9rem;
-  border-bottom: 1px solid #3d4151;
+  border-bottom: 1px solid ${COLORS.NEUTRAL_600};
   padding-bottom: 16px;
   margin-top: 32px;
 `;
 const SectionOption = styled.div`
-  border-bottom: 1px solid #3d4151;
+  border-bottom: 1px solid ${COLORS.NEUTRAL_600};
   padding: 20px 20px;
   font-weight: 400;
   cursor: pointer;
@@ -37,11 +35,16 @@ const SectionOption = styled.div`
   align-items: center;
   transition: 250ms all;
   &:hover {
-    background: #3d4151;
+    background: ${COLORS.NEUTRAL_600};
   }
   &:active {
-    background: #2c3040;
+    background: ${COLORS.NEUTRAL_700};
   }
+`;
+const Version = styled(Typo)`
+  position: absolute;
+  top: 34px;
+  right: 20px;
 `;
 
 export const Profile = () => {
@@ -72,19 +75,20 @@ export const Profile = () => {
 
   return (
     <Container>
-      <Title>Profile</Title>
+      <Typo type="headline2">Profile</Typo>
       <SectionTitle>Security</SectionTitle>
       {createOption('Destroy Wallet', RESET_WALLET_URL)}
       <SectionTitle>General</SectionTitle>
       {createOption('About Provenance Blockchain', PROVENANCE_WEB_URL, true)}
       {createOption('More Information', PROVENANCE_WEB_DOCS_URL, true)}
+      {createOption('Advanced Settings', ADVANCED_SETTINGS_URL)}
       <SectionOption onClick={handleLockWallet}>
         Lock Wallet
         <Sprite icon={ICON_NAMES.CHEVRON} size="1.3rem" />
       </SectionOption>
-      <Typo type="footnote" marginTop="72px" align="right" italic>
-        v{process.env.REACT_APP_VERSION}
-      </Typo>
+      <Version type="footnote" align="right" italic>
+        v{APP_DATA.version}
+      </Version>
       <FooterNav />
     </Container>
   );

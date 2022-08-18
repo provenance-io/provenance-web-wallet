@@ -23,5 +23,4 @@ export * from './RowItem';
 export * from './Select';
 export * from './Sprite';
 export * from './SpriteSheet';
-export * from './Styled';
-export * from './Typography';
+export * from './Typo';

@@ -4,7 +4,6 @@ import {
   FooterNav,
   RowItem,
   Content,
-  Denom,
   Loading,
 } from 'Components';
 import {
@@ -25,6 +24,10 @@ const PortfolioTitle = styled.div`
   font-weight: 700;
   margin-top: 40px;
   font-family: 'Gothic A1';
+`;
+const Denom = styled.span`
+  font-size: 2rem;
+  margin-right: 4px;
 `;
 const Value = styled.div`
   font-size: 4.4rem;

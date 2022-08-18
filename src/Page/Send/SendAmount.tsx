@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router';
 import styled from 'styled-components';
 import { BottomFloat, Button, Content, Header, Input, Typo } from 'Components';
 import { ICON_NAMES, SEND_REVIEW_URL, SEND_URL, ASSET_IMAGE_NAMES } from 'consts';
-import { useActiveAccount, useMessage, useAddress } from 'redux/hooks';
+import { useActiveAccount, useMessage, useAddress, useSettings } from 'redux/hooks';
 import {
   capitalize,
   hashFormat,
@@ -51,6 +51,7 @@ const Uppercase = styled.span`
 
 export const SendAmount = () => {
   const navigate = useNavigate();
+  const { customGRPCApi } = useSettings();
   const [errors, setErrors] = useState<string[]>([]); // [AmountError, MemoError]
   const {
     coin,
@@ -88,6 +89,7 @@ export const SendAmount = () => {
             address: txFromAddress!,
             msgAny,
             publicKey: publicKey!,
+            customGRPCApi,
           });
           setTxFees({ txFeeEstimate, txGasEstimate });
         };
@@ -104,6 +106,7 @@ export const SendAmount = () => {
     txType,
     setTxMsgAny,
     errors,
+    customGRPCApi,
   ]);
 
   const validateAndNavigate = () => {

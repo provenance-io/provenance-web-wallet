@@ -10,6 +10,7 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import styled from 'styled-components';
 import { useWalletConnect } from 'redux/hooks';
 import { keyPress } from 'utils';
+import { COLORS } from 'theme';
 
 const Footer = styled.footer`
   position: fixed;
@@ -37,7 +38,7 @@ const NavItem = styled.div<{ active?: boolean }>`
   align-items: center;
   width: 25%;
   svg {
-    color: ${({ active }) => (active ? '#FFFFFF' : '#464B5D')};
+    color: ${({ active }) => (active ? COLORS.WHITE : COLORS.NEUTRAL_550)};
     margin-bottom: 10px;
   }
 `;

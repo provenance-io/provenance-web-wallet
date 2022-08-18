@@ -1,6 +1,5 @@
 export * from './Actions';
 export * from './Asset';
-export * from './Connect';
 export * from './NewAccountAuth';
 export * from './Dashboard';
 export * from './Landing';

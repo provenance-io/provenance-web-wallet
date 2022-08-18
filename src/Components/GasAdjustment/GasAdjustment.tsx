@@ -6,7 +6,7 @@ import { FullPagePopup } from '../FullPagePopup/FullPagePopup';
 import { Button } from 'Components/Button/Button';
 import { BottomFloat } from 'Components/BottomFloat';
 import { ButtonGroup } from 'Components/Button';
-import { Typo } from 'Components/Typography/Typo';
+import { Typo } from 'Components/Typo/Typo';
 import { COLORS } from 'theme';
 
 const GasAdjRow = styled.div`

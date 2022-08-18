@@ -61,7 +61,7 @@ export const Transactions = () => {
         <RowItem
           key={hash}
           img={denom === 'nhash' ? 'hash' : 'provenance'}
-          title={denom === 'nhash' ? 'hash' : capitalize(denom!, 'uppercase')}
+          title={denom === 'nhash' ? 'HASH' : capitalize(denom!, 'uppercase')}
           subtitle={`${capitalize(type)} • ${date}`}
           onClick={() => navigate(`${TRANSACTION_DETAILS_URL}/${hash}`)}
         />
@@ -95,7 +95,7 @@ export const Transactions = () => {
 
   return (
     <Container>
-      <Typo type="title">Transaction History</Typo>
+      <Typo type="headline2">Transactions</Typo>
       <Typo type="displayBody">
         Page {page} / {maxPage}
       </Typo>

@@ -1,6 +1,13 @@
 import { useEffect, useState } from 'react';
-import { css } from 'styled-components';
-import { BodyContent, Button, Div } from 'Components';
+import styled from 'styled-components';
+import { Button, Typo } from 'Components';
+
+const WordRow = styled.div`
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 8px;
+  width: 100%;
+`;
 
 interface Props {
   mnemonicArray: string[];
@@ -11,7 +18,11 @@ interface Props {
   };
 }
 
-export const SeedphraseVerifyGroup = ({ mnemonicArray, setCorrect, wordArr }: Props) => {
+export const SeedphraseVerifyGroup = ({
+  mnemonicArray,
+  setCorrect,
+  wordArr,
+}: Props) => {
   const [selected, setSelected] = useState('');
   const [answer] = useState({
     word: wordArr.data[wordArr.index],
@@ -24,22 +35,10 @@ export const SeedphraseVerifyGroup = ({ mnemonicArray, setCorrect, wordArr }: Pr
 
   return (
     <>
-      <BodyContent
-        $css={css`
-          margin: 30px 0 10px 0;
-          text-align: center;
-        `}
-      >
+      <Typo type="body" marginBottom="10px" marginTop="30px">
         select word #{answer.index}
-      </BodyContent>
-      <Div
-        $css={css`
-          display: grid;
-          grid-template-columns: 1fr 1fr 1fr;
-          gap: 8px;
-          width: 100%;
-        `}
-      >
+      </Typo>
+      <WordRow>
         {wordArr?.data.map((word) => (
           <Button
             key={word}
@@ -49,7 +48,7 @@ export const SeedphraseVerifyGroup = ({ mnemonicArray, setCorrect, wordArr }: Pr
             {word}
           </Button>
         ))}
-      </Div>
+      </WordRow>
     </>
   );
 };

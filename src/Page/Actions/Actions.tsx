@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import { FooterNav, Content, Sprite } from 'Components';
+import { FooterNav, Content, Sprite, Typo } from 'Components';
 import { format } from 'date-fns';
 import { ICON_NAMES, NOTIFICATION_URL } from 'consts';
 import { COLORS } from 'theme';
@@ -7,23 +7,6 @@ import circleIcon from 'images/circle-icon.svg';
 import { useNavigate } from 'react-router';
 import { useWalletConnect } from 'redux/hooks';
 
-const Title = styled.div`
-  font-weight: 600;
-  text-transform: uppercase;
-  font-family: 'Montserrat', sans-serif;
-  letter-spacing: 0.32em;
-  line-height: 20px;
-  font-size: 1.6rem;
-  text-align: center;
-  margin-bottom: 20px;
-`;
-const SubTitle = styled.div`
-  font-weight: 400;
-  font-family: 'Gothic A1', sans-serif;
-  letter-spacing: 0.04em;
-  font-size: 1.4rem;
-  line-height: 160%;
-`;
 const RequestItem = styled.div`
   display: flex;
   align-items: center;
@@ -33,7 +16,7 @@ const RequestItem = styled.div`
   box-sizing: content-box;
   transition: 250ms all;
   &:hover {
-    background: #2b3349;
+    background: ${COLORS.NEUTRAL_700};
   }
 `;
 const RequestIcon = styled.div`
@@ -59,7 +42,7 @@ const RequestTitle = styled.div`
   margin-bottom: 8px;
 `;
 const RequestDate = styled.div`
-  font-size: 1.0rem;
+  font-size: 1rem;
 `;
 const RequestArrow = styled.div`
   display: flex;
@@ -68,17 +51,20 @@ const RequestArrow = styled.div`
   align-items: center;
 `;
 
-export const Actions:React.FC = () => {
+export const Actions: React.FC = () => {
   const navigate = useNavigate();
   const { pendingRequests, totalPendingRequests } = useWalletConnect();
 
   const getMethodDisplayName = (rawName: string) => {
     switch (rawName) {
-      case 'session_request': return 'Session Request';
-      case 'provenance_sign': return 'Sign Request';
-      default: return rawName;
+      case 'session_request':
+        return 'Session Request';
+      case 'provenance_sign':
+        return 'Sign Request';
+      default:
+        return rawName;
     }
-  }
+  };
 
   const handleRequestClick = (id: string) => {
     navigate(`${NOTIFICATION_URL}?pid=${id}`);
@@ -90,12 +76,18 @@ export const Actions:React.FC = () => {
     return allPendingIds.map((pendingId: string) => {
       const targetRequest = pendingRequests[pendingId];
       const methodName = getMethodDisplayName(targetRequest.method!);
-      const requestDate = targetRequest?.date ? format(new Date(targetRequest.date), 'MMM d, h:mm:ss a') : 'N/A';
-      const peerMeta = targetRequest?.params[0]?.peerMeta || { icons: []};
+      const requestDate = targetRequest?.date
+        ? format(new Date(targetRequest.date), 'MMM d, h:mm:ss a')
+        : 'N/A';
+      const peerMeta = targetRequest?.params[0]?.peerMeta || { icons: [] };
       const peerIcon = peerMeta?.icons[0] || '';
 
       return (
-        <RequestItem onClick={() => {handleRequestClick(pendingId)}}>
+        <RequestItem
+          onClick={() => {
+            handleRequestClick(pendingId);
+          }}
+        >
           <RequestIcon>
             <RequestIconBg src={circleIcon} alt="request background" />
             {!!peerIcon && <RequestIconPeer src={peerIcon} alt="peer logo" />}
@@ -108,7 +100,7 @@ export const Actions:React.FC = () => {
             <Sprite icon={ICON_NAMES.CHEVRON} size="1rem" />
           </RequestArrow>
         </RequestItem>
-      )
+      );
     });
     /*
       {
@@ -137,9 +129,13 @@ export const Actions:React.FC = () => {
 
   return (
     <Content>
-      <Title>Pending Actions</Title>
-      {totalPendingRequests ? <AllRequests>{renderPendingRequests()}</AllRequests> : (
-        <SubTitle>You have no pending requests at this time.</SubTitle>
+      <Typo type="headline2">Pending Actions</Typo>
+      {totalPendingRequests ? (
+        <AllRequests>{renderPendingRequests()}</AllRequests>
+      ) : (
+        <Typo type="body" marginTop="50px">
+          You have no pending requests at this time.
+        </Typo>
       )}
       <FooterNav />
     </Content>

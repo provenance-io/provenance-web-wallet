@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 import { capitalize, getExplorerApi, getJSType, hashFormat } from 'utils';
 import { COLORS } from 'theme';
-import { Typo } from '../Typography/Typo';
+import { Typo } from '../Typo/Typo';
 import React from 'react';
 import { useActiveAccount } from 'redux/hooks';
 import { EXPLORER_WEB_BLOCK, EXPLORER_WEB_TX_HASH } from 'consts';

@@ -2,46 +2,44 @@
 * _(Priority: 1 - 10)_
 
 ## Current Branch Tasks/Changes
-* Clicking "reject" on connection request flashes "disconnected" page [DONE]
-  - Ideally just close without any flash of new content
-* Detect if popup window is already open [DONE]
-  - Auto close existing popup, only allow one notification popup at a time
-    - Should be fine to autoclose due to action queue
-* Reconnecting to dApp after disconnecting causes an additional disconnect event [DONE]
-* Gas adjustment button on all transactions within the wallet [DONE]
-* Create new gas adjustment slider [DONE]
-* If dApp disconnects while ext is signing message/approving tx currently goes to empty page [DONE]
-  - Detect disconnect and change page/clear pending events
-  - Change the page, say "You've been disconnected" and just allow pressing "ok" to close extension
-* New versionUpdate command to change all version number locations at once [DONE]
-* Add version number to profile menu [DONE]
-* Dashboard menu click sometimes copies address [DONE]
-  - When click is to the side, will copy address
-  - Make the address only copy when the text is selected
+* Advanced Settings menu [DONE]
+  - Auto Faucet to add hash to tp address [DONE]
+  - Log saved variables [DONE]
+  - Allow custom gRPC url in hidden settings under profile [DONE]
+    - Grants ability to use local provenance instance
+* All colors should come from theme [DONE]
+* Cleanup unused components [DONE]
+* Replace all inline-infile styled typography components with the Typo component [DONE]
+  - Use Figma to match typography names for even faster development
+* Receiving a malformed customAction causes a broken blank white page [DONE]
+  - Detect a failure to render the message and just go to an error page
+* Disconnecting with pending actions doesn't remove the actions counter on extension icon [DONE]
+* Create new const variable to hold the current app version (set with npm run versionUp) [DONE]
+  - Used by profile page to display wallet version
+* New package command to auto zip and name the build folder to submit to chrome web store [DONE]
+* Create cleaner/better chrome store images, videos, and other marketing information [DONE]
 
 ## Features
-* Potential security check to make sure this is the correct wallet app from wcjs [1]
-  - Check chrome extension ID's to make sure they match
-  - This ID is `pfcpdmimlaffecihgamfbnfffmdlhkmh`
-  - Prevent copycat app in extension store from stealing account after signing into dApp.
-* Create cleaner/better chrome store images, videos, and other marketing information [3]
 * All scrollable items should center scroll with blue scrollbar (vs page scrolling w/o scrollbar) [3]
-* Dashboard menu - child accounts indented (tree) [7]
+  - Should probably make the scroll-bar a shared component (prevent weird webkit styling all over the place)
+* Dashboard menu [7]
+  - Child accounts indented (tree)
+  - Accounts should have details option (HD path, network, publicKey, etc listed)
 * Check all accessability items [7]
   - Make sure all tabs and keyboard events work
   - Be able to navigate entire app without a mouse
 * Create an address book with account names [7]
   - Any time we render an address check for existing contact in address book
-* Replace all inline-infile styled typography components with the Typo component [7]
-  - Use Figma to match typography names for even faster development
 * Notify the user when they are creating a duplicate account (check HD path, if it already exists in accounts don't let them create the account) [8]
 * Second child (sub) account should automatically up the accountIndex from the next highest value [8]
+* Potential security check to make sure this is the correct wallet app from wcjs [10]
+  - Set as priority 10 as this is a user error
+  - Check chrome extension ID's to make sure they match
+  - This ID is `pfcpdmimlaffecihgamfbnfffmdlhkmh`
+  - Prevent copycat app in extension store from stealing account after signing into dApp.
 * Allow user to set timeout for auto-logout in settings [10]
 * Create better readme with instructions on how to initialize the local extension and redux dev tools [10]
 * Profile menu to change wallet password [10]
   - Would need to unlock all master keys for all accounts and relock and save with new password
-* Secret testnet/dev menu [10]
-  - Log saved variables
-  - Auto Faucet to add hash to tp address
 * Metrics/Logging [10]
   - Anon track errors, performance, etc.

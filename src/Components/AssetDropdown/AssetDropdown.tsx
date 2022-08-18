@@ -4,23 +4,24 @@ import { ICON_NAMES, ASSET_IMAGE_NAMES } from 'consts';
 import styled from 'styled-components';
 import { Asset } from 'types';
 import { currencyFormat } from 'utils';
+import { COLORS } from 'theme';
 
 const Wrapper = styled.div`
   position: relative;
 `;
 const AssetItem = styled.div<{ option: boolean }>`
-  border: 1px solid #a2a7b9;
+  border: 1px solid ${COLORS.NEUTRAL_250};
   border-radius: ${({ option }) => (option ? '0px' : '4px')};
   padding: 16px;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  background: ${({ option }) => (option ? '#2C2F3A' : '#1B1E29')};
+  background: ${({ option }) => (option ? COLORS.NEUTRAL_700 : COLORS.NEUTRAL_750)};
   cursor: pointer;
   width: 100%;
   user-select: none;
   &:hover {
-    ${({ option }) => option && 'background: #3D3F4B;'};
+    ${({ option }) => option && `background: ${COLORS.NEUTRAL_650};`}
   }
 `;
 const Right = styled.div`
@@ -48,7 +49,7 @@ const AssetValue = styled.div`
 const AssetCount = styled.div`
   font-weight: 400;
   font-size: 1.2rem;
-  color: #a2a7b9;
+  color: ${COLORS.NEUTRAL_250};
 `;
 const FloatingOptions = styled.div`
   position: absolute;

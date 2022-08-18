@@ -2,6 +2,7 @@ export interface SettingsStorage {
   unlockEST?: number; // When was the current unlock established at
   unlockEXP?: number; // When will the current unlock expire at
   unlockDuration?: number; // How long is each unlock's lifespan
+  customGRPCApi?: string; // User may set a customGRPCApi value in advanced settings
 }
 
 export type SettingsState = SettingsStorage & {

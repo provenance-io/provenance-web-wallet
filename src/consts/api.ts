@@ -16,3 +16,6 @@ export const GRPC_CLIENT_ADDRESS_MAINNET = 'https://wallet.figure.tech/proxy';
 // PROVENANCE.IO API
 export const PROVENANCE_MESSAGE_FEES_URL =
   'https://api.provenance.io/provenance/msgfees/v1/params';
+// EXPLORER FAUCET
+export const PROVENANCE_FAUCET_URL =
+  'https://test.provenance.io/blockchain/faucet/external';

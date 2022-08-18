@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router';
 import { useAccount, useSettings, useWalletConnect } from 'redux/hooks';
 import styled from 'styled-components';
+import { COLORS } from 'theme';
 import { keyPress } from 'utils';
 
 const InputSection = styled.div`
@@ -15,9 +16,9 @@ const InputSection = styled.div`
 const Phrase = styled.div`
   width: 100%;
   padding: 8px;
-  background: #494949;
+  background: ${COLORS.NEUTRAL_550};
   font-size: 1.4rem;
-  color: #b0b0b0;
+  color: ${COLORS.NEUTRAL_200};
   font-weight: bold;
   border-radius: 4px;
   text-align: center;

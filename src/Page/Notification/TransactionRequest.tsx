@@ -9,7 +9,7 @@ import {
   msgAnyB64toAny,
   CoinAsObject,
 } from '@provenanceio/wallet-utils';
-import { useActiveAccount, useWalletConnect } from 'redux/hooks';
+import { useActiveAccount, useSettings, useWalletConnect } from 'redux/hooks';
 import {
   List,
   Authenticate,
@@ -18,6 +18,7 @@ import {
   Sprite,
   Loading,
   GasAdjustment,
+  Typo,
 } from 'Components';
 import { useEffect, useState } from 'react';
 import { format } from 'date-fns';
@@ -33,16 +34,6 @@ import { BIP32Interface, NotificationType } from 'types';
 import { ICON_NAMES, DEFAULT_GAS_ADJUSTMENT } from 'consts';
 import { COLORS } from 'theme';
 
-const Title = styled.div`
-  font-weight: 600;
-  text-transform: uppercase;
-  font-family: 'Montserrat', sans-serif;
-  letter-spacing: 0.32em;
-  line-height: 20px;
-  font-size: 1.6rem;
-  text-align: center;
-  margin-bottom: 20px;
-`;
 const PaginationDisplay = styled.div`
   position: fixed;
   bottom: 180px;
@@ -88,6 +79,7 @@ export const TransactionRequest: React.FC<Props> = ({
   changeNotificationPage,
 }) => {
   const { connector, removePendingRequest, bumpWCDuration } = useWalletConnect();
+  const { customGRPCApi } = useSettings();
   const { address: activeAccountAddress, publicKey: activeAccountPublicKey } =
     useActiveAccount();
   const [parsedMetadata, setParsedMetadata] = useState<ParsedMetadata>({});
@@ -123,21 +115,29 @@ export const TransactionRequest: React.FC<Props> = ({
         setParsedMetadata(newParsedMetadata);
         // Loop through each hexEncodedMessage and build it out
         hexEncodedMessages.forEach((hexEncodedMessage) => {
-          // Messages are sent from wc-js as hex.  Convert to utf-8 (b64)
-          const messageAnyB64 = convertHexToUtf8(hexEncodedMessage);
-          // Convert the b64 message into a full/real messageAny
-          const msgAny = msgAnyB64toAny(messageAnyB64);
-          // Add to the txMsgAny array (Paginated list of messages)
-          msgAnyArray.push(msgAny);
-          // Convert the b64 message any into a readable object then add/save to store
-          const unpackedMsgAny = unpackDisplayObjectFromWalletMessage(messageAnyB64);
-          unpackedTxMessageArray.push(unpackedMsgAny);
-          // Use util to convert special fields and update how values are displayed
-          const formattedTxMsg = txMessageFormat(unpackedMsgAny);
-          // Add the txType to the formattedTxMsg
-          formattedTxMsg['@type'] = msgAny.getTypeName();
-          // Add this formatted message to the parsed tx message arrays
-          parsedTxMessageArray.push(formattedTxMsg);
+          try {
+            // Messages are sent from wc-js as hex.  Convert to utf-8 (b64)
+            const messageAnyB64 = convertHexToUtf8(hexEncodedMessage);
+            // Convert the b64 message into a full/real messageAny
+            const msgAny = msgAnyB64toAny(messageAnyB64);
+            // Add to the txMsgAny array (Paginated list of messages)
+            msgAnyArray.push(msgAny);
+            // Convert the b64 message any into a readable object then add/save to store
+            const unpackedMsgAny =
+              unpackDisplayObjectFromWalletMessage(messageAnyB64);
+            unpackedTxMessageArray.push(unpackedMsgAny);
+            // Use util to convert special fields and update how values are displayed
+            const formattedTxMsg = txMessageFormat(unpackedMsgAny);
+            // Add the txType to the formattedTxMsg
+            formattedTxMsg['@type'] = msgAny.getTypeName();
+            // Add this formatted message to the parsed tx message arrays
+            parsedTxMessageArray.push(formattedTxMsg);
+          } catch (err) {
+            changeNotificationPage('failed', {
+              failedMessage: `${err}`,
+              title: 'Transaction Failed',
+            });
+          }
         });
         // Calculate the tx and gas fees (must be async)
         (async () => {
@@ -156,6 +156,7 @@ export const TransactionRequest: React.FC<Props> = ({
                 gasPrice: newParsedMetadata?.gasPrice?.gasPrice,
                 gasPriceDenom: newParsedMetadata?.gasPrice?.gasPriceDenom,
                 gasAdjustment: Number(gasAdjustment),
+                customGRPCApi,
               });
               // Save the returned fee/gas estimates
               setTxFeeEstimate(newTxFeeEstimate);
@@ -184,6 +185,7 @@ export const TransactionRequest: React.FC<Props> = ({
     activeAccountPublicKey,
     parsedTxMessages,
     unpackedTxMessageAnys,
+    customGRPCApi,
   ]);
 
   const changeGasAdjustmentFee = (value: string) => {
@@ -208,7 +210,7 @@ export const TransactionRequest: React.FC<Props> = ({
       const privateKey = masterKey.privateKey!;
       const publicKey = masterKey.publicKey;
       const wallet = { address, privateKey, publicKey };
-      const grpcAddress = getGrpcApi(address);
+      const grpcAddress = customGRPCApi || getGrpcApi(address);
       const chainId = getChainId(address);
       const { baseAccount } = await getAccountInfo(address, grpcAddress);
       const broadcastTxRequest = buildBroadcastTxRequest({
@@ -287,7 +289,9 @@ export const TransactionRequest: React.FC<Props> = ({
 
   return (
     <Content>
-      <Title>Transaction</Title>
+      <Typo marginBottom="20px" type="headline2">
+        Transaction
+      </Typo>
       <FullData data={unpackedTxMessageAnys[msgPage]} />
       <GasAdjustment value={gasAdjustment} onChange={changeGasAdjustmentFee} />
       <List message={renderMessagePage()} maxHeight="274px" />

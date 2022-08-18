@@ -9,7 +9,7 @@ import {
   msgAnyB64toAny,
   CoinAsObject,
 } from '@provenanceio/wallet-utils';
-import { useActiveAccount, useWalletConnect } from 'redux/hooks';
+import { useActiveAccount, useSettings, useWalletConnect } from 'redux/hooks';
 import {
   List,
   Authenticate,
@@ -79,6 +79,7 @@ export const TransactionRequest: React.FC<Props> = ({
   changeNotificationPage,
 }) => {
   const { connector, removePendingRequest, bumpWCDuration } = useWalletConnect();
+  const { customGRPCApi } = useSettings();
   const { address: activeAccountAddress, publicKey: activeAccountPublicKey } =
     useActiveAccount();
   const [parsedMetadata, setParsedMetadata] = useState<ParsedMetadata>({});
@@ -155,6 +156,7 @@ export const TransactionRequest: React.FC<Props> = ({
                 gasPrice: newParsedMetadata?.gasPrice?.gasPrice,
                 gasPriceDenom: newParsedMetadata?.gasPrice?.gasPriceDenom,
                 gasAdjustment: Number(gasAdjustment),
+                customGRPCApi,
               });
               // Save the returned fee/gas estimates
               setTxFeeEstimate(newTxFeeEstimate);
@@ -183,6 +185,7 @@ export const TransactionRequest: React.FC<Props> = ({
     activeAccountPublicKey,
     parsedTxMessages,
     unpackedTxMessageAnys,
+    customGRPCApi,
   ]);
 
   const changeGasAdjustmentFee = (value: string) => {
@@ -207,7 +210,7 @@ export const TransactionRequest: React.FC<Props> = ({
       const privateKey = masterKey.privateKey!;
       const publicKey = masterKey.publicKey;
       const wallet = { address, privateKey, publicKey };
-      const grpcAddress = getGrpcApi(address);
+      const grpcAddress = customGRPCApi || getGrpcApi(address);
       const chainId = getChainId(address);
       const { baseAccount } = await getAccountInfo(address, grpcAddress);
       const broadcastTxRequest = buildBroadcastTxRequest({

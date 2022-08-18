@@ -5,6 +5,7 @@ import { COLORS } from 'theme';
 import { ICON_NAMES } from 'consts';
 import { FaucetContent } from './FaucetContent';
 import { PrintStorageData } from './PrintStorageData';
+import { CustomGRPC } from './CustomGRPC';
 
 const SectionContent = styled.div`
   padding: 20px;
@@ -14,9 +15,6 @@ const SectionOption = styled.div<{ active: boolean }>`
   font-weight: 400;
   transition: 250ms all;
   ${({ active }) => active && `background: ${COLORS.NEUTRAL_700};`}
-  ${SectionContent} {
-    display: ${({ active }) => (active ? 'block' : 'none')};
-  }
 `;
 const SectionTitleRow = styled.div`
   display: flex;
@@ -53,9 +51,11 @@ export const AdvancedSettings: React.FC = () => {
             spin={activeIndex === 0 ? 90 : 0}
           />
         </SectionTitleRow>
-        <SectionContent>
-          <FaucetContent />
-        </SectionContent>
+        {activeIndex === 0 && (
+          <SectionContent>
+            <FaucetContent />
+          </SectionContent>
+        )}
       </SectionOption>
       <SectionOption active={activeIndex === 1}>
         <SectionTitleRow onClick={() => changeActiveIndex(1)} tabIndex={0}>
@@ -66,6 +66,11 @@ export const AdvancedSettings: React.FC = () => {
             spin={activeIndex === 1 ? 90 : 0}
           />
         </SectionTitleRow>
+        {activeIndex === 1 && (
+          <SectionContent>
+            <CustomGRPC />
+          </SectionContent>
+        )}
       </SectionOption>
       <SectionOption active={activeIndex === 2}>
         <SectionTitleRow onClick={() => changeActiveIndex(2)} tabIndex={0}>
@@ -76,9 +81,11 @@ export const AdvancedSettings: React.FC = () => {
             spin={activeIndex === 2 ? 90 : 0}
           />
         </SectionTitleRow>
-        <SectionContent>
-          <PrintStorageData />
-        </SectionContent>
+        {activeIndex === 2 && (
+          <SectionContent>
+            <PrintStorageData />
+          </SectionContent>
+        )}
       </SectionOption>
     </Content>
   );

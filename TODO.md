@@ -2,10 +2,10 @@
 * _(Priority: 1 - 10)_
 
 ## Current Branch Tasks/Changes
-* Advanced Settings menu [IN_PROGRESS]
+* Advanced Settings menu [DONE]
   - Auto Faucet to add hash to tp address [DONE]
   - Log saved variables [DONE]
-  - Allow custom gRPC url in hidden settings under profile
+  - Allow custom gRPC url in hidden settings under profile [DONE]
     - Grants ability to use local provenance instance
 * All colors should come from theme [DONE]
 * Cleanup unused components [DONE]
@@ -21,6 +21,7 @@
 
 ## Features
 * All scrollable items should center scroll with blue scrollbar (vs page scrolling w/o scrollbar) [3]
+  - Should probably make the scroll-bar a shared component (prevent weird webkit styling all over the place)
 * Dashboard menu [7]
   - Child accounts indented (tree)
   - Accounts should have details option (HD path, network, publicKey, etc listed)

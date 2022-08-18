@@ -67,7 +67,7 @@ export const Slide01: React.FC = () => (
       />
     </LogoImg>
     <ProvLogoText bold type="headline1">
-      Provenance Wallet
+      Provenance Blockchain Wallet
     </ProvLogoText>
     <Typo type="bodyAlt" maxWidth="300px" marginTop="64px">
       A wallet provides an easy way to manage multiple blockchain accounts.

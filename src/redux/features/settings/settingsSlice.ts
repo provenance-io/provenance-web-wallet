@@ -18,6 +18,7 @@ const initialState: State = {
   unlockEXP: 0,
   initialDataPulled: false,
   initialAppLoad: true,
+  customGRPCApi: '',
 };
 
 /**
@@ -47,6 +48,7 @@ export const pullInitialSettingsData = createAsyncThunk(
       unlockEST = initialState.unlockEST,
       unlockEXP = initialState.unlockEXP,
       unlockDuration = initialState.unlockDuration,
+      customGRPCApi = initialState.customGRPCApi,
     } = (await getSavedData('settings')) || {};
     // After attemting to pull chrome saved data, populate any potentially missing chrome storage values
     await addSavedData({
@@ -54,9 +56,10 @@ export const pullInitialSettingsData = createAsyncThunk(
         unlockEST,
         unlockEXP,
         unlockDuration,
+        customGRPCApi,
       },
     });
-    return { unlockEST, unlockEXP, unlockDuration };
+    return { unlockEST, unlockEXP, unlockDuration, customGRPCApi };
   }
 );
 // Save settings data into the chrome store
@@ -103,17 +106,19 @@ const settingsSlice = createSlice({
       // Reset redux store to initial values
       .addCase(resetSettingsData.fulfilled, () => initialState)
       .addCase(pullInitialSettingsData.fulfilled, (state, { payload }) => {
-        const { unlockEST, unlockEXP, unlockDuration } = payload;
+        const { unlockEST, unlockEXP, unlockDuration, customGRPCApi } = payload;
         state.unlockEST = unlockEST;
         state.unlockEXP = unlockEXP;
         state.unlockDuration = unlockDuration;
         state.initialDataPulled = true;
+        state.customGRPCApi = customGRPCApi;
       })
       .addCase(saveSettingsData.fulfilled, (state, { payload }) => {
-        const { unlockEST, unlockEXP, unlockDuration } = payload;
+        const { unlockEST, unlockEXP, unlockDuration, customGRPCApi } = payload;
         if (unlockEST) state.unlockEST = unlockEST;
         if (unlockEXP) state.unlockEXP = unlockEXP;
         if (unlockDuration) state.unlockDuration = unlockDuration;
+        if (customGRPCApi !== undefined) state.customGRPCApi = customGRPCApi;
       })
       .addCase(bumpUnlockDuration.fulfilled, (state, { payload }) => {
         const { unlockEST, unlockEXP } = payload;

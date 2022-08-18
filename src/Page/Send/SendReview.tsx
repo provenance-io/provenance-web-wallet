@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router';
 import { Authenticate, Content, Header, List, Loading, Typo } from 'Components';
 import { ICON_NAMES, SEND_AMOUNT_URL, SEND_COMPLETE_URL } from 'consts';
-import { useMessage } from 'redux/hooks';
+import { useMessage, useSettings } from 'redux/hooks';
 import { getChainId, getGrpcApi, hashFormat, trimAddress } from 'utils';
 import {
   buildBroadcastTxRequest,
@@ -14,6 +14,7 @@ import { BIP32Interface } from 'types';
 
 export const SendReview = () => {
   const navigate = useNavigate();
+  const { customGRPCApi } = useSettings();
   const {
     coin,
     coinAmount,
@@ -30,7 +31,7 @@ export const SendReview = () => {
   } = useMessage();
   const [baseAccount, setBaseAccount] = useState<any>(null);
   const [isLoading, setIsLoading] = useState(false);
-  const grpcAddress = getGrpcApi(txFromAddress!);
+  const grpcAddress = customGRPCApi || getGrpcApi(txFromAddress!);
 
   // Get baseAccount
   useEffect(() => {

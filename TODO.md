@@ -2,11 +2,11 @@
 * _(Priority: 1 - 10)_
 
 ## Current Branch Tasks/Changes
-* Secret testnet/dev menu [IN_PROGRESS]
+* Advanced Settings menu [IN_PROGRESS]
   - Auto Faucet to add hash to tp address [DONE]
+  - Log saved variables [DONE]
   - Allow custom gRPC url in hidden settings under profile
     - Grants ability to use local provenance instance
-  - Log saved variables
 * All colors should come from theme [DONE]
 * Cleanup unused components [DONE]
 * Replace all inline-infile styled typography components with the Typo component [DONE]

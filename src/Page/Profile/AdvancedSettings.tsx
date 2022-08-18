@@ -4,6 +4,7 @@ import { Content, Header, Sprite } from 'Components';
 import { COLORS } from 'theme';
 import { ICON_NAMES } from 'consts';
 import { FaucetContent } from './FaucetContent';
+import { PrintStorageData } from './PrintStorageData';
 
 const SectionContent = styled.div`
   padding: 20px;
@@ -75,6 +76,9 @@ export const AdvancedSettings: React.FC = () => {
             spin={activeIndex === 2 ? 90 : 0}
           />
         </SectionTitleRow>
+        <SectionContent>
+          <PrintStorageData />
+        </SectionContent>
       </SectionOption>
     </Content>
   );

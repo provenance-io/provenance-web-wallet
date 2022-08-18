@@ -14,7 +14,10 @@ type ChromeStorageKeys = string | string[];
 // -------------------------------------------------------------
 // Session/Local Storage (used for 3rd party walletconnect)
 // -------------------------------------------------------------
-export const getStorageData = (savedName: string, key?: StorageItemKey) => {
+export const getStorageData = (
+  savedName: string = 'walletconnect',
+  key?: StorageItemKey
+) => {
   const windowData = window.localStorage;
   // Look for the item in the current localStorage, if found, add to results
   const rawData = windowData.getItem(savedName) || '{}';
@@ -23,7 +26,7 @@ export const getStorageData = (savedName: string, key?: StorageItemKey) => {
   return key ? data[key] : data;
 };
 // Remove a specific value (or all local storage)
-export const clearStorageData = (savedName: string) => {
+export const clearStorageData = (savedName: string = 'walletconnect') => {
   window.localStorage.removeItem(savedName);
 };
 

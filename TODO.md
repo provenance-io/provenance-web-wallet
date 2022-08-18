@@ -2,22 +2,7 @@
 * _(Priority: 1 - 10)_
 
 ## Current Branch Tasks/Changes
-* Advanced Settings menu [DONE]
-  - Auto Faucet to add hash to tp address [DONE]
-  - Log saved variables [DONE]
-  - Allow custom gRPC url in hidden settings under profile [DONE]
-    - Grants ability to use local provenance instance
-* All colors should come from theme [DONE]
-* Cleanup unused components [DONE]
-* Replace all inline-infile styled typography components with the Typo component [DONE]
-  - Use Figma to match typography names for even faster development
-* Receiving a malformed customAction causes a broken blank white page [DONE]
-  - Detect a failure to render the message and just go to an error page
-* Disconnecting with pending actions doesn't remove the actions counter on extension icon [DONE]
-* Create new const variable to hold the current app version (set with npm run versionUp) [DONE]
-  - Used by profile page to display wallet version
-* New package command to auto zip and name the build folder to submit to chrome web store [DONE]
-* Create cleaner/better chrome store images, videos, and other marketing information [DONE]
+* Fix missing chart colors [DONE]
 
 ## Features
 * All scrollable items should center scroll with blue scrollbar (vs page scrolling w/o scrollbar) [3]

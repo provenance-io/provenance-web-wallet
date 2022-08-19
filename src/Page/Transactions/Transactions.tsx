@@ -1,5 +1,13 @@
 import { useEffect, useState } from 'react';
-import { FooterNav, RowItem, Typo, Button, Loading, ButtonGroup } from 'Components';
+import {
+  FooterNav,
+  RowItem,
+  Typo,
+  Button,
+  Loading,
+  ButtonGroup,
+  ScrollContainer,
+} from 'Components';
 import styled from 'styled-components';
 import { useActiveAccount, useAddress } from 'redux/hooks';
 import { ICON_NAMES, TRANSACTION_DETAILS_URL } from 'consts';
@@ -12,19 +20,6 @@ const Container = styled.div`
   width: 100%;
   select {
     margin-top: 12px;
-  }
-`;
-const AssetsContainer = styled.div`
-  width: 100%;
-  overflow-y: scroll;
-  scrollbar-width: none;
-  -ms-overflow-style: none;
-  text-align: left;
-  padding-bottom: 80px;
-  margin-top: 50px;
-  &::-webkit-scrollbar {
-    width: 0;
-    height: 0;
   }
 `;
 
@@ -68,15 +63,17 @@ export const Transactions = () => {
       );
     });
 
-  const renderPagination = () => (
-    <ButtonGroup direction="row" marginTop="20px">
+  const renderPageButtons = () => (
+    <ButtonGroup direction="row" marginTop="20px" childWidth="30%">
       <Button
         icon={ICON_NAMES.ARROW}
         iconLocation="left"
         iconGap="6px"
+        iconSize="12px"
         iconProps={{ spin: 0 }}
         onClick={() => changePage(-1)}
         disabled={page <= 1}
+        size="medium"
       >
         Previous
       </Button>
@@ -84,9 +81,11 @@ export const Transactions = () => {
         icon={ICON_NAMES.ARROW}
         iconLocation="right"
         iconGap="6px"
+        iconSize="12px"
         iconProps={{ spin: 180 }}
         onClick={() => changePage(1)}
         disabled={page >= maxPage}
+        size="medium"
       >
         Next
       </Button>
@@ -96,10 +95,10 @@ export const Transactions = () => {
   return (
     <Container>
       <Typo type="headline2">Transactions</Typo>
-      <Typo type="displayBody">
+      <Typo type="bodyAlt" marginBottom="20px">
         Page {page} / {maxPage}
       </Typo>
-      <AssetsContainer>
+      <ScrollContainer height="414px" paddingBottom="10px">
         {transactionsError ? (
           <Typo type="error">{transactionsError}</Typo>
         ) : transactionsLoading ? (
@@ -107,10 +106,10 @@ export const Transactions = () => {
         ) : (
           <>
             {renderTxRows()}
-            {renderPagination()}
+            {renderPageButtons()}
           </>
         )}
-      </AssetsContainer>
+      </ScrollContainer>
       <FooterNav />
     </Container>
   );

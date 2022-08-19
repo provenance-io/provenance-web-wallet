@@ -7,6 +7,7 @@ import {
   Header,
   Content,
   BottomFloat,
+  ScrollContainer,
 } from 'Components';
 import { COLORS } from 'theme';
 import { useAccount } from 'redux/hooks';
@@ -45,7 +46,7 @@ interface Props {
 export const SeedphraseValue = ({ nextUrl, previousUrl, progress }: Props) => {
   const navigate = useNavigate();
   const { tempAccount, updateTempAccount } = useAccount();
-  
+
   // On load, create the new mnemonic if it hasn't already been made
   useEffect(() => {
     // No mnemonic has been generated for this temporary account
@@ -62,21 +63,29 @@ export const SeedphraseValue = ({ nextUrl, previousUrl, progress }: Props) => {
   };
 
   return (
-    <Content padBottom='80px'>
-      <Header progress={progress} title="Recovery Seed Phrase" backLocation={previousUrl} />
-      <Typo type="body">
+    <Content>
+      <Header
+        progress={progress}
+        title="Recovery Seed Phrase"
+        backLocation={previousUrl}
+      />
+      <Typo type="body" marginBottom="20px">
         Make sure to record these words in the correct order, using the corresponding
         numbers.
       </Typo>
       {tempAccount?.mnemonic ? (
-        <MnuemonicList>
-        {tempAccount.mnemonic.split(' ').map((word, index) => (
-          <MnuemonicItem key={index}>
-            <ListItemNumber as="span">{index + 1}</ListItemNumber> {word}
-          </MnuemonicItem>
-        ))}
-      </MnuemonicList>
-      ) : 'Loading...'}
+        <ScrollContainer height="318px" paddingBottom="0">
+          <MnuemonicList>
+            {tempAccount.mnemonic.split(' ').map((word, index) => (
+              <MnuemonicItem key={index}>
+                <ListItemNumber as="span">{index + 1}</ListItemNumber> {word}
+              </MnuemonicItem>
+            ))}
+          </MnuemonicList>
+        </ScrollContainer>
+      ) : (
+        'Loading...'
+      )}
       <BottomFloat>
         <Button onClick={handleContinue}>Continue</Button>
       </BottomFloat>

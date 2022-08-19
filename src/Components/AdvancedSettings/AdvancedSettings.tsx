@@ -9,17 +9,14 @@ import {
 } from 'consts';
 import { Pill as PillBase } from 'Components/Pill';
 import { Checkbox as BaseCheckbox } from 'Components/Checkbox';
+import { ScrollContainer } from 'Components/ScrollContainer';
 import { COLORS } from 'theme';
 import { AccountLevel, HDPathData } from 'types';
 import { getHDPathData, capitalize } from 'utils';
 
 interface StyledProps {
-  disabled?: boolean,
+  disabled?: boolean;
 }
-
-const AdvancedSection = styled.div`
-  padding-bottom: 40px;
-`;
 
 const ListRow = styled.div`
   border-top: 1px solid ${COLORS.NEUTRAL_600};
@@ -74,7 +71,9 @@ const LineInput = styled.div<StyledProps>`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  ${({ disabled }) => disabled && `
+  ${({ disabled }) =>
+    disabled &&
+    `
     opacity: 0.25;
     cursor: not-allowed;
   `}
@@ -88,7 +87,8 @@ const ValueInput = styled.input`
   background: none;
   border: none;
   flex-grow: 1;
-  &:active, &:focus {
+  &:active,
+  &:focus {
     outline: none;
     border: none;
   }
@@ -101,15 +101,26 @@ const Checkbox = styled(BaseCheckbox)`
 `;
 
 interface Props {
-  setResults: (hdPath: string) => void,
-  parentHdPath?: string,
-  setContinueDisabled: (value: boolean) => void,
+  setResults: (hdPath: string) => void;
+  parentHdPath?: string;
+  setContinueDisabled: (value: boolean) => void;
 }
 
-export const AdvancedSettings:React.FC<Props> = ({ setResults, parentHdPath, setContinueDisabled }) => {
-  const [accountHdPath, setAccountHdPath] = useState(parentHdPath || DEFAULT_MAINNET_HD_PATH); // example: m/44'/505'/0'
-  const [accountHdPathData, setAcccountHdPathData] = useState(getHDPathData(parentHdPath || DEFAULT_MAINNET_HD_PATH)); // example: { purpose: { value: 44, hardened: true, display: "44'" }, ... }
-  const parentHdPathData = useMemo(() => parentHdPath ? getHDPathData(parentHdPath) : {}, [parentHdPath]) as HDPathData;
+export const AdvancedSettings: React.FC<Props> = ({
+  setResults,
+  parentHdPath,
+  setContinueDisabled,
+}) => {
+  const [accountHdPath, setAccountHdPath] = useState(
+    parentHdPath || DEFAULT_MAINNET_HD_PATH
+  ); // example: m/44'/505'/0'
+  const [accountHdPathData, setAcccountHdPathData] = useState(
+    getHDPathData(parentHdPath || DEFAULT_MAINNET_HD_PATH)
+  ); // example: { purpose: { value: 44, hardened: true, display: "44'" }, ... }
+  const parentHdPathData = useMemo(
+    () => (parentHdPath ? getHDPathData(parentHdPath) : {}),
+    [parentHdPath]
+  ) as HDPathData;
 
   // Pull out some values from accountHdPathData
   const { accountLevel, coinType } = accountHdPathData;
@@ -121,7 +132,9 @@ export const AdvancedSettings:React.FC<Props> = ({ setResults, parentHdPath, set
     let finalHdPath = accountHdPath;
     // If there is a parentHdPath, make sure this accountLevel is different from the parent accountLevel
     if (parentHdPath && parentHdPathData.accountLevel) {
-      setContinueDisabled(updatedAccountHdPathData.accountLevel === parentHdPathData.accountLevel);
+      setContinueDisabled(
+        updatedAccountHdPathData.accountLevel === parentHdPathData.accountLevel
+      );
       // Need to update to resulting HD path.  If we have a parentHdPath, we need the partial pass (not full)
       // eg: parent: m/44'/1'/0', child: m/44'/1'/0'/0'/0', partial: 0'/0'
       // If parent account, split by '/', get length, then cut child from that length
@@ -129,8 +142,13 @@ export const AdvancedSettings:React.FC<Props> = ({ setResults, parentHdPath, set
       finalHdPath = finalHdPath.split('/').splice(parentHdPathLength).join('/');
     }
     setResults(finalHdPath);
-  }, [accountHdPath, setResults, setContinueDisabled, parentHdPathData, parentHdPath]);
-
+  }, [
+    accountHdPath,
+    setResults,
+    setContinueDisabled,
+    parentHdPathData,
+    parentHdPath,
+  ]);
 
   const changeHDPath = (node: AccountLevel, value: string, hardened?: boolean) => {
     // Did we clear this value out?  If so we need to remove the rest of the path after this value too
@@ -146,7 +164,7 @@ export const AdvancedSettings:React.FC<Props> = ({ setResults, parentHdPath, set
       // Are we clearing out the entire node value? (Will clear child nodes too)
       // Everything below that index should be removed
       // eg: m/44'/505'/0'/1'/1' => m/44'/505'/0'//1' => m/44'/505'/0' (removed addressIndex and change)
-      if (clearValue) accountHdPathArray.splice(targetNodeIndex);    
+      if (clearValue) accountHdPathArray.splice(targetNodeIndex);
       // Change the target array value (check for hardened)
       else accountHdPathArray[targetNodeIndex] = `${value}${hardened ? "'" : ''}`;
       // Re-combine to get the full path
@@ -155,59 +173,76 @@ export const AdvancedSettings:React.FC<Props> = ({ setResults, parentHdPath, set
       setAccountHdPath(newAccountHdPath);
     }
   };
-  
+
   // Loop over each type of hdpath node to build that row
-  const buildAllHdPathNodeRows = (): (JSX.Element | null)[] => HD_PATH_KEYS.map((node, index) => {
-    // We want to skip over the root node (no editing root)
-    if (node === 'root') return null;
-    // Data to use when targetNode doesn't exist (eg: change row for m/44'/505'/0')
-    const defaultNodeData = { value: null, hardened: false, display: null };
-    const targetNodeData = accountHdPathData[node] || defaultNodeData;
-    const { value, hardened } = targetNodeData;
-    // Get this hdPath title
-    const title = capitalize(node, 'camelcase');
-    // Get the previous node and its value (if there is one)
-    const previousNode: AccountLevel = HD_PATH_KEYS[index - 1];
-    const previousNodeValue = previousNode ? accountHdPathData[previousNode]?.value : undefined;
-    const previousValueEmpty = previousNodeValue === undefined;
-    // Check to see if there is a parentHdPath, if there is, all of those parent nodes with values will be disabled
-    const parentNodeValue = (parentHdPath && parentHdPathData[node]?.value);
-    const parentNodeHasValue = parentNodeValue !== null && parentNodeValue !== undefined;
-    const isDisabled = previousValueEmpty || parentNodeHasValue;
-    // Build disabled reason/message
-    const disabledMsg = previousValueEmpty ? `${capitalize(previousNode, 'camelcase')} value required` : 
-      parentNodeHasValue ? `${capitalize(node, 'camelcase')} value is set by parent account` :
-      '';
+  const buildAllHdPathNodeRows = (): (JSX.Element | null)[] =>
+    HD_PATH_KEYS.map((node, index) => {
+      // We want to skip over the root node (no editing root)
+      if (node === 'root') return null;
+      // Data to use when targetNode doesn't exist (eg: change row for m/44'/505'/0')
+      const defaultNodeData = { value: null, hardened: false, display: null };
+      const targetNodeData = accountHdPathData[node] || defaultNodeData;
+      const { value, hardened } = targetNodeData;
+      // Get this hdPath title
+      const title = capitalize(node, 'camelcase');
+      // Get the previous node and its value (if there is one)
+      const previousNode: AccountLevel = HD_PATH_KEYS[index - 1];
+      const previousNodeValue = previousNode
+        ? accountHdPathData[previousNode]?.value
+        : undefined;
+      const previousValueEmpty = previousNodeValue === undefined;
+      // Check to see if there is a parentHdPath, if there is, all of those parent nodes with values will be disabled
+      const parentNodeValue = parentHdPath && parentHdPathData[node]?.value;
+      const parentNodeHasValue =
+        parentNodeValue !== null && parentNodeValue !== undefined;
+      const isDisabled = previousValueEmpty || parentNodeHasValue;
+      // Build disabled reason/message
+      const disabledMsg = previousValueEmpty
+        ? `${capitalize(previousNode, 'camelcase')} value required`
+        : parentNodeHasValue
+        ? `${capitalize(node, 'camelcase')} value is set by parent account`
+        : '';
 
-    return (
-      <LineInput key={node} title={isDisabled ? disabledMsg : `Edit ${title} value`} disabled={isDisabled}>
-        <LineInputTitle>{title}</LineInputTitle>
-        <ValueInput
-          value={value !== null ? value : ''}
-          placeholder="Enter Value"
-          onChange={({ target }) => changeHDPath(node, target.value, hardened)}
+      return (
+        <LineInput
+          key={node}
+          title={isDisabled ? disabledMsg : `Edit ${title} value`}
           disabled={isDisabled}
-        />
-        <Checkbox
-          checked={hardened}
-          disabled={isDisabled}
-          onChange={(updatedHardened) => changeHDPath(node, `${value}`, updatedHardened)}
-        />
-      </LineInput>
-    );
-  });
+        >
+          <LineInputTitle>{title}</LineInputTitle>
+          <ValueInput
+            value={value !== null ? value : ''}
+            placeholder="Enter Value"
+            onChange={({ target }) => changeHDPath(node, target.value, hardened)}
+            disabled={isDisabled}
+          />
+          <Checkbox
+            checked={hardened}
+            disabled={isDisabled}
+            onChange={(updatedHardened) =>
+              changeHDPath(node, `${value}`, updatedHardened)
+            }
+          />
+        </LineInput>
+      );
+    });
 
-  const parentHasCoinType = !!parentHdPath && !!parentHdPathData?.coinType?.value !== null && !!parentHdPathData?.coinType?.value !== undefined;
+  const parentHasCoinType =
+    !!parentHdPath &&
+    !!parentHdPathData?.coinType?.value !== null &&
+    !!parentHdPathData?.coinType?.value !== undefined;
 
   return (
-    <AdvancedSection>
+    <ScrollContainer paddingBottom="0" height="190px">
       <ListRow>
         <ListContent>Account Level</ListContent>
         <ListContent>{capitalize(accountLevel, 'camelcase')}</ListContent>
       </ListRow>
       <ListRow>
         <ListContent>HD Path</ListContent>
-        <ListContent><HDPathText>{accountHdPath}</HDPathText></ListContent>
+        <ListContent>
+          <HDPathText>{accountHdPath}</HDPathText>
+        </ListContent>
       </ListRow>
       <DerivationSection>
         <Pill
@@ -215,15 +250,23 @@ export const AdvancedSettings:React.FC<Props> = ({ setResults, parentHdPath, set
           data={{
             left: {
               text: 'testnet',
-              title: parentHasCoinType ? 'Network is set by parent account' : 'Set to testnet defaults',
-              onClick: () => {setAccountHdPath(DEFAULT_TESTNET_HD_PATH)},
-              active: (coinType?.value === TESTNET_WALLET_COIN_TYPE),
+              title: parentHasCoinType
+                ? 'Network is set by parent account'
+                : 'Set to testnet defaults',
+              onClick: () => {
+                setAccountHdPath(DEFAULT_TESTNET_HD_PATH);
+              },
+              active: coinType?.value === TESTNET_WALLET_COIN_TYPE,
             },
             right: {
               text: 'mainnet',
-              title: parentHasCoinType ? 'Network is set by parent account' : 'Set to mainnet defaults',
-              onClick: () => {setAccountHdPath(DEFAULT_MAINNET_HD_PATH)},
-              active: (coinType?.value === PROVENANCE_WALLET_COIN_TYPE),
+              title: parentHasCoinType
+                ? 'Network is set by parent account'
+                : 'Set to mainnet defaults',
+              onClick: () => {
+                setAccountHdPath(DEFAULT_MAINNET_HD_PATH);
+              },
+              active: coinType?.value === PROVENANCE_WALLET_COIN_TYPE,
             },
           }}
         />
@@ -234,6 +277,6 @@ export const AdvancedSettings:React.FC<Props> = ({ setResults, parentHdPath, set
         </Headers>
         {buildAllHdPathNodeRows()}
       </DerivationSection>
-    </AdvancedSection>
-  )
+    </ScrollContainer>
+  );
 };

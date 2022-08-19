@@ -2,11 +2,16 @@
 * _(Priority: 1 - 10)_
 
 ## Current Branch Tasks/Changes
-* Fix missing chart colors [DONE]
+* All scrollable items should center scroll with blue scrollbar (vs page scrolling w/o scrollbar) [DONE]
+  - Verify seedPhrase [DONE]
+  - SeedPhrase New Account List [DONE]
+  - Advanced Settings [DONE]
+  - Transactions [DONE]
+  - Dashboard Assets [DONE]
+  - Create new scroll container component for scrolling items [DONE]
+* Add catch for asset details page fetch [DONE]
 
 ## Features
-* All scrollable items should center scroll with blue scrollbar (vs page scrolling w/o scrollbar) [3]
-  - Should probably make the scroll-bar a shared component (prevent weird webkit styling all over the place)
 * Dashboard menu [7]
   - Child accounts indented (tree)
   - Accounts should have details option (HD path, network, publicKey, etc listed)

@@ -6,16 +6,31 @@ import {
   Content,
   Typo,
   BottomFloat,
+  ScrollContainer,
 } from 'Components';
 import styled from 'styled-components';
 import { SeedphraseVerifyGroup } from './SeedphraseVerifyGroup';
 import { useAccount } from 'redux/hooks';
 import { useNavigate } from 'react-router-dom';
+import { COLORS } from 'theme';
 
 const Checkbox = styled(CheckboxBase)`
-  margin: 20px 0;
   display: flex;
   align-items: flex-start;
+  margin-top: 10px;
+  padding-top: 10px;
+  border-top: 1px solid ${COLORS.NEUTRAL_700};
+  label {
+    line-height: 1.5rem;
+  }
+  div {
+    margin-top: 2px;
+  }
+`;
+const FloatingError = styled(Typo)`
+  position: absolute;
+  font-size: 1.2rem;
+  top: 46px;
 `;
 
 interface Props {
@@ -92,9 +107,9 @@ export const SeedphraseVerify = ({ nextUrl, previousUrl, progress }: Props) => {
     // Pressing the shift + option keys will override any verification
     const verificationBypass = event.shiftKey && event.altKey;
     if (!verificationBypass && !termsAgree) {
-      setErrorMsg('You must agree to the terms of your account passphrase.');
+      setErrorMsg('You must agree to the terms.');
     } else if (!verificationBypass && correct.some((c) => !c)) {
-      setErrorMsg('You selected incorrect choices. Please try again');
+      setErrorMsg('Incorrect choices selected.');
     } else {
       setErrorMsg('');
       if (mnemonic !== undefined) {
@@ -119,13 +134,13 @@ export const SeedphraseVerify = ({ nextUrl, previousUrl, progress }: Props) => {
   };
 
   return (
-    <Content padBottom="120px">
+    <Content>
       <Header
         progress={progress}
         title="Verify Passphrase"
         backLocation={previousUrl}
       />
-      {createButtonGroups()}
+      <ScrollContainer height="320px">{createButtonGroups()}</ScrollContainer>
       <Checkbox
         checked={termsAgree}
         onChange={(isChecked: boolean) => {
@@ -133,7 +148,7 @@ export const SeedphraseVerify = ({ nextUrl, previousUrl, progress }: Props) => {
         }}
         label="I agree that I'm solely responsible for my wallet and cannot recover the passphrase if lost."
       />
-      {errorMsg && <Typo type="error">{errorMsg}</Typo>}
+      {errorMsg && <FloatingError type="error">{errorMsg}</FloatingError>}
       <BottomFloat>
         <Button onClick={handleContinue} variant="primary">
           Continue

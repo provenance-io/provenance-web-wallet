@@ -8,6 +8,7 @@ import {
   AdvancedSettings,
   Alert,
   BottomFloat,
+  Checkbox,
 } from 'Components';
 import { ICON_NAMES, DEFAULT_MAINNET_HD_PATH } from 'consts';
 import { useNavigate } from 'react-router-dom';
@@ -22,20 +23,15 @@ import { completeHdPath, keyPress } from 'utils';
 import { FlowType } from 'types';
 import { COLORS } from 'theme';
 
-interface StyledProps {
-  enabled?: boolean;
-}
-
-const AdvancedTextButton = styled.div<StyledProps>`
-  color: ${({ enabled }) => (enabled ? COLORS.PRIMARY_500 : COLORS.NEUTRAL_250)};
-  font-weight: bold;
+const AdvancedSettingsCheckbox = styled(Checkbox)<{ active: boolean }>`
+  width: 100%;
+  display: flex;
   margin: 20px 0;
-  cursor: pointer;
-  user-select: none;
-  &:focus {
-    outline: none;
-    text-decoration: underline;
-    color: ${({ enabled }) => (enabled ? COLORS.PRIMARY_400 : COLORS.NEUTRAL_150)};
+  div {
+    ${({ active }) => !active && `border: 1px solid ${COLORS.NEUTRAL_300};`}
+  }
+  label {
+    font-weight: bold;
   }
 `;
 
@@ -191,16 +187,13 @@ export const NewAccountName = ({
             onKeyPress={(e) => keyPress(e, handleContinue)}
             autoFocus
           />
-          <AdvancedTextButton
-            enabled={showAdvanced}
-            onClick={toggleShowAdvanced}
-            onKeyPress={(e) => keyPress(e, toggleShowAdvanced)}
-            tabIndex={0}
-            role="button"
+          <AdvancedSettingsCheckbox
+            label="Advanced Settings"
+            checked={showAdvanced}
+            onChange={toggleShowAdvanced}
             data-testid="advanced-settings"
-          >
-            Advanced Settings ({showAdvanced ? 'Enabled' : 'Disabled'})
-          </AdvancedTextButton>
+            active={showAdvanced}
+          />
           {showAdvanced && (
             <AdvancedSettings
               setResults={(newHdPath) => {

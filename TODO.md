@@ -2,7 +2,7 @@
 * _(Priority: 1 - 10)_
 
 ## Current Branch Tasks/Changes
-* Update advanced settings button to be a checkbox [IN_PROGRESS]
+* Update advanced settings button to be a checkbox [DONE]
   - Box is checked while active, unchecked when inactive
 * All scrollable items should center scroll with blue scrollbar (vs page scrolling w/o scrollbar) [DONE]
   - Verify seedPhrase [DONE]

@@ -10,6 +10,9 @@ interface StyledProps {
 
 const CheckboxContainer = styled.div<StyledProps>`
   cursor: ${({ disabled }) => (disabled ? 'not-allowed' : 'pointer')};
+  label {
+    cursor: ${({ disabled }) => (disabled ? 'not-allowed' : 'pointer')};
+  }
 `;
 const StyledCheckbox = styled.div<StyledProps>`
   height: 20px;
@@ -53,6 +56,7 @@ export const Checkbox: React.FC<Props> = ({
   label,
   className,
   disabled,
+  ...rest
 }) => {
   const handleClick = () => {
     if (!disabled) {
@@ -61,7 +65,13 @@ export const Checkbox: React.FC<Props> = ({
   };
 
   return (
-    <CheckboxContainer className={className} disabled={disabled}>
+    <CheckboxContainer
+      className={className}
+      disabled={disabled}
+      onClick={handleClick}
+      onKeyPress={(e) => keyPress(e, handleClick)}
+      {...rest}
+    >
       <StyledCheckbox
         onClick={handleClick}
         disabled={disabled}

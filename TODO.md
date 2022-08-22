@@ -2,6 +2,7 @@
 * _(Priority: 1 - 10)_
 
 ## Current Branch Tasks/Changes
+* "provenance_sendTransaction" should display "Provenance Transaction" [DONE]
 * Update advanced settings button to be a checkbox [DONE]
   - Box is checked while active, unchecked when inactive
 * All scrollable items should center scroll with blue scrollbar (vs page scrolling w/o scrollbar) [DONE]

@@ -68,6 +68,7 @@ type StyledButtonProps = {
   icon?: string;
   iconGap?: string;
   iconLocation?: 'top' | 'right' | 'bottom' | 'left';
+  size: 'large' | 'medium';
 };
 
 const ButtonWrapper = styled.div``;
@@ -93,14 +94,29 @@ const IconStyling = css<StyledButtonProps>`
   `}
 `;
 
+const getSizeProps = (size: 'large' | 'medium') => {
+  switch (size) {
+    case 'large':
+      return `
+      padding: 12px 20px;
+      font-size: 1.4rem;
+    `;
+    case 'medium':
+      return `
+      padding: 6px 12px;
+      font-size: 1.2rem;
+    `;
+    default:
+      return '';
+  }
+};
+
 const StyledButton = styled.button<StyledButtonProps>`
-  padding: 12px 20px;
   width: 100%;
   border: none;
   border-radius: 4px;
   color: ${({ variant }) => variations[variant].color};
   font-weight: 500;
-  font-size: 1.4rem;
   border: 1px solid ${({ variant }) => variations[variant].border};
   background-color: ${({ variant }) => variations[variant].default};
   cursor: pointer;
@@ -124,7 +140,12 @@ const StyledButton = styled.button<StyledButtonProps>`
     border-color: ${({ variant }) => variations[variant].disabled};
     cursor: not-allowed;
   }
+  ${({ size }) => getSizeProps(size)}
   ${IconStyling}
+`;
+
+const ButtonContent = styled.span`
+  line-height: 100%;
 `;
 
 type SvgProps = {
@@ -149,6 +170,7 @@ type Props = {
   iconGap?: string;
   iconSize?: string;
   iconProps?: SvgProps;
+  size?: 'large' | 'medium';
 };
 
 export const Button = ({
@@ -163,6 +185,7 @@ export const Button = ({
   iconSize = '14px',
   iconGap = '14px',
   iconProps,
+  size = 'large',
   ...rest
 }: Props) => (
   <ButtonWrapper title={title}>
@@ -175,11 +198,12 @@ export const Button = ({
       icon={icon}
       iconGap={iconGap}
       iconLocation={iconLocation}
+      size={size}
     >
       {!!icon && (iconLocation === 'top' || iconLocation === 'left') && (
         <Sprite icon={icon} size={iconSize} {...iconProps} />
       )}
-      {!!children && children}
+      {!!children && <ButtonContent>{children}</ButtonContent>}
       {!!icon && (iconLocation === 'bottom' || iconLocation === 'right') && (
         <Sprite icon={icon} size={iconSize} {...iconProps} />
       )}

@@ -5,6 +5,7 @@ import {
   RowItem,
   Content,
   Loading,
+  ScrollContainer,
 } from 'Components';
 import {
   SEND_URL,
@@ -43,17 +44,6 @@ const AssetsTitle = styled.div`
   font-family: 'Gothic A1';
   font-weight: 700;
   width: 100%;
-`;
-const AssetsContainer = styled.div`
-  width: 100%;
-  overflow-y: scroll;
-  scrollbar-width: none;
-  -ms-overflow-style: none;
-  padding-bottom: 80px;
-  &::-webkit-scrollbar {
-    width: 0;
-    height: 0;
-  }
 `;
 
 export const Dashboard = () => {
@@ -123,7 +113,7 @@ export const Dashboard = () => {
         </Button>
       </ButtonGroup>
       <AssetsTitle>My Assets</AssetsTitle>
-      <AssetsContainer>
+      <ScrollContainer height="166px">
         {assetsLoading ? (
           <Loading />
         ) : assets.length ? (
@@ -131,7 +121,7 @@ export const Dashboard = () => {
         ) : (
           'Address has no assets...'
         )}
-      </AssetsContainer>
+      </ScrollContainer>
       <FooterNav />
     </Content>
   );

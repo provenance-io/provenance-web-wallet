@@ -60,7 +60,9 @@ export const Actions: React.FC = () => {
       case 'session_request':
         return 'Session Request';
       case 'provenance_sign':
-        return 'Sign Request';
+        return 'Provenance Sign';
+      case 'provenance_sendTransaction':
+        return 'Provenance Transaction';
       default:
         return rawName;
     }

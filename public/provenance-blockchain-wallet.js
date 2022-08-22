@@ -2,7 +2,7 @@
 (() => {
   // Provenance object
   const provenance = {
-    "version": "1.0.8", // Current extension version
+    "version": "1.0.9", // Current extension version
     isProvenance: true, // Is this the provenance extension (incase window.provenance is overwritten)
   };
   // Add provenance to global window

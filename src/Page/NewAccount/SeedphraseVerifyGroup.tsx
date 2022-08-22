@@ -35,8 +35,8 @@ export const SeedphraseVerifyGroup = ({
 
   return (
     <>
-      <Typo type="body" marginBottom="10px" marginTop="30px">
-        select word #{answer.index}
+      <Typo type="body" marginBottom="10px" marginTop="20px">
+        Select Word #{answer.index}
       </Typo>
       <WordRow>
         {wordArr?.data.map((word) => (

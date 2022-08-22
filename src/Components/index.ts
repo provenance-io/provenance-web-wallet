@@ -20,6 +20,7 @@ export * from './List';
 export * from './Loading';
 export * from './Pill';
 export * from './RowItem';
+export * from './ScrollContainer';
 export * from './Select';
 export * from './Sprite';
 export * from './SpriteSheet';

@@ -90,7 +90,11 @@ export const AssetChart: React.FC<Props> = ({
       setError(false);
       const newMarkerData = await fetch(fetchUrl)
         .then((response) => response.json())
-        .then((data) => data);
+        .then((data) => data)
+        .catch((error) => {
+          setError(error);
+          setLoading(false);
+        });
       const apiError = newMarkerData.error !== undefined || '';
       if (!apiError) {
         // API Returns data decending.  Reverse to change to ascending

@@ -11,6 +11,7 @@
       - Notifications: Non-WalletConnect actions (Multisig)
 * Dashboard background should have image [DONE]
 * Re-style Dashboard page to match designs [DONE]
+* Update active connection (dApp) extension icon color [DONE]
 
 ## Features
 * When wallet locks (while open) create a blurry lock screen indicating wallet lock mode [6]

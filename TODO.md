@@ -4,8 +4,8 @@
 ## Current Branch Tasks/Changes
 * Create Notification Bell/Pages [IN_PROGRESS]
   - Remove "Actions" from footer [DONE]
-  - Create new bell icon with notification counts
-  - Update "Actions" page to be new "Notifications" page
+  - Create new bell icon with notification counts [DONE]
+  - Update "Actions" page to be new "Notifications" page [DONE]
     - Tabs for "Actions" and "Notifications"
       - Actions: WalletConnect actions
       - Notifications: Non-WalletConnect actions (Multisig)

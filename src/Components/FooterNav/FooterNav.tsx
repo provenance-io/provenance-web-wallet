@@ -1,14 +1,7 @@
-import {
-  ACTIONS_URL,
-  DASHBOARD_URL,
-  ICON_NAMES,
-  PROFILE_URL,
-  TRANSACTIONS_URL,
-} from 'consts';
+import { DASHBOARD_URL, ICON_NAMES, PROFILE_URL, TRANSACTIONS_URL } from 'consts';
 import { Sprite } from 'Components';
 import { useNavigate, useLocation } from 'react-router-dom';
 import styled from 'styled-components';
-import { useWalletConnect } from 'redux/hooks';
 import { keyPress } from 'utils';
 import { COLORS } from 'theme';
 
@@ -22,7 +15,7 @@ const Footer = styled.footer`
   height: 80px;
   width: 100%;
   max-width: 100%;
-  padding: 20px;
+  padding: 20px 40px;
   z-index: 100;
   box-sizing: border-box;
   justify-content: space-between;
@@ -42,26 +35,10 @@ const NavItem = styled.div<{ active?: boolean }>`
     margin-bottom: 10px;
   }
 `;
-const Notification = styled.div`
-  position: absolute;
-  height: 16px;
-  width: 16px;
-  background: red;
-  color: white;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 0.8rem;
-  z-index: 10;
-  border-radius: 100%;
-  top: 0;
-  right: 20px;
-`;
 
 export const FooterNav: React.FC = () => {
   const location = useLocation();
   const navigate = useNavigate();
-  const { totalPendingRequests } = useWalletConnect();
 
   return (
     <Footer>
@@ -75,25 +52,13 @@ export const FooterNav: React.FC = () => {
         Dashboard
       </NavItem>
       <NavItem
-        active={location?.pathname?.includes('actions')}
-        onClick={() => navigate(ACTIONS_URL)}
-        onKeyPress={(e) => keyPress(e, () => navigate(ACTIONS_URL))}
-        tabIndex={0}
-      >
-        <Sprite icon={ICON_NAMES.CUBES} size="1.6rem" />
-        {!!totalPendingRequests && (
-          <Notification>{totalPendingRequests}</Notification>
-        )}
-        Actions
-      </NavItem>
-      <NavItem
         active={location?.pathname?.includes('transactions')}
         onClick={() => navigate(TRANSACTIONS_URL)}
         onKeyPress={(e) => keyPress(e, () => navigate(TRANSACTIONS_URL))}
         tabIndex={0}
       >
         <Sprite icon={ICON_NAMES.TRANSACTIONS} size="1.6rem" />
-        Txs
+        Transactions
       </NavItem>
       <NavItem
         active={location?.pathname?.includes('profile')}
@@ -102,7 +67,7 @@ export const FooterNav: React.FC = () => {
         tabIndex={0}
       >
         <Sprite icon={ICON_NAMES.PROFILE} size="1.6rem" />
-        Profile
+        Settings
       </NavItem>
     </Footer>
   );

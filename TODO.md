@@ -2,19 +2,21 @@
 * _(Priority: 1 - 10)_
 
 ## Current Branch Tasks/Changes
-* "provenance_sendTransaction" should display "Provenance Transaction" [DONE]
-* Update advanced settings button to be a checkbox [DONE]
-  - Box is checked while active, unchecked when inactive
-* All scrollable items should center scroll with blue scrollbar (vs page scrolling w/o scrollbar) [DONE]
-  - Verify seedPhrase [DONE]
-  - SeedPhrase New Account List [DONE]
-  - Advanced Settings [DONE]
-  - Transactions [DONE]
-  - Dashboard Assets [DONE]
-  - Create new scroll container component for scrolling items [DONE]
-* Add catch for asset details page fetch [DONE]
+* Create Notification Bell/Pages [IN_PROGRESS]
+  - Remove "Actions" from footer [DONE]
+  - Create new bell icon with notification counts
+  - Update "Actions" page to be new "Notifications" page
+    - Tabs for "Actions" and "Notifications"
+      - Actions: WalletConnect actions
+      - Notifications: Non-WalletConnect actions (Multisig)
+* Dashboard background should have image [DONE]
+* Re-style Dashboard page to match designs [DONE]
 
 ## Features
+* When wallet locks (while open) create a blurry lock screen indicating wallet lock mode [6]
+  - Currently sucks to be using and not expecting a lock
+  - Navigation should reset lock timeout (if it doesn't already)
+  - Blur background, button to unlock page
 * Dashboard menu [7]
   - Child accounts indented (tree)
   - Accounts should have details option (HD path, network, publicKey, etc listed)

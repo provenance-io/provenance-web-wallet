@@ -10,7 +10,7 @@ const CopyArea = styled.div`
   display: inline-block;
 `;
 const CopiedNotice = styled.div<{ child: React.ReactNode }>`
-  background: ${COLORS.SECONDARY_650};
+  background: ${COLORS.PRIMARY_500};
   color: white;
   position: absolute;
   padding: 8px;
@@ -33,7 +33,7 @@ const CopiedNotice = styled.div<{ child: React.ReactNode }>`
     left: 30px;
     border-left: 10px solid transparent;
     border-right: 10px solid transparent;
-    border-bottom: 10px solid ${COLORS.SECONDARY_650};
+    border-bottom: 10px solid ${COLORS.PRIMARY_500};
   }
 `;
 

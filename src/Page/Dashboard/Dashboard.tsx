@@ -6,6 +6,7 @@ import {
   Content,
   Loading,
   ScrollContainer,
+  Typo,
 } from 'Components';
 import {
   SEND_URL,
@@ -20,30 +21,9 @@ import styled from 'styled-components';
 import { DashboardHeader } from './DashboardHeader';
 import { capitalize, currencyFormat } from 'utils';
 
-const PortfolioTitle = styled.div`
-  font-size: 1.4rem;
-  font-weight: 700;
-  margin-top: 40px;
-  font-family: 'Gothic A1';
-`;
 const Denom = styled.span`
   font-size: 2rem;
   margin-right: 4px;
-`;
-const Value = styled.div`
-  font-size: 4.4rem;
-  font-weight: 300;
-  line-height: 54px;
-  letter-spacing: 0.02rem;
-  margin-bottom: 20px;
-`;
-const AssetsTitle = styled.div`
-  margin-top: 32px;
-  padding-bottom: 12px;
-  font-size: 1.8rem;
-  font-family: 'Gothic A1';
-  font-weight: 700;
-  width: 100%;
 `;
 
 export const Dashboard = () => {
@@ -87,11 +67,17 @@ export const Dashboard = () => {
   return (
     <Content>
       <DashboardHeader />
-      <PortfolioTitle>Portfolio Value</PortfolioTitle>
-      <Value>
-        <Denom>$</Denom>
-        {assetsLoading ? <Loading /> : calculatePortfolioValue()}
-      </Value>
+      <Typo marginTop="40px" type="title" align="left">
+        Portfolio Value
+      </Typo>
+      {assetsLoading ? (
+        <Loading height="75px" />
+      ) : (
+        <Typo type="display1" align="left" marginBottom="10px">
+          <Denom>$</Denom>
+          {calculatePortfolioValue()}
+        </Typo>
+      )}
       <ButtonGroup direction="row">
         <Button
           icon={ICON_NAMES.ARROW}
@@ -112,7 +98,9 @@ export const Dashboard = () => {
           Receive
         </Button>
       </ButtonGroup>
-      <AssetsTitle>My Assets</AssetsTitle>
+      <Typo type="subhead" align="left" marginBottom="12px" marginTop="26px">
+        My Assets
+      </Typo>
       <ScrollContainer height="166px">
         {assetsLoading ? (
           <Loading />

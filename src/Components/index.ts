@@ -19,6 +19,7 @@ export * from './InputDrag';
 export * from './List';
 export * from './Loading';
 export * from './Pill';
+export * from './PillInline';
 export * from './RowItem';
 export * from './ScrollContainer';
 export * from './Select';

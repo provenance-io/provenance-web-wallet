@@ -1,6 +1,11 @@
 import { RequiresAuth } from 'Page';
 import { APP_URL } from 'consts';
-import { DASHBOARD } from './dashboard';
+import {
+  DASHBOARD,
+  DASHBOARD_MENU,
+  DASHBOARD_RECEIVE,
+  DASHBOARD_CONNECTION_DETAILS,
+} from './dashboard';
 import { LANDING } from './landing';
 import { ACTIONS } from './actions';
 import { ASSET } from './asset';
@@ -28,6 +33,9 @@ export const routes = [
     children: [
       LANDING,
       DASHBOARD,
+      DASHBOARD_MENU,
+      DASHBOARD_RECEIVE,
+      DASHBOARD_CONNECTION_DETAILS,
       ACTIONS,
       ASSET,
       TRANSACTIONS,

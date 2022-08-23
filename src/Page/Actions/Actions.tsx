@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import { FooterNav, Content, Sprite, Typo } from 'Components';
+import { FooterNav, Content, Sprite, Typo, Header } from 'Components';
 import { format } from 'date-fns';
 import { ICON_NAMES, NOTIFICATION_URL } from 'consts';
 import { COLORS } from 'theme';
@@ -131,12 +131,13 @@ export const Actions: React.FC = () => {
 
   return (
     <Content>
-      <Typo type="headline2">Pending Actions</Typo>
+      <Header title="" />
+      <Typo type="headline2">Notifications</Typo>
       {totalPendingRequests ? (
         <AllRequests>{renderPendingRequests()}</AllRequests>
       ) : (
         <Typo type="body" marginTop="50px">
-          You have no pending requests at this time.
+          You have no notifications at this time.
         </Typo>
       )}
       <FooterNav />

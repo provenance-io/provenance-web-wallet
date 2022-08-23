@@ -25,4 +25,5 @@ export * from './ScrollContainer';
 export * from './Select';
 export * from './Sprite';
 export * from './SpriteSheet';
+export * from './Tabs';
 export * from './Typo';

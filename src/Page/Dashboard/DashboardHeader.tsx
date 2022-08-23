@@ -100,6 +100,7 @@ export const DashboardHeader: React.FC = () => {
             onClick={viewConnection}
             onKeyPress={(e) => keyPress(e, viewConnection)}
             tabIndex={0}
+            title="Connected to dApp"
           >
             <Sprite
               icon={ICON_NAMES.CHAIN}
@@ -112,6 +113,7 @@ export const DashboardHeader: React.FC = () => {
           onClick={viewNotifications}
           onKeyPress={(e) => keyPress(e, viewNotifications)}
           tabIndex={0}
+          title="Notifications"
         >
           <Sprite icon={ICON_NAMES.NOTIFICATION} size="3.1rem" />
           {!!totalPendingRequests && (

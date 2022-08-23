@@ -2,13 +2,15 @@
 * _(Priority: 1 - 10)_
 
 ## Current Branch Tasks/Changes
-* Create Notification Bell/Pages [IN_PROGRESS]
+* Be able to go "back" out of pending tx action when nonpopup view [IN_PROGRESS]
+* Create Notification Bell/Pages [DONE]
   - Remove "Actions" from footer [DONE]
   - Create new bell icon with notification counts [DONE]
   - Update "Actions" page to be new "Notifications" page [DONE]
-    - Tabs for "Actions" and "Notifications"
-      - Actions: WalletConnect actions
-      - Notifications: Non-WalletConnect actions (Multisig)
+    - New tabs component [DONE]
+    - Tabs for "Actions" and "Notifications" [DONE]
+      - Actions: WalletConnect actions [DONE]
+      - Notifications: Non-WalletConnect actions (Multisig) [DONE]
 * Dashboard background should have image [DONE]
 * Re-style Dashboard page to match designs [DONE]
 * Update active connection (dApp) extension icon color [DONE]

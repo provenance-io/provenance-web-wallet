@@ -1,17 +1,18 @@
 import styled from 'styled-components';
-import { FooterNav, Content, Sprite, Typo, Header } from 'Components';
+import { FooterNav, Content, Sprite, Typo, Header, Tabs } from 'Components';
 import { format } from 'date-fns';
 import { ICON_NAMES, NOTIFICATION_URL, DASHBOARD_URL } from 'consts';
 import { COLORS } from 'theme';
 import circleIcon from 'images/circle-icon.svg';
 import { useNavigate } from 'react-router';
 import { useWalletConnect } from 'redux/hooks';
+import { useState } from 'react';
 
 const RequestItem = styled.div`
   display: flex;
   align-items: center;
   cursor: pointer;
-  border-top: 1px solid ${COLORS.NEUTRAL_600};
+  border-bottom: 1px solid ${COLORS.NEUTRAL_600};
   padding: 16px;
   box-sizing: content-box;
   transition: 250ms all;
@@ -53,7 +54,9 @@ const RequestArrow = styled.div`
 
 export const Actions: React.FC = () => {
   const navigate = useNavigate();
-  const { pendingRequests, totalPendingRequests } = useWalletConnect();
+  const { pendingRequests, totalPendingRequests, connector } = useWalletConnect();
+  const totalNotificationRequests = 0;
+  const [activeTab, setActiveTab] = useState(0);
 
   const getMethodDisplayName = (rawName: string) => {
     switch (rawName) {
@@ -81,8 +84,8 @@ export const Actions: React.FC = () => {
       const requestDate = targetRequest?.date
         ? format(new Date(targetRequest.date), 'MMM d, h:mm:ss a')
         : 'N/A';
-      const peerMeta = targetRequest?.params[0]?.peerMeta || { icons: [] };
-      const peerIcon = peerMeta?.icons[0] || '';
+      const peerMeta = connector?.peerMeta || { icons: [] };
+      const peerIcon = peerMeta.icons[0] || '';
 
       return (
         <RequestItem
@@ -129,17 +132,31 @@ export const Actions: React.FC = () => {
     */
   };
 
+  const renderActions = () =>
+    totalPendingRequests ? (
+      <AllRequests>{renderPendingRequests()}</AllRequests>
+    ) : (
+      <Typo type="footnote">No actions at this time</Typo>
+    );
+  const renderNotifications = () =>
+    totalNotificationRequests ? (
+      <AllRequests>Notifications here</AllRequests>
+    ) : (
+      <Typo type="footnote">No notifications at this time</Typo>
+    );
+
   return (
     <Content>
       <Header title="" backLocation={DASHBOARD_URL} />
-      <Typo type="headline2">Notifications</Typo>
-      {totalPendingRequests ? (
-        <AllRequests>{renderPendingRequests()}</AllRequests>
-      ) : (
-        <Typo type="body" marginTop="50px">
-          You have no notifications at this time.
-        </Typo>
-      )}
+      <Tabs
+        tabs={[
+          `Actions (${totalPendingRequests})`,
+          `Notifications (${totalNotificationRequests})`,
+        ]}
+        activeIndex={activeTab}
+        setActiveIndex={setActiveTab}
+      />
+      {activeTab === 0 ? renderActions() : renderNotifications()}
       <FooterNav />
     </Content>
   );

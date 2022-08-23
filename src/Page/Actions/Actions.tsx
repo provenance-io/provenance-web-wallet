@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 import { FooterNav, Content, Sprite, Typo, Header } from 'Components';
 import { format } from 'date-fns';
-import { ICON_NAMES, NOTIFICATION_URL } from 'consts';
+import { ICON_NAMES, NOTIFICATION_URL, DASHBOARD_URL } from 'consts';
 import { COLORS } from 'theme';
 import circleIcon from 'images/circle-icon.svg';
 import { useNavigate } from 'react-router';
@@ -131,7 +131,7 @@ export const Actions: React.FC = () => {
 
   return (
     <Content>
-      <Header title="" />
+      <Header title="" backLocation={DASHBOARD_URL} />
       <Typo type="headline2">Notifications</Typo>
       {totalPendingRequests ? (
         <AllRequests>{renderPendingRequests()}</AllRequests>

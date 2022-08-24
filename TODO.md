@@ -2,7 +2,7 @@
 * _(Priority: 1 - 10)_
 
 ## Current Branch Tasks/Changes
-* Be able to go "back" out of pending tx action when nonpopup view [IN_PROGRESS]
+* Be able to go "back" out of pending tx action when nonpopup view [DONE]
 * Create Notification Bell/Pages [DONE]
   - Remove "Actions" from footer [DONE]
   - Create new bell icon with notification counts [DONE]

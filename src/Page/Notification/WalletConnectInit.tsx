@@ -5,7 +5,7 @@ import { buildJWT, trimAddress, trimString } from 'utils';
 import { ICON_NAMES, CHAINID_TESTNET } from 'consts';
 import circleIcon from 'images/circle-icon.svg';
 import { useActiveAccount, useWalletConnect, useAccount } from 'redux/hooks';
-import { BIP32Interface, EventPayload } from 'types';
+import { BIP32Interface, WCInitEventPayload } from 'types';
 import { COLORS } from 'theme';
 
 const ConnectIcon = styled.div`
@@ -40,21 +40,14 @@ const AccountSelectPopup = styled.div`
 `;
 
 interface Props {
-  payload: EventPayload;
+  payload: WCInitEventPayload;
   closeWindow: () => void;
 }
 
 export const WalletConnectInit: React.FC<Props> = ({ payload, closeWindow }) => {
   const [useFallbackIcon, setUseFallbackIcon] = useState(false);
   const [showSelectAccountMenu, setShowSelectAccountMenu] = useState(false);
-  const {
-    peerMeta = {
-      name: 'N/A',
-      url: 'N/A',
-      icons: [],
-    },
-  } = payload?.params[0];
-  const { name, url, icons } = peerMeta;
+  const { name = 'N/A', url = 'N/A', icons = [] } = payload?.params[0].peerMeta;
   const { connector, saveWalletconnectData, connectionDuration } =
     useWalletConnect();
   const { accounts, setActiveAccount } = useAccount();

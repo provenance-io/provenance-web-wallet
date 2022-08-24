@@ -1,7 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
 import { ICON_NAMES } from 'consts';
-import { COLORS } from 'theme';
 
 const Svg = styled.svg`
   display: none;
@@ -14,6 +13,14 @@ const Svg = styled.svg`
  */
 export const SpriteSheet = () => (
   <Svg xmlns="http://www.w3.org/2000/svg">
+    <g id={ICON_NAMES.ARROW_TALL}>
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 7 14">
+        <path
+          fill="currentColor"
+          d="m.96 4.58 2.55-4 2.53 4-.63.31-1.47-1.56v9.7h-.85v-9.7L1.61 4.9l-.65-.31Z"
+        />
+      </svg>
+    </g>
     <g id={ICON_NAMES.ARROW}>
       <svg viewBox="0 0 16 16" fill="none">
         <path
@@ -24,17 +31,31 @@ export const SpriteSheet = () => (
         />
       </svg>
     </g>
-    <g id={ICON_NAMES.ARROW_TALL}>
-      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 7 14">
-        <path
-          fill="currentColor"
-          d="m.96 4.58 2.55-4 2.53 4-.63.31-1.47-1.56v9.7h-.85v-9.7L1.61 4.9l-.65-.31Z"
-        />
-      </svg>
-    </g>
     <g id={ICON_NAMES.CARET}>
       <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 5">
         <path fill="currentColor" d="M10 0 5 5 0 0h10Z" />
+      </svg>
+    </g>
+    <g id={ICON_NAMES.CHAIN}>
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 28 28">
+        <circle cx="14" cy="14" r="13.71" stroke="currentColor" strokeWidth=".58" />
+        <g clipPath="url(#a)">
+          <path
+            fill="currentColor"
+            fillRule="evenodd"
+            d="m9.38 12.82-.01-.01-.05-.05a2.27 2.27 0 0 1-.47-.9c-.14-.52-.13-1.3.8-2.23.92-.92 1.7-.94 2.24-.79a2.39 2.39 0 0 1 .94.52l.54.54a.58.58 0 1 0 .83-.83l-.54-.53-.4.4.4-.4v-.01h-.01a2.09 2.09 0 0 0-.1-.1 3.46 3.46 0 0 0-1.35-.71c-.94-.26-2.16-.14-3.38 1.08-1.22 1.22-1.35 2.43-1.1 3.37.24.88.8 1.44.83 1.47l2.08 2.08c.64.65 1.47.99 2.35.94a3.81 3.81 0 0 0 2.5-1.2.58.58 0 1 0-.83-.83 2.7 2.7 0 0 1-1.73.87 1.92 1.92 0 0 1-1.46-.6l-2.08-2.08Zm9.25 2.34h.02a1.63 1.63 0 0 1 .19.25c.11.17.25.41.32.7.15.53.13 1.32-.8 2.24-.92.92-1.7.93-2.24.79a2.39 2.39 0 0 1-.94-.52l-.54-.54a.58.58 0 0 0-.83.83l.54.53.4-.4-.4.4.01.01a1.34 1.34 0 0 0 .1.1 3.45 3.45 0 0 0 1.35.71c.94.26 2.16.13 3.38-1.09 1.22-1.21 1.35-2.43 1.1-3.36a3.5 3.5 0 0 0-.83-1.48l-2.08-2.08a3.08 3.08 0 0 0-2.35-.94c-.87.04-1.74.46-2.5 1.21a.58.58 0 1 0 .83.83c.6-.6 1.2-.85 1.73-.87.52-.03 1.04.17 1.47.6l2.07 2.08Z"
+            clipRule="evenodd"
+          />
+        </g>
+        <defs>
+          <clipPath id="a">
+            <path
+              fill="currentColor"
+              d="M0 0h12.83v12.83H0z"
+              transform="translate(7.58 7.58)"
+            />
+          </clipPath>
+        </defs>
       </svg>
     </g>
     <g id={ICON_NAMES.CHECK}>
@@ -83,6 +104,15 @@ export const SpriteSheet = () => (
         />
       </svg>
     </g>
+    <g id={ICON_NAMES.INFO}>
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        viewBox="0 0 24 24"
+        fill="currentColor"
+      >
+        <path d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z" />
+      </svg>
+    </g>
     <g id={ICON_NAMES.IN_PROGRESS}>
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
         <circle
@@ -101,6 +131,28 @@ export const SpriteSheet = () => (
         <circle cx="2" cy="2" r="2" fill="currentColor" />
         <circle cx="2" cy="10" r="2" fill="currentColor" />
         <circle cx="2" cy="18" r="2" fill="currentColor" />
+      </svg>
+    </g>
+    <g id={ICON_NAMES.NOTIFICATION}>
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 28 28">
+        <mask
+          id="a"
+          width="20"
+          height="20"
+          x="4"
+          y="4"
+          fill="#000"
+          maskUnits="userSpaceOnUse"
+        >
+          <path fill="currentColor" d="M4 4h20v20H4z" />
+          <path d="M7 15.4C7 10.3 9 5 14 5s7 5.3 7 10.4c0 6 2 7.6 2 7.6H5s2-2.5 2-7.6Z" />
+        </mask>
+        <path
+          fill="currentColor"
+          d="m5 23-.78-.62A1 1 0 0 0 5 24v-1Zm18 0v1a1 1 0 0 0 .62-1.78L23 23ZM14 4c-2.93 0-4.98 1.59-6.24 3.8C6.52 9.95 6 12.74 6 15.4h2c0-2.44.48-4.85 1.5-6.61C10.47 7.07 11.92 6 14 6V4ZM6 15.4c0 2.41-.47 4.19-.93 5.34a8.9 8.9 0 0 1-.85 1.63v.01L5 23l.78.62.02-.02a1.95 1.95 0 0 0 .1-.15c.07-.1.17-.23.27-.41.21-.36.49-.88.76-1.56C7.47 20.1 8 18.08 8 15.4H6ZM5 24h18v-2H5v2Zm18-1 .63-.78.01.01-.01-.01a4.72 4.72 0 0 1-.7-1.17c-.45-1-.93-2.76-.93-5.65h-2c0 3.11.52 5.15 1.08 6.45a6.7 6.7 0 0 0 1.12 1.77 2.42 2.42 0 0 0 .15.14l.01.01h.01v.01L23 23Zm-1-7.6c0-2.65-.52-5.44-1.76-7.6C18.98 5.58 16.94 4 14 4v2c2.07 0 3.52 1.07 4.5 2.79 1.02 1.76 1.5 4.17 1.5 6.61h2Z"
+          mask="url(#a)"
+        />
+        <path fill="currentColor" d="M14.5 3a.5.5 0 0 0-1 0h1Zm0 1.5V3h-1v1.5h1Z" />
       </svg>
     </g>
     <g id={ICON_NAMES.PROVENANCE}>
@@ -149,23 +201,6 @@ export const SpriteSheet = () => (
         />
       </svg>
     </g>
-    <g id={ICON_NAMES.CHAIN}>
-      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 48 48">
-        <circle
-          cx="24"
-          cy="24"
-          r="23.5"
-          fill={COLORS.SECONDARY_350}
-          stroke={COLORS.SECONDARY_400}
-        />
-        <path
-          fill={COLORS.NEUTRAL_750}
-          fillRule="evenodd"
-          d="m16.07 21.98-.01-.02a3.93 3.93 0 0 1-.89-1.62c-.25-.9-.22-2.25 1.36-3.83s2.93-1.6 3.85-1.35a4.1 4.1 0 0 1 1.62.88v.01l.92.91a1 1 0 1 0 1.42-1.41l-.92-.92-.7.7.7-.7-.02-.02a2.34 2.34 0 0 0-.19-.16 5.93 5.93 0 0 0-2.3-1.22c-1.6-.44-3.7-.23-5.79 1.86-2.09 2.09-2.31 4.17-1.88 5.77a6.01 6.01 0 0 0 1.42 2.53l3.56 3.57a5.28 5.28 0 0 0 4.03 1.6 6.54 6.54 0 0 0 4.27-2.06 1 1 0 0 0-1.4-1.42 4.62 4.62 0 0 1-2.97 1.49 3.3 3.3 0 0 1-2.51-1.03l-3.57-3.56Zm15.88 4 .01.02a2.67 2.67 0 0 1 .33.42c.2.3.43.7.56 1.2.25.9.22 2.25-1.36 3.84-1.58 1.58-2.93 1.6-3.85 1.35a4.1 4.1 0 0 1-1.62-.89L25.1 31a1 1 0 0 0-1.42 1.41l.92.92.7-.7-.7.7.02.02a2.34 2.34 0 0 0 .19.17 5.9 5.9 0 0 0 2.3 1.21c1.6.44 3.7.23 5.8-1.86 2.08-2.09 2.3-4.17 1.87-5.77a6.01 6.01 0 0 0-1.42-2.53l-3.56-3.56a5.29 5.29 0 0 0-4.03-1.62c-1.5.08-2.99.79-4.27 2.07a1 1 0 0 0 1.41 1.42c1-1 2.04-1.44 2.96-1.49.9-.04 1.78.3 2.51 1.03l3.57 3.56Z"
-          clipRule="evenodd"
-        />
-      </svg>
-    </g>
     <g id={ICON_NAMES.WARNING}>
       <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 23">
         <path
@@ -174,15 +209,6 @@ export const SpriteSheet = () => (
           d="M13.5 1.4a1.7 1.7 0 0 0-3 0L.2 19.8c-.6 1.2.2 2.7 1.6 2.7h20.4c1.4 0 2.2-1.5 1.6-2.7L13.5 1.4ZM13 9.5v5a1 1 0 1 1-2 0v-5a1 1 0 1 1 2 0Zm-1 9a1 1 0 1 0 0-2 1 1 0 0 0 0 2Z"
           clipRule="evenodd"
         />
-      </svg>
-    </g>
-    <g id={ICON_NAMES.INFO}>
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        viewBox="0 0 24 24"
-        fill="currentColor"
-      >
-        <path d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z" />
       </svg>
     </g>
   </Svg>

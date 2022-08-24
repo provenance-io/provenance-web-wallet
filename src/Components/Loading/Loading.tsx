@@ -8,8 +8,8 @@ const rotateAnimation = keyframes`
   from { transform: rotate(0deg); }
   to { transform: rotate(360deg); }
 `;
-const InlineLoading = styled.div`
-  height: 150px;
+const InlineLoading = styled.div<{ height: string }>`
+  height: ${({ height }) => height};
   width: 100%;
   display: flex;
   align-items: center;
@@ -47,9 +47,15 @@ interface Props {
   className?: string;
   size?: string;
   fullscreen?: boolean;
+  height?: string;
 }
 
-export const Loading: React.FC<Props> = ({ className, size, fullscreen }) =>
+export const Loading: React.FC<Props> = ({
+  className,
+  size,
+  fullscreen,
+  height = '150px',
+}) =>
   fullscreen ? (
     <FullscreenLoading data-testid="loading">
       <RotationContainer>
@@ -57,7 +63,7 @@ export const Loading: React.FC<Props> = ({ className, size, fullscreen }) =>
       </RotationContainer>
     </FullscreenLoading>
   ) : (
-    <InlineLoading className={className} data-testid="loading">
+    <InlineLoading className={className} data-testid="loading" height={height}>
       <RotationContainer>
         <Sprite icon={ICON_NAMES.IN_PROGRESS} size={size || '5rem'} />
       </RotationContainer>

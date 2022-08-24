@@ -8,6 +8,7 @@ import {
   BottomFloat,
   ButtonGroup,
   Typo,
+  PillInline,
 } from 'Components';
 import { useNavigate } from 'react-router-dom';
 import {
@@ -22,7 +23,6 @@ import {
 } from 'consts';
 import { useAccount, useWalletConnect } from 'redux/hooks';
 import { keyPress, trimAddress } from 'utils';
-import { AccountNetwork } from 'types';
 import { COLORS } from 'theme';
 
 const WalletItem = styled.div<{ active?: boolean }>`
@@ -112,23 +112,6 @@ const WalletCopy = styled(CopyValue)`
   height: auto;
 `;
 
-const Pill = styled.div<{ network: AccountNetwork }>`
-  font-size: 1rem;
-  ${({ network }) =>
-    network === MAINNET_NETWORK
-      ? `
-    background: ${COLORS.SECONDARY_750};
-  `
-      : `
-    box-shadow: 0 0 0 1px ${COLORS.SECONDARY_500};
-    background: none;
-  `};
-  border-radius: 6px;
-  width: 60px;
-  text-align: center;
-  margin-left: 20px;
-`;
-
 export const DashboardMenu: React.FC = () => {
   const navigate = useNavigate();
   const { activeAccountId, accounts, setActiveAccount } = useAccount();
@@ -174,7 +157,11 @@ export const DashboardMenu: React.FC = () => {
             <AccountName>{name}</AccountName>
             <AccountAddress>{trimAddress(address!)}</AccountAddress>
           </WalletText>
-          <Pill network={network!}>{network}</Pill>
+          <PillInline
+            title={network!}
+            type={network === MAINNET_NETWORK ? 'primary' : 'secondary'}
+            active={address === activeAccountId}
+          />
         </WalletInfo>
         <WalletSubMenuIcon
           tabIndex={0}

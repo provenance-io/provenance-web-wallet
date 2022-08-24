@@ -1,52 +1,50 @@
 import styled from 'styled-components';
-import { FooterNav, Content, Sprite, Typo } from 'Components';
+import {
+  FooterNav,
+  Content,
+  Sprite,
+  Typo,
+  Header,
+  Tabs,
+  PillInline,
+} from 'Components';
 import { format } from 'date-fns';
-import { ICON_NAMES, NOTIFICATION_URL } from 'consts';
+import { ICON_NAMES, NOTIFICATION_URL, DASHBOARD_URL } from 'consts';
 import { COLORS } from 'theme';
-import circleIcon from 'images/circle-icon.svg';
 import { useNavigate } from 'react-router';
-import { useWalletConnect } from 'redux/hooks';
+import { useAccount, useActiveAccount, useWalletConnect } from 'redux/hooks';
+import { useState } from 'react';
+import { EventPayload, IClientMeta } from 'types';
+import { trimAddress } from 'utils';
 
+const AllRequests = styled.div``;
+const WalletAction = styled.div`
+  margin-bottom: 26px;
+`;
+const WalletContainer = styled.div`
+  display: flex;
+  align-items: center;
+  margin-bottom: 16px;
+`;
+const WalletInfo = styled.div`
+  flex-grow: 1;
+`;
 const RequestItem = styled.div`
   display: flex;
-  align-items: center;
   cursor: pointer;
-  border-top: 1px solid ${COLORS.NEUTRAL_600};
-  padding: 16px;
-  box-sizing: content-box;
+  padding: 20px;
   transition: 250ms all;
+  margin-bottom: 1px;
+  background: ${COLORS.NEUTRAL_700};
   &:hover {
-    background: ${COLORS.NEUTRAL_700};
+    background: ${COLORS.NEUTRAL_650};
   }
 `;
-const RequestIcon = styled.div`
-  height: 40px;
-  width: 40px;
-  flex-shrink: 0;
-  margin-right: 20px;
-  position: relative;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-`;
-const RequestIconBg = styled.img``;
-const RequestIconPeer = styled.img`
-  position: absolute;
-`;
-const AllRequests = styled.div``;
 const RequestData = styled.div`
-  flex-shrink: 0;
-`;
-const RequestTitle = styled.div`
-  font-size: 1.4rem;
-  margin-bottom: 8px;
-`;
-const RequestDate = styled.div`
-  font-size: 1rem;
+  flex-grow: 1;
 `;
 const RequestArrow = styled.div`
   display: flex;
-  width: 100%;
   justify-content: flex-end;
   align-items: center;
 `;
@@ -54,6 +52,10 @@ const RequestArrow = styled.div`
 export const Actions: React.FC = () => {
   const navigate = useNavigate();
   const { pendingRequests, totalPendingRequests } = useWalletConnect();
+  const { address: activeAddress } = useActiveAccount();
+  const { accounts } = useAccount();
+  const totalNotificationRequests = 0;
+  const [activeTab, setActiveTab] = useState(0);
 
   const getMethodDisplayName = (rawName: string) => {
     switch (rawName) {
@@ -68,77 +70,101 @@ export const Actions: React.FC = () => {
     }
   };
 
-  const handleRequestClick = (id: string) => {
+  const handleRequestClick = (id: string | number) => {
     navigate(`${NOTIFICATION_URL}?pid=${id}`);
   };
 
-  const renderPendingRequests = () => {
-    const allPendingIds = Object.keys(pendingRequests);
-    // Loop through each pending request ID to create it
-    return allPendingIds.map((pendingId: string) => {
-      const targetRequest = pendingRequests[pendingId];
-      const methodName = getMethodDisplayName(targetRequest.method!);
-      const requestDate = targetRequest?.date
-        ? format(new Date(targetRequest.date), 'MMM d, h:mm:ss a')
-        : 'N/A';
-      const peerMeta = targetRequest?.params[0]?.peerMeta || { icons: [] };
-      const peerIcon = peerMeta?.icons[0] || '';
-
+  const renderWalletDetails = () => {
+    // Pending actions will need to be changed to be stored by address, then by id.
+    // For now, just loop through all the pending requests and create a new array of wallets
+    const pendingWallets: { [key: string]: EventPayload[] } = {};
+    Object.keys(pendingRequests).forEach((pendingId: string) => {
+      const targetRequest: EventPayload = pendingRequests[pendingId];
+      const { address }: IClientMeta = JSON.parse(targetRequest.params[0]!);
+      // Add target request into wallet request list
+      pendingWallets[address] = pendingWallets[address]
+        ? pendingWallets[address]
+        : [];
+      pendingWallets[address].push(targetRequest);
+    });
+    // Loop through each wallet and build out all pending actions associated with it
+    return Object.keys(pendingWallets).map((address: string) => {
+      const allRequests = pendingWallets[address];
+      const isActive = address === activeAddress;
+      // Filter through all existing accounts and find the matching address to get the name
+      const { name = 'N/A' } = accounts.find(
+        ({ address: accountAddress }) => address === accountAddress
+      )!;
       return (
-        <RequestItem
-          onClick={() => {
-            handleRequestClick(pendingId);
-          }}
-        >
-          <RequestIcon>
-            <RequestIconBg src={circleIcon} alt="request background" />
-            {!!peerIcon && <RequestIconPeer src={peerIcon} alt="peer logo" />}
-          </RequestIcon>
-          <RequestData>
-            <RequestTitle>{methodName}</RequestTitle>
-            <RequestDate>{requestDate}</RequestDate>
-          </RequestData>
-          <RequestArrow>
-            <Sprite icon={ICON_NAMES.CHEVRON} size="1rem" />
-          </RequestArrow>
-        </RequestItem>
+        <WalletAction>
+          <WalletContainer>
+            <WalletInfo>
+              <Typo type="body" bold align="left">
+                {name}
+              </Typo>
+              <Typo type="footnote" color="WHITE" align="left">
+                ({trimAddress(address)}) &#8226; {allRequests.length} Action
+                {allRequests.length > 1 && 's'}
+              </Typo>
+            </WalletInfo>
+            {isActive && <PillInline title="Active" active />}
+          </WalletContainer>
+          {allRequests.map((pendingRequest) => {
+            const methodName = getMethodDisplayName(pendingRequest.method!);
+            const requestDate = pendingRequest?.date
+              ? format(new Date(pendingRequest.date), 'MMM d, h:mm:ss a')
+              : 'N/A';
+
+            return (
+              <RequestItem
+                onClick={() => {
+                  handleRequestClick(pendingRequest.id);
+                }}
+              >
+                <RequestData>
+                  <Typo type="body" align="left">
+                    {methodName}
+                  </Typo>
+                  <Typo type="footnote" align="left">
+                    {requestDate}
+                  </Typo>
+                </RequestData>
+                <RequestArrow>
+                  <Sprite icon={ICON_NAMES.CHEVRON} size="1rem" />
+                </RequestArrow>
+              </RequestItem>
+            );
+          })}
+        </WalletAction>
       );
     });
-    /*
-      {
-      "id": 1652309210026083,
-      "jsonrpc": "2.0",
-      "method": "session_request",
-      "date": 1230234505443,
-      "params": [
-        {
-            "chainId": null,
-            "peerId": "e681ebd0-38e5-46fc-b8ac-4f3916f1f7e8",
-            "peerMeta": {
-                "description": "Connect your existing Figure or Provenance wallet using WalletConnect",
-                "icons": [
-                    "https://test.figure.tech/walletconnect/figure-favicons/favicon-32x32.png",
-                    "https://test.figure.tech/walletconnect/figure-favicons/android-icon-192x192.png"
-                ],
-                "name": "Figure Tech | WalletConnect",
-                "url": "https://test.figure.tech"
-              }
-            }
-          ]
-        } 
-    */
   };
+
+  const renderActions = () =>
+    totalPendingRequests ? (
+      <AllRequests>{renderWalletDetails()}</AllRequests>
+    ) : (
+      <Typo type="footnote">No actions at this time</Typo>
+    );
+  const renderNotifications = () =>
+    totalNotificationRequests ? (
+      <AllRequests>Notifications here</AllRequests>
+    ) : (
+      <Typo type="footnote">No notifications at this time</Typo>
+    );
 
   return (
     <Content>
-      <Typo type="headline2">Pending Actions</Typo>
-      {totalPendingRequests ? (
-        <AllRequests>{renderPendingRequests()}</AllRequests>
-      ) : (
-        <Typo type="body" marginTop="50px">
-          You have no pending requests at this time.
-        </Typo>
-      )}
+      <Header title="" backLocation={DASHBOARD_URL} />
+      <Tabs
+        tabs={[
+          `Actions (${totalPendingRequests})`,
+          `Notifications (${totalNotificationRequests})`,
+        ]}
+        activeIndex={activeTab}
+        setActiveIndex={setActiveTab}
+      />
+      {activeTab === 0 ? renderActions() : renderNotifications()}
       <FooterNav />
     </Content>
   );

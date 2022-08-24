@@ -1,10 +1,9 @@
-import { EventPayload } from 'types';
+import { EventPayload, ExtensionTypes } from 'types';
 import styled from 'styled-components';
 import {
   unpackDisplayObjectFromWalletMessage,
   buildBroadcastTxRequest,
   broadcastTx,
-  SupportedDenoms,
   getAccountInfo,
   msgAnyB64toAny,
   CoinAsObject,
@@ -19,6 +18,7 @@ import {
   Loading,
   GasAdjustment,
   Typo,
+  Header,
 } from 'Components';
 import { useEffect, useState } from 'react';
 import { format } from 'date-fns';
@@ -30,7 +30,7 @@ import {
   convertHexToUtf8,
   hashFormat,
 } from 'utils';
-import { BIP32Interface, NotificationType } from 'types';
+import { BIP32Interface, NotificationType, IClientMeta } from 'types';
 import { ICON_NAMES, DEFAULT_GAS_ADJUSTMENT } from 'consts';
 import { COLORS } from 'theme';
 
@@ -56,18 +56,7 @@ interface Props {
   payload: EventPayload;
   closeWindow: () => void;
   changeNotificationPage: (type: NotificationType, data: {}) => void;
-}
-interface ParsedMetadata {
-  address?: string;
-  description?: string;
-  messageAnyB64?: string;
-  date?: number;
-  memo?: string;
-  gasPrice?: {
-    gasPrice: number;
-    gasPriceDenom: SupportedDenoms;
-  };
-  type?: string;
+  extensionType: ExtensionTypes;
 }
 interface ParsedTxMessage {
   [fieldName: string]: any;
@@ -77,12 +66,13 @@ export const TransactionRequest: React.FC<Props> = ({
   payload,
   closeWindow,
   changeNotificationPage,
+  extensionType,
 }) => {
   const { connector, removePendingRequest, bumpWCDuration } = useWalletConnect();
   const { customGRPCApi } = useSettings();
   const { address: activeAccountAddress, publicKey: activeAccountPublicKey } =
     useActiveAccount();
-  const [parsedMetadata, setParsedMetadata] = useState<ParsedMetadata>({});
+  const [parsedMetadata, setParsedMetadata] = useState<IClientMeta>();
   const [txMsgAny, setTxMsgAny] = useState<any[]>([]);
   const [txFeeEstimate, setTxFeeEstimate] = useState<CoinAsObject[]>([]);
   const [txGasEstimate, setTxGasEstimate] = useState<number>(0);
@@ -103,7 +93,7 @@ export const TransactionRequest: React.FC<Props> = ({
       // If we are disconnected, the params are changed into an object with a message stating "Session disconnected"
       // Normally, the message comes through and the value is a string, when it isn't do nothing
       if (typeof params[0] === 'string') {
-        const [metadataString, ...hexEncodedMessages] = params as string[];
+        const [metadataString, ...hexEncodedMessages] = params;
         // Gather all messageAnys together
         const msgAnyArray: any[] = [];
         // Gather all parsedTxMessages
@@ -111,7 +101,7 @@ export const TransactionRequest: React.FC<Props> = ({
         // Gather all unpackedTxMaggeAnys
         const parsedTxMessageArray: ParsedTxMessage[] = [];
         // First parse out and save the metadata
-        const newParsedMetadata = JSON.parse(metadataString);
+        const newParsedMetadata: IClientMeta = JSON.parse(metadataString);
         setParsedMetadata(newParsedMetadata);
         // Loop through each hexEncodedMessage and build it out
         hexEncodedMessages.forEach((hexEncodedMessage) => {
@@ -206,7 +196,7 @@ export const TransactionRequest: React.FC<Props> = ({
   const handleApprove = async (masterKey: BIP32Interface) => {
     // Connector must exist to respond to request
     if (connector) {
-      const address = parsedMetadata.address!;
+      const address = parsedMetadata!.address;
       const privateKey = masterKey.privateKey!;
       const publicKey = masterKey.publicKey;
       const wallet = { address, privateKey, publicKey };
@@ -219,7 +209,7 @@ export const TransactionRequest: React.FC<Props> = ({
         feeDenom: parsedMetadata?.gasPrice?.gasPriceDenom || 'nhash',
         feeEstimate: txFeeEstimate,
         gasLimit: txGasEstimate,
-        memo: parsedMetadata.memo || '',
+        memo: parsedMetadata!.memo || '',
         msgAny: txMsgAny,
         wallet,
       });
@@ -289,12 +279,16 @@ export const TransactionRequest: React.FC<Props> = ({
 
   return (
     <Content>
+      {extensionType === 'extension' && <Header />}
       <Typo marginBottom="20px" type="headline2">
         Transaction
       </Typo>
       <FullData data={unpackedTxMessageAnys[msgPage]} />
       <GasAdjustment value={gasAdjustment} onChange={changeGasAdjustmentFee} />
-      <List message={renderMessagePage()} maxHeight="274px" />
+      <List
+        message={renderMessagePage()}
+        maxHeight={extensionType === 'extension' ? '230px' : '274px'}
+      />
       <PaginationDisplay>
         {maxPages > 1 && (
           <Sprite

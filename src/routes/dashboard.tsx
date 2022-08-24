@@ -14,11 +14,21 @@ import {
 
 export const DASHBOARD = {
   path: DASHBOARD_URL,
+  element: <Page bgImage={true} />,
+  children: [{ index: true, element: <Dashboard /> }],
+};
+export const DASHBOARD_MENU = {
+  path: DASHBOARD_MENU_URL,
   element: <Page />,
-  children: [
-    { index: true, element: <Dashboard /> },
-    { path: DASHBOARD_RECEIVE_URL, element: <DashboardReceive /> },
-    { path: DASHBOARD_MENU_URL, element: <DashboardMenu /> },
-    { path: DASHBOARD_CONNECTION_DETAILS_URL, element: <DashboardConnectionDetails /> },
-  ]
+  children: [{ index: true, element: <DashboardMenu /> }],
+};
+export const DASHBOARD_RECEIVE = {
+  path: DASHBOARD_RECEIVE_URL,
+  element: <Page />,
+  children: [{ index: true, element: <DashboardReceive /> }],
+};
+export const DASHBOARD_CONNECTION_DETAILS = {
+  path: DASHBOARD_CONNECTION_DETAILS_URL,
+  element: <Page />,
+  children: [{ index: true, element: <DashboardConnectionDetails /> }],
 };

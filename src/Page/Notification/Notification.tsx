@@ -3,7 +3,7 @@ import { useNavigate, useSearchParams } from 'react-router-dom';
 import { ACTIONS_URL, WC_NOTIFICATION_TYPES } from 'consts';
 import { useEffect, useState } from 'react';
 import { useAccount, useWalletConnect } from 'redux/hooks';
-import { EventPayload, WCNotification } from 'types';
+import { EventPayload, WCNotification, WCInitEventPayload } from 'types';
 import { Loading } from 'Components';
 import { WalletConnectInit } from './WalletConnectInit';
 import { SignRequest } from './SignRequest';
@@ -14,16 +14,25 @@ import { TransactionComplete } from './TransactionComplete';
 import { MissingAccount } from './MissingAccount';
 import { Disconnected } from './Disconnected';
 
-interface PageProps {
-  payload: EventPayload;
+type PayloadTypes = EventPayload | WCInitEventPayload;
+
+interface DefaultProps {
   closeWindow: () => void;
   changeNotificationPage: (type: NotificationType, data: {}) => void;
   pageData: {};
+  extensionType: ExtensionTypes;
 }
+
+type PageProps = DefaultProps & {
+  payload: EventPayload;
+};
+type WCInitPageProps = DefaultProps & {
+  payload: WCInitEventPayload;
+};
 
 export const Notification: React.FC = () => {
   const [notificationType, setNotificationType] = useState<NotificationType>('');
-  const [eventPayload, setEventPayload] = useState<EventPayload | null>(null);
+  const [eventPayload, setEventPayload] = useState<PayloadTypes | null>(null);
   const [extensionType, setExtensionType] = useState<ExtensionTypes>('');
   const [pageData, setPageData] = useState({});
   const [searchParams, setSearchParams] = useSearchParams();
@@ -151,11 +160,14 @@ export const Notification: React.FC = () => {
       closeWindow,
       changeNotificationPage,
       pageData,
+      extensionType,
     };
     // If we get a disconnect due to rejecting the connection, just return nothing (don't flash content)
     if (
       eventPayload &&
-      eventPayload.params[0]?.message === 'Connection rejected by user'
+      eventPayload.method === 'session_request' &&
+      (eventPayload as WCInitEventPayload).params[0]?.peerMeta?.message ===
+        'Connection rejected by user'
     ) {
       return <></>;
     }
@@ -164,7 +176,7 @@ export const Notification: React.FC = () => {
       case 'missing_account':
         return <MissingAccount {...(pageProps as PageProps)} />;
       case 'session_request':
-        return <WalletConnectInit {...(pageProps as PageProps)} />;
+        return <WalletConnectInit {...(pageProps as WCInitPageProps)} />;
       case 'provenance_sendTransaction':
         return <TransactionRequest {...(pageProps as PageProps)} />;
       case 'provenance_sign':

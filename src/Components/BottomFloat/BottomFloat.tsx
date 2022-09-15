@@ -1,8 +1,8 @@
 import styled from 'styled-components';
 
-const Container = styled.div`
+const Container = styled.div<{ bottom: string }>`
   position: fixed;
-  bottom: 0;
+  bottom: ${({ bottom }) => bottom};
   left: 0;
   width: 100%;
   z-index: 20;
@@ -11,6 +11,9 @@ const Container = styled.div`
 
 interface Props {
   children: React.ReactNode;
+  bottom?: string;
 }
 
-export const BottomFloat:React.FC<Props> = ({ children }) => <Container>{children}</Container>;
+export const BottomFloat: React.FC<Props> = ({ children, bottom = '0px' }) => (
+  <Container bottom={bottom}>{children}</Container>
+);

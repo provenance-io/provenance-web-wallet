@@ -59,14 +59,18 @@ interface ListProps {
   marginTop?: string;
   maxHeight?: string;
   type?: 'txcomplete';
+  showRawLog?: boolean;
 }
 
+// TODO: List should just take an array of fields in the order we want to show them
+// For now, going to just pass a boolean to show rawLog
 export const List = ({
   message,
   marginBottom,
   marginTop,
   maxHeight,
   type,
+  showRawLog,
 }: ListProps) => {
   const { address } = useActiveAccount();
   // Format specific names
@@ -77,6 +81,8 @@ export const List = ({
         return 'Tx Hash';
       case 'height':
         return 'Block Height';
+      case 'rawlog':
+        return 'Error';
       default:
         return key;
     }
@@ -125,6 +131,7 @@ export const List = ({
     'txhash',
     'height',
     'date',
+    showRawLog ? 'rawlog' : '',
   ];
   const filterKeysByType = (key: string) => {
     let result = true;

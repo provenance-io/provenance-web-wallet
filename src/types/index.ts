@@ -7,4 +7,5 @@ export * from './Notification';
 export * from './Routing';
 export * from './Settings';
 export * from './Statistics';
+export * from './Transaction';
 export * from './WalletConnect';

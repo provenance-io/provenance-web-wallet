@@ -8,10 +8,13 @@ import {
   Content,
   BottomFloat,
   ScrollContainer,
+  CopyValue,
+  Sprite,
 } from 'Components';
 import { COLORS } from 'theme';
 import { useAccount } from 'redux/hooks';
 import { createMnemonic } from 'utils';
+import { ICON_NAMES } from 'consts';
 
 const MnuemonicList = styled.div`
   display: flex;
@@ -73,8 +76,14 @@ export const SeedphraseValue = ({ nextUrl, previousUrl, progress }: Props) => {
         Make sure to record these words in the correct order, using the corresponding
         numbers.
       </Typo>
+      <CopyValue value={tempAccount?.mnemonic}>
+        <Typo type="bodyAlt">
+          Copy Seed&nbsp;
+          <Sprite icon={ICON_NAMES.COPY} size="1.2rem" />
+        </Typo>
+      </CopyValue>
       {tempAccount?.mnemonic ? (
-        <ScrollContainer height="318px" paddingBottom="0">
+        <ScrollContainer height="308px" paddingBottom="0">
           <MnuemonicList>
             {tempAccount.mnemonic.split(' ').map((word, index) => (
               <MnuemonicItem key={index}>

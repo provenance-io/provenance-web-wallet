@@ -1,22 +1,14 @@
 import { Typo, List, Content, BottomFloat, Button, FullData } from 'Components';
 import styled from 'styled-components';
-import { hashFormat, txMessageFormat } from 'utils';
+import { txMessageFormat } from 'utils';
 import checkSuccessIcon from 'images/check-success.svg';
 import checkWarningIcon from 'images/check-warning.svg';
 import { useWalletConnect } from 'redux/hooks';
+import { TxResults } from 'types';
 
-interface Amount {
-  amount: string | number;
-  denom: string;
-}
 interface Props {
   pageData: {
-    result?: {
-      amount?: string | number | Amount;
-      denom?: string;
-      platform?: string;
-      height?: number;
-    };
+    result?: TxResults;
   };
   closeWindow: () => void;
 }
@@ -32,39 +24,36 @@ const SuccessIcon = styled.img`
 export const TransactionComplete: React.FC<Props> = ({ pageData, closeWindow }) => {
   const { connector } = useWalletConnect();
   const { result = '' } = pageData;
+  // If code exists and it isn't 0, then we have an error
+  const isSuccess = !!result && !result?.code;
   const renderTxData = () => {
     if (result) {
       // Clone targetTx to make changes if needed
       const finalTxData = { ...result };
-      // If we have both amount and denom, combine into object and remove individual
-      if (finalTxData.amount && finalTxData.denom) {
-        const { amount, denom } = finalTxData;
-        const isHash = finalTxData.denom === 'nhash';
-        finalTxData.amount = {
-          amount: isHash ? hashFormat(amount as string) : (amount as string),
-          denom: isHash ? 'Hash' : denom,
-        };
-        delete finalTxData.denom;
-      }
       finalTxData.platform = connector?.peerMeta?.name || 'N/A';
       const formattedTx = txMessageFormat(finalTxData);
-      return <List message={formattedTx} maxHeight="270px" type="txcomplete" />;
+      return (
+        <List
+          message={formattedTx}
+          maxHeight="270px"
+          type="txcomplete"
+          showRawLog={!isSuccess}
+        />
+      );
     }
     return <Typo type="error">Unable to show transaction result details</Typo>;
   };
-
-  const isSuccess = result && result?.height;
 
   return (
     <Content>
       <SuccessIcon src={isSuccess ? checkSuccessIcon : checkWarningIcon} />
       <Typo type="title" align="center" marginTop="20px">
-        {isSuccess ? 'Transaction Complete' : 'Transaction Warning'}
+        {isSuccess ? 'Transaction Complete' : 'Transaction Failed'}
       </Typo>
       <Typo type="displayBody" align="center" marginTop="14px" marginBottom="20px">
         {isSuccess
           ? 'Your transaction details are below'
-          : 'Your transaction details indicate there might have been a problem, review the details below'}
+          : 'Your transaction has failed, review the details below'}
       </Typo>
       <FullData data={{ txRaw: JSON.stringify(result) }} />
       {renderTxData()}

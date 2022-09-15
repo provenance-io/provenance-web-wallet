@@ -7,6 +7,7 @@ import {
   Loading,
   ButtonGroup,
   ScrollContainer,
+  BottomFloat,
 } from 'Components';
 import styled from 'styled-components';
 import { useActiveAccount, useAddress } from 'redux/hooks';
@@ -36,7 +37,8 @@ export const Transactions = () => {
   } = useAddress();
   // Return 10 txs at a time each page
   const count = 6;
-  const maxPage = Math.ceil(transactionsTotalCount / count);
+  // Will always need to be 1 page at least (prevent "1/0" on load)
+  const maxPage = Math.ceil(transactionsTotalCount / count) || 1;
 
   // Fetch the current page of txs
   useEffect(() => {
@@ -64,41 +66,43 @@ export const Transactions = () => {
     });
 
   const renderPageButtons = () => (
-    <ButtonGroup direction="row" marginTop="20px" childWidth="30%">
-      <Button
-        icon={ICON_NAMES.ARROW}
-        iconLocation="left"
-        iconGap="6px"
-        iconSize="12px"
-        iconProps={{ spin: 0 }}
-        onClick={() => changePage(-1)}
-        disabled={page <= 1}
-        size="medium"
-      >
-        Previous
-      </Button>
-      <Button
-        icon={ICON_NAMES.ARROW}
-        iconLocation="right"
-        iconGap="6px"
-        iconSize="12px"
-        iconProps={{ spin: 180 }}
-        onClick={() => changePage(1)}
-        disabled={page >= maxPage}
-        size="medium"
-      >
-        Next
-      </Button>
-    </ButtonGroup>
+    <BottomFloat bottom="62px;">
+      <ButtonGroup direction="row" marginTop="20px" childWidth="30%">
+        <Button
+          icon={ICON_NAMES.ARROW}
+          iconLocation="left"
+          iconGap="6px"
+          iconSize="12px"
+          iconProps={{ spin: 0 }}
+          onClick={() => changePage(-1)}
+          disabled={page <= 1}
+          size="medium"
+        >
+          Previous
+        </Button>
+        <Button
+          icon={ICON_NAMES.ARROW}
+          iconLocation="right"
+          iconGap="6px"
+          iconSize="12px"
+          iconProps={{ spin: 180 }}
+          onClick={() => changePage(1)}
+          disabled={page >= maxPage}
+          size="medium"
+        >
+          Next
+        </Button>
+      </ButtonGroup>
+    </BottomFloat>
   );
 
   return (
     <Container>
       <Typo type="headline2">Transactions</Typo>
       <Typo type="bodyAlt" marginBottom="20px">
-        Page {page} / {maxPage}
+        {transactionsLoading ? `Loading Page ${page}` : `Page ${page} / ${maxPage}`}
       </Typo>
-      <ScrollContainer height="414px" paddingBottom="10px">
+      <ScrollContainer height="386px" paddingBottom="10px">
         {transactionsError ? (
           <Typo type="error">{transactionsError}</Typo>
         ) : transactionsLoading ? (

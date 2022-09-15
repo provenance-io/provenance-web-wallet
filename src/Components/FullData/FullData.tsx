@@ -1,3 +1,4 @@
+import { ScrollContainer } from 'Components/ScrollContainer';
 import { useState } from 'react';
 import styled from 'styled-components';
 import { COLORS } from 'theme';
@@ -29,7 +30,9 @@ export const FullData: React.FC<Props> = ({ data, title = 'Full Data JSON' }) =>
 
   return isOpen ? (
     <FullPagePopup title={title} close={toggleOpen}>
-      <pre>{JSON.stringify(data, null, 2)}</pre>
+      <ScrollContainer height="460px">
+        <pre>{JSON.stringify(data, null, 2)}</pre>
+      </ScrollContainer>
     </FullPagePopup>
   ) : (
     <DataButton onClick={toggleOpen}>Data</DataButton>

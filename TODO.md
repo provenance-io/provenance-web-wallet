@@ -2,18 +2,10 @@
 * _(Priority: 1 - 10)_
 
 ## Current Branch Tasks/Changes
-* Be able to go "back" out of pending tx action when nonpopup view [DONE]
-* Create Notification Bell/Pages [DONE]
-  - Remove "Actions" from footer [DONE]
-  - Create new bell icon with notification counts [DONE]
-  - Update "Actions" page to be new "Notifications" page [DONE]
-    - New tabs component [DONE]
-    - Tabs for "Actions" and "Notifications" [DONE]
-      - Actions: WalletConnect actions [DONE]
-      - Notifications: Non-WalletConnect actions (Multisig) [DONE]
-* Dashboard background should have image [DONE]
-* Re-style Dashboard page to match designs [DONE]
-* Update active connection (dApp) extension icon color [DONE]
+* Don't allow submitting/approving tx before fee is calculated
+  - What is happening is it looks like the approval UI is async sending off fee estimation but before it returns i click approve
+  - Thus the fee is 0
+  - We should disable any action until fee estimation comes back
 
 ## Features
 * When wallet locks (while open) create a blurry lock screen indicating wallet lock mode [6]

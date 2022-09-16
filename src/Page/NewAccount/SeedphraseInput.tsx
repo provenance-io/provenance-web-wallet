@@ -1,15 +1,22 @@
 import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
 import { useState } from 'react';
-import { Button, Header, Input, Content, BottomFloat, Typo } from 'Components';
+import {
+  Button,
+  Header,
+  Input,
+  Content,
+  BottomFloat,
+  Typo,
+  ScrollContainer,
+} from 'Components';
 import { isMnemonic, validateMnemonic, keyPress, cleanMnemonic } from 'utils';
 import { useAccount } from 'redux/hooks';
 import { MNEMONIC_WORD_COUNT } from 'consts';
 
 const InputSection = styled.div`
   text-align: left;
-  margin-top: 40px;
-  margin-bottom: 70px;
+  margin-right: 20px;
   input {
     margin-bottom: 32px;
   }
@@ -110,7 +117,9 @@ export const SeedphraseInput: React.FC<Props> = ({
         progress={progress}
         backLocation={previousUrl}
       />
-      <InputSection>{createSeedInputs()}</InputSection>
+      <ScrollContainer height="400px">
+        <InputSection>{createSeedInputs()}</InputSection>
+      </ScrollContainer>
       {submitError && (
         <Typo type="error" marginTop="20px">
           {submitError}

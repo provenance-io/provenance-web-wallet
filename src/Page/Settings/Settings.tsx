@@ -1,4 +1,4 @@
-import { FooterNav, Sprite, Typo } from 'Components';
+import { Content, FooterNav, Sprite, Typo } from 'Components';
 import { useNavigate } from 'react-router-dom';
 import {
   APP_URL,
@@ -11,13 +11,8 @@ import {
 } from 'consts';
 import styled from 'styled-components';
 import { useSettings } from 'redux/hooks';
-import { COLORS } from 'theme';
+import { COLORS, FONTS } from 'theme';
 
-const Container = styled.div`
-  width: 100%;
-  font-family: 'Gothic A1', sans-serif;
-  font-size: 1.4rem;
-`;
 const SectionTitle = styled.div`
   font-weight: 700;
   font-size: 1.9rem;
@@ -32,6 +27,7 @@ const SectionOption = styled.div`
   cursor: pointer;
   display: flex;
   justify-content: space-between;
+  font-family: ${FONTS.PRIMARY_FONT};
   align-items: center;
   transition: 250ms all;
   &:hover {
@@ -47,7 +43,7 @@ const Version = styled(Typo)`
   right: 20px;
 `;
 
-export const Profile = () => {
+export const Settings = () => {
   const navigate = useNavigate();
   const { saveSettingsData } = useSettings();
 
@@ -74,8 +70,8 @@ export const Profile = () => {
   };
 
   return (
-    <Container>
-      <Typo type="headline2">Profile</Typo>
+    <Content>
+      <Typo type="headline2">Settings</Typo>
       <SectionTitle>Security</SectionTitle>
       {createOption('Destroy Wallet', RESET_WALLET_URL)}
       <SectionTitle>General</SectionTitle>
@@ -90,6 +86,6 @@ export const Profile = () => {
         v{APP_DATA.version}
       </Version>
       <FooterNav />
-    </Container>
+    </Content>
   );
 };

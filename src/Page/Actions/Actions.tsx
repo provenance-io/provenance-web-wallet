@@ -88,7 +88,7 @@ export const Actions: React.FC = () => {
       pendingWallets[address].push(targetRequest);
     });
     // Loop through each wallet and build out all pending actions associated with it
-    return Object.keys(pendingWallets).map((address: string) => {
+    return Object.keys(pendingWallets).map((address: string, index: number) => {
       const allRequests = pendingWallets[address];
       const isActive = address === activeAddress;
       // Filter through all existing accounts and find the matching address to get the name
@@ -96,7 +96,7 @@ export const Actions: React.FC = () => {
         ({ address: accountAddress }) => address === accountAddress
       )!;
       return (
-        <WalletAction>
+        <WalletAction key={`${address}_${index}`}>
           <WalletContainer>
             <WalletInfo>
               <Typo type="body" bold align="left">

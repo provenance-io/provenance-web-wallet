@@ -9,6 +9,7 @@ import {
   ButtonGroup,
   Typo,
   PillInline,
+  Content,
 } from 'Components';
 import { useNavigate } from 'react-router-dom';
 import {
@@ -178,7 +179,7 @@ export const DashboardMenu: React.FC = () => {
     ));
 
   return (
-    <>
+    <Content>
       <Header
         title="Accounts"
         iconLeft={ICON_NAMES.CLOSE}
@@ -252,6 +253,6 @@ export const DashboardMenu: React.FC = () => {
           </Button>
         </ButtonGroup>
       </BottomFloat>
-    </>
+    </Content>
   );
 };

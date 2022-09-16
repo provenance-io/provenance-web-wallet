@@ -1,33 +1,32 @@
 import React from 'react';
 import styled from 'styled-components';
 import { Outlet } from 'react-router-dom';
-import { COLORS } from 'theme';
+import { COLORS, FONTS } from 'theme';
 import { MAX_HEIGHT, MAX_WIDTH } from 'consts';
 import bg from 'images/bg.png';
 
 interface Props {
-  children?: React.ReactNode,
-  bgImage?: boolean,
-  align?: string,
-  justify?: string,
-  noOutlet?: boolean,
+  children?: React.ReactNode;
+  bgImage?: boolean;
+  align?: string;
+  justify?: string;
 }
 
 const PageStyled = styled.div<Props>`
   align-items: ${({ align }) => align};
-  background: ${({ bgImage }) => bgImage ? `${COLORS.BACKGROUND_1} url(${bg}) no-repeat` : COLORS.BACKGROUND_1};
+  background: ${({ bgImage }) =>
+    bgImage ? `${COLORS.BACKGROUND_1} url(${bg}) no-repeat` : COLORS.BACKGROUND_1};
   background-size: cover;
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
-  font-family: 'Montserrat', 'sans-serif';
+  font-family: ${FONTS.SECONDARY_FONT};
   justify-content: ${({ justify }) => justify};
   height: ${MAX_HEIGHT};
   max-height: ${MAX_HEIGHT};
   width: ${MAX_WIDTH};
   max-width: ${MAX_WIDTH};
-  padding: 32px 16px 20px 16px;
-  text-align: ${({ align }) => align === 'flex-start' ? 'left' : 'center'};
+  text-align: ${({ align }) => (align === 'flex-start' ? 'left' : 'center')};
   z-index: 10;
   overflow-y: scroll;
   -ms-overflow-style: none;
@@ -42,14 +41,9 @@ export const Page = ({
   bgImage,
   align = 'flex-start',
   justify = 'flex-start',
-  noOutlet = false,
 }: Props) => (
-  <PageStyled
-    bgImage={bgImage}
-    align={align}
-    justify={justify}
-  >
-    {!noOutlet ? <Outlet />: null}
+  <PageStyled bgImage={bgImage} align={align} justify={justify}>
+    <Outlet />
     {children}
   </PageStyled>
 );

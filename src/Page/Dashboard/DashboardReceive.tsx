@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Header, Input, Sprite } from 'Components';
+import { Content, Header, Input, Sprite } from 'Components';
 import QRCode from 'qrcode';
 import styled from 'styled-components';
 import { trimString } from 'utils';
@@ -7,11 +7,6 @@ import { ICON_NAMES } from 'consts';
 import { useActiveAccount } from 'redux/hooks';
 import { COLORS } from 'theme';
 
-const Wrapper = styled.div`
-  width: 100%;
-  text-align: left;
-  font-family: 'Gothic A1', sans-serif;
-`;
 const Text = styled.p`
   font-size: 1.4rem;
   font-weight: 700;
@@ -82,7 +77,7 @@ export const DashboardReceive: React.FC = () => {
   };
 
   return (
-    <Wrapper>
+    <Content>
       <Header title="Receive" />
       <Text>Show this QR code or share account address to receive assets</Text>
       {qrcode && <QRImage src={qrcode} alt="Address QR Code" />}
@@ -108,6 +103,6 @@ export const DashboardReceive: React.FC = () => {
           )}
         </CopyButton>
       </Input>
-    </Wrapper>
+    </Content>
   );
 };

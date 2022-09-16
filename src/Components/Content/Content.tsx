@@ -3,7 +3,8 @@ import styled from 'styled-components';
 const ContentStyled = styled.div<{ padBottom?: string }>`
   position: relative;
   width: 100%;
-  /* padding: 10px 20px; */
+  height: 100%;
+  padding: 32px 16px 20px 16px;
   ${({ padBottom }) => padBottom && `padding-bottom: ${padBottom};`}
   // Prevent scroll bar
   scrollbar-width: none; /* Firefox */

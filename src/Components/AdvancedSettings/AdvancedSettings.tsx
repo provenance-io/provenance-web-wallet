@@ -10,7 +10,7 @@ import {
 import { Pill as PillBase } from 'Components/Pill';
 import { Checkbox as BaseCheckbox } from 'Components/Checkbox';
 import { ScrollContainer } from 'Components/ScrollContainer';
-import { COLORS } from 'theme';
+import { COLORS, FONTS } from 'theme';
 import { AccountLevel, HDPathData } from 'types';
 import { getHDPathData, capitalize } from 'utils';
 
@@ -27,6 +27,7 @@ const ListRow = styled.div`
 const ListContent = styled.div`
   font-size: 1.4rem;
   &:nth-child(1) {
+    font-family: ${FONTS.SECONDARY_FONT};
     margin-right: 6px;
     min-width: 80px;
   }
@@ -39,7 +40,7 @@ const ListContent = styled.div`
   }
 `;
 const HDPathText = styled.span`
-  font-family: 'Courier New', Courier, monospace;
+  font-family: ${FONTS.MONOSPACE_FONT};
 `;
 const DerivationSection = styled.div`
   padding: 0 8px;

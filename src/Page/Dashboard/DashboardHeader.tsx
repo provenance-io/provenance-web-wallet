@@ -54,7 +54,7 @@ const NotificationBubble = styled.div`
   position: absolute;
   height: 20px;
   width: 20px;
-  ${FONTS.PRIMARY_FONT};
+  font-family: ${FONTS.PRIMARY_FONT};
   background: ${COLORS.NEGATIVE_300};
   color: ${COLORS.WHITE};
   display: flex;

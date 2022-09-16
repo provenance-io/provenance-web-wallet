@@ -1,6 +1,5 @@
 import React, { useEffect } from 'react';
-import { Outlet } from 'react-router-dom';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useNavigate, useLocation, Outlet } from 'react-router-dom';
 import { useActiveAccount, useSettings } from 'redux/hooks';
 import { APP_URL, DASHBOARD_URL } from 'consts';
 

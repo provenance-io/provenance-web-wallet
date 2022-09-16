@@ -2,7 +2,7 @@ import { ReactNode } from 'react';
 import { HelmetProvider } from 'react-helmet-async';
 import { createGlobalStyle, DefaultTheme } from 'styled-components';
 import { normalize } from 'styled-normalize';
-import { baseFonts, BaseTypographyLoader, FONTS } from './fonts';
+import { BaseTypographyLoader, FONTS } from './fonts';
 import { COLORS } from './colors';
 import { ThemeProvider } from 'styled-components';
 import { SpriteSheet } from 'Components';
@@ -13,22 +13,13 @@ export const baseTheme: DefaultTheme = {
   fonts: { ...FONTS },
 };
 
-export const GlobalStyles = createGlobalStyle<{
-  $colors: string;
-  $fonts: string;
-}>`
+export const GlobalStyles = createGlobalStyle`
   ${normalize}
 
   // React local causes iframe when error process is not defined shows up.
   // https://github.com/facebook/create-react-app/issues/11773
   iframe {
     pointer-events: none;
-  }
-
-  :root {
-    ${baseFonts};
-    ${({ $colors }) => $colors};
-    ${({ $fonts }) => $fonts};
   }
 
   html {
@@ -47,7 +38,7 @@ export const GlobalStyles = createGlobalStyle<{
 
   body {
     color: ${COLORS.WHITE};
-    ${FONTS.PRIMARY_FONT};
+    font-family: ${FONTS.PRIMARY_FONT};
     font-weight: 400;
     font-size: 1.6rem;
     max-width: ${MAX_WIDTH};
@@ -97,7 +88,7 @@ export const Theme = ({
     <HelmetProvider>
       <SpriteSheet />
       <BaseTypographyLoader />
-      <GlobalStyles $colors={$colors} $fonts={$fonts} />
+      <GlobalStyles />
       {children}
     </HelmetProvider>
   </ThemeProvider>

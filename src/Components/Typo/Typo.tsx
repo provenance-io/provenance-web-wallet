@@ -37,7 +37,7 @@ const StylingMixin = css<StyledProps>`
 `;
 
 const TitleStyle = styled.p`
-  ${FONTS.PRIMARY_FONT};
+  font-family: ${FONTS.PRIMARY_FONT};
   font-weight: 700;
   font-size: 1.8rem;
   line-height: 2.88rem;
@@ -46,7 +46,7 @@ const TitleStyle = styled.p`
 `;
 
 const DisplayBodyStyle = styled.p`
-  ${FONTS.SECONDARY_FONT};
+  font-family: ${FONTS.SECONDARY_FONT};
   font-weight: 400;
   font-size: 1.6rem;
   line-height: 2.48rem;
@@ -55,7 +55,7 @@ const DisplayBodyStyle = styled.p`
 `;
 
 const Display1Style = styled.p`
-  ${FONTS.SECONDARY_FONT};
+  font-family: ${FONTS.SECONDARY_FONT};
   font-weight: 300;
   font-size: 4.4rem;
   line-height: 5.36rem;
@@ -64,7 +64,7 @@ const Display1Style = styled.p`
 `;
 
 const Display2Style = styled.p`
-  ${FONTS.SECONDARY_FONT};
+  font-family: ${FONTS.SECONDARY_FONT};
   font-weight: 300;
   font-size: 3.8rem;
   line-height: 4.6rem;
@@ -73,7 +73,7 @@ const Display2Style = styled.p`
 `;
 
 const BodyStyle = styled.p`
-  ${FONTS.PRIMARY_FONT};
+  font-family: ${FONTS.PRIMARY_FONT};
   font-weight: 400;
   line-height: 2.24rem;
   letter-spacing: 0.04em;
@@ -81,13 +81,13 @@ const BodyStyle = styled.p`
   ${StylingMixin}
 `;
 const BodyAltStyle = styled(BodyStyle)`
-  ${FONTS.SECONDARY_FONT};
+  font-family: ${FONTS.SECONDARY_FONT};
 `;
 const ErrorStyle = styled(BodyStyle)`
   color: ${COLORS.NEGATIVE_200};
 `;
 const SubheadStyle = styled.p`
-  ${FONTS.PRIMARY_FONT};
+  font-family: ${FONTS.PRIMARY_FONT};
   font-weight: 700;
   font-size: 1.4rem;
   line-height: 2.22rem;
@@ -95,7 +95,7 @@ const SubheadStyle = styled.p`
   ${StylingMixin}
 `;
 const Headline1Style = styled.p`
-  ${FONTS.SECONDARY_FONT};
+  font-family: ${FONTS.SECONDARY_FONT};
   font-weight: 600;
   font-size: 2.1rem;
   line-height: 2.56rem;
@@ -108,7 +108,7 @@ const Headline2Style = styled(Headline1Style)`
   line-height: 1.95rem;
 `;
 const FootnoteStyle = styled.p`
-  ${FONTS.PRIMARY_FONT};
+  font-family: ${FONTS.PRIMARY_FONT};
   font-weight: 400;
   font-size: 1.2rem;
   line-height: 1.92rem;

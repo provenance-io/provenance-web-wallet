@@ -1,4 +1,4 @@
-import { DASHBOARD_URL, ICON_NAMES, PROFILE_URL, TRANSACTIONS_URL } from 'consts';
+import { DASHBOARD_URL, ICON_NAMES, SETTINGS_URL, TRANSACTIONS_URL } from 'consts';
 import { Sprite } from 'Components';
 import { useNavigate, useLocation } from 'react-router-dom';
 import styled from 'styled-components';
@@ -61,9 +61,9 @@ export const FooterNav: React.FC = () => {
         Transactions
       </NavItem>
       <NavItem
-        active={location?.pathname?.includes('profile')}
-        onClick={() => navigate(PROFILE_URL)}
-        onKeyPress={(e) => keyPress(e, () => navigate(PROFILE_URL))}
+        active={location?.pathname?.includes('settings')}
+        onClick={() => navigate(SETTINGS_URL)}
+        onKeyPress={(e) => keyPress(e, () => navigate(SETTINGS_URL))}
         tabIndex={0}
       >
         <Sprite icon={ICON_NAMES.PROFILE} size="1.6rem" />

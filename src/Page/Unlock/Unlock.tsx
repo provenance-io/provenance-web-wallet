@@ -21,32 +21,30 @@ export const Unlock = ({ nextUrl }: Props) => {
   const navigate = useNavigate();
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
-  const { unlockDuration, saveSettingsData } = useSettings();
+  const { bumpUnlockDuration } = useSettings();
   const { masterKey: key } = useActiveAccount();
 
   const handleSubmit = async () => {
     // Clear out any previous error
     setError('');
-    let newError = '';
+    // Password is required
+    if (!password) setError('Enter a password');
     // Make sure password is at least 5 characters
-    if (password.length < PASSWORD_MIN_LENGTH)
-      newError = `Password must be a minimum of ${PASSWORD_MIN_LENGTH} characters.`;
-    if (!password) newError = 'Enter a password';
+    else if (password.length < PASSWORD_MIN_LENGTH) {
+      setError(`Password must be a minimum of ${PASSWORD_MIN_LENGTH} characters.`);
+    }
     // No error so far
-    if (!newError) {
+    else {
       // Attempt to decrypt the key with the provided password
       const masterKey = decryptKey(key!, password);
-      if (!masterKey) newError = 'Invalid password';
+      if (!masterKey) setError('Invalid password');
       else {
         // Bump the unlock duration
-        const now = Date.now();
-        await saveSettingsData({ unlockEST: now, unlockEXP: now + unlockDuration! });
+        await bumpUnlockDuration();
         // Redirect to dashboard
         navigate(nextUrl);
       }
     }
-    // If we made it this far, update the error
-    setError(newError);
   };
 
   const handleInputChange = (value: string) => {

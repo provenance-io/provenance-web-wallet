@@ -1,4 +1,12 @@
-import { Header, Input, Button, BottomFloat, Alert, Typo } from 'Components';
+import {
+  Header,
+  Input,
+  Button,
+  BottomFloat,
+  Alert,
+  Typo,
+  Content,
+} from 'Components';
 import { APP_URL, ICON_NAMES } from 'consts';
 import { useState } from 'react';
 import { useNavigate } from 'react-router';
@@ -61,7 +69,7 @@ export const ResetWallet: React.FC = () => {
   };
 
   return (
-    <>
+    <Content>
       <Header
         title="Destroy Wallet"
         iconLeft={ICON_NAMES.CLOSE}
@@ -89,6 +97,6 @@ export const ResetWallet: React.FC = () => {
       <BottomFloat>
         <Button onClick={submitDestroyWallet}>Destroy Wallet</Button>
       </BottomFloat>
-    </>
+    </Content>
   );
 };

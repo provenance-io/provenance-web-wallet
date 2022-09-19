@@ -28,6 +28,7 @@ const SectionOption = styled.div`
   display: flex;
   justify-content: space-between;
   font-family: ${FONTS.PRIMARY_FONT};
+  font-size: 1.4rem;
   align-items: center;
   transition: 250ms all;
   &:hover {

@@ -1,23 +1,10 @@
 import { Helmet } from 'react-helmet-async';
-import { css } from 'styled-components';
 
-export const FONT_VARIABLES = {
-  PRIMARY_FONT: '--font-primary',
-  SECONDARY_FONT: '--font-secondary',
+export const FONTS = {
+  PRIMARY_FONT: 'Gothic A1, sans-serif',
+  SECONDARY_FONT: 'Montserrat, sans-serif',
+  MONOSPACE_FONT: 'Courier New, Courier, monospace',
 };
-
-export const baseFonts = css`
-  ${FONT_VARIABLES.PRIMARY_FONT}: Gothic A1, sans-serif;
-  ${FONT_VARIABLES.SECONDARY_FONT}: Montserrat, sans-serif;
-`;
-
-export const FONTS = (Object.keys(FONT_VARIABLES) as Array<keyof typeof FONT_VARIABLES>).reduce(
-  (acc: Partial<{ [key in keyof typeof FONT_VARIABLES]: string }>, key) => ({
-    ...acc,
-    [key]: `font-family: var(${FONT_VARIABLES[key]});`,
-  }),
-  {}
-);
 
 export const BaseTypographyLoader = () => (
   <Helmet>

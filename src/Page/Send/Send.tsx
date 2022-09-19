@@ -118,6 +118,11 @@ export const Send: React.FC = () => {
       setTotalUniqueAddresses(txsDupsFiltered.length);
       setRecentTxAddresses(txsDupsFiltered as string[]);
     }
+    // When this component unmounts, just set fetched and filtered to true
+    return () => {
+      setTxHaveBeenFetched(true);
+      setTxsHaveBeenFiltered(true);
+    };
   }, [transactions, txsHaveBeenFiltered, txHaveBeenFetched]);
 
   const renderRecentAddresses = () => {

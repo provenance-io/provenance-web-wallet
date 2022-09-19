@@ -14,6 +14,7 @@ const SectionOption = styled.div<{ active: boolean }>`
   border-bottom: 1px solid ${COLORS.NEUTRAL_600};
   font-weight: 400;
   transition: 250ms all;
+  font-size: 1.4rem;
   ${({ active }) => active && `background: ${COLORS.NEUTRAL_700};`}
 `;
 const SectionTitleRow = styled.div`

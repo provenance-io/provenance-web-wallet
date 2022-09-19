@@ -4,17 +4,17 @@ import { Message as MessageSlice, CoinAsObject } from 'types';
 
 const initialState: MessageSlice = {
   coin: undefined,
-  coinAmount: undefined,
-  txBaseAccount: undefined,
+  coinAmount: '',
+  txBaseAccount: '',
   txDate: undefined,
   txFeeDenom: 'nhash',
   txFeeEstimate: undefined,
   txFeeEstimateCoins: undefined,
-  txFromAddress: undefined,
+  txFromAddress: '',
   txGasEstimate: undefined,
-  txMemo: undefined,
+  txMemo: '',
   txMsgAny: undefined,
-  txSendAddress: undefined,
+  txSendAddress: '',
   txType: 'MsgSend',
   txResponse: '',
 };

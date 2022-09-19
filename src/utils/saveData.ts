@@ -37,13 +37,15 @@ const getChromeStorage = async (keyValue?: StorageItemKey) => {
   if (keyValue) {
     const result = await chrome.storage.local.get(keyValue);
     return result[keyValue];
-  } else return await chrome.storage.local.get();
+  } else {
+    return await chrome.storage.local.get();
+  }
 };
 const addChromeStorage = async (newData: StorageData) => {
-  await chrome.storage.local.set(newData);
+  return await chrome.storage.local.set(newData);
 };
 const removeChromeStorage = async (keys: ChromeStorageKeys) => {
-  await chrome.storage.local.remove(keys);
+  return await chrome.storage.local.remove(keys);
 };
 
 // ----------------------

@@ -8,21 +8,13 @@ import {
   ButtonGroup,
   ScrollContainer,
   BottomFloat,
+  Content,
 } from 'Components';
-import styled from 'styled-components';
 import { useActiveAccount, useAddress } from 'redux/hooks';
 import { ICON_NAMES, TRANSACTION_DETAILS_URL } from 'consts';
 import { format } from 'date-fns';
 import { capitalize } from 'utils';
 import { useNavigate } from 'react-router-dom';
-
-const Container = styled.div`
-  text-align: center;
-  width: 100%;
-  select {
-    margin-top: 12px;
-  }
-`;
 
 export const Transactions = () => {
   const navigate = useNavigate();
@@ -66,8 +58,8 @@ export const Transactions = () => {
     });
 
   const renderPageButtons = () => (
-    <BottomFloat bottom="62px;">
-      <ButtonGroup direction="row" marginTop="20px" childWidth="30%">
+    <BottomFloat bottom="66px;">
+      <ButtonGroup direction="row" childWidth="50%">
         <Button
           icon={ICON_NAMES.ARROW}
           iconLocation="left"
@@ -97,7 +89,7 @@ export const Transactions = () => {
   );
 
   return (
-    <Container>
+    <Content>
       <Typo type="headline2">Transactions</Typo>
       <Typo type="bodyAlt" marginBottom="20px">
         {transactionsLoading ? `Loading Page ${page}` : `Page ${page} / ${maxPage}`}
@@ -115,6 +107,6 @@ export const Transactions = () => {
         )}
       </ScrollContainer>
       <FooterNav />
-    </Container>
+    </Content>
   );
 };

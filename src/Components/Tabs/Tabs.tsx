@@ -29,6 +29,7 @@ export const Tabs: React.FC<Props> = ({ tabs, activeIndex = 0, setActiveIndex })
         <TabHeader
           active={activeIndex === index}
           onClick={() => setActiveIndex(index)}
+          key={`${title}_${index}`}
         >
           <Typo type="body" color={activeIndex === index ? 'WHITE' : 'NEUTRAL_200'}>
             {title}

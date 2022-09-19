@@ -1,16 +1,7 @@
-import { Typo, List, Header } from 'Components';
-import styled from 'styled-components';
+import { Typo, List, Header, Content } from 'Components';
 import { useAddress } from 'redux/hooks';
 import { hashFormat, txMessageFormat } from 'utils';
 import { useParams } from 'react-router-dom';
-
-const Container = styled.div`
-  text-align: center;
-  width: 100%;
-  select {
-    margin-top: 12px;
-  }
-`;
 
 export const TransactionDetails = () => {
   const { transactions } = useAddress();
@@ -38,9 +29,9 @@ export const TransactionDetails = () => {
   };
 
   return (
-    <Container>
+    <Content>
       <Header title="Transaction Details" marginBottom="20px" />
       {renderTxData()}
-    </Container>
+    </Content>
   );
 };

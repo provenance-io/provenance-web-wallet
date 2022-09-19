@@ -1,8 +1,14 @@
 import { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router';
 import styled from 'styled-components';
+import { useNavigate } from 'react-router';
 import { BottomFloat, Button, Content, Header, Input, Typo } from 'Components';
-import { ICON_NAMES, SEND_REVIEW_URL, SEND_URL, ASSET_IMAGE_NAMES } from 'consts';
+import {
+  ICON_NAMES,
+  SEND_REVIEW_URL,
+  SEND_URL,
+  ASSET_IMAGE_NAMES,
+  DASHBOARD_URL,
+} from 'consts';
 import { useActiveAccount, useMessage, useAddress, useSettings } from 'redux/hooks';
 import {
   capitalize,
@@ -53,6 +59,7 @@ export const SendAmount = () => {
   const navigate = useNavigate();
   const { customGRPCApi } = useSettings();
   const [errors, setErrors] = useState<string[]>([]); // [AmountError, MemoError]
+  const [txFeeLoading, setTxFeeLoading] = useState(false);
   const {
     coin,
     coinAmount,
@@ -70,10 +77,16 @@ export const SendAmount = () => {
   const { assets } = useAddress();
   const { publicKey } = useActiveAccount();
 
+  // On page load, if there isn't a sendAddress (skipped /send page) redirect to send
+  useEffect(() => {
+    if (!txSendAddress) navigate(DASHBOARD_URL);
+  }, [txSendAddress, navigate]);
+
   // Any time coin amount changes (and it's >0), calculate the txFeeEstimates
   useEffect(() => {
     if (!errors[0]) {
-      if (coinAmount) {
+      if (coinAmount && coinAmount !== '0') {
+        setTxFeeLoading(true);
         const asyncAction = async () => {
           // If coinAmount is referring to 'HASH' convery amount to nhash
           const finalCoinAmount =
@@ -92,6 +105,7 @@ export const SendAmount = () => {
             customGRPCApi,
           });
           setTxFees({ txFeeEstimate, txGasEstimate });
+          setTxFeeLoading(false);
         };
         asyncAction();
       } else setTxFees({ txFeeEstimate: [], txGasEstimate: 0 });
@@ -206,7 +220,9 @@ export const SendAmount = () => {
         </RowValue>
       </StyledRow>
       <BottomFloat>
-        <Button onClick={validateAndNavigate}>Next</Button>
+        <Button onClick={validateAndNavigate} disabled={txFeeLoading}>
+          Next
+        </Button>
       </BottomFloat>
     </Content>
   );

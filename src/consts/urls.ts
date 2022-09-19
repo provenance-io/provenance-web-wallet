@@ -57,7 +57,6 @@ export const IMPORT_ACCOUNT_SUCCESS_URL = `${NEW_ACCOUNT_IMPORT_URL}${NEW_ACCOUN
 // DASHBOARD URLS
 export const DASHBOARD_URL = '/dashboard';
 export const DASHBOARD_MENU_URL = `${DASHBOARD_URL}/menu`;
-export const DASHBOARD_SEND_URL = `${DASHBOARD_URL}/send`;
 export const DASHBOARD_RECEIVE_URL = `${DASHBOARD_URL}/receive`;
 export const DASHBOARD_CONNECTION_DETAILS_URL = `${DASHBOARD_URL}/connection`;
 // -- SEND URLS

@@ -94,10 +94,10 @@ export const NewAccountName = ({
     if (!newError) {
       // If we are in the recovery page, nuke all existing data
       if (flowTypeRecover) {
-        // Reset all data in chrome storage and redux store
-        await resetSettingsData();
+        // Destroy all accounts/settings/data
         await resetWalletConnectData();
         await resetAccountData();
+        await resetSettingsData();
       }
       // We get the HDPath from 3 places: -AdvancedSettings, -DEFAULT_HD_PATH, -ParentAccountHdPath
       updateTempAccount({

@@ -78,6 +78,7 @@ export const TransactionRequest: React.FC<Props> = ({
   const [txGasEstimate, setTxGasEstimate] = useState<number>(0);
   const [isLoading, setIsLoading] = useState(false);
   const [runFeeCalc, setRunFeeCalc] = useState(true);
+  const [gasFeeCalcLoading, setGasFeeCalcLoading] = useState(false);
   const [gasAdjustment, setGasAdjustment] = useState(DEFAULT_GAS_ADJUSTMENT);
   // New states
   const [msgPage, setMsgPage] = useState(0);
@@ -135,6 +136,7 @@ export const TransactionRequest: React.FC<Props> = ({
           const metadataAddress = newParsedMetadata.address!;
           // Make sure this address is the same as the active account in the wallet
           if (metadataAddress === activeAccountAddress) {
+            setGasFeeCalcLoading(true);
             try {
               const {
                 txFeeEstimate: newTxFeeEstimate,
@@ -151,11 +153,13 @@ export const TransactionRequest: React.FC<Props> = ({
               // Save the returned fee/gas estimates
               setTxFeeEstimate(newTxFeeEstimate);
               setTxGasEstimate(newTxGasEstimate);
+              setGasFeeCalcLoading(false);
             } catch (err) {
               changeNotificationPage('failed', {
                 failedMessage: `${err}`,
                 title: 'Transaction Failed',
               });
+              setGasFeeCalcLoading(false);
             }
           }
         })();
@@ -314,6 +318,7 @@ export const TransactionRequest: React.FC<Props> = ({
         handleApprove={handleApprove}
         handleDecline={handleDecline}
         approveText="Sign Message"
+        disabled={gasFeeCalcLoading}
       />
       {isLoading && <Loading fullscreen />}
     </Content>

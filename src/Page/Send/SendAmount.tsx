@@ -220,7 +220,7 @@ export const SendAmount = () => {
         </RowValue>
       </StyledRow>
       <BottomFloat>
-        <Button onClick={validateAndNavigate} disabled={txFeeLoading}>
+        <Button onClick={validateAndNavigate} disabled={txFeeLoading || !coinAmount}>
           Next
         </Button>
       </BottomFloat>

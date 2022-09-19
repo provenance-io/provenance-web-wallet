@@ -10,11 +10,13 @@ interface Props {
   handleDecline: () => void;
   approveText?: string;
   rejectText?: string;
+  disabled?: boolean;
 }
 
 export const Authenticate: React.FC<Props> = ({
   handleApprove: approveCallback,
   handleDecline: declineCallback,
+  disabled = false,
   approveText = 'Approve',
   rejectText = 'Reject',
 }) => {
@@ -67,7 +69,9 @@ export const Authenticate: React.FC<Props> = ({
           type="password"
           autoFocus
         />
-        <Button onClick={handleApprove}>{approveText}</Button>
+        <Button onClick={handleApprove} disabled={disabled}>
+          {approveText}
+        </Button>
         <Button variant="transparent" onClick={declineCallback}>
           {rejectText}
         </Button>

@@ -30,7 +30,11 @@ export const Dashboard = () => {
   const navigate = useNavigate();
   const activeAccount = useActiveAccount();
   const { address } = activeAccount;
-  const { data: assets = [], error, isLoading } = useGetAssetsQuery(address!);
+  const {
+    data: assets = [],
+    error,
+    isLoading,
+  } = useGetAssetsQuery(address!, { refetchOnMountOrArgChange: 30 });
 
   const calculatePortfolioValue = () => {
     let totalValue = 0;

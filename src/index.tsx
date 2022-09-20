@@ -12,8 +12,7 @@ import App from './App';
 
 const isChromeExtension = !!chrome?.extension;
 // Detect if running locally, if so, set up chrome storage spoof
-if (process.env.REACT_APP_ENV === 'development' && !isChromeExtension)
-  localChromeSpoof();
+if (process.env.REACT_APP_ENV === 'local' && !isChromeExtension) localChromeSpoof();
 const isNotificationPage = window?.location?.pathname === NOTIFICATION_URL;
 // Chrome extension should be using memoryRouter unless it's on the notification page
 const Router =

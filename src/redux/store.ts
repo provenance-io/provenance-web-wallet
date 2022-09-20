@@ -30,7 +30,7 @@ export const store = (preloadedState?: PreloadedState<RootState>) =>
     ...(process.env.REACT_APP_ENV === 'staging' && {
       enhancers: [devToolsEnhancer({ realtime: true, port: 8000 })],
     }),
-    devTools: process.env.REACT_APP_ENV === 'development',
+    devTools: process.env.REACT_APP_ENV === 'local',
     reducer: rootReducer,
     middleware: (getDefaultMiddleware) =>
       getDefaultMiddleware({

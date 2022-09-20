@@ -82,7 +82,7 @@
     "clean": "rm -rf ./build",
     "commentSniff": "node -e 'require(\"./scripts/commentSniffer.js\").commentSniffer()'",
     "lint": "eslint src",
-    "start": "env-cmd -e default,development craco start",
+    "start": "env-cmd -e default,local craco start",
     "build": "env-cmd -e default,production craco build",
     "build:redux": "env-cmd -e default,staging craco build && npm run reduxDev",
     "reduxDev": "redux-devtools",

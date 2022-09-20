@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Sprite } from 'Components';
 import { ICON_NAMES, ASSET_IMAGE_NAMES } from 'consts';
 import styled from 'styled-components';
-import { Asset } from 'types';
+import type { Asset } from 'types';
 import { currencyFormat } from 'utils';
 import { COLORS } from 'theme';
 

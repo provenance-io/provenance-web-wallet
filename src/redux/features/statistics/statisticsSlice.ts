@@ -2,7 +2,7 @@ import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { SMW_MAINNET, SMW_STATS_URL } from 'consts';
 import { RootState } from 'redux/store';
 import { api } from '../api';
-import { Statistics } from 'types';
+import type { Statistics } from 'types';
 
 /**
  * INITIAL STATE

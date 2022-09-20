@@ -2,7 +2,7 @@ import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { RootState } from 'redux/store';
 import { getSavedData, addSavedData, removeSavedData } from 'utils';
 import { DEFAULT_UNLOCK_DURATION } from 'consts';
-import { SettingsState, SettingsStorage } from 'types';
+import type { SettingsState, SettingsStorage } from 'types';
 
 /**
  * TYPES

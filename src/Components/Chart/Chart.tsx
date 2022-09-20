@@ -2,7 +2,7 @@ import { useRef, useEffect } from 'react';
 import styled from 'styled-components';
 import ChartJS, { ChartType, ChartOptions } from 'chart.js/auto';
 import 'chartjs-adapter-date-fns';
-import {
+import type {
   ChartValueDiffsType,
   ChartValuesType,
   ChartLabelsType,

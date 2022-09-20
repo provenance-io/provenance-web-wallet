@@ -3,13 +3,18 @@ import { useNavigate, useSearchParams } from 'react-router-dom';
 import { ACTIONS_URL, WC_NOTIFICATION_TYPES } from 'consts';
 import { useEffect, useState } from 'react';
 import { useAccount, useWalletConnect } from 'redux/hooks';
-import { EventPayload, WCNotification, WCInitEventPayload } from 'types';
+import type {
+  EventPayload,
+  WCNotification,
+  WCInitEventPayload,
+  ExtensionTypes,
+  NotificationType,
+} from 'types';
 import { Loading } from 'Components';
 import { WalletConnectInit } from './WalletConnectInit';
 import { SignRequest } from './SignRequest';
 import { TransactionRequest } from './TransactionRequest';
 import { RequestFailed } from './RequestFailed';
-import { ExtensionTypes, NotificationType } from 'types';
 import { TransactionComplete } from './TransactionComplete';
 import { MissingAccount } from './MissingAccount';
 import { Disconnected } from './Disconnected';

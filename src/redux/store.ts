@@ -12,6 +12,7 @@ import messageReducer from './features/message/messageSlice';
 import settingsReducer from './features/settings/settingsSlice';
 import statisticsReducer from './features/statistics/statisticsSlice';
 import walletConnectReducer from './features/walletConnect/walletConnectSlice';
+import { assetsApi, statisticsApi } from './services';
 
 const rootReducer = combineReducers({
   account: accountReducer,
@@ -20,10 +21,12 @@ const rootReducer = combineReducers({
   message: messageReducer,
   settings: settingsReducer,
   walletConnect: walletConnectReducer,
+  [statisticsApi.reducerPath]: statisticsApi.reducer,
+  [assetsApi.reducerPath]: assetsApi.reducer,
 });
 
-export const store = (preloadedState?: PreloadedState<RootState>) => {
-  return configureStore({
+export const store = (preloadedState?: PreloadedState<RootState>) =>
+  configureStore({
     ...(process.env.REACT_APP_ENV === 'staging' && {
       enhancers: [devToolsEnhancer({ realtime: true, port: 8000 })],
     }),
@@ -36,10 +39,9 @@ export const store = (preloadedState?: PreloadedState<RootState>) => {
         //   // Ignore these action types
         //   ignoredActions: ['walletConnect/createConnector'],
         // }
-      }),
+      }).concat(statisticsApi.middleware, assetsApi.middleware),
     preloadedState,
   });
-};
 
 export type AppStore = ReturnType<typeof store>;
 export type AppDispatch = AppStore['dispatch'];

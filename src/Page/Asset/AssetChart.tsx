@@ -4,7 +4,7 @@ import styled from 'styled-components';
 import { Chart, Loading } from 'Components';
 import { SMW_MARKER_URL, SMW_MAINNET } from 'consts';
 import { hashFormat, generateStartDate, percentChange } from 'utils';
-import {
+import type {
   FetchMarkerType,
   ChartLabelsType,
   ChartValuesType,

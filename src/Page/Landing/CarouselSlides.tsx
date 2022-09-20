@@ -2,8 +2,8 @@ import styled from 'styled-components';
 import { Sprite, Typo } from 'Components';
 import customizationCarousel from 'images/customization-carousel.svg';
 import { numberFormat } from 'utils';
-import { Statistics } from 'types';
 import { COLORS } from 'theme';
+import { useGetStatisticsQuery } from 'redux/services';
 
 const SlideContainer = styled.div`
   min-width: 340px;
@@ -75,12 +75,9 @@ export const Slide01: React.FC = () => (
   </SlideContainer>
 );
 
-interface Props {
-  statistics?: Statistics;
-}
-
-export const Slide02: React.FC<Props> = ({ statistics = {} }) => {
-  const { marketCap, validators, transactions, averageBlockTime } = statistics;
+export const Slide02: React.FC = () => {
+  const { data = {} } = useGetStatisticsQuery();
+  const { marketCap, validators, transactions, averageBlockTime } = data;
 
   return (
     <SlideContainer>

@@ -5,7 +5,7 @@ import { FooterNav, Header, Sprite as BaseSprite, Content, Typo } from 'Componen
 import { ICON_NAMES, ASSET_IMAGE_NAMES } from 'consts';
 import { AssetChart } from './AssetChart';
 import { AssetTxs } from './AssetTxs';
-import { ChangeValueArgs, TimePeriodType } from 'types';
+import type { ChangeValueArgs, TimePeriodType } from 'types';
 import { generateLabels } from 'utils';
 
 const HeaderTitleGroup = styled.div`

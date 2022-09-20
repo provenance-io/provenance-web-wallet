@@ -1,7 +1,7 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { RootState } from 'redux/store';
 import WalletConnectClient from '@walletconnect/client';
-import { IWalletConnectSession, SavedPendingRequests } from 'types';
+import type { IWalletConnectSession, SavedPendingRequests } from 'types';
 import {
   getSavedData,
   getStorageData,

@@ -1,5 +1,5 @@
 import { useSelector } from 'react-redux';
-import { Account } from 'types';
+import type { Account } from 'types';
 import { RootState } from 'redux/store';
 
 export const useActiveAccount = () => {

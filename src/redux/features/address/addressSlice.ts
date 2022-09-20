@@ -3,7 +3,7 @@ import { SMW_ADDRESS_URL } from 'consts';
 import { RootState } from 'redux/store';
 import { api } from '../api';
 import { getServiceMobileApi } from 'utils';
-import { Address } from 'types';
+import type { Address } from 'types';
 
 /**
  * INITIAL STATE

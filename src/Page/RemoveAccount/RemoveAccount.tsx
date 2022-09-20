@@ -5,7 +5,7 @@ import { useParams, useNavigate } from 'react-router';
 import { useAccount } from 'redux/hooks';
 import styled from 'styled-components';
 import { COLORS } from 'theme';
-import { Account } from 'types';
+import type { Account } from 'types';
 import { decryptKey, keyPress } from 'utils';
 
 const StyledAddress = styled.div`

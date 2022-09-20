@@ -14,12 +14,12 @@ import {
   ICON_NAMES,
   ASSET_IMAGE_NAMES,
 } from 'consts';
-import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useAddress, useActiveAccount } from 'redux/hooks';
+import { useActiveAccount } from 'redux/hooks';
 import styled from 'styled-components';
 import { DashboardHeader } from './DashboardHeader';
 import { capitalize, currencyFormat } from 'utils';
+import { useGetAssetsQuery } from 'redux/services';
 
 const Denom = styled.span`
   font-size: 2rem;
@@ -28,14 +28,9 @@ const Denom = styled.span`
 
 export const Dashboard = () => {
   const navigate = useNavigate();
-  const { getAddressAssets, assets, assetsLoading } = useAddress();
   const activeAccount = useActiveAccount();
   const { address } = activeAccount;
-
-  // Onload get account assets
-  useEffect(() => {
-    if (address) getAddressAssets(address);
-  }, [address, getAddressAssets]);
+  const { data: assets = [], error, isLoading } = useGetAssetsQuery(address!);
 
   const calculatePortfolioValue = () => {
     let totalValue = 0;
@@ -70,7 +65,7 @@ export const Dashboard = () => {
       <Typo marginTop="40px" type="title" align="left">
         Portfolio Value
       </Typo>
-      {assetsLoading ? (
+      {isLoading ? (
         <Loading height="75px" />
       ) : (
         <Typo type="display1" align="left" marginBottom="10px">
@@ -102,8 +97,10 @@ export const Dashboard = () => {
         My Assets
       </Typo>
       <ScrollContainer height="166px">
-        {assetsLoading ? (
+        {isLoading ? (
           <Loading />
+        ) : error ? (
+          'Failed to lookup account assets'
         ) : assets.length ? (
           renderAssets()
         ) : (

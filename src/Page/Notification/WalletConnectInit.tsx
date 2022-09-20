@@ -5,7 +5,7 @@ import { buildJWT, trimAddress, trimString } from 'utils';
 import { ICON_NAMES, CHAINID_TESTNET } from 'consts';
 import circleIcon from 'images/circle-icon.svg';
 import { useActiveAccount, useWalletConnect, useAccount } from 'redux/hooks';
-import { BIP32Interface, WCInitEventPayload } from 'types';
+import type { BIP32Interface, WCInitEventPayload } from 'types';
 import { COLORS } from 'theme';
 
 const ConnectIcon = styled.div`

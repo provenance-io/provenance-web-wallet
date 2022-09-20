@@ -1,4 +1,4 @@
-import { EventPayload } from 'types';
+import type { EventPayload, BIP32Interface } from 'types';
 import styled from 'styled-components';
 import { useWalletConnect } from 'redux/hooks';
 import { List, Authenticate, Content, Typo } from 'Components';
@@ -10,7 +10,6 @@ import {
   convertHexToBuffer,
   convertArrayBufferToHex,
 } from 'utils';
-import { BIP32Interface } from 'types';
 
 interface Props {
   payload: EventPayload;

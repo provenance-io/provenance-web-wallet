@@ -4,7 +4,7 @@ import { txMessageFormat } from 'utils';
 import checkSuccessIcon from 'images/check-success.svg';
 import checkWarningIcon from 'images/check-warning.svg';
 import { useWalletConnect } from 'redux/hooks';
-import { TxResults } from 'types';
+import type { TxResults } from 'types';
 
 interface Props {
   pageData: {

@@ -4,11 +4,11 @@ import { txMessageFormat } from 'utils';
 import checkSuccessIcon from 'images/check-success.svg';
 import checkWarningIcon from 'images/check-warning.svg';
 import { useWalletConnect } from 'redux/hooks';
-import type { TxResults } from 'types';
+import type { TransactionRequest } from 'types';
 
 interface Props {
   pageData: {
-    result?: TxResults;
+    result?: TransactionRequest;
   };
   closeWindow: () => void;
 }

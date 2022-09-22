@@ -47,8 +47,11 @@ export const Dashboard = () => {
     return currencyFormat(totalValue);
   };
 
-  const renderAssets = () =>
-    assets.map(({ display, displayAmount, amount, usdPrice }) => {
+  const renderAssets = () => {
+    const orderedAssets = [...assets].sort((a, b) =>
+      a.display === 'hash' ? -1 : a.display > b.display ? 1 : -1
+    );
+    return orderedAssets.map(({ display, displayAmount, amount, usdPrice }) => {
       const assetIconName =
         display && ASSET_IMAGE_NAMES.includes(display) ? display : 'provenance';
       return (
@@ -62,6 +65,7 @@ export const Dashboard = () => {
         />
       );
     });
+  };
 
   return (
     <Content>

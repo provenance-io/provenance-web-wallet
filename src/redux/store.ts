@@ -6,23 +6,23 @@ import {
 } from '@reduxjs/toolkit';
 import type { PreloadedState } from '@reduxjs/toolkit';
 import accountReducer from './features/account/accountSlice';
-import addressReducer from './features/address/addressSlice';
+import assetChartReducer from './features/assetChart/assetChartSlice';
 import devToolsEnhancer from 'remote-redux-devtools';
 import messageReducer from './features/message/messageSlice';
 import settingsReducer from './features/settings/settingsSlice';
-import statisticsReducer from './features/statistics/statisticsSlice';
 import walletConnectReducer from './features/walletConnect/walletConnectSlice';
-import { assetsApi, statisticsApi } from './services';
+import { assetsApi, statisticsApi, transactionsApi, markerApi } from './services';
 
 const rootReducer = combineReducers({
   account: accountReducer,
-  api_address: addressReducer,
-  api_statistics: statisticsReducer,
+  assetChart: assetChartReducer,
   message: messageReducer,
   settings: settingsReducer,
   walletConnect: walletConnectReducer,
   [statisticsApi.reducerPath]: statisticsApi.reducer,
   [assetsApi.reducerPath]: assetsApi.reducer,
+  [transactionsApi.reducerPath]: transactionsApi.reducer,
+  [markerApi.reducerPath]: markerApi.reducer,
 });
 
 export const store = (preloadedState?: PreloadedState<RootState>) =>
@@ -39,7 +39,12 @@ export const store = (preloadedState?: PreloadedState<RootState>) =>
         //   // Ignore these action types
         //   ignoredActions: ['walletConnect/createConnector'],
         // }
-      }).concat(statisticsApi.middleware, assetsApi.middleware),
+      }).concat(
+        statisticsApi.middleware,
+        assetsApi.middleware,
+        transactionsApi.middleware,
+        markerApi.middleware
+      ),
     preloadedState,
   });
 

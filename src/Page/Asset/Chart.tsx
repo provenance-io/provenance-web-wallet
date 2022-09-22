@@ -2,15 +2,8 @@ import { useRef, useEffect } from 'react';
 import styled from 'styled-components';
 import ChartJS, { ChartType, ChartOptions } from 'chart.js/auto';
 import 'chartjs-adapter-date-fns';
-import type {
-  ChartValueDiffsType,
-  ChartValuesType,
-  ChartLabelsType,
-  ChangeValueType,
-  ChartValueDiffPercentsType,
-  TimePeriodType,
-} from 'types';
 import { COLORS } from 'theme';
+import { useAssetChart } from 'redux/hooks';
 
 const ChartContainer = styled.div`
   width: 100%;
@@ -19,36 +12,27 @@ const ChartContainer = styled.div`
 const ChartCanvas = styled.canvas``;
 
 interface Props {
-  values: ChartValuesType;
-  labels: ChartLabelsType;
-  diffs: ChartValueDiffsType;
-  diffPercents: ChartValueDiffPercentsType;
   options?: ChartOptions;
-  type?: string;
-  timePeriod: TimePeriodType;
-  onValueChange?: ChangeValueType;
+  type?: ChartType;
 }
 
 export const Chart: React.FC<Props> = ({
-  values: chartValues,
-  labels: chartLabels,
-  diffs: chartValueDiffs,
-  diffPercents: chartValueDiffPercents,
   options: chartOptions = {},
   type: chartType = 'line',
-  timePeriod,
-  onValueChange,
 }) => {
+  const { values, labels, valueDiffs, valueDiffPercents, setAssetChartData } =
+    useAssetChart();
+
   const chartElement = useRef(null);
   useEffect(() => {
     // Initial load, if our element exists and we have data
-    if (chartElement.current !== null && chartValues.length) {
+    if (chartElement.current !== null && values.length) {
       // Put together chart data
       const data = {
-        labels: chartLabels,
+        labels: labels,
         datasets: [
           {
-            data: chartValues,
+            data: values,
             borderColor: COLORS.SECONDARY_300,
             pointHitRadius: 2,
             radius: 0,
@@ -85,19 +69,19 @@ export const Chart: React.FC<Props> = ({
           beforeEvent(chart: any, args: any) {
             const event = args.event;
             if (event.type === 'mouseout') {
-              const lastDataValue = chartValues[chartValues.length - 1];
-              const latestDate = chartLabels[chartLabels.length - 1];
-              const latestDiff = chartValueDiffs[chartValueDiffs.length - 1];
+              // Pull all the end values from the chart arrays to set as current value
+              const lastDataValue = values[values.length - 1];
+              const latestDate = labels[labels.length - 1];
+              const latestDiff = valueDiffs[valueDiffs.length - 1];
               const latestDiffPercent =
-                chartValueDiffPercents[chartValueDiffPercents.length - 1];
-              if (onValueChange)
-                onValueChange({
-                  value: lastDataValue,
-                  date: latestDate,
-                  diff: latestDiff,
-                  diffPercent: latestDiffPercent,
-                  timePeriod,
-                });
+                valueDiffPercents[valueDiffPercents.length - 1];
+              // Update assetChart store values
+              setAssetChartData({
+                currentAssetValue: lastDataValue,
+                currentDate: latestDate,
+                currentPriceChange: latestDiff,
+                currentPriceChangePercent: latestDiffPercent,
+              });
             }
           },
         },
@@ -124,14 +108,12 @@ export const Chart: React.FC<Props> = ({
             external: function () {},
             callbacks: {
               label: (data: { raw: number; dataIndex: number }) => {
-                if (onValueChange)
-                  onValueChange({
-                    value: data.raw,
-                    diff: chartValueDiffs[data.dataIndex],
-                    diffPercent: chartValueDiffPercents[data.dataIndex],
-                    date: chartLabels[data.dataIndex],
-                    timePeriod,
-                  });
+                setAssetChartData({
+                  currentAssetValue: data.raw,
+                  currentPriceChange: valueDiffs[data.dataIndex],
+                  currentPriceChangePercent: valueDiffPercents[data.dataIndex],
+                  currentDate: labels[data.dataIndex],
+                });
               },
             },
           },
@@ -148,7 +130,7 @@ export const Chart: React.FC<Props> = ({
       // Build the chart
       new ChartJS(chartElement.current!, config);
     }
-  }, [chartValues]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [values]); // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
     <ChartContainer>

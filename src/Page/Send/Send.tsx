@@ -14,8 +14,9 @@ import styled from 'styled-components';
 import { DASHBOARD_URL, ICON_NAMES, SEND_AMOUNT_URL } from 'consts';
 import { keyPress, trimAddress, validateAddress } from 'utils';
 import { useNavigate } from 'react-router';
-import { useActiveAccount, useAddress, useMessage } from 'redux/hooks';
+import { useActiveAccount, useMessage } from 'redux/hooks';
 import { COLORS } from 'theme';
+import { useGetAssetsQuery, useGetTransactionsQuery } from 'redux/services';
 
 const SectionTitle = styled.div`
   font-size: 1.4rem;
@@ -71,13 +72,29 @@ export const Send: React.FC = () => {
   const [txHaveBeenFetched, setTxHaveBeenFetched] = useState(false);
   const [txsHaveBeenFiltered, setTxsHaveBeenFiltered] = useState(false);
   const navigate = useNavigate();
+  const { address } = useActiveAccount();
+  // Fetch Transactions
   const {
-    assets,
-    transactions,
-    getAddressTx,
-    transactionsLoading,
-    transactionsError,
-  } = useAddress();
+    data: txData,
+    error: txApiError,
+    isLoading: txApiLoading,
+    isFetching: txApiFetching,
+  } = useGetTransactionsQuery({
+    // address: address!,
+    address: address!,
+    count: recentAddressLimit,
+  });
+  const { transactions = [] } = txData || {};
+  const txLoading = txApiLoading || txApiFetching;
+  // Fetch Assets
+  const {
+    data: assetData = [],
+    error: assetApiError,
+    isLoading: assetApiLoading,
+    isFetching: assetApiFetching,
+  } = useGetAssetsQuery(address!);
+  const assetsLoading = assetApiLoading || assetApiFetching;
+  // Get existing message fields/store functions
   const {
     txSendAddress,
     setTxSendAddress,
@@ -86,23 +103,12 @@ export const Send: React.FC = () => {
     setCoin,
     resetMessage,
   } = useMessage();
-  const { address } = useActiveAccount();
-
-  // Initial load fetch all transactions (Only do this once)
-  useEffect(() => {
-    if (!txHaveBeenFetched && address) {
-      (async () => {
-        await getAddressTx({ address, count: 50 });
-        setTxHaveBeenFetched(true);
-      })();
-    }
-  }, [txHaveBeenFetched, address, getAddressTx]);
 
   // Update message fields
   useEffect(() => {
-    setCoin(assets[0]);
+    setCoin(assetData[0]);
     setTxFromAddress(address);
-  }, [assets, setCoin, address, setTxFromAddress]);
+  }, [assetData, setCoin, address, setTxFromAddress]);
 
   // Build array of recent addresses (Only do this once)
   useEffect(() => {
@@ -160,11 +166,13 @@ export const Send: React.FC = () => {
           resetMessage();
         }}
       />
-      {assets.length ? (
+      {assetData.length ? (
         <>
-          <SectionTitle>{assets.length > 1 ? 'Select Asset' : 'Asset'}</SectionTitle>
+          <SectionTitle>
+            {assetData.length > 1 ? 'Select Asset' : 'Asset'}
+          </SectionTitle>
           <AssetDropdown
-            assets={assets}
+            assets={assetData}
             activeDenom={coin?.denom}
             onChange={setCoin}
           />
@@ -179,12 +187,10 @@ export const Send: React.FC = () => {
           />
           <SectionTitle>Recent Addresses</SectionTitle>
           <RecentAddressSection>
-            {!!transactionsError && (
-              <Typo type="error">
-                Error fetching recent addresses: {transactionsError}
-              </Typo>
+            {!!txApiError && (
+              <Typo type="error">Error fetching recent addresses: {txApiError}</Typo>
             )}
-            {transactionsLoading ? (
+            {txLoading ? (
               <Loading />
             ) : !transactions.length ? (
               <Typo type="body" align="left" textStyle="italic">

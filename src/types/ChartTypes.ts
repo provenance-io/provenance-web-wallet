@@ -39,3 +39,33 @@ export type ChangeValueType = ({
   date,
   timePeriod,
 }: ChangeValueArgs) => void;
+
+export interface AssetChart {
+  assetName: string;
+  currentAssetValue: number;
+  currentPriceChange: number;
+  currentPriceChangePercent: string;
+  currentDate: string;
+  timePeriod: TimePeriodType;
+  startDate: string;
+  endDate: string;
+  values: number[];
+  valueDiffs: number[];
+  valueDiffPercents: string[];
+  labels: string[];
+}
+
+export interface OptionalChartDataPayload {
+  assetName?: string;
+  currentAssetValue?: number;
+  currentPriceChange?: number;
+  currentPriceChangePercent?: string;
+  currentDate?: string;
+  timePeriod?: TimePeriodType;
+  startDate?: string;
+  endDate?: string;
+  values?: number[];
+  valueDiffs?: number[];
+  valueDiffPercents?: string[];
+  labels?: string[];
+}

@@ -15,7 +15,7 @@ export interface TxLogs {
   eventsList: TxEvent[];
 }
 
-export interface TxResults {
+export interface TransactionRequest {
   address: string;
   code: number;
   codespace: string;
@@ -38,4 +38,30 @@ export interface TxResults {
   tx: any;
   txhash: string;
   platform?: string;
+}
+
+export interface AmountObject {
+  amount: string | number;
+  denom: string;
+}
+
+export type TransactionHistory = {
+  hash?: string;
+  signer: string;
+  type: string;
+  feeAmount: string;
+  time: string;
+  status: string;
+  block: number;
+  denom?: string;
+  senderAddress: string;
+  recipientAddress?: string;
+  amount?: string | number | AmountObject;
+  'transaction hash'?: string;
+};
+
+export interface TxQueryResults {
+  transactions: TransactionHistory[];
+  pages: number;
+  totalCount: number;
 }

@@ -2,10 +2,18 @@
 * _(Priority: 1 - 10)_
 
 ## Current Branch Tasks/Changes
-* Don't allow submitting/approving tx before fee is calculated
-  - What is happening is it looks like the approval UI is async sending off fee estimation but before it returns i click approve
-  - Thus the fee is 0
-  - We should disable any action until fee estimation comes back
+* Hash will always be listed in assets first, followed by Alphabetical order [DONE]
+* Fix page wrapper for remove account page [DONE]
+* Switch all API calls to use RTK Query for caching
+  - Statistics
+  - Assets
+  - Transactions
+* Make sure to force refetch when certain events occur
+  - Signing a tx => Force assets/txs refetch
+* Make sure api fetch errors look correct, might be attempting to render object vs string
+* Make sure Send page looks right
+* Make sure Transactions/TransactionDetails look right
+* Make sure Asset Details Page (txs) looks right
 
 ## Features
 * When wallet locks (while open) create a blurry lock screen indicating wallet lock mode [6]

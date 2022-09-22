@@ -2,7 +2,7 @@
   "name": "Provenance Blockchain Wallet",
   "description": "Provenance Blockchain Wallet Browser Extension",
   "author": "Provenance Blockchain Foundation",
-  "version": "1.0.12",
+  "version": "1.1.0",
   "manifest_version": 3,
   "icons": {
     "16": "16.png",

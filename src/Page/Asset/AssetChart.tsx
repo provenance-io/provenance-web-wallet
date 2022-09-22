@@ -1,4 +1,3 @@
-import { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { Loading } from 'Components';
 import { hashFormat, percentChange } from 'utils';
@@ -12,6 +11,7 @@ import type {
 } from 'types';
 import { useAssetChart } from 'redux/hooks';
 import { useGetMarkerQuery } from 'redux/services';
+import { useEffect } from 'react';
 
 const ChartArea = styled.div`
   min-height: 250px;
@@ -30,7 +30,8 @@ const ChartMessage = styled.div`
 
 // AssetChart.txs will take the raw data from the API and massage it to work/look right withing Chart.tsx
 export const AssetChart: React.FC = () => {
-  const { assetName, timePeriod, startDate, endDate } = useAssetChart();
+  const { assetName, timePeriod, startDate, endDate, values, setAssetChartData } =
+    useAssetChart();
   const {
     data: markerHistory = [],
     isLoading,
@@ -42,8 +43,6 @@ export const AssetChart: React.FC = () => {
     marker: assetName!,
   });
   const loading = isLoading || isFetching;
-  // Chart data
-  const [chartValues, setChartValues] = useState<ChartValuesType>([]);
 
   useEffect(() => {
     const isHash = assetName === 'hash';
@@ -69,14 +68,19 @@ export const AssetChart: React.FC = () => {
       newValues.push(finalPrice);
       newValueDiffs.push(finalValueDiffs);
     });
-    setChartValues(newValues);
-  }, [assetName, markerHistory]);
+    setAssetChartData({
+      values: newValues,
+      labels: newLabels,
+      valueDiffPercents: newValueDiffPercents,
+      valueDiffs: newValueDiffs,
+    });
+  }, [assetName, markerHistory, setAssetChartData]);
 
   return (
     <ChartArea>
       {loading ? (
         <Loading />
-      ) : chartValues && !!chartValues.length ? (
+      ) : values && !!values.length ? (
         <Chart />
       ) : (
         <ChartMessage>No Data Available</ChartMessage>

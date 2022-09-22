@@ -11,7 +11,9 @@ export const Asset: React.FC = () => {
   const { setAssetChartData } = useAssetChart();
   // Which asset are we graphing
   const { assetName } = useParams();
-  setAssetChartData({ assetName });
+  if (assetName) {
+    setAssetChartData({ assetName });
+  }
 
   return assetName ? (
     <Content padBottom="80px">

@@ -6,6 +6,7 @@ import { generateStartDate } from 'utils';
 /**
  * STATE
  */
+
 const initialState: AssetChart = {
   assetName: '',
   currentAssetValue: 0,
@@ -14,7 +15,7 @@ const initialState: AssetChart = {
   currentDate: '',
   timePeriod: 'HOURLY',
   startDate: generateStartDate('HOURLY'),
-  endDate: '',
+  endDate: new Date().toISOString(),
   values: [],
   valueDiffs: [],
   valueDiffPercents: [],

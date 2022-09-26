@@ -20,6 +20,8 @@
   - Currently sucks to be using and not expecting a lock
   - Navigation should reset lock timeout (if it doesn't already)
   - Blur background, button to unlock page
+* When wallet locks, remember previous location and return to it after re-logging back in. [7]
+  - Annoying to have to navigate back to the previous page we were looking at
 * Dashboard menu [7]
   - Child accounts indented (tree)
   - Accounts should have details option (HD path, network, publicKey, etc listed)

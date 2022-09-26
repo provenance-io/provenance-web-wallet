@@ -1,5 +1,3 @@
-// global window.provenanceWallet
-
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
@@ -12,7 +10,14 @@ import App from './App';
 
 const isChromeExtension = !!chrome?.extension;
 // Detect if running locally, if so, set up chrome storage spoof
-if (process.env.REACT_APP_ENV === 'local' && !isChromeExtension) localChromeSpoof();
+if (process.env.REACT_APP_ENV === 'local') {
+  // If this isn't a chrome browser extension, spoof the browsers functions
+  if (!isChromeExtension) localChromeSpoof();
+  // Set up mock service worker
+  const { worker } = require('./mocks/browser');
+  worker.start({ onUnhandledRequest: 'bypass' });
+}
+
 const isNotificationPage = window?.location?.pathname === NOTIFICATION_URL;
 // Chrome extension should be using memoryRouter unless it's on the notification page
 const Router =

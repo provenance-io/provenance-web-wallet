@@ -1,12 +1,14 @@
-import { useRef, useEffect } from 'react';
+import { useRef, useEffect, useState } from 'react';
 import styled from 'styled-components';
-import ChartJS, { ChartType, ChartOptions } from 'chart.js/auto';
+import ChartJS from 'chart.js/auto';
+import type { ChartType, ChartOptions } from 'chart.js/auto';
 import 'chartjs-adapter-date-fns';
 import { COLORS } from 'theme';
 import { useAssetChart } from 'redux/hooks';
 
 const ChartContainer = styled.div`
   width: 100%;
+  padding-right: 10px;
   cursor: grabbing;
 `;
 const ChartCanvas = styled.canvas``;
@@ -24,6 +26,8 @@ export const Chart: React.FC<Props> = ({
     useAssetChart();
 
   const chartElement = useRef(null);
+  const [chartCanvas, setChartCanvas] = useState<ChartJS | null>(null);
+
   useEffect(() => {
     // Initial load, if our element exists and we have data
     if (chartElement.current !== null && values.length) {
@@ -59,7 +63,7 @@ export const Chart: React.FC<Props> = ({
               // Create shadow to darken rest of chart
               ctx.globalCompositeOperation = 'source-atop';
               ctx.fillStyle = COLORS.BLACK_70;
-              ctx.fillRect(x, yAxis.top, 900, yAxis.bottom + 100);
+              ctx.fillRect(x, yAxis.top - 5, 900, yAxis.bottom + 100);
               ctx.restore();
             }
           },
@@ -90,6 +94,11 @@ export const Chart: React.FC<Props> = ({
         interaction: {
           mode: 'index',
           intersect: false,
+        },
+        layout: {
+          padding: {
+            top: 5,
+          },
         },
         scales: {
           y: { ticks: { display: false }, grid: { display: false } },
@@ -127,14 +136,17 @@ export const Chart: React.FC<Props> = ({
         options: options as ChartOptions,
         plugins: customPlugins,
       };
+      // If the chart already existed, destroy it
+      if (chartCanvas) chartCanvas.destroy();
       // Build the chart
-      new ChartJS(chartElement.current!, config);
+      const newChartCanvas = new ChartJS(chartElement.current!, config);
+      setChartCanvas(newChartCanvas);
     }
   }, [values]); // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
     <ChartContainer>
-      <ChartCanvas ref={chartElement} />
+      <ChartCanvas ref={chartElement} id="chart" />
     </ChartContainer>
   );
 };

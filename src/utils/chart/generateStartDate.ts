@@ -2,10 +2,11 @@ import { TimePeriodType } from 'types';
 
 export const generateStartDate = (newTimePeriod: TimePeriodType) => {
   const now = new Date();
+  // Note: Set all second and ms values to 0 to allow caching
   switch (newTimePeriod) {
     case 'MINUTE': {
       // Get the past 60 min (1 Hour)
-      const start = now.setMinutes(now.getMinutes() - 60);
+      const start = now.setMinutes(now.getMinutes() - 60, 0, 0);
       return new Date(start).toISOString();
     }
     case 'HOURLY': {

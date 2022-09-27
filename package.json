@@ -1,6 +1,6 @@
 {
   "name": "provenance-web-wallet-ts",
-  "version": "1.0.13",
+  "version": "1.1.1",
   "private": true,
   "license": "Apache-2.0",
   "homepage": "/",
@@ -90,7 +90,7 @@
     "install:local": "npm i ../wallet-utils/provenanceio-wallet-utils-0.0.0-development.tgz",
     "versionUp": "node -e 'require(\"./scripts/versionUp.js\").versionUp()'",
     "vup": "npm run versionUp",
-    "zip": "zip -r provenance-web-wallet-$npm_package_version.zip build -X"
+    "zip": "npm run build && zip -r provenance-web-wallet-$npm_package_version.zip build -X"
   },
   "eslintConfig": {
     "extends": [

@@ -9,7 +9,7 @@ type Request = {
 
 export class Xhr {
   baseURL = window.location.hostname;
-  timeout = 5000;
+  timeout = 45000;
   headers = {
     Accept: 'application/json',
     'Content-Type': 'application/json',

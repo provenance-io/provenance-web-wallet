@@ -10,8 +10,9 @@ export const assetsApi = createApi({
   }),
   endpoints: (builder) => ({
     getAssets: builder.query<Asset[], string>({
-      query: (address) =>
-        getServiceMobileApi(address, `${SMW_ADDRESS_URL}/${address}/assets`),
+      query: (address) => {
+        return getServiceMobileApi(address, `${SMW_ADDRESS_URL}/${address}/assets`);
+      },
     }),
   }),
 });

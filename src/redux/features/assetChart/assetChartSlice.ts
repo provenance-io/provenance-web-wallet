@@ -6,6 +6,7 @@ import { generateStartDate } from 'utils';
 /**
  * STATE
  */
+const now = new Date().setSeconds(0, 0);
 
 const initialState: AssetChart = {
   assetName: '',
@@ -15,7 +16,7 @@ const initialState: AssetChart = {
   currentDate: '',
   timePeriod: 'HOURLY',
   startDate: generateStartDate('HOURLY'),
-  endDate: new Date().toISOString(),
+  endDate: new Date(now).toISOString(),
   values: [],
   valueDiffs: [],
   valueDiffPercents: [],
@@ -63,7 +64,11 @@ const assetChartSlice = createSlice({
         state.startDate = generateStartDate(timePeriod);
       }
       if (startDate !== undefined) state.startDate = startDate;
-      if (endDate !== undefined) state.endDate = endDate;
+      if (endDate !== undefined) {
+        // Set seconds and milliseconds to 0 to enable 60s caching
+        const finalEndDate = new Date(endDate).setSeconds(0, 0);
+        state.endDate = new Date(finalEndDate).toISOString();
+      }
       if (values !== undefined) state.values = values;
       if (labels !== undefined) state.labels = labels;
       if (valueDiffs !== undefined) state.valueDiffs = valueDiffs;

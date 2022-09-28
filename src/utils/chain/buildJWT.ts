@@ -37,7 +37,7 @@ export const buildJWT = (
   const jwt = `${headerEncoded}.${payloadEncoded}`;
   const jwtBuffer = convertUtf8ToBuffer(jwt);
   const signature = signBytes(jwtBuffer, privateKey);
-  const signedPayloadEncoded = bytesToBase64(signature);
+  const signedPayloadEncoded = base64url.fromBase64(bytesToBase64(signature));
   const signedJWT = `${headerEncoded}.${payloadEncoded}.${signedPayloadEncoded}`;
   return signedJWT;
 };

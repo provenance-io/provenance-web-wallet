@@ -14,6 +14,9 @@
 * Make sure Send page looks right
 * Make sure Transactions/TransactionDetails look right
 * Make sure Asset Details Page (txs) looks right
+* Make sure mainnet accounts don't see Faucet in advanced settings (will always error out, testnet only)
+* Make sure when confirming seed phrase no duplicated values exist in selection rows
+  - Row contained 'undo' 'imitate' 'undo', causing both to get selected when clicked (same key)
 
 ## Features
 * When wallet locks (while open) create a blurry lock screen indicating wallet lock mode [6]

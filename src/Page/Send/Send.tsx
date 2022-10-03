@@ -80,7 +80,6 @@ export const Send: React.FC = () => {
     isLoading: txApiLoading,
     isFetching: txApiFetching,
   } = useGetTransactionsQuery({
-    // address: address!,
     address: address!,
     count: recentAddressLimit,
   });

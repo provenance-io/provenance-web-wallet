@@ -85,7 +85,7 @@ export const Slide02: React.FC = () => {
       <StatsSection>
         <StatItem>
           <StatValue>
-            {marketCap ? valueText(formatNumber(marketCap), '$') : 'N/A'}
+            {marketCap ? valueText(formatNumber(marketCap, 0), '$') : 'N/A'}
           </StatValue>
           <StatTitle>Market Cap</StatTitle>
         </StatItem>

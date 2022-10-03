@@ -6,12 +6,14 @@ import { keyPress } from 'utils';
 
 interface StyledProps {
   disabled?: boolean;
+  labelClick?: boolean;
 }
 
 const CheckboxContainer = styled.div<StyledProps>`
   cursor: ${({ disabled }) => (disabled ? 'not-allowed' : 'pointer')};
   label {
-    cursor: ${({ disabled }) => (disabled ? 'not-allowed' : 'pointer')};
+    ${({ disabled, labelClick }) =>
+      labelClick && `cursor: ${disabled ? 'not-allowed' : 'pointer'};`}
   }
 `;
 const StyledCheckbox = styled.div<StyledProps>`
@@ -40,6 +42,7 @@ const Label = styled.label`
   line-height: 2.24rem;
   flex-basis: 100%;
   margin-left: 20px;
+  user-select: none;
 `;
 
 interface Props {
@@ -48,6 +51,7 @@ interface Props {
   label?: string;
   className?: string;
   disabled?: boolean;
+  labelClick?: boolean;
 }
 
 export const Checkbox: React.FC<Props> = ({
@@ -56,6 +60,7 @@ export const Checkbox: React.FC<Props> = ({
   label,
   className,
   disabled,
+  labelClick = true,
   ...rest
 }) => {
   const handleClick = () => {
@@ -68,9 +73,16 @@ export const Checkbox: React.FC<Props> = ({
     <CheckboxContainer
       className={className}
       disabled={disabled}
-      onClick={handleClick}
-      onKeyPress={(e) => keyPress(e, handleClick)}
+      labelClick={labelClick}
       {...rest}
+      onClick={() => {
+        if (labelClick) handleClick();
+      }}
+      onKeyPress={(e) => {
+        if (labelClick) {
+          keyPress(e, handleClick);
+        }
+      }}
     >
       <StyledCheckbox
         onClick={handleClick}

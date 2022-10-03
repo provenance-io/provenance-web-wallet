@@ -4,19 +4,18 @@
 ## Current Branch Tasks/Changes
 * Hash will always be listed in assets first, followed by Alphabetical order [DONE]
 * Fix page wrapper for remove account page [DONE]
+* Make sure mainnet accounts don't see Faucet in advanced settings (will always error out, testnet only) [DONE]
+* Make sure when confirming seed phrase no duplicated values exist in selection rows [DONE]
 * Switch all API calls to use RTK Query for caching
-  - Statistics
-  - Assets
-  - Transactions
-* Make sure to force refetch when certain events occur
-  - Signing a tx => Force assets/txs refetch
+  - Statistics [DONE]
+  - Assets [DONE]
+  - Transactions [DONE]
+* Make sure to force refetch dashboard API every 30s [DONE]
 * Make sure api fetch errors look correct, might be attempting to render object vs string
 * Make sure Send page looks right
 * Make sure Transactions/TransactionDetails look right
 * Make sure Asset Details Page (txs) looks right
-* Make sure mainnet accounts don't see Faucet in advanced settings (will always error out, testnet only)
-* Make sure when confirming seed phrase no duplicated values exist in selection rows
-  - Row contained 'undo' 'imitate' 'undo', causing both to get selected when clicked (same key)
+* Make sure every page click resets "lock" timer
 
 ## Features
 * When wallet locks (while open) create a blurry lock screen indicating wallet lock mode [6]

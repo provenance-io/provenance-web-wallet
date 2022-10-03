@@ -86,17 +86,17 @@ export const AssetHeader: React.FC = () => {
         )}
       </Typo>
       <Typo type="body" bold color={PriceChangeColor} marginBottom="10px">
-        {currentPriceChange !== 0 && (
+        {!loading && currentPriceChange !== 0 && (
           <Sprite
             icon={ICON_NAMES.ARROW_TALL}
             size="1.5rem"
             spin={currentPriceChange > 0 ? '0' : '180'}
           />
         )}
-        ${currentPriceChange.toFixed(2)}
-        {currentPriceChange !== 0 && ` (${currentPriceChangePercent})`}
+        {!loading && currentPriceChange.toFixed(2)}
+        {!loading && currentPriceChange !== 0 && ` (${currentPriceChangePercent})`}
       </Typo>
-      {currentDate && (
+      {!loading && currentDate && (
         <Typo type="body">{generateLabels(currentDate, timePeriod)}</Typo>
       )}
     </>

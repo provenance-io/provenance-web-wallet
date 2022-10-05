@@ -3,7 +3,7 @@ import {
   ReadableMessageNames,
   SupportedDenoms,
 } from '@provenanceio/wallet-utils';
-import { Asset } from './Address';
+import { Asset } from './Asset';
 
 export interface Message {
   coin?: Asset;

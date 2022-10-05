@@ -14,12 +14,12 @@ import {
   ICON_NAMES,
   ASSET_IMAGE_NAMES,
 } from 'consts';
-import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useAddress, useActiveAccount } from 'redux/hooks';
+import { useActiveAccount } from 'redux/hooks';
 import styled from 'styled-components';
 import { DashboardHeader } from './DashboardHeader';
 import { capitalize, currencyFormat } from 'utils';
+import { useGetAssetsQuery } from 'redux/services';
 
 const Denom = styled.span`
   font-size: 2rem;
@@ -28,14 +28,13 @@ const Denom = styled.span`
 
 export const Dashboard = () => {
   const navigate = useNavigate();
-  const { getAddressAssets, assets, assetsLoading } = useAddress();
   const activeAccount = useActiveAccount();
   const { address } = activeAccount;
-
-  // Onload get account assets
-  useEffect(() => {
-    if (address) getAddressAssets(address);
-  }, [address, getAddressAssets]);
+  const {
+    data: assets = [],
+    error,
+    isLoading,
+  } = useGetAssetsQuery(address!, { refetchOnMountOrArgChange: 30 });
 
   const calculatePortfolioValue = () => {
     let totalValue = 0;
@@ -48,8 +47,11 @@ export const Dashboard = () => {
     return currencyFormat(totalValue);
   };
 
-  const renderAssets = () =>
-    assets.map(({ display, displayAmount, amount, usdPrice }) => {
+  const renderAssets = () => {
+    const orderedAssets = [...assets].sort((a, b) =>
+      a.display === 'hash' ? -1 : a.display > b.display ? 1 : -1
+    );
+    return orderedAssets.map(({ display, displayAmount, amount, usdPrice }) => {
       const assetIconName =
         display && ASSET_IMAGE_NAMES.includes(display) ? display : 'provenance';
       return (
@@ -63,6 +65,7 @@ export const Dashboard = () => {
         />
       );
     });
+  };
 
   return (
     <Content>
@@ -70,7 +73,7 @@ export const Dashboard = () => {
       <Typo marginTop="40px" type="title" align="left">
         Portfolio Value
       </Typo>
-      {assetsLoading ? (
+      {isLoading ? (
         <Loading height="75px" />
       ) : (
         <Typo type="display1" align="left" marginBottom="10px">
@@ -102,12 +105,18 @@ export const Dashboard = () => {
         My Assets
       </Typo>
       <ScrollContainer height="166px">
-        {assetsLoading ? (
+        {isLoading ? (
           <Loading />
+        ) : error ? (
+          <Typo type="error" align="left" italic>
+            Failed to lookup account assets
+          </Typo>
         ) : assets.length ? (
           renderAssets()
         ) : (
-          'Address has no assets...'
+          <Typo type="body" align="left" italic>
+            Address has no assets
+          </Typo>
         )}
       </ScrollContainer>
       <FooterNav />

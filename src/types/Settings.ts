@@ -3,6 +3,7 @@ export interface SettingsStorage {
   unlockEXP?: number; // When will the current unlock expire at
   unlockDuration?: number; // How long is each unlock's lifespan
   customGRPCApi?: string; // User may set a customGRPCApi value in advanced settings
+  locked?: boolean; // Is the wallet currently locked
 }
 
 export type SettingsState = SettingsStorage & {

@@ -7,7 +7,6 @@ import { useActiveAccount } from 'redux/hooks';
 export const Landing: React.FC = () => {
   const navigate = useNavigate();
   const { masterKey } = useActiveAccount();
-
   const renderLandingActions = () =>
     masterKey ? (
       <Button onClick={() => navigate(UNLOCK_URL)}>Unlock</Button>

@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import {
   FooterNav,
   RowItem,
@@ -10,32 +10,26 @@ import {
   BottomFloat,
   Content,
 } from 'Components';
-import { useActiveAccount, useAddress } from 'redux/hooks';
+import { useActiveAccount } from 'redux/hooks';
 import { ICON_NAMES, TRANSACTION_DETAILS_URL } from 'consts';
 import { format } from 'date-fns';
 import { capitalize } from 'utils';
 import { useNavigate } from 'react-router-dom';
+import { useGetTransactionsQuery } from 'redux/services';
 
 export const Transactions = () => {
   const navigate = useNavigate();
   const [page, setPage] = useState(1);
   const { address } = useActiveAccount();
-  const {
-    getAddressTx,
-    transactions,
-    transactionsTotalCount,
-    transactionsLoading,
-    transactionsError,
-  } = useAddress();
   // Return 10 txs at a time each page
   const count = 6;
-  // Will always need to be 1 page at least (prevent "1/0" on load)
-  const maxPage = Math.ceil(transactionsTotalCount / count) || 1;
 
-  // Fetch the current page of txs
-  useEffect(() => {
-    getAddressTx({ address: address!, count, page });
-  }, [address, getAddressTx, page]);
+  const { data, error, isLoading, isFetching } = useGetTransactionsQuery({
+    address: address as string,
+    page,
+    count,
+  });
+  const { transactions = [], pages: maxPage = 1 } = data || {};
 
   // Get the next page of transactions
   const changePage = (amount: number) => {
@@ -43,7 +37,8 @@ export const Transactions = () => {
   };
 
   const renderTxRows = () =>
-    transactions.map(({ type, time, denom, hash }) => {
+    transactions.map((transaction) => {
+      const { type, time, denom, hash } = transaction;
       const date = time ? format(new Date(time), 'MMM dd, h:mm:ss a') : 'N/A';
 
       return (
@@ -52,7 +47,9 @@ export const Transactions = () => {
           img={denom === 'nhash' ? 'hash' : 'provenance'}
           title={denom === 'nhash' ? 'HASH' : capitalize(denom!, 'uppercase')}
           subtitle={`${capitalize(type)} • ${date}`}
-          onClick={() => navigate(`${TRANSACTION_DETAILS_URL}/${hash}`)}
+          onClick={() =>
+            navigate(`${TRANSACTION_DETAILS_URL}/${hash}`, { state: transaction })
+          }
         />
       );
     });
@@ -88,16 +85,20 @@ export const Transactions = () => {
     </BottomFloat>
   );
 
+  const loading = isLoading || isFetching;
+
   return (
     <Content>
       <Typo type="headline2">Transactions</Typo>
       <Typo type="bodyAlt" marginBottom="20px">
-        {transactionsLoading ? `Loading Page ${page}` : `Page ${page} / ${maxPage}`}
+        {loading ? `Loading Page ${page}` : `Page ${page} / ${maxPage}`}
       </Typo>
       <ScrollContainer height="386px" paddingBottom="10px">
-        {transactionsError ? (
-          <Typo type="error">{transactionsError}</Typo>
-        ) : transactionsLoading ? (
+        {error ? (
+          <Typo type="error" italic>
+            Failed to fetch transactions
+          </Typo>
+        ) : loading ? (
           <Loading />
         ) : (
           <>

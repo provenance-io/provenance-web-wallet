@@ -1,6 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit';
 import { RootState } from 'redux/store';
-import { Message as MessageSlice, CoinAsObject } from 'types';
+import type { Message as MessageSlice, CoinAsObject } from 'types';
 
 const initialState: MessageSlice = {
   coin: undefined,

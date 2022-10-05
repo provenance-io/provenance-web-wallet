@@ -1,4 +1,4 @@
-import { EventPayload } from 'types';
+import type { EventPayload } from 'types';
 import { useWalletConnect } from 'redux/hooks';
 import {
   Content,

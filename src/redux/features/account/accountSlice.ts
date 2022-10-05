@@ -1,6 +1,6 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { RootState } from 'redux/store';
-import { Account, AccountStorage } from 'types';
+import type { Account, AccountStorage } from 'types';
 import { getSavedData, addSavedData, removeSavedData } from 'utils';
 
 /**

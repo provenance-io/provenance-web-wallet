@@ -1,4 +1,10 @@
-import { EventPayload, ExtensionTypes } from 'types';
+import type {
+  EventPayload,
+  ExtensionTypes,
+  BIP32Interface,
+  NotificationType,
+  IClientMeta,
+} from 'types';
 import styled from 'styled-components';
 import {
   unpackDisplayObjectFromWalletMessage,
@@ -30,7 +36,6 @@ import {
   convertHexToUtf8,
   hashFormat,
 } from 'utils';
-import { BIP32Interface, NotificationType, IClientMeta } from 'types';
 import { ICON_NAMES, DEFAULT_GAS_ADJUSTMENT } from 'consts';
 import { COLORS } from 'theme';
 

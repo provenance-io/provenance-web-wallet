@@ -9,7 +9,7 @@ import {
 } from 'Components';
 import passphraseImg from 'images/passphrase-intro.png';
 import recoverImg from 'images/recover-intro.svg';
-import { FlowType } from 'types';
+import type { FlowType } from 'types';
 
 interface Props {
   nextUrl: string;

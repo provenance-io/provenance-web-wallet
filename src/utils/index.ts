@@ -16,6 +16,7 @@ export * from './localChromeSpoof';
 export * from './numberFormat';
 export * from './percentChange';
 export * from './queryParams';
+export * from './randomizeArray';
 export * from './saveData';
 export * from './trimString';
 export * from './txMessageFormat';

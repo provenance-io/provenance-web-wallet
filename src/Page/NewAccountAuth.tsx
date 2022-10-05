@@ -8,7 +8,7 @@ import {
 } from 'consts';
 import { useAccount } from 'redux/hooks';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { FlowType } from 'types';
+import type { FlowType } from 'types';
 import { Page } from './Page';
 
 interface Props {

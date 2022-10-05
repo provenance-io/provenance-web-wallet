@@ -3,7 +3,7 @@ import { Button, Header, Typo, Content, BottomFloat } from 'Components';
 import { useNavigate } from 'react-router-dom';
 import { useAccount } from 'redux/hooks';
 import backupComplete from 'images/backup-complete.svg';
-import { FlowType } from 'types';
+import type { FlowType } from 'types';
 
 interface Props {
   nextUrl: string;
@@ -29,37 +29,43 @@ export const NewAccountSuccess = ({ nextUrl, flowType }: Props) => {
   let title = '';
   switch (flowType) {
     case 'sub': {
-      message = 'Account has been successfully created.  Click continue to proceed to the dashboard.';
+      message =
+        'Account has been successfully created.  Click continue to proceed to the dashboard.';
       title = 'Sub Account Added';
       break;
     }
     case 'create': {
-      message = 'Wallet has been successfully created.  Click continue to proceed to the dashboard.';
+      message =
+        'Wallet has been successfully created.  Click continue to proceed to the dashboard.';
       title = 'Wallet Created';
       break;
     }
     case 'add': {
-      message = 'Account has been successfully created.  Click continue to proceed to the dashboard.';
+      message =
+        'Account has been successfully created.  Click continue to proceed to the dashboard.';
       title = 'Account Created';
       break;
     }
     case 'recover': {
-      message = 'Account has been successfully recovered.  Click continue to proceed to the dashboard.';
+      message =
+        'Account has been successfully recovered.  Click continue to proceed to the dashboard.';
       title = 'Account Recovered';
       break;
     }
     case 'import': {
-      message = 'Account has been successfully imported.  Click continue to proceed to the dashboard.';
+      message =
+        'Account has been successfully imported.  Click continue to proceed to the dashboard.';
       title = 'Account Imported';
       break;
     }
-    default: break;
+    default:
+      break;
   }
   return (
     <Content>
-      <Header progress={100} title={title} iconLeft='none' />
+      <Header progress={100} title={title} iconLeft="none" />
       <Image src={backupComplete} />
-      <Typo type='body'>{message}</Typo>
+      <Typo type="body">{message}</Typo>
       <BottomFloat>
         <Button onClick={handleContinue}>Continue</Button>
       </BottomFloat>

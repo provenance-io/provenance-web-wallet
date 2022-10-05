@@ -1,11 +1,19 @@
-import { Header, Input, Alert, Button, Typo, BottomFloat } from 'Components';
+import {
+  Header,
+  Input,
+  Alert,
+  Button,
+  Typo,
+  BottomFloat,
+  Content,
+} from 'Components';
 import { DASHBOARD_MENU_URL, ICON_NAMES } from 'consts';
 import { useState } from 'react';
 import { useParams, useNavigate } from 'react-router';
 import { useAccount } from 'redux/hooks';
 import styled from 'styled-components';
 import { COLORS } from 'theme';
-import { Account } from 'types';
+import type { Account } from 'types';
 import { decryptKey, keyPress } from 'utils';
 
 const StyledAddress = styled.div`
@@ -68,7 +76,7 @@ export const RemoveAccount: React.FC = () => {
   };
 
   return (
-    <>
+    <Content>
       <Header
         title="Remove Account"
         iconLeft={ICON_NAMES.CLOSE}
@@ -104,6 +112,6 @@ export const RemoveAccount: React.FC = () => {
       <BottomFloat>
         <Button onClick={handleRemoveAccount}>Remove Account</Button>
       </BottomFloat>
-    </>
+    </Content>
   );
 };

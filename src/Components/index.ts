@@ -4,7 +4,6 @@ export * from './AssetDropdown';
 export * from './Authenticate';
 export * from './BottomFloat';
 export * from './Button';
-export * from './Chart';
 export * from './Checkbox';
 export * from './Content';
 export * from './CopyValue';

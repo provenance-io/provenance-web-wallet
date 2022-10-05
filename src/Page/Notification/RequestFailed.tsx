@@ -1,4 +1,4 @@
-import { EventPayload } from 'types';
+import type { EventPayload } from 'types';
 import { useWalletConnect } from 'redux/hooks';
 import { Content, BottomFloat, Button, Typo, ImageContainer } from 'Components';
 import txErrorImg from 'images/tx-error.svg';

@@ -11,7 +11,7 @@ import { Pill as PillBase } from 'Components/Pill';
 import { Checkbox as BaseCheckbox } from 'Components/Checkbox';
 import { ScrollContainer } from 'Components/ScrollContainer';
 import { COLORS, FONTS } from 'theme';
-import { AccountLevel, HDPathData } from 'types';
+import type { AccountLevel, HDPathData } from 'types';
 import { getHDPathData, capitalize } from 'utils';
 
 interface StyledProps {

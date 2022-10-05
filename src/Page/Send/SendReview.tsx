@@ -10,7 +10,7 @@ import {
   broadcastTx,
   // MsgSendDisplay,
 } from '@provenanceio/wallet-utils';
-import { BIP32Interface } from 'types';
+import type { BIP32Interface } from 'types';
 
 export const SendReview = () => {
   const navigate = useNavigate();

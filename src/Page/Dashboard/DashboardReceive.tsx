@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Content, Header, Input, Sprite } from 'Components';
+import { Content, Header, Input, Sprite, Typo } from 'Components';
 import QRCode from 'qrcode';
 import styled from 'styled-components';
 import { trimString } from 'utils';
@@ -7,14 +7,6 @@ import { ICON_NAMES } from 'consts';
 import { useActiveAccount } from 'redux/hooks';
 import { COLORS } from 'theme';
 
-const Text = styled.p`
-  font-size: 1.4rem;
-  font-weight: 700;
-  text-align: center;
-  max-width: 270px;
-  line-height: 2.2rem;
-  margin: 100px auto 30px auto;
-`;
 const QRImage = styled.img`
   margin: auto;
   display: block;
@@ -22,7 +14,7 @@ const QRImage = styled.img`
 `;
 const CopyButton = styled.div<{ justCopied: boolean }>`
   position: absolute;
-  top: 34px;
+  top: 33px;
   padding: 10px;
   height: 42px;
   width: 42px;
@@ -31,7 +23,7 @@ const CopyButton = styled.div<{ justCopied: boolean }>`
   align-items: center;
   justify-content: center;
   background: ${({ justCopied }) =>
-    justCopied ? COLORS.POSITIVE_700 : COLORS.NEUTRAL_700};
+    justCopied ? COLORS.POSITIVE_500 : COLORS.PRIMARY_500};
   z-index: 10;
   border-radius: 0 3px 3px 0;
   transition: 250ms all;
@@ -79,7 +71,9 @@ export const DashboardReceive: React.FC = () => {
   return (
     <Content>
       <Header title="Receive" />
-      <Text>Show this QR code or share account address to receive assets</Text>
+      <Typo type="subhead" marginTop="40px" marginBottom="20px" maxWidth="260px">
+        Show this QR code or share account address to receive assets
+      </Typo>
       {qrcode && <QRImage src={qrcode} alt="Address QR Code" />}
       <Input
         placeholder={trimString(address!, 32, 16)}
@@ -89,17 +83,9 @@ export const DashboardReceive: React.FC = () => {
       >
         <CopyButton onClick={copyAddress} justCopied={justCopied}>
           {justCopied ? (
-            <Sprite
-              icon={ICON_NAMES.CHECK}
-              size="1.4rem"
-              color={COLORS.NOTICE_450}
-            />
+            <Sprite icon={ICON_NAMES.CHECK} size="1.4rem" color={COLORS.WHITE} />
           ) : (
-            <Sprite
-              icon={ICON_NAMES.COPY}
-              size="1.4rem"
-              color={COLORS.NEUTRAL_250}
-            />
+            <Sprite icon={ICON_NAMES.COPY} size="1.4rem" color={COLORS.WHITE} />
           )}
         </CopyButton>
       </Input>

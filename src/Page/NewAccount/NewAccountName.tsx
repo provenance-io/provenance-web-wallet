@@ -20,7 +20,7 @@ import {
   useWalletConnect,
 } from 'redux/hooks';
 import { completeHdPath, keyPress } from 'utils';
-import { FlowType } from 'types';
+import type { FlowType } from 'types';
 import { COLORS } from 'theme';
 
 const AdvancedSettingsCheckbox = styled(Checkbox)<{ active: boolean }>`

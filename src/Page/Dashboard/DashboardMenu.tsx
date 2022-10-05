@@ -10,6 +10,7 @@ import {
   Typo,
   PillInline,
   Content,
+  ScrollContainer,
 } from 'Components';
 import { useNavigate } from 'react-router-dom';
 import {
@@ -188,7 +189,9 @@ export const DashboardMenu: React.FC = () => {
       <Typo type="footnote" italic marginBottom="12px">
         Clicking an account name will set it as active
       </Typo>
-      {renderWallets()}
+      <ScrollContainer height="360px" paddingBottom="0px">
+        {renderWallets()}
+      </ScrollContainer>
       {accountMenuTargetId && (
         <WalletActionsPopup onClick={() => setAccountMenuTargetId('')}>
           <WalletCopy

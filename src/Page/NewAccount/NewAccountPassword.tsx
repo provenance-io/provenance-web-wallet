@@ -18,7 +18,7 @@ import {
   decryptKey,
   keyPress,
 } from 'utils';
-import { Account, FlowType } from 'types';
+import type { Account, FlowType } from 'types';
 
 const Input = styled(InputBase)`
   margin-bottom: 30px;

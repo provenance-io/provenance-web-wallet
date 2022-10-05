@@ -10,6 +10,7 @@ export const SMW_PRICING_URL = '/pricing';
 export const SMW_STATS_URL = '/statistics';
 export const SMW_MARKER_URL = `${SMW_PRICING_URL}/marker`;
 export const SMW_ADDRESS_URL = '/address';
+export const SMW_TRANSACTIONS_URL = '/transactions/all';
 // GRPC CLIENT
 export const GRPC_CLIENT_ADDRESS_TESTNET = 'https://wallet.test.figure.tech/proxy';
 export const GRPC_CLIENT_ADDRESS_MAINNET = 'https://wallet.figure.tech/proxy';

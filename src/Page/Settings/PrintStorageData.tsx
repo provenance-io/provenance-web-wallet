@@ -2,23 +2,11 @@ import { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { getSavedData, getStorageData } from 'utils';
 import { COLORS } from 'theme';
+import { ScrollContainer } from 'Components';
 
 const DataContainer = styled.div`
-  overflow-y: scroll;
-  max-height: 276px;
   background: ${COLORS.NEUTRAL_750};
   padding: 4px 8px;
-  // Attempt to style the scrollbar
-  &::-webkit-scrollbar-thumb {
-    background-color: ${COLORS.PRIMARY_500};
-    border-radius: 5px;
-  }
-  &::-webkit-scrollbar-track {
-    box-shadow: inset 0 0 6px ${COLORS.PRIMARY_600};
-  }
-  &::-webkit-scrollbar {
-    width: 2px;
-  }
 `;
 
 export const PrintStorageData: React.FC = () => {
@@ -39,8 +27,10 @@ export const PrintStorageData: React.FC = () => {
   }, []);
 
   return (
-    <DataContainer>
-      <pre>{JSON.stringify(allStorageData, null, 2)}</pre>
-    </DataContainer>
+    <ScrollContainer height="224px" paddingBottom="0px">
+      <DataContainer>
+        <pre>{JSON.stringify(allStorageData, null, 2)}</pre>
+      </DataContainer>
+    </ScrollContainer>
   );
 };

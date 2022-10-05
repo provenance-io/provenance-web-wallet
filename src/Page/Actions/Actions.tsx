@@ -14,7 +14,7 @@ import { COLORS } from 'theme';
 import { useNavigate } from 'react-router';
 import { useAccount, useActiveAccount, useWalletConnect } from 'redux/hooks';
 import { useState } from 'react';
-import { EventPayload, IClientMeta } from 'types';
+import type { EventPayload, IClientMeta } from 'types';
 import { trimAddress } from 'utils';
 
 const AllRequests = styled.div``;

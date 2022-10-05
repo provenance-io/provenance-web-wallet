@@ -9,13 +9,15 @@ import {
   BottomFloat,
   Loading,
   Typo,
+  ScrollContainer,
 } from 'Components';
 import styled from 'styled-components';
 import { DASHBOARD_URL, ICON_NAMES, SEND_AMOUNT_URL } from 'consts';
 import { keyPress, trimAddress, validateAddress } from 'utils';
 import { useNavigate } from 'react-router';
-import { useActiveAccount, useAddress, useMessage } from 'redux/hooks';
+import { useActiveAccount, useMessage } from 'redux/hooks';
 import { COLORS } from 'theme';
+import { useGetAssetsQuery, useGetTransactionsQuery } from 'redux/services';
 
 const SectionTitle = styled.div`
   font-size: 1.4rem;
@@ -49,9 +51,6 @@ const RecentAddressItem = styled.div`
   &:hover {
     background: ${COLORS.NEUTRAL_700};
   }
-  &:last-of-type {
-    margin-bottom: 60px;
-  }
 `;
 const AddressInfo = styled.div`
   font-weight: 400;
@@ -66,18 +65,32 @@ const Address = styled.div`
 export const Send: React.FC = () => {
   const [error, setError] = useState('');
   const [recentAddressLimit, setRecentAddressLimit] = useState(3);
-  const [totalUniqueAddresses, setTotalUniqueAddresses] = useState(0);
-  const [recentTxAddresses, setRecentTxAddresses] = useState<string[]>([]);
-  const [txHaveBeenFetched, setTxHaveBeenFetched] = useState(false);
-  const [txsHaveBeenFiltered, setTxsHaveBeenFiltered] = useState(false);
+  const [filteredTxs, setFilteredTxs] = useState<string[]>([]);
   const navigate = useNavigate();
+  const { address } = useActiveAccount();
+  // How many recent transactions should we comb through?
+  const fetchTxsCount = 20;
+  // Fetch Transactions
   const {
-    assets,
-    transactions,
-    getAddressTx,
-    transactionsLoading,
-    transactionsError,
-  } = useAddress();
+    data: txData,
+    error: txApiError,
+    isLoading: txApiLoading,
+    isFetching: txApiFetching,
+  } = useGetTransactionsQuery({
+    address: address!,
+    count: fetchTxsCount,
+  });
+  const { transactions = [] } = txData || {};
+  const txLoading = txApiLoading || txApiFetching;
+  // Fetch Assets
+  const {
+    data: assetData = [],
+    error: assetApiError,
+    isLoading: assetApiLoading,
+    isFetching: assetApiFetching,
+  } = useGetAssetsQuery(address!);
+  const assetsLoading = assetApiLoading || assetApiFetching;
+  // Get existing message fields/store functions
   const {
     txSendAddress,
     setTxSendAddress,
@@ -86,48 +99,35 @@ export const Send: React.FC = () => {
     setCoin,
     resetMessage,
   } = useMessage();
-  const { address } = useActiveAccount();
-
-  // Initial load fetch all transactions (Only do this once)
+  // Update filtered txs list
   useEffect(() => {
-    if (!txHaveBeenFetched && address) {
-      (async () => {
-        await getAddressTx({ address, count: 50 });
-        setTxHaveBeenFetched(true);
-      })();
+    // Only run filter if we have transactions
+    if (transactions.length) {
+      const newFilteredTxs = transactions
+        // First filter by txs which have recipientAddress
+        .filter(({ recipientAddress }) => !!recipientAddress)
+        // Pull out all of those txs into a new array
+        .map(({ recipientAddress }) => recipientAddress as string)
+        // Filter the array to only show each address once (uniques)
+        .filter(
+          (recipientAddress, index, ogListArray) =>
+            ogListArray.indexOf(recipientAddress) === index
+        )
+        // Filter to remove "self" from address list
+        .filter((recipientAddress) => recipientAddress !== address);
+      // Save filtered list into state
+      setFilteredTxs(newFilteredTxs);
     }
-  }, [txHaveBeenFetched, address, getAddressTx]);
-
+  }, [transactions, address]);
   // Update message fields
   useEffect(() => {
-    setCoin(assets[0]);
+    setCoin(assetData[0]);
     setTxFromAddress(address);
-  }, [assets, setCoin, address, setTxFromAddress]);
-
-  // Build array of recent addresses (Only do this once)
-  useEffect(() => {
-    // Only run after txs have been pulled (initialLoad)
-    if (txHaveBeenFetched && !txsHaveBeenFiltered) {
-      setTxsHaveBeenFiltered(true);
-      // Pull txs with recipient, create array from just those addresses
-      const txsRecipientList = transactions
-        .filter(({ recipientAddress }) => !!recipientAddress)
-        .map(({ recipientAddress }) => recipientAddress);
-      // Remove duplicate addresses
-      const txsDupsFiltered = [...new Set(txsRecipientList)];
-      setTotalUniqueAddresses(txsDupsFiltered.length);
-      setRecentTxAddresses(txsDupsFiltered as string[]);
-    }
-    // When this component unmounts, just set fetched and filtered to true
-    return () => {
-      setTxHaveBeenFetched(true);
-      setTxsHaveBeenFiltered(true);
-    };
-  }, [transactions, txsHaveBeenFiltered, txHaveBeenFetched]);
+  }, [assetData, setCoin, address, setTxFromAddress]);
 
   const renderRecentAddresses = () => {
     // Limit the amount of recent addresses rendered by the current limit
-    const limitedTxList = [...recentTxAddresses].splice(0, recentAddressLimit);
+    const limitedTxList = filteredTxs.slice(0, recentAddressLimit);
     // Render recent addresses from created array
     return limitedTxList.map((address, index) => (
       <RecentAddressItem
@@ -150,6 +150,84 @@ export const Send: React.FC = () => {
     navigate(SEND_AMOUNT_URL);
   };
 
+  const renderAssets = () =>
+    assetsLoading ? ( // Are the assets loading
+      <Loading />
+    ) : !assetData.length ? ( // This account doesn't have any assets
+      <>
+        <Typo type="error" italic>
+          {assetApiError
+            ? `Failed to fetch account assets`
+            : 'Account has no assets to send'}
+        </Typo>
+        <BottomFloat>
+          <Button onClick={() => navigate(DASHBOARD_URL)}>Back</Button>
+        </BottomFloat>
+      </>
+    ) : (
+      // This account has assets, show them
+      <>
+        <SectionTitle>
+          {assetData.length > 1 ? 'Select Asset' : 'Asset'}
+        </SectionTitle>
+        <AssetDropdown
+          assets={assetData}
+          activeDenom={coin?.denom}
+          onChange={setCoin}
+        />
+      </>
+    );
+
+  const renderAddressInput = () => (
+    <>
+      <SectionTitle>Send to Address</SectionTitle>
+      <Input
+        placeholder="Enter or select address below"
+        id="address"
+        value={txSendAddress}
+        onChange={setTxSendAddress}
+        error={error}
+        onKeyPress={(e) => keyPress(e, validateAndNavigate)}
+      />
+    </>
+  );
+
+  const renderRecentAddressesSection = () => (
+    <>
+      <SectionTitle>Recent Addresses</SectionTitle>
+      <RecentAddressSection>
+        {txLoading ? (
+          <Loading />
+        ) : !filteredTxs.length ? (
+          txApiError ? (
+            <Typo type="error" italic align="left">
+              Error fetching recent addresses
+            </Typo>
+          ) : (
+            <Typo type="body" align="left" italic>
+              No recent addresses available
+            </Typo>
+          )
+        ) : (
+          <ScrollContainer height="169px" paddingBottom="0px">
+            {renderRecentAddresses()}
+            {recentAddressLimit < filteredTxs.length && (
+              <RecentAddressItem>
+                <AddressInfo
+                  onClick={() => setRecentAddressLimit(recentAddressLimit + 3)}
+                >
+                  <Typo type="body" align="left" italic color="PRIMARY_500">
+                    View More
+                  </Typo>
+                </AddressInfo>
+              </RecentAddressItem>
+            )}
+          </ScrollContainer>
+        )}
+      </RecentAddressSection>
+    </>
+  );
+
   return (
     <Content>
       <Header
@@ -160,58 +238,13 @@ export const Send: React.FC = () => {
           resetMessage();
         }}
       />
-      {assets.length ? (
+      {renderAssets()}
+      {!!assetData.length && (
         <>
-          <SectionTitle>{assets.length > 1 ? 'Select Asset' : 'Asset'}</SectionTitle>
-          <AssetDropdown
-            assets={assets}
-            activeDenom={coin?.denom}
-            onChange={setCoin}
-          />
-          <SectionTitle>Send to Address</SectionTitle>
-          <Input
-            placeholder="Enter or select address below"
-            id="address"
-            value={txSendAddress}
-            onChange={setTxSendAddress}
-            error={error}
-            onKeyPress={(e) => keyPress(e, validateAndNavigate)}
-          />
-          <SectionTitle>Recent Addresses</SectionTitle>
-          <RecentAddressSection>
-            {!!transactionsError && (
-              <Typo type="error">
-                Error fetching recent addresses: {transactionsError}
-              </Typo>
-            )}
-            {transactionsLoading ? (
-              <Loading />
-            ) : !transactions.length ? (
-              <Typo type="body" align="left" textStyle="italic">
-                No recent addresses available
-              </Typo>
-            ) : (
-              renderRecentAddresses()
-            )}
-            {!!transactions.length && recentAddressLimit < totalUniqueAddresses && (
-              <RecentAddressItem>
-                <AddressInfo
-                  onClick={() => setRecentAddressLimit(recentAddressLimit + 3)}
-                >
-                  View More
-                </AddressInfo>
-              </RecentAddressItem>
-            )}
-          </RecentAddressSection>
+          {renderAddressInput()}
+          {renderRecentAddressesSection()}
           <BottomFloat>
             <Button onClick={validateAndNavigate}>Next</Button>
-          </BottomFloat>
-        </>
-      ) : (
-        <>
-          <SectionTitle>Account has no assets to send</SectionTitle>
-          <BottomFloat>
-            <Button onClick={() => navigate(DASHBOARD_URL)}>Back</Button>
           </BottomFloat>
         </>
       )}

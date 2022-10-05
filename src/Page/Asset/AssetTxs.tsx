@@ -4,29 +4,28 @@ import {
   TRANSACTION_DETAILS_URL,
   ASSET_IMAGE_NAMES,
 } from 'consts';
-import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useActiveAccount, useAddress } from 'redux/hooks';
+import { useActiveAccount, useAssetChart } from 'redux/hooks';
 import { capitalize } from 'utils';
 import { format } from 'date-fns';
+import { useGetTransactionsQuery } from 'redux/services';
 
-interface Props {
-  assetName: string;
-}
-
-export const AssetTxs: React.FC<Props> = ({ assetName }) => {
-  const count = 50; // How many to pull from API
+export const AssetTxs: React.FC = () => {
+  const count = 10; // How many to pull from API
   const page = 1; // What page to start pulling from
   const displayAmount = 3; // How many we want to show
-  const { getAddressTx, transactions, transactionsError, transactionsLoading } =
-    useAddress();
   const { address } = useActiveAccount();
-  const navigate = useNavigate();
+  const { assetName } = useAssetChart();
+  // Fetch Transactions
+  const { data, isLoading, isFetching, error } = useGetTransactionsQuery({
+    address: address!,
+    count,
+    page,
+  });
+  const { transactions = [] } = data || {};
+  const loading = isLoading || isFetching;
 
-  // On load fetch all the recent txs
-  useEffect(() => {
-    getAddressTx({ address: address!, count, page });
-  }, [getAddressTx, address]);
+  const navigate = useNavigate();
 
   const assetIconName =
     assetName && ASSET_IMAGE_NAMES.includes(assetName) ? assetName : 'provenance';
@@ -40,7 +39,8 @@ export const AssetTxs: React.FC<Props> = ({ assetName }) => {
         return finalDenom === assetName;
       })
       .slice(0, displayAmount)
-      .map(({ type, time, denom, hash }) => {
+      .map((transaction) => {
+        const { type, time, denom, hash } = transaction;
         const date = time ? format(new Date(time), 'MMM dd, h:mm:ss a') : 'N/A';
 
         return (
@@ -49,7 +49,9 @@ export const AssetTxs: React.FC<Props> = ({ assetName }) => {
             img={assetIconName}
             title={denom === 'nhash' ? 'HASH' : capitalize(denom!, 'uppercase')}
             subtitle={`${capitalize(type)} • ${date}`}
-            onClick={() => navigate(`${TRANSACTION_DETAILS_URL}/${hash}`)}
+            onClick={() =>
+              navigate(`${TRANSACTION_DETAILS_URL}/${hash}`, { state: transaction })
+            }
           />
         );
       });
@@ -67,10 +69,12 @@ export const AssetTxs: React.FC<Props> = ({ assetName }) => {
       <Typo type="title" marginTop="30px" marginBottom="10px" align="left">
         Recent Transactions
       </Typo>
-      {transactionsLoading ? (
+      {loading ? (
         <Loading />
-      ) : transactionsError ? (
-        <Typo type="error">{transactionsError}</Typo>
+      ) : error ? (
+        <Typo type="error" italic align="left">
+          Failed to fetch recent transactions
+        </Typo>
       ) : (
         <>
           {renderTxRows()}

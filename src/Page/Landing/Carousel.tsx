@@ -1,6 +1,5 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 import styled from 'styled-components';
-import { useStatistics } from 'redux/hooks';
 import { Slide01, Slide02, Slide03 } from './CarouselSlides';
 import { COLORS } from 'theme';
 
@@ -45,7 +44,6 @@ export const Carousel: React.FC = () => {
   const currentSlideRef = useRef(currentSlide);
   const [slideTimeout, setSlideTimeout] = useState(0);
   const [sliderClickTimeout, setSliderClickTimeout] = useState(0);
-  const { getStatistics, statistics } = useStatistics();
 
   const changeSlide = useCallback(
     (direct?: number) => {
@@ -86,10 +84,6 @@ export const Carousel: React.FC = () => {
       clearTimeout(sliderClickTimeout);
     };
   }, [changeSlide, slideTimeout, sliderClickTimeout]);
-  // Pull stats from API
-  useEffect(() => {
-    getStatistics();
-  }, [getStatistics]);
 
   const sliderClick = (event: React.MouseEvent, slideNo?: number) => {
     event.stopPropagation();
@@ -111,7 +105,7 @@ export const Carousel: React.FC = () => {
         quickSwitch={currentSlide === 1}
       >
         <Slide01 />
-        <Slide02 statistics={statistics} />
+        <Slide02 />
         <Slide03 />
         <Slide01 />
       </AllSlides>

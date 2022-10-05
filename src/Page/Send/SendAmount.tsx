@@ -9,7 +9,7 @@ import {
   ASSET_IMAGE_NAMES,
   DASHBOARD_URL,
 } from 'consts';
-import { useActiveAccount, useMessage, useAddress, useSettings } from 'redux/hooks';
+import { useActiveAccount, useMessage, useSettings } from 'redux/hooks';
 import {
   capitalize,
   hashFormat,
@@ -18,6 +18,7 @@ import {
   currencyFormat,
 } from 'utils';
 import { COLORS } from 'theme';
+import { useGetAssetsQuery } from 'redux/services';
 
 const AssetImg = styled.img`
   width: 100px;
@@ -74,9 +75,9 @@ export const SendAmount = () => {
     txType,
     setTxMsgAny,
   } = useMessage();
-  const { assets } = useAddress();
-  const { publicKey } = useActiveAccount();
-
+  const { publicKey, address } = useActiveAccount();
+  // Fetch Assets
+  const { data: assetData = [] } = useGetAssetsQuery(address!);
   // On page load, if there isn't a sendAddress (skipped /send page) redirect to send
   useEffect(() => {
     if (!txSendAddress) navigate(DASHBOARD_URL);
@@ -133,15 +134,15 @@ export const SendAmount = () => {
 
   const calculatePriceUSD = () => {
     let value = '0.00';
-    const assetData = assets.find(({ denom }) => coin!.denom === denom);
-    if (coinAmount && assetData) {
+    const asset = assetData.find(({ denom }) => coin!.denom === denom);
+    if (coinAmount && asset) {
       // HASH
       if (coin!.denom === 'nhash' || coin!.denom === 'hash') {
         const nhashAmount = hashFormat(coinAmount, 'hash');
-        value = currencyFormat(assetData.usdPrice * nhashAmount);
+        value = currencyFormat(asset.usdPrice * nhashAmount);
       } else {
         // NON-HASH
-        value = currencyFormat(assetData.usdPrice * Number(coinAmount));
+        value = currencyFormat(asset.usdPrice * Number(coinAmount));
       }
     }
     return `~$${value} USD`;

@@ -46,7 +46,7 @@ const Version = styled(Typo)`
 
 export const Settings = () => {
   const navigate = useNavigate();
-  const { saveSettingsData } = useSettings();
+  const { lockWallet } = useSettings();
 
   const createOption = (name: string, url: string, external?: boolean) => (
     <SectionOption
@@ -65,7 +65,7 @@ export const Settings = () => {
 
   const handleLockWallet = async () => {
     // Set expiration to now
-    await saveSettingsData({ unlockEXP: Date.now() });
+    await lockWallet();
     // Redirect user to landing page
     navigate(APP_URL);
   };

@@ -2,7 +2,8 @@
 * _(Priority: 1 - 10)_
 
 ## Current Branch Tasks/Changes
-* Allow user to set timeout for auto-logout in settings
+* Allow user to set timeout for auto-logout in settings [DONE]
+* Fix jwt signature not being base64url (currently b64) [DONE]
 * Rebuild wallet lock system. Lock while idle (not page change). Make sure every page click resets "lock" timer [DONE]
 * Hash will always be listed in assets first, followed by Alphabetical order [DONE]
 * Fix page wrapper for remove account page [DONE]

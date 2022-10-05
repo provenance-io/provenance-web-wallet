@@ -30,6 +30,7 @@ const SAVE_SETTINGS_DATA = 'SAVE_SETTINGS_DATA';
 const RESET_SETTINGS_DATA = 'RESET_SETTINGS_DATA';
 const BUMP_UNLOCK_DURATION = 'BUMP_UNLOCK_DURATION';
 const LOCK_WALLET = 'LOCK_WALLET';
+const SET_UNLOCK_DURATION = 'SET_UNLOCK_DURATION';
 
 /**
  * ASYNC ACTIONS
@@ -113,6 +114,18 @@ export const lockWallet = createAsyncThunk(LOCK_WALLET, async () => {
   await addSavedData({ settings: newData });
   return { unlockEST, unlockEXP, locked };
 });
+// Change lock timeout duration
+export const setUnlockDuration = createAsyncThunk(
+  SET_UNLOCK_DURATION,
+  async (unlockDuration: number) => {
+    // Get existing saved data (to merge into)
+    const existingData = await getSavedData('settings');
+    // Save updated unlock data (and add back all other existing data)
+    const newData = { ...existingData, unlockDuration };
+    await addSavedData({ settings: newData });
+    return { unlockDuration };
+  }
+);
 
 /**
  * SLICE
@@ -152,6 +165,10 @@ const settingsSlice = createSlice({
         state.unlockEST = unlockEST;
         state.unlockEXP = unlockEXP;
         state.locked = locked;
+      })
+      .addCase(setUnlockDuration.fulfilled, (state, { payload }) => {
+        const { unlockDuration } = payload;
+        state.unlockDuration = unlockDuration;
       });
   },
   reducers: {
@@ -174,6 +191,7 @@ export const settingsActions = {
   resetSettingsData,
   bumpUnlockDuration,
   lockWallet,
+  setUnlockDuration,
 };
 
 /**

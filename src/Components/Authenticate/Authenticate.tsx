@@ -23,7 +23,7 @@ export const Authenticate: React.FC<Props> = ({
   const [walletPassword, setWalletPassword] = useState('');
   const [passwordError, setPasswordError] = useState('');
   const { masterKey: key } = useActiveAccount();
-  const { unlockDuration, saveSettingsData } = useSettings();
+  const { bumpUnlockDuration } = useSettings();
 
   const handleApprove = async () => {
     let newPasswordError = '';
@@ -39,9 +39,7 @@ export const Authenticate: React.FC<Props> = ({
       if (!masterKey) newPasswordError = 'Invalid password';
       // Password was correct
       else {
-        // Bump the unlock duration
-        const now = Date.now();
-        await saveSettingsData({ unlockEST: now, unlockEXP: now + unlockDuration! });
+        await bumpUnlockDuration();
         // Run approval callback function
         approveCallback(bip32FromB58(masterKey));
       }

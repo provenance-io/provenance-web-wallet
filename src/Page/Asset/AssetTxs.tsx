@@ -72,7 +72,9 @@ export const AssetTxs: React.FC = () => {
       {loading ? (
         <Loading />
       ) : error ? (
-        <Typo type="error">{error}</Typo>
+        <Typo type="error" italic align="left">
+          Failed to fetch recent transactions
+        </Typo>
       ) : (
         <>
           {renderTxRows()}

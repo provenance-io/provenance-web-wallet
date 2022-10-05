@@ -11,7 +11,7 @@ export const RequiresAuth = ({ children = null }: PageProps) => {
   const location = useLocation();
   const navigate = useNavigate();
   const activeAccount = useActiveAccount();
-  const { unlockEST, unlockEXP } = useSettings();
+  const { locked } = useSettings();
   // Is the user on the landing page?
   const isLandingPage = location.pathname === APP_URL;
 
@@ -19,11 +19,8 @@ export const RequiresAuth = ({ children = null }: PageProps) => {
   useEffect(() => {
     const urlSearchParams = new URLSearchParams(window?.location?.search);
     // Check the users credentials/access before auto-redirecting them as needed
-    // Current time
-    const now = Date.now();
     // Check the unlockSession
-    const unlocked = unlockEST && unlockEXP && now < unlockEXP;
-    const authenticated = unlocked && activeAccount; // To get to dashboard or other pages, must be unlocked with an active account
+    const authenticated = !locked && activeAccount; // To get to dashboard or other pages, must be unlocked with an active account
     // Not authenticated and on non-landing page
     if (!authenticated && !isLandingPage) {
       // Send user to the landing page which will ask to unlock
@@ -31,14 +28,7 @@ export const RequiresAuth = ({ children = null }: PageProps) => {
     }
     // No redirect or special action, but user is already authenticated
     else if (authenticated && isLandingPage) navigate(DASHBOARD_URL);
-  }, [
-    navigate,
-    isLandingPage,
-    activeAccount,
-    location.pathname,
-    unlockEST,
-    unlockEXP,
-  ]);
+  }, [activeAccount, isLandingPage, locked, navigate]);
 
   return activeAccount || isLandingPage ? (
     <>

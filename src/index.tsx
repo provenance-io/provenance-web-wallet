@@ -7,6 +7,7 @@ import { store } from 'redux/store';
 import { NOTIFICATION_URL } from 'consts';
 import { localChromeSpoof } from 'utils';
 import App from './App';
+import { LockCheck } from 'LockCheck';
 
 const isChromeExtension = !!chrome?.extension;
 // Detect if running locally, if so, set up chrome storage spoof
@@ -28,7 +29,9 @@ ReactDOM.render(
     <Provider store={store()}>
       <Router>
         <Theme>
-          <App />
+          <LockCheck>
+            <App />
+          </LockCheck>
         </Theme>
       </Router>
     </Provider>

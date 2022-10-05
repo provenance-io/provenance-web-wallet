@@ -95,7 +95,9 @@ export const Transactions = () => {
       </Typo>
       <ScrollContainer height="386px" paddingBottom="10px">
         {error ? (
-          <Typo type="error">{error}</Typo>
+          <Typo type="error" italic>
+            Failed to fetch transactions
+          </Typo>
         ) : loading ? (
           <Loading />
         ) : (

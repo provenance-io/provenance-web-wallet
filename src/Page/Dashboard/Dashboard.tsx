@@ -108,11 +108,15 @@ export const Dashboard = () => {
         {isLoading ? (
           <Loading />
         ) : error ? (
-          'Failed to lookup account assets'
+          <Typo type="error" align="left" italic>
+            Failed to lookup account assets
+          </Typo>
         ) : assets.length ? (
           renderAssets()
         ) : (
-          'Address has no assets...'
+          <Typo type="body" align="left" italic>
+            Address has no assets
+          </Typo>
         )}
       </ScrollContainer>
       <FooterNav />

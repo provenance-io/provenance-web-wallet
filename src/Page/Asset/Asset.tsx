@@ -8,7 +8,7 @@ import { AssetTxs } from './AssetTxs';
 
 export const Asset: React.FC = () => {
   // Pull assetChart data from redux store
-  const { setAssetChartData } = useAssetChart();
+  const { setAssetChartData, values } = useAssetChart();
   // Which asset are we graphing
   const { assetName } = useParams();
   if (assetName) {
@@ -20,7 +20,7 @@ export const Asset: React.FC = () => {
       <ScrollContainer height="470px">
         <AssetHeader />
         <AssetChart />
-        <AssetChartOptions />
+        {!!values.length && <AssetChartOptions />}
         <AssetTxs />
       </ScrollContainer>
       <FooterNav />

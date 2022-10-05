@@ -2,6 +2,8 @@
 * _(Priority: 1 - 10)_
 
 ## Current Branch Tasks/Changes
+* Allow user to set timeout for auto-logout in settings
+* Rebuild wallet lock system. Lock while idle (not page change). Make sure every page click resets "lock" timer [DONE]
 * Hash will always be listed in assets first, followed by Alphabetical order [DONE]
 * Fix page wrapper for remove account page [DONE]
 * Make sure mainnet accounts don't see Faucet in advanced settings (will always error out, testnet only) [DONE]
@@ -11,11 +13,11 @@
   - Assets [DONE]
   - Transactions [DONE]
 * Make sure to force refetch dashboard API every 30s [DONE]
-* Make sure api fetch errors look correct, might be attempting to render object vs string
-* Make sure Send page looks right
-* Make sure Transactions/TransactionDetails look right
-* Make sure Asset Details Page (txs) looks right
-* Make sure every page click resets "lock" timer
+* Allow scrolling when wallet has a lot of accounts in dashboard menu [DONE]
+* Update error loading message for dashboard assets [DONE]
+* Send Complete page needs scroll container [DONE]
+* Scroll for recent address list in send page [DONE]
+* Make sure api fetch errors look correct, might be attempting to render object vs string [DONE]
 
 ## Features
 * When wallet locks (while open) create a blurry lock screen indicating wallet lock mode [6]
@@ -39,7 +41,6 @@
   - Check chrome extension ID's to make sure they match
   - This ID is `pfcpdmimlaffecihgamfbnfffmdlhkmh`
   - Prevent copycat app in extension store from stealing account after signing into dApp.
-* Allow user to set timeout for auto-logout in settings [10]
 * Create better readme with instructions on how to initialize the local extension and redux dev tools [10]
 * Profile menu to change wallet password [10]
   - Would need to unlock all master keys for all accounts and relock and save with new password

@@ -7,6 +7,7 @@ import { FaucetContent } from './FaucetContent';
 import { PrintStorageData } from './PrintStorageData';
 import { CustomGRPC } from './CustomGRPC';
 import { useActiveAccount } from 'redux/hooks';
+import { WalletLockTimeout } from './WalletLockTimeout';
 
 const SectionContent = styled.div`
   padding: 20px;
@@ -45,41 +46,41 @@ export const AdvancedSettings: React.FC = () => {
   return (
     <Content>
       <Header title="Advanced Settings" />
+      <SectionOption active={activeIndex === 0}>
+        <SectionTitleRow onClick={() => changeActiveIndex(0)} tabIndex={0}>
+          Wallet Lock Timeout
+          <Sprite
+            icon={ICON_NAMES.CHEVRON}
+            size="1.3rem"
+            spin={activeIndex === 0 ? 90 : 0}
+          />
+        </SectionTitleRow>
+        {activeIndex === 0 && (
+          <SectionContent>
+            <WalletLockTimeout />
+          </SectionContent>
+        )}
+      </SectionOption>
       {network && network === TESTNET_NETWORK && (
-        <SectionOption active={activeIndex === 0}>
-          <SectionTitleRow onClick={() => changeActiveIndex(0)} tabIndex={0}>
+        <SectionOption active={activeIndex === 1}>
+          <SectionTitleRow onClick={() => changeActiveIndex(1)} tabIndex={0}>
             Faucet
             <Sprite
               icon={ICON_NAMES.CHEVRON}
               size="1.3rem"
-              spin={activeIndex === 0 ? 90 : 0}
+              spin={activeIndex === 1 ? 90 : 0}
             />
           </SectionTitleRow>
-          {activeIndex === 0 && (
+          {activeIndex === 1 && (
             <SectionContent>
               <FaucetContent />
             </SectionContent>
           )}
         </SectionOption>
       )}
-      <SectionOption active={activeIndex === 1}>
-        <SectionTitleRow onClick={() => changeActiveIndex(1)} tabIndex={0}>
-          Custom gRPC Service
-          <Sprite
-            icon={ICON_NAMES.CHEVRON}
-            size="1.3rem"
-            spin={activeIndex === 1 ? 90 : 0}
-          />
-        </SectionTitleRow>
-        {activeIndex === 1 && (
-          <SectionContent>
-            <CustomGRPC />
-          </SectionContent>
-        )}
-      </SectionOption>
       <SectionOption active={activeIndex === 2}>
         <SectionTitleRow onClick={() => changeActiveIndex(2)} tabIndex={0}>
-          Print All Storage Data
+          Custom gRPC Service
           <Sprite
             icon={ICON_NAMES.CHEVRON}
             size="1.3rem"
@@ -87,6 +88,21 @@ export const AdvancedSettings: React.FC = () => {
           />
         </SectionTitleRow>
         {activeIndex === 2 && (
+          <SectionContent>
+            <CustomGRPC />
+          </SectionContent>
+        )}
+      </SectionOption>
+      <SectionOption active={activeIndex === 3}>
+        <SectionTitleRow onClick={() => changeActiveIndex(3)} tabIndex={0}>
+          Print All Storage Data
+          <Sprite
+            icon={ICON_NAMES.CHEVRON}
+            size="1.3rem"
+            spin={activeIndex === 3 ? 90 : 0}
+          />
+        </SectionTitleRow>
+        {activeIndex === 3 && (
           <SectionContent>
             <PrintStorageData />
           </SectionContent>

@@ -1,5 +1,12 @@
 import styled from 'styled-components';
-import { BottomFloat, Content, Button, Typo, List } from 'Components';
+import {
+  BottomFloat,
+  Content,
+  Button,
+  Typo,
+  List,
+  ScrollContainer,
+} from 'Components';
 import { DASHBOARD_URL } from 'consts';
 import { useNavigate } from 'react-router';
 import checkSuccessIcon from 'images/check-success.svg';
@@ -41,20 +48,20 @@ export const SendComplete = () => {
       <Typo type="display2" align="center" marginTop="20px">
         {coinAmount} {capitalize(coin?.display, 'uppercase')}
       </Typo>
-      <Typo type="displayBody" align="center" marginTop="14px">
+      <Typo type="displayBody" align="center" marginTop="14px" marginBottom="20px">
         Your transfer details are below
       </Typo>
-      <List
-        message={{
-          date: format(txDate!, 'MMM dd, yyyy'),
-          from: trimAddress(txFromAddress),
-          to: trimAddress(txSendAddress),
-          ...(!!txMemo && { note: txMemo }),
-          ...(!!txResponse?.txhash && { 'Transaction Hash': txResponse.txhash }),
-        }}
-        marginTop="40px"
-        marginBottom="80px"
-      />
+      <ScrollContainer height="250px" paddingBottom="0px">
+        <List
+          message={{
+            date: format(txDate!, 'MMM dd, yyyy'),
+            from: trimAddress(txFromAddress),
+            to: trimAddress(txSendAddress),
+            ...(!!txMemo && { note: txMemo }),
+            ...(!!txResponse?.txhash && { 'Transaction Hash': txResponse.txhash }),
+          }}
+        />
+      </ScrollContainer>
       <BottomFloat>
         <Button onClick={handleContinueClick}>Done</Button>
       </BottomFloat>

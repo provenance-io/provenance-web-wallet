@@ -1,5 +1,4 @@
-import styled from 'styled-components';
-import { Loading } from 'Components';
+import { Loading, Typo } from 'Components';
 import { hashFormat, percentChange } from 'utils';
 import { Chart } from './Chart';
 import type {
@@ -11,21 +10,6 @@ import type {
 import { useAssetChart } from 'redux/hooks';
 import { useGetMarkerQuery } from 'redux/services';
 import { useEffect } from 'react';
-
-// const ChartArea = styled.div`
-//   min-height: 250px;
-//   display: flex;
-//   align-items: center;
-//   justify-content: center;
-//   flex-direction: column;
-//   max-width: 100%;
-// `;
-
-const ChartMessage = styled.div`
-  display: flex;
-  align-items: center;
-  flex-grow: 1;
-`;
 
 // AssetChart.txs will take the raw data from the API and massage it to work/look right withing Chart.tsx
 export const AssetChart: React.FC = () => {
@@ -91,6 +75,8 @@ export const AssetChart: React.FC = () => {
   ) : values && !!values.length ? (
     <Chart />
   ) : (
-    <ChartMessage>No Data Available</ChartMessage>
+    <Typo type="subhead" italic marginTop="30px" marginBottom="40px">
+      No Historical Data Available
+    </Typo>
   );
 };

@@ -19,5 +19,6 @@ export const HD_PATH_KEYS = [
   'addressIndex',
 ] as const;
 export const DEFAULT_GAS_ADJUSTMENT = '1.25';
+
 export const TEST_WALLET =
-  'bleak alpha bunker give message direct powder general issue awesome animal ice entry parade invest sausage tragic away nuclear gaze learn during crew benefit';
+  'bleak alpha bunker give message direct powder general issue awesome animal ice entry parade invest sausage tragic away nuclear gaze learn during crew benefit'; // tp1knsxfnn0lq48mmnkfnkgtkk8qnxxdu0y2tklkh

@@ -52,6 +52,7 @@ export const Notification: React.FC = () => {
   const { accounts } = useAccount();
   const hasAccount = !!accounts.length;
   const wcUriParam = searchParams.get('wc');
+  const durationUriParam = searchParams.get('duration');
   // On load, attempt to detect the way the extension loaded
   useEffect(() => {
     const asyncExtensionType = async () => {
@@ -131,14 +132,30 @@ export const Notification: React.FC = () => {
   // Listen for a new walletConnect URI.  When one is passed, create a new connector
   useEffect(() => {
     if (!connector && wcUriParam) {
-      // Create new connector
-      const connector = new WalletConnectClient({ uri: wcUriParam });
-      // Save connector into redux store
-      setConnector(connector);
-      // Clear out uri from search params
-      setSearchParams('');
+      const asyncSaveData = async () => {
+        // If we have a custom connection timeout, save it
+        if (durationUriParam) {
+          await saveWalletconnectData({
+            connectionDuration: Number(durationUriParam),
+          });
+          // Create new connector
+          const connector = new WalletConnectClient({ uri: wcUriParam });
+          // Save connector into redux store
+          setConnector(connector);
+          // Clear out uri from search params
+          setSearchParams('');
+        }
+      };
+      asyncSaveData();
     }
-  }, [connector, wcUriParam, setSearchParams, setConnector]);
+  }, [
+    connector,
+    wcUriParam,
+    setSearchParams,
+    setConnector,
+    durationUriParam,
+    saveWalletconnectData,
+  ]);
 
   const closeWindow = async () => {
     if (extensionType === 'extension') {

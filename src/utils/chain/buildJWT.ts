@@ -8,6 +8,14 @@ import {
 } from './common';
 import { signBytes } from './signBytes';
 
+/**
+ *
+ * @param masterKey MasterKey used to sign as the wallet holder
+ * @param address Address attached to JWT
+ * @param expires (optional) When does the JWT expire (seconds)
+ * @param forceDate (optional) Use a different starting date (not now) in ms
+ * @returns
+ */
 export const buildJWT = (
   masterKey: BIP32Interface | string,
   address: string,

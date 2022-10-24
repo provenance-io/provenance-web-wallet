@@ -46,13 +46,13 @@ const notificationPopupEvent = async function(request, sender, sendResponse) {
       chrome.windows.create(popupConfig);
     } else {
       // Run function based on the event
-      const { event, uri } = request;
+      const { event, uri, duration } = request;
       switch (event) {
         case 'walletconnect_init':
           // Uri is required to be included
           if (uri) {
             // update the popup config url
-            popupConfig.url = `${popupConfig.url}?wc=${uri}`;
+            popupConfig.url = `${popupConfig.url}?wc=${uri}&duration=${duration}`;
             chrome.windows.create(popupConfig);
           }
           break;

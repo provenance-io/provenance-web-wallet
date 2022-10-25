@@ -46,8 +46,23 @@ const notificationPopupEvent = async function(request, sender, sendResponse) {
       chrome.windows.create(popupConfig);
     } else {
       // Run function based on the event
-      const { event, uri, duration } = request;
+      const { event, uri, duration, data } = request;
       switch (event) {
+        case 'resetConnectionTimeout':
+          // Data is going to be the new connectionTimeout in ms
+          // Update the new EXP and Duration values
+          const connectionDuration = data;
+          const connectionEXP = Date.now() + connectionDuration;
+          // Pull existing walletconnect storage data
+          const existingWalletconnectStorage = (await chrome.storage.local.get('walletconnect')).walletconnect;
+          await chrome.storage.local.set({
+            walletconnect: {
+              ...existingWalletconnectStorage,
+              connectionEXP,
+              connectionDuration,
+            }
+          });
+          break;
         case 'walletconnect_init':
           // Uri is required to be included
           if (uri) {

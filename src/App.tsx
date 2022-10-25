@@ -97,14 +97,18 @@ function App() {
   useEffect(() => {
     const urlSearchParams = new URLSearchParams(window?.location?.search);
     const walletConnectURI = urlSearchParams.get('wc');
+    const walletConnectDuration = urlSearchParams.get('duration');
     const redirectToURL = urlSearchParams.get('redirectTo');
     // Determine if we're being sent to the notifications page (walletconnect session or manual redirect)
     const redirectToNotificationsPage: boolean =
       !!walletConnectURI ||
       !!(redirectToURL && redirectToURL === 'NOTIFICATION_URL');
     if (redirectToNotificationsPage) {
+      const wcDuration = walletConnectDuration
+        ? `&duration=${walletConnectDuration}`
+        : '';
       const wcParam = walletConnectURI
-        ? `?wc=${encodeURIComponent(walletConnectURI)}`
+        ? `?wc=${encodeURIComponent(walletConnectURI)}${wcDuration}`
         : '';
       navigate(`${NOTIFICATION_URL}${wcParam}`);
     }

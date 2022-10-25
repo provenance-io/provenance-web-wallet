@@ -133,18 +133,20 @@ export const Notification: React.FC = () => {
   useEffect(() => {
     if (!connector && wcUriParam) {
       const asyncSaveData = async () => {
+        console.log('wcUriParam :', wcUriParam);
+        console.log('durationUriParam :', durationUriParam);
         // If we have a custom connection timeout, save it
         if (durationUriParam) {
           await saveWalletconnectData({
             connectionDuration: Number(durationUriParam),
           });
-          // Create new connector
-          const connector = new WalletConnectClient({ uri: wcUriParam });
-          // Save connector into redux store
-          setConnector(connector);
-          // Clear out uri from search params
-          setSearchParams('');
         }
+        // Create new connector
+        const connector = new WalletConnectClient({ uri: wcUriParam });
+        // Save connector into redux store
+        setConnector(connector);
+        // Clear out uri from search params
+        setSearchParams('');
       };
       asyncSaveData();
     }

@@ -134,9 +134,6 @@ export const Notification: React.FC = () => {
   useEffect(() => {
     if (!connector && wcUriParam) {
       const asyncSaveData = async () => {
-        console.log('wcUriParam :', wcUriParam);
-        console.log('durationUriParam :', durationUriParam);
-        console.log('referralUriParam :', referralUriParam);
         // If we have a custom connection timeout, save it
         if (durationUriParam) {
           await saveWalletconnectData({

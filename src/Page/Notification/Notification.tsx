@@ -53,6 +53,7 @@ export const Notification: React.FC = () => {
   const hasAccount = !!accounts.length;
   const wcUriParam = searchParams.get('wc');
   const durationUriParam = searchParams.get('duration');
+  const referralUriParam = searchParams.get('referral');
   // On load, attempt to detect the way the extension loaded
   useEffect(() => {
     const asyncExtensionType = async () => {
@@ -135,6 +136,7 @@ export const Notification: React.FC = () => {
       const asyncSaveData = async () => {
         console.log('wcUriParam :', wcUriParam);
         console.log('durationUriParam :', durationUriParam);
+        console.log('referralUriParam :', referralUriParam);
         // If we have a custom connection timeout, save it
         if (durationUriParam) {
           await saveWalletconnectData({
@@ -145,7 +147,7 @@ export const Notification: React.FC = () => {
         const connector = new WalletConnectClient({ uri: wcUriParam });
         // Save connector into redux store
         setConnector(connector);
-        // Clear out uri from search params
+        // Clear out extra search params
         setSearchParams('');
       };
       asyncSaveData();
@@ -156,6 +158,7 @@ export const Notification: React.FC = () => {
     setSearchParams,
     setConnector,
     durationUriParam,
+    referralUriParam,
     saveWalletconnectData,
   ]);
 

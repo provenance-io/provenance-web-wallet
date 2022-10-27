@@ -46,7 +46,7 @@ const notificationPopupEvent = async function(request, sender, sendResponse) {
       chrome.windows.create(popupConfig);
     } else {
       // Run function based on the event
-      const { event, uri, duration, data } = request;
+      const { event, uri, duration, data, referral } = request;
       switch (event) {
         case 'resetConnectionTimeout':
           // Data is going to be the new connectionTimeout in ms
@@ -67,7 +67,7 @@ const notificationPopupEvent = async function(request, sender, sendResponse) {
           // Uri is required to be included
           if (uri) {
             // update the popup config url
-            popupConfig.url = `${popupConfig.url}?wc=${uri}&duration=${duration}`;
+            popupConfig.url = `${popupConfig.url}?wc=${uri}&duration=${duration}&referral=${referral}`;
             chrome.windows.create(popupConfig);
           }
           break;

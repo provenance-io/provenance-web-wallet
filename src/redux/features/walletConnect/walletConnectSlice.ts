@@ -18,6 +18,7 @@ interface ChromeInitialState {
   connectionDuration: number;
   connectionEST: number;
   connectionEXP: number;
+  connectionReferral?: string;
   pendingRequests: SavedPendingRequests;
   totalPendingRequests: number;
   connectionTimer: number;
@@ -32,6 +33,7 @@ interface WalletconnectChromeSave {
   connectionEST?: number;
   connectionEXP?: number;
   connectionDuration?: number;
+  connectionReferral?: string;
   pendingRequests?: SavedPendingRequests;
   totalPendingRequests?: number;
 }
@@ -41,6 +43,7 @@ interface WalletconnectChromeSave {
  */
 const chromeInitialState: ChromeInitialState = {
   connectionDuration: WC_CONNECTION_TIMEOUT,
+  connectionReferral: '',
   connectionEST: 0,
   connectionEXP: 0,
   pendingRequests: {},
@@ -141,7 +144,7 @@ export const pullInitialWCData = createAsyncThunk(
   }
 );
 // Save walletconnect data into the chrome store (local storage is managed third party, don't save into it, only pull)
-export const saveWalletconnectData = createAsyncThunk(
+export const saveWalletConnectData = createAsyncThunk(
   SAVE_WALLETCONNECT_DATA,
   async (data: WalletconnectChromeSave) => {
     // Get existing saved data (to merge into)
@@ -277,18 +280,20 @@ const walletConnectSlice = createSlice({
         state.initialDataPulled = true;
       })
       .addCase(
-        saveWalletconnectData.fulfilled,
+        saveWalletConnectData.fulfilled,
         (state, { payload }: { payload: WalletconnectChromeSave }) => {
           const {
             connectionEST,
             connectionEXP,
             connectionDuration,
+            connectionReferral,
             pendingRequests,
             totalPendingRequests,
           } = payload;
           if (connectionEST) state.connectionEST = connectionEST;
           if (connectionEXP) state.connectionEXP = connectionEXP;
           if (connectionDuration) state.connectionDuration = connectionDuration;
+          if (connectionReferral) state.connectionReferral = connectionReferral;
           if (pendingRequests) state.pendingRequests = pendingRequests;
           if (totalPendingRequests)
             state.totalPendingRequests = totalPendingRequests;
@@ -397,7 +402,7 @@ const walletConnectSlice = createSlice({
 export const walletConnectActions = {
   ...walletConnectSlice.actions,
   pullInitialWCData,
-  saveWalletconnectData,
+  saveWalletConnectData,
   walletconnectDisconnect,
   addPendingRequest,
   removePendingRequest,

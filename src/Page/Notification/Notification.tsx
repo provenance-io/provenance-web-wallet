@@ -18,6 +18,7 @@ import { RequestFailed } from './RequestFailed';
 import { TransactionComplete } from './TransactionComplete';
 import { MissingAccount } from './MissingAccount';
 import { Disconnected } from './Disconnected';
+import { isValidURL } from 'utils';
 
 type PayloadTypes = EventPayload | WCInitEventPayload;
 
@@ -46,14 +47,11 @@ export const Notification: React.FC = () => {
     setConnector,
     connector,
     pendingRequests,
-    saveWalletconnectData,
+    saveWalletConnectData,
     addPendingRequest,
   } = useWalletConnect();
   const { accounts } = useAccount();
   const hasAccount = !!accounts.length;
-  const wcUriParam = searchParams.get('wc');
-  const durationUriParam = searchParams.get('duration');
-  const referralUriParam = searchParams.get('referral');
   // On load, attempt to detect the way the extension loaded
   useEffect(() => {
     const asyncExtensionType = async () => {
@@ -120,7 +118,7 @@ export const Notification: React.FC = () => {
           }
           // If we get a disconnect, remove all pending requests
           if (NOTE_TYPE === 'disconnect') {
-            await saveWalletconnectData({
+            await saveWalletConnectData({
               pendingRequests: {},
               totalPendingRequests: 0,
             });
@@ -128,16 +126,25 @@ export const Notification: React.FC = () => {
         });
       });
     }
-  }, [connector, saveWalletconnectData, addPendingRequest, hasAccount]);
+  }, [connector, saveWalletConnectData, addPendingRequest, hasAccount]);
 
   // Listen for a new walletConnect URI.  When one is passed, create a new connector
   useEffect(() => {
+    const wcUriParam = searchParams.get('wc');
     if (!connector && wcUriParam) {
       const asyncSaveData = async () => {
         // If we have a custom connection timeout, save it
+        const durationUriParam = searchParams.get('duration');
         if (durationUriParam) {
-          await saveWalletconnectData({
+          await saveWalletConnectData({
             connectionDuration: Number(durationUriParam),
+          });
+        }
+        // If we have a custom connection timeout, save it
+        const referralUriParam = searchParams.get('referral');
+        if (referralUriParam && isValidURL(referralUriParam)) {
+          await saveWalletConnectData({
+            connectionReferral: new URL(referralUriParam).origin,
           });
         }
         // Create new connector
@@ -151,12 +158,10 @@ export const Notification: React.FC = () => {
     }
   }, [
     connector,
-    wcUriParam,
     setSearchParams,
     setConnector,
-    durationUriParam,
-    referralUriParam,
-    saveWalletconnectData,
+    saveWalletConnectData,
+    searchParams,
   ]);
 
   const closeWindow = async () => {

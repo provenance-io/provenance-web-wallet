@@ -98,6 +98,7 @@ function App() {
     const urlSearchParams = new URLSearchParams(window?.location?.search);
     const walletConnectURI = urlSearchParams.get('wc');
     const walletConnectDuration = urlSearchParams.get('duration');
+    const walletConnectReferral = urlSearchParams.get('referral');
     const redirectToURL = urlSearchParams.get('redirectTo');
     // Determine if we're being sent to the notifications page (walletconnect session or manual redirect)
     const redirectToNotificationsPage: boolean =
@@ -108,9 +109,13 @@ function App() {
         ? `&duration=${walletConnectDuration}`
         : '';
       const wcParam = walletConnectURI
-        ? `?wc=${encodeURIComponent(walletConnectURI)}${wcDuration}`
+        ? `?wc=${encodeURIComponent(walletConnectURI)}`
         : '';
-      navigate(`${NOTIFICATION_URL}${wcParam}`);
+      const wcReferral = walletConnectReferral
+        ? `&referral=${encodeURIComponent(walletConnectReferral)}`
+        : '';
+      const newUrl = `${wcParam}${wcDuration}${wcReferral}`;
+      navigate(`${NOTIFICATION_URL}${newUrl}`);
     }
   }, [navigate]);
 

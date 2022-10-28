@@ -67,7 +67,10 @@ const notificationPopupEvent = async function(request, sender, sendResponse) {
           // Uri is required to be included
           if (uri) {
             // update the popup config url
-            popupConfig.url = `${popupConfig.url}?wc=${uri}&duration=${duration}&referral=${referral}`;
+            const wcUrl = `?wc=${uri}`;
+            const durationUrl = duration ? `&duration=${duration}` : '';
+            const referralUrl = referral ? `&referral=${referral}` : '';
+            popupConfig.url = `${popupConfig.url}${wcUrl}${durationUrl}${referralUrl}`;
             chrome.windows.create(popupConfig);
           }
           break;

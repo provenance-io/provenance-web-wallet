@@ -18,6 +18,7 @@ interface ChromeInitialState {
   connectionDuration: number;
   connectionEST: number;
   connectionEXP: number;
+  connectionReferral?: string;
   pendingRequests: SavedPendingRequests;
   totalPendingRequests: number;
   connectionTimer: number;
@@ -31,6 +32,8 @@ type State = ChromeInitialState & {
 interface WalletconnectChromeSave {
   connectionEST?: number;
   connectionEXP?: number;
+  connectionDuration?: number;
+  connectionReferral?: string;
   pendingRequests?: SavedPendingRequests;
   totalPendingRequests?: number;
 }
@@ -40,6 +43,7 @@ interface WalletconnectChromeSave {
  */
 const chromeInitialState: ChromeInitialState = {
   connectionDuration: WC_CONNECTION_TIMEOUT,
+  connectionReferral: '',
   connectionEST: 0,
   connectionEXP: 0,
   pendingRequests: {},
@@ -107,6 +111,7 @@ export const pullInitialWCData = createAsyncThunk(
       totalPendingRequests = initialState.totalPendingRequests,
       connectionEST = initialState.connectionEST,
       connectionEXP = initialState.connectionEXP,
+      connectionDuration = initialState.connectionDuration,
       killSession = initialState.killSession,
     } = (await getSavedData('walletconnect')) || {};
     // If background.js detected a disconnect, it will have set a killSession variable
@@ -123,6 +128,7 @@ export const pullInitialWCData = createAsyncThunk(
         totalPendingRequests,
         connectionEST,
         connectionEXP,
+        connectionDuration,
         killSession: false, // If we needed to kill the session, we did already above, so reset this value
       },
     });
@@ -130,6 +136,7 @@ export const pullInitialWCData = createAsyncThunk(
     return {
       connectionEST,
       connectionEXP,
+      connectionDuration,
       session,
       pendingRequests,
       totalPendingRequests,
@@ -137,7 +144,7 @@ export const pullInitialWCData = createAsyncThunk(
   }
 );
 // Save walletconnect data into the chrome store (local storage is managed third party, don't save into it, only pull)
-export const saveWalletconnectData = createAsyncThunk(
+export const saveWalletConnectData = createAsyncThunk(
   SAVE_WALLETCONNECT_DATA,
   async (data: WalletconnectChromeSave) => {
     // Get existing saved data (to merge into)
@@ -245,12 +252,14 @@ const walletConnectSlice = createSlice({
         const {
           connectionEST,
           connectionEXP,
+          connectionDuration,
           session,
           pendingRequests,
           totalPendingRequests,
         } = payload;
         state.connectionEST = connectionEST;
         state.connectionEXP = connectionEXP;
+        state.connectionDuration = connectionDuration;
         state.pendingRequests = pendingRequests;
         state.totalPendingRequests = totalPendingRequests;
         // If we have a peerId and an expiration date, start the walletconnect connection
@@ -271,16 +280,20 @@ const walletConnectSlice = createSlice({
         state.initialDataPulled = true;
       })
       .addCase(
-        saveWalletconnectData.fulfilled,
+        saveWalletConnectData.fulfilled,
         (state, { payload }: { payload: WalletconnectChromeSave }) => {
           const {
             connectionEST,
             connectionEXP,
+            connectionDuration,
+            connectionReferral,
             pendingRequests,
             totalPendingRequests,
           } = payload;
           if (connectionEST) state.connectionEST = connectionEST;
           if (connectionEXP) state.connectionEXP = connectionEXP;
+          if (connectionDuration) state.connectionDuration = connectionDuration;
+          if (connectionReferral) state.connectionReferral = connectionReferral;
           if (pendingRequests) state.pendingRequests = pendingRequests;
           if (totalPendingRequests)
             state.totalPendingRequests = totalPendingRequests;
@@ -290,6 +303,7 @@ const walletConnectSlice = createSlice({
         // Reset all the values associated with a walletconnect connection
         state.connectionEST = initialState.connectionEST;
         state.connectionEXP = initialState.connectionEXP;
+        state.connectionDuration = initialState.connectionDuration;
         state.pendingRequests = initialState.pendingRequests;
         state.totalPendingRequests = initialState.totalPendingRequests;
         // Clear any timeouts running and reset value
@@ -388,7 +402,7 @@ const walletConnectSlice = createSlice({
 export const walletConnectActions = {
   ...walletConnectSlice.actions,
   pullInitialWCData,
-  saveWalletconnectData,
+  saveWalletConnectData,
   walletconnectDisconnect,
   addPendingRequest,
   removePendingRequest,

@@ -48,8 +48,12 @@ export const WalletConnectInit: React.FC<Props> = ({ payload, closeWindow }) => 
   const [useFallbackIcon, setUseFallbackIcon] = useState(false);
   const [showSelectAccountMenu, setShowSelectAccountMenu] = useState(false);
   const { name = 'N/A', url = 'N/A', icons = [] } = payload?.params[0].peerMeta;
-  const { connector, saveWalletconnectData, connectionDuration } =
-    useWalletConnect();
+  const {
+    connector,
+    saveWalletConnectData,
+    connectionDuration,
+    connectionReferral,
+  } = useWalletConnect();
   const { accounts, setActiveAccount } = useAccount();
   const activeAccount = useActiveAccount();
   const {
@@ -79,7 +83,7 @@ export const WalletConnectInit: React.FC<Props> = ({ payload, closeWindow }) => 
       await connector.approveSession(data as any);
       // Save connection time into storage (settings/walletconnect)
       const now = Date.now();
-      await saveWalletconnectData({
+      await saveWalletConnectData({
         connectionEST: now,
         connectionEXP: now + connectionDuration,
       });
@@ -125,12 +129,38 @@ export const WalletConnectInit: React.FC<Props> = ({ payload, closeWindow }) => 
 
   return (
     <Content>
-      <Typo type="headline2" marginTop="12px" marginBottom="20px" maxWidth="300px">
-        Connection Request
-      </Typo>
-      <Typo type="body" maxWidth="300px">
-        Allow connection to
-      </Typo>
+      {connectionReferral ? (
+        <>
+          <Typo
+            type="headline2"
+            marginTop="12px"
+            marginBottom="20px"
+            maxWidth="300px"
+          >
+            Extend Connection
+          </Typo>
+          <Typo type="body" maxWidth="300px">
+            Pass connection from
+          </Typo>
+          <Typo type="subhead" maxWidth="300px">
+            {trimString(connectionReferral, 120)} to
+          </Typo>
+        </>
+      ) : (
+        <>
+          <Typo
+            type="headline2"
+            marginTop="12px"
+            marginBottom="20px"
+            maxWidth="300px"
+          >
+            Connection Request
+          </Typo>
+          <Typo type="body" maxWidth="300px">
+            Allow connection to
+          </Typo>
+        </>
+      )}
       <Typo type="subhead" maxWidth="300px">
         {trimString(name, 120)}?
       </Typo>

@@ -37,7 +37,7 @@ export const SignRequest: React.FC<Props> = ({ payload, closeWindow }) => {
     connector,
     connectionEXP,
     connectionDuration,
-    saveWalletconnectData,
+    saveWalletConnectData,
     removePendingRequest,
   } = useWalletConnect();
   const [parsedParams, setParsedParams] = useState<ParsedParams>({});
@@ -66,7 +66,7 @@ export const SignRequest: React.FC<Props> = ({ payload, closeWindow }) => {
     if (connectionEXP && connectionDuration) {
       const now = Date.now();
       const newConnectionEXP = now + connectionDuration;
-      await saveWalletconnectData({ connectionEXP: newConnectionEXP });
+      await saveWalletConnectData({ connectionEXP: newConnectionEXP });
     }
   };
 

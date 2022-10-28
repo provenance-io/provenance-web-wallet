@@ -48,7 +48,7 @@ export type SavedPendingRequests = {
   [id: string]: EventPayload;
 };
 
-export type ConnectionEventPayload = {
+type ConnectionEventPayload = {
   publicKey: string;
   address: string;
   jwt: string;
@@ -58,28 +58,6 @@ export type ConnectionEventPayload = {
     coin: string;
   };
 }[];
-
-export interface ISessionStatus {
-  chainId: number | string;
-  accounts: ConnectionEventPayload;
-  networkId?: number;
-  rpcUrl?: string;
-}
-
-export interface State {
-  connected: boolean;
-  connectionTimeout: number;
-  connectionIat: number | null;
-  connectionEat: number | null;
-  connector: WalletConnectClient | null;
-  peer: IClientMeta | null;
-  uri: string | null;
-}
-
-export type SetState = (state: Partial<State>) => void;
-export type SetFullState = (state: State) => void;
-
-export type URI = string;
 
 export interface IWalletConnectSession {
   accounts?: ConnectionEventPayload;

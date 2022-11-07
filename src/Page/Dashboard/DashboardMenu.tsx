@@ -17,14 +17,14 @@ import {
   DASHBOARD_URL,
   ICON_NAMES,
   MAINNET_NETWORK,
-  NEW_ACCOUNT_ADD_URL,
+  NEW_ACCOUNT_ADD_TAB_URL,
   NEW_ACCOUNT_SUB_URL,
   NEW_ACCOUNT_IMPORT_URL,
   REMOVE_ACCOUNT_URL,
   RENAME_ACCOUNT_URL,
 } from 'consts';
 import { useAccount, useWalletConnect } from 'redux/hooks';
-import { keyPress, trimAddress } from 'utils';
+import { keyPress, openTab, trimAddress } from 'utils';
 import { COLORS } from 'theme';
 
 const WalletItem = styled.div<{ active?: boolean }>`
@@ -245,7 +245,7 @@ export const DashboardMenu: React.FC = () => {
       )}
       <BottomFloat>
         <ButtonGroup>
-          <Button onClick={() => navigate(NEW_ACCOUNT_ADD_URL)}>
+          <Button onClick={() => openTab(NEW_ACCOUNT_ADD_TAB_URL)}>
             Create New Account
           </Button>
           <Button

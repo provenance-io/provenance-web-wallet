@@ -1,9 +1,9 @@
-import { BIP32Interface as _BIP32Interface } from 'bip32';
+import type { BIP32Interface as _BIP32Interface } from 'bip32';
 import type {
   Bech32String as _Bech32String,
   Bytes as _Bytes,
 } from '@tendermint/types';
-import {
+import type {
   MsgSendDisplay,
   MsgExecuteContractParams,
   MsgGrantDisplay,
@@ -24,7 +24,6 @@ import {
   MsgBeginRedelegateDisplay,
   MsgUndelegateDisplay,
   MsgCreateVestingAccountDisplay,
-  SupportedDenoms,
   CoinAsObject as _CoinAsObject,
 } from '@provenanceio/wallet-utils';
 
@@ -67,7 +66,7 @@ export interface GetTxFeeEstimate {
   msgAny: any | any[];
   address: string;
   gasPrice?: number;
-  gasPriceDenom?: SupportedDenoms;
+  gasPriceDenom?: string;
   gasAdjustment?: number;
   customGRPCApi?: string;
 }

@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { useRoutes } from 'react-router-dom';
 import { useAccount, useSettings, useWalletConnect } from 'redux/hooks';
 import { routes } from 'routes';
-import { NOTIFICATION_URL } from 'consts';
+import { DASHBOARD_MENU_URL, NOTIFICATION_URL } from 'consts';
 import { useNavigate } from 'react-router-dom';
 import { Content, Loading } from 'Components';
 import { Page } from 'Page';
@@ -96,6 +96,8 @@ function App() {
   // Check settings and url search params to potentially redirect user to a new page
   useEffect(() => {
     const urlSearchParams = new URLSearchParams(window?.location?.search);
+    const urlHash = window.location.hash;
+    console.log('urlHash: ', urlHash);
     const walletConnectURI = urlSearchParams.get('wc');
     const walletConnectDuration = urlSearchParams.get('duration');
     const walletConnectReferral = urlSearchParams.get('referral');
@@ -116,6 +118,11 @@ function App() {
         : '';
       const newUrl = `${wcParam}${wcDuration}${wcReferral}`;
       navigate(`${NOTIFICATION_URL}${newUrl}`);
+    } else if (urlHash) {
+      console.log('attempting to navigate to: ', urlHash);
+      console.log('DASHBOARD_MENU_URL: ', DASHBOARD_MENU_URL);
+      // Redirect to the hash location
+      navigate(urlHash);
     }
   }, [navigate]);
 

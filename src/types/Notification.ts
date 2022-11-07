@@ -1,4 +1,4 @@
-import { WCNotification } from './WalletConnect';
+import type { WCNotification } from './WalletConnect';
 
 export type ExtensionTypes = 'extension' | 'browser' | '';
 

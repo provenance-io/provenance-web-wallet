@@ -17,6 +17,7 @@ import {
   IMPORT_ACCOUNT_SEED_INPUT_URL,
   IMPORT_ACCOUNT_SUCCESS_URL,
   NEW_ACCOUNT_ADD_URL,
+  NEW_ACCOUNT_ADD_TAB_URL,
   NEW_ACCOUNT_CREATE_URL,
   NEW_ACCOUNT_IMPORT_URL,
   NEW_ACCOUNT_RECOVER_URL,
@@ -31,12 +32,18 @@ import {
 import {
   NewAccountAuth,
   NewAccountName,
+  NewAccountNameTab,
   NewAccountPassword,
+  NewAccountPasswordTab,
   NewAccountSuccess,
+  NewAccountSuccessTab,
   SeedphraseInfo,
+  SeedphraseInfoTab,
   SeedphraseInput,
   SeedphraseValue,
+  SeedphraseValueTab,
   SeedphraseVerify,
+  SeedphraseVerifyTab,
 } from 'Page';
 
 // 5 different ways to create a new account (create, recover, sub, add, import)
@@ -51,30 +58,66 @@ import {
 // ---------------
 export const NEW_ACCOUNT_CREATE = {
   path: NEW_ACCOUNT_CREATE_URL,
-  element: <NewAccountAuth flowType='create' />,
+  element: <NewAccountAuth flowType="create" />,
   children: [
-    { index: true, element: <NewAccountName progress={16} previousUrl={APP_URL} nextUrl={CREATE_ACCOUNT_SEED_INFO_URL} flowType='create' /> },
+    {
+      index: true,
+      element: (
+        <NewAccountName
+          progress={16}
+          previousUrl={APP_URL}
+          nextUrl={CREATE_ACCOUNT_SEED_INFO_URL}
+          flowType="create"
+        />
+      ),
+    },
     {
       path: CREATE_ACCOUNT_SEED_INFO_URL,
-      element: <SeedphraseInfo progress={32} previousUrl={NEW_ACCOUNT_CREATE_URL} nextUrl={CREATE_ACCOUNT_SEED_VALUE_URL} flowType='create' />,
+      element: (
+        <SeedphraseInfo
+          progress={32}
+          previousUrl={NEW_ACCOUNT_CREATE_URL}
+          nextUrl={CREATE_ACCOUNT_SEED_VALUE_URL}
+          flowType="create"
+        />
+      ),
     },
     {
       path: CREATE_ACCOUNT_SEED_VALUE_URL,
-      element: <SeedphraseValue progress={48} previousUrl={CREATE_ACCOUNT_SEED_INFO_URL} nextUrl={CREATE_ACCOUNT_SEED_VERIFY_URL} />,
+      element: (
+        <SeedphraseValue
+          progress={48}
+          previousUrl={CREATE_ACCOUNT_SEED_INFO_URL}
+          nextUrl={CREATE_ACCOUNT_SEED_VERIFY_URL}
+        />
+      ),
     },
     {
       path: CREATE_ACCOUNT_SEED_VERIFY_URL,
-      element: <SeedphraseVerify progress={64} previousUrl={CREATE_ACCOUNT_SEED_VALUE_URL} nextUrl={CREATE_ACCOUNT_PASSWORD_URL} />,
+      element: (
+        <SeedphraseVerify
+          progress={64}
+          previousUrl={CREATE_ACCOUNT_SEED_VALUE_URL}
+          nextUrl={CREATE_ACCOUNT_PASSWORD_URL}
+        />
+      ),
     },
     {
       path: CREATE_ACCOUNT_PASSWORD_URL,
-      element: <NewAccountPassword progress={80} previousUrl={CREATE_ACCOUNT_SEED_VERIFY_URL} nextUrl={CREATE_ACCOUNT_SUCCESS_URL} flowType='create' />,
+      element: (
+        <NewAccountPassword
+          progress={80}
+          previousUrl={CREATE_ACCOUNT_SEED_VERIFY_URL}
+          nextUrl={CREATE_ACCOUNT_SUCCESS_URL}
+          flowType="create"
+        />
+      ),
     },
     {
       path: CREATE_ACCOUNT_SUCCESS_URL,
-      element: <NewAccountSuccess nextUrl={DASHBOARD_URL} flowType='create' />,
+      element: <NewAccountSuccess nextUrl={DASHBOARD_URL} flowType="create" />,
     },
-  ]
+  ],
 };
 
 // ----------------
@@ -82,26 +125,56 @@ export const NEW_ACCOUNT_CREATE = {
 // ----------------
 export const NEW_ACCOUNT_RECOVER = {
   path: NEW_ACCOUNT_RECOVER_URL,
-  element: <NewAccountAuth flowType='recover' />,
+  element: <NewAccountAuth flowType="recover" />,
   children: [
-    { index: true, element: <NewAccountName progress={20} previousUrl={APP_URL} nextUrl={RECOVER_ACCOUNT_SEED_INFO_URL} flowType='recover' /> },
+    {
+      index: true,
+      element: (
+        <NewAccountName
+          progress={20}
+          previousUrl={APP_URL}
+          nextUrl={RECOVER_ACCOUNT_SEED_INFO_URL}
+          flowType="recover"
+        />
+      ),
+    },
     {
       path: RECOVER_ACCOUNT_SEED_INFO_URL,
-      element: <SeedphraseInfo progress={40} previousUrl={NEW_ACCOUNT_RECOVER_URL} nextUrl={RECOVER_ACCOUNT_SEED_INPUT_URL} flowType='recover' />,
+      element: (
+        <SeedphraseInfo
+          progress={40}
+          previousUrl={NEW_ACCOUNT_RECOVER_URL}
+          nextUrl={RECOVER_ACCOUNT_SEED_INPUT_URL}
+          flowType="recover"
+        />
+      ),
     },
     {
       path: RECOVER_ACCOUNT_SEED_INPUT_URL,
-      element: <SeedphraseInput progress={60} previousUrl={RECOVER_ACCOUNT_SEED_INFO_URL} nextUrl={RECOVER_ACCOUNT_PASSWORD_URL} />,
+      element: (
+        <SeedphraseInput
+          progress={60}
+          previousUrl={RECOVER_ACCOUNT_SEED_INFO_URL}
+          nextUrl={RECOVER_ACCOUNT_PASSWORD_URL}
+        />
+      ),
     },
     {
       path: RECOVER_ACCOUNT_PASSWORD_URL,
-      element: <NewAccountPassword progress={80} previousUrl={RECOVER_ACCOUNT_SEED_INPUT_URL} nextUrl={RECOVER_ACCOUNT_SUCCESS_URL} flowType='recover' />,
+      element: (
+        <NewAccountPassword
+          progress={80}
+          previousUrl={RECOVER_ACCOUNT_SEED_INPUT_URL}
+          nextUrl={RECOVER_ACCOUNT_SUCCESS_URL}
+          flowType="recover"
+        />
+      ),
     },
     {
       path: RECOVER_ACCOUNT_SUCCESS_URL,
-      element: <NewAccountSuccess nextUrl={DASHBOARD_URL} flowType='recover' />,
+      element: <NewAccountSuccess nextUrl={DASHBOARD_URL} flowType="recover" />,
     },
-  ]
+  ],
 };
 
 // -------------
@@ -109,18 +182,35 @@ export const NEW_ACCOUNT_RECOVER = {
 // -------------
 export const NEW_ACCOUNT_SUB = {
   path: NEW_ACCOUNT_SUB_URL,
-  element: <NewAccountAuth flowType='sub' />,
+  element: <NewAccountAuth flowType="sub" />,
   children: [
-    { index: true, element: <NewAccountName progress={33} previousUrl={DASHBOARD_MENU_URL} nextUrl={SUB_ACCOUNT_PASSWORD_URL} flowType='sub' /> },
+    {
+      index: true,
+      element: (
+        <NewAccountName
+          progress={33}
+          previousUrl={DASHBOARD_MENU_URL}
+          nextUrl={SUB_ACCOUNT_PASSWORD_URL}
+          flowType="sub"
+        />
+      ),
+    },
     {
       path: SUB_ACCOUNT_PASSWORD_URL,
-      element: <NewAccountPassword progress={66} previousUrl={NEW_ACCOUNT_SUB_URL} nextUrl={SUB_ACCOUNT_SUCCESS_URL} flowType='sub' />,
+      element: (
+        <NewAccountPassword
+          progress={66}
+          previousUrl={NEW_ACCOUNT_SUB_URL}
+          nextUrl={SUB_ACCOUNT_SUCCESS_URL}
+          flowType="sub"
+        />
+      ),
     },
     {
       path: SUB_ACCOUNT_SUCCESS_URL,
-      element: <NewAccountSuccess nextUrl={DASHBOARD_MENU_URL} flowType='sub' />,
+      element: <NewAccountSuccess nextUrl={DASHBOARD_MENU_URL} flowType="sub" />,
     },
-  ]
+  ],
 };
 
 // -------------
@@ -128,30 +218,131 @@ export const NEW_ACCOUNT_SUB = {
 // -------------
 export const NEW_ACCOUNT_ADD = {
   path: NEW_ACCOUNT_ADD_URL,
-  element: <NewAccountAuth flowType='add' />,
+  element: <NewAccountAuth flowType="add" />,
   children: [
-    { index: true, element: <NewAccountName progress={16} previousUrl={DASHBOARD_MENU_URL} nextUrl={ADD_ACCOUNT_SEED_INFO_URL} flowType='add' /> },
+    {
+      index: true,
+      element: (
+        <NewAccountName
+          progress={16}
+          previousUrl={DASHBOARD_MENU_URL}
+          nextUrl={ADD_ACCOUNT_SEED_INFO_URL}
+          flowType="add"
+        />
+      ),
+    },
     {
       path: ADD_ACCOUNT_SEED_INFO_URL,
-      element: <SeedphraseInfo progress={32} previousUrl={NEW_ACCOUNT_ADD_URL} nextUrl={ADD_ACCOUNT_SEED_VALUE_URL} flowType='add' />,
+      element: (
+        <SeedphraseInfo
+          progress={32}
+          previousUrl={NEW_ACCOUNT_ADD_URL}
+          nextUrl={ADD_ACCOUNT_SEED_VALUE_URL}
+          flowType="add"
+        />
+      ),
     },
     {
       path: ADD_ACCOUNT_SEED_VALUE_URL,
-      element: <SeedphraseValue progress={48} previousUrl={ADD_ACCOUNT_SEED_INFO_URL} nextUrl={ADD_ACCOUNT_SEED_VERIFY_URL} />,
+      element: (
+        <SeedphraseValue
+          progress={48}
+          previousUrl={ADD_ACCOUNT_SEED_INFO_URL}
+          nextUrl={ADD_ACCOUNT_SEED_VERIFY_URL}
+        />
+      ),
     },
     {
       path: ADD_ACCOUNT_SEED_VERIFY_URL,
-      element: <SeedphraseVerify progress={64} previousUrl={ADD_ACCOUNT_SEED_VALUE_URL} nextUrl={ADD_ACCOUNT_PASSWORD_URL} />,
+      element: (
+        <SeedphraseVerify
+          progress={64}
+          previousUrl={ADD_ACCOUNT_SEED_VALUE_URL}
+          nextUrl={ADD_ACCOUNT_PASSWORD_URL}
+        />
+      ),
     },
     {
       path: ADD_ACCOUNT_PASSWORD_URL,
-      element: <NewAccountPassword progress={80} previousUrl={ADD_ACCOUNT_SEED_VERIFY_URL} nextUrl={ADD_ACCOUNT_SUCCESS_URL} flowType='add' />,
+      element: (
+        <NewAccountPassword
+          progress={80}
+          previousUrl={ADD_ACCOUNT_SEED_VERIFY_URL}
+          nextUrl={ADD_ACCOUNT_SUCCESS_URL}
+          flowType="add"
+        />
+      ),
     },
     {
       path: ADD_ACCOUNT_SUCCESS_URL,
-      element: <NewAccountSuccess nextUrl={DASHBOARD_MENU_URL} flowType='add' />,
+      element: <NewAccountSuccess nextUrl={DASHBOARD_MENU_URL} flowType="add" />,
     },
-  ]
+  ],
+};
+
+// -------------
+// ADD ACCOUNT
+// -------------
+export const NEW_ACCOUNT_ADD_TAB = {
+  path: NEW_ACCOUNT_ADD_TAB_URL,
+  children: [
+    {
+      index: true,
+      element: (
+        <NewAccountNameTab
+          progress={16}
+          nextUrl={ADD_ACCOUNT_SEED_INFO_URL}
+          flowType="add"
+        />
+      ),
+    },
+    {
+      path: ADD_ACCOUNT_SEED_INFO_URL,
+      element: (
+        <SeedphraseInfoTab
+          progress={32}
+          previousUrl={NEW_ACCOUNT_ADD_URL}
+          nextUrl={ADD_ACCOUNT_SEED_VALUE_URL}
+          flowType="add"
+        />
+      ),
+    },
+    {
+      path: ADD_ACCOUNT_SEED_VALUE_URL,
+      element: (
+        <SeedphraseValueTab
+          progress={48}
+          previousUrl={ADD_ACCOUNT_SEED_INFO_URL}
+          nextUrl={ADD_ACCOUNT_SEED_VERIFY_URL}
+        />
+      ),
+    },
+    {
+      path: ADD_ACCOUNT_SEED_VERIFY_URL,
+      element: (
+        <SeedphraseVerifyTab
+          progress={64}
+          previousUrl={ADD_ACCOUNT_SEED_VALUE_URL}
+          nextUrl={ADD_ACCOUNT_PASSWORD_URL}
+        />
+      ),
+    },
+    {
+      path: ADD_ACCOUNT_PASSWORD_URL,
+      element: (
+        <NewAccountPasswordTab
+          progress={80}
+          previousUrl={ADD_ACCOUNT_SEED_VERIFY_URL}
+          nextUrl={ADD_ACCOUNT_SUCCESS_URL}
+          flowType="add"
+        />
+      ),
+    },
+    {
+      path: ADD_ACCOUNT_SUCCESS_URL,
+      element: <NewAccountSuccessTab nextUrl={DASHBOARD_MENU_URL} flowType="add" />,
+    },
+  ],
 };
 
 // -----------------
@@ -159,24 +350,54 @@ export const NEW_ACCOUNT_ADD = {
 // -----------------
 export const NEW_ACCOUNT_IMPORT = {
   path: NEW_ACCOUNT_IMPORT_URL,
-  element: <NewAccountAuth flowType='import' />,
+  element: <NewAccountAuth flowType="import" />,
   children: [
-    { index: true, element: <NewAccountName progress={20} previousUrl={DASHBOARD_MENU_URL} nextUrl={IMPORT_ACCOUNT_SEED_INFO_URL} flowType='import' /> },
+    {
+      index: true,
+      element: (
+        <NewAccountName
+          progress={20}
+          previousUrl={DASHBOARD_MENU_URL}
+          nextUrl={IMPORT_ACCOUNT_SEED_INFO_URL}
+          flowType="import"
+        />
+      ),
+    },
     {
       path: IMPORT_ACCOUNT_SEED_INFO_URL,
-      element: <SeedphraseInfo progress={40} previousUrl={NEW_ACCOUNT_IMPORT_URL} nextUrl={IMPORT_ACCOUNT_SEED_INPUT_URL} flowType='import' />,
+      element: (
+        <SeedphraseInfo
+          progress={40}
+          previousUrl={NEW_ACCOUNT_IMPORT_URL}
+          nextUrl={IMPORT_ACCOUNT_SEED_INPUT_URL}
+          flowType="import"
+        />
+      ),
     },
     {
       path: IMPORT_ACCOUNT_SEED_INPUT_URL,
-      element: <SeedphraseInput progress={60} previousUrl={IMPORT_ACCOUNT_SEED_INFO_URL} nextUrl={IMPORT_ACCOUNT_PASSWORD_URL} />,
+      element: (
+        <SeedphraseInput
+          progress={60}
+          previousUrl={IMPORT_ACCOUNT_SEED_INFO_URL}
+          nextUrl={IMPORT_ACCOUNT_PASSWORD_URL}
+        />
+      ),
     },
     {
       path: IMPORT_ACCOUNT_PASSWORD_URL,
-      element: <NewAccountPassword progress={80} previousUrl={IMPORT_ACCOUNT_SEED_INPUT_URL} nextUrl={IMPORT_ACCOUNT_SUCCESS_URL} flowType='import' />,
+      element: (
+        <NewAccountPassword
+          progress={80}
+          previousUrl={IMPORT_ACCOUNT_SEED_INPUT_URL}
+          nextUrl={IMPORT_ACCOUNT_SUCCESS_URL}
+          flowType="import"
+        />
+      ),
     },
     {
       path: IMPORT_ACCOUNT_SUCCESS_URL,
-      element: <NewAccountSuccess nextUrl={DASHBOARD_MENU_URL} flowType='import' />,
+      element: <NewAccountSuccess nextUrl={DASHBOARD_MENU_URL} flowType="import" />,
     },
-  ]
+  ],
 };

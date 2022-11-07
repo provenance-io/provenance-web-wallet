@@ -1,12 +1,9 @@
 import styled from 'styled-components';
-import { MAX_HEIGHT, MAX_WIDTH } from 'consts';
 
-const ContentStyled = styled.div<{ padBottom?: string }>`
+const FullPageStyled = styled.div<{ padBottom?: string }>`
   position: relative;
-  max-width: ${MAX_WIDTH};
-  max-height: ${MAX_HEIGHT};
-  height: ${MAX_HEIGHT};
-  width: ${MAX_WIDTH};
+  width: 100%;
+  height: 100%;
   padding: 32px 16px 20px 16px;
   ${({ padBottom }) => padBottom && `padding-bottom: ${padBottom};`}
   // Prevent scroll bar
@@ -23,6 +20,6 @@ interface Props {
   padBottom?: string;
 }
 
-export const Content: React.FC<Props> = ({ children, padBottom }) => {
-  return <ContentStyled padBottom={padBottom}>{children}</ContentStyled>;
+export const FullPage: React.FC<Props> = ({ children, padBottom }) => {
+  return <FullPageStyled padBottom={padBottom}>{children}</FullPageStyled>;
 };

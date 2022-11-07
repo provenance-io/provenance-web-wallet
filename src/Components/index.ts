@@ -9,6 +9,7 @@ export * from './Content';
 export * from './CopyValue';
 export * from './FooterNav';
 export * from './FullData';
+export * from './FullPage';
 export * from './FullPagePopup';
 export * from './GasAdjustment';
 export * from './Header';

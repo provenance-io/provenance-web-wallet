@@ -1,5 +1,4 @@
-import { SupportedDenoms } from '@provenanceio/wallet-utils';
-import WalletConnect from '@walletconnect/client';
+import type WalletConnect from '@walletconnect/client';
 
 export type WalletConnectClient = WalletConnect;
 
@@ -8,7 +7,7 @@ export type IClientMeta = {
   address: string;
   date: number;
   gasPrice?: {
-    gasPriceDenom: SupportedDenoms;
+    gasPriceDenom: string;
     gasPrice: number;
   };
   url: string;

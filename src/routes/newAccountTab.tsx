@@ -9,8 +9,6 @@ import {
   CREATE_ACCOUNT_SEED_VALUE_URL,
   CREATE_ACCOUNT_SEED_VERIFY_URL,
   CREATE_ACCOUNT_SUCCESS_URL,
-  DASHBOARD_MENU_URL,
-  DASHBOARD_URL,
   NEW_ACCOUNT_ADD_URL,
   NEW_ACCOUNT_CREATE_URL,
 } from 'consts';
@@ -76,7 +74,7 @@ export const NEW_ACCOUNT_CREATE_TAB = {
     },
     {
       path: CREATE_ACCOUNT_SUCCESS_URL,
-      element: <NewAccountSuccessTab nextUrl={DASHBOARD_URL} flowType="create" />,
+      element: <NewAccountSuccessTab flowType="create" />,
     },
   ],
 };
@@ -122,7 +120,7 @@ export const NEW_ACCOUNT_ADD_TAB = {
     },
     {
       path: ADD_ACCOUNT_SUCCESS_URL,
-      element: <NewAccountSuccessTab nextUrl={DASHBOARD_MENU_URL} flowType="add" />,
+      element: <NewAccountSuccessTab flowType="add" />,
     },
   ],
 };

@@ -1,12 +1,10 @@
 import styled from 'styled-components';
 import { Button, Typo, FullPage } from 'Components';
-import { useNavigate } from 'react-router-dom';
 import { useAccount } from 'redux/hooks';
 import backupComplete from 'images/backup-complete.svg';
 import type { FlowType } from 'types';
 
 interface Props {
-  nextUrl: string;
   flowType: FlowType;
 }
 
@@ -16,41 +14,28 @@ const Image = styled.img`
   margin: 0px auto;
 `;
 
-export const NewAccountSuccessTab = ({ nextUrl, flowType }: Props) => {
-  const navigate = useNavigate();
+export const NewAccountSuccessTab = ({ flowType }: Props) => {
   const { clearTempAccount } = useAccount();
   const handleContinue = () => {
     // Remove temp data
     clearTempAccount();
-    // Go to /dashboard
-    window.location.hash = '';
-    navigate(nextUrl);
+    // Close the current tab
+    chrome.tabs.getCurrent((tab) => {
+      if (tab?.id) chrome.tabs.remove(tab.id);
+    });
   };
-  let message = '';
-  let title = '';
-  switch (flowType) {
-    case 'create': {
-      message =
-        'Wallet has been successfully created.  Click continue to proceed to the dashboard.';
-      title = 'Wallet Created';
-      break;
-    }
-    case 'add': {
-      message =
-        'Account has been successfully created.  Click continue to proceed to the dashboard.';
-      title = 'Account Created';
-      break;
-    }
-    default:
-      break;
-  }
+
+  const accountType = flowType === 'add' ? 'Account' : 'Wallet';
+  const message = `${accountType} has been successfully created. You can safely close this tab and open the extension to interact with this new account.`;
+  const title = `${accountType} Created`;
+
   return (
     <FullPage title={title}>
       <Image src={backupComplete} />
       <Typo type="body" marginBottom="40px" marginTop="30px" align="left">
         {message}
       </Typo>
-      <Button onClick={handleContinue}>Continue</Button>
+      <Button onClick={handleContinue}>Exit</Button>
     </FullPage>
   );
 };

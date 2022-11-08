@@ -35,7 +35,7 @@ const Label = styled.label`
 const InputEl = styled.input<{ error?: string; background?: string }>`
   padding: 10px;
   border: 1px solid
-    ${({ error }) => (error ? COLORS.NEGATIVE_300 : COLORS.NEUTRAL_300)};
+    ${({ error }) => (error ? COLORS.NEGATIVE_200 : COLORS.NEUTRAL_300)};
   border-radius: 4px;
   color: ${COLORS.WHITE};
   font-size: 1.4rem;
@@ -55,7 +55,7 @@ const InputEl = styled.input<{ error?: string; background?: string }>`
 `;
 
 const InputError = styled.div<{ hasLabel?: boolean }>`
-  color: ${COLORS.NEGATIVE_300};
+  color: ${COLORS.NEGATIVE_200};
   column-gap: 1px;
   font-size: 1.2rem;
   position: absolute;

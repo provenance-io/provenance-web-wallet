@@ -10,13 +10,8 @@ import {
 import { DEFAULT_MAINNET_HD_PATH } from 'consts';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
-import {
-  useAccount,
-  useActiveAccount,
-  useSettings,
-  useWalletConnect,
-} from 'redux/hooks';
-import { completeHdPath, keyPress } from 'utils';
+import { useAccount } from 'redux/hooks';
+import { keyPress } from 'utils';
 import type { FlowType } from 'types';
 import { COLORS } from 'theme';
 
@@ -38,28 +33,16 @@ const Button = styled(ButtonBase)`
 interface Props {
   nextUrl: string;
   flowType: FlowType;
-  progress: number;
 }
 
 export const NewAccountNameTab = ({ nextUrl, flowType }: Props) => {
-  // Shorthand flowtypes
-  const flowTypeSub = flowType === 'sub';
-  const flowTypeRecover = flowType === 'recover';
-  const { hdPath: parentHdPath, masterKey: parentMasterKey } = useActiveAccount();
-
-  const defaultHdPath = flowTypeSub
-    ? completeHdPath(parentHdPath!, "0'", true)
-    : DEFAULT_MAINNET_HD_PATH;
-
   const [error, setError] = useState('');
-  const [hdPath, setHdPath] = useState(defaultHdPath);
+  const [hdPath, setHdPath] = useState(DEFAULT_MAINNET_HD_PATH);
   const [continueDisabled, setContinueDisabled] = useState(false);
   const [showAdvanced, setShowAdvanced] = useState(false);
   const navigate = useNavigate();
-  const { updateTempAccount, resetAccountData, tempAccount } = useAccount();
+  const { updateTempAccount, tempAccount } = useAccount();
   const [name, setName] = useState(tempAccount?.name || '');
-  const { resetSettingsData } = useSettings();
-  const { resetWalletConnectData } = useWalletConnect();
 
   const handleContinue = async () => {
     const validLength = name.length > 2 && name.length < 16;
@@ -70,20 +53,13 @@ export const NewAccountNameTab = ({ nextUrl, flowType }: Props) => {
     if (!validLength) newError = 'Name must be 3 to 15 alphanumeric characters.';
     if (!name) newError = 'Please enter an account';
     if (!newError) {
-      // If we are in the recovery page, nuke all existing data
-      if (flowTypeRecover) {
-        // Destroy all accounts/settings/data
-        await resetWalletConnectData();
-        await resetAccountData();
-        await resetSettingsData();
-      }
       // We get the HDPath from 3 places: -AdvancedSettings, -DEFAULT_HD_PATH, -ParentAccountHdPath
       updateTempAccount({
         name,
         hdPath,
-        ...(flowTypeSub && parentHdPath && { parentHdPath }),
-        ...(flowTypeSub && parentMasterKey && { parentMasterKey }),
       });
+      // Change the hash for the nextUrl
+      window.location.hash = `#${nextUrl}`;
       // Move to next step
       navigate(nextUrl);
     } else {
@@ -94,7 +70,7 @@ export const NewAccountNameTab = ({ nextUrl, flowType }: Props) => {
   const toggleShowAdvanced = () => {
     if (showAdvanced) {
       // Restore path to default
-      setHdPath(defaultHdPath);
+      setHdPath(DEFAULT_MAINNET_HD_PATH);
       // Reset continue button status
       setContinueDisabled(false);
       // Close menu

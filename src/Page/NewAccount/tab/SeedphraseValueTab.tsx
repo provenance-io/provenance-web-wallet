@@ -3,10 +3,8 @@ import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import {
   Typo,
-  Button,
-  Header,
+  Button as ButtonBase,
   FullPage,
-  BottomFloat,
   ScrollContainer,
   CopyValue,
   Sprite,
@@ -26,7 +24,7 @@ const MnuemonicList = styled.div`
   height: 580px;
   border-radius: 4px;
   font-size: 1.4rem;
-  background: ${COLORS.NEUTRAL_700};
+  background: ${COLORS.NEUTRAL_600};
 `;
 const ListItemNumber = styled.p`
   color: ${COLORS.NEUTRAL_250};
@@ -39,14 +37,15 @@ const MnuemonicItem = styled.p`
   display: flex;
   justify-content: flex-start;
 `;
+const Button = styled(ButtonBase)`
+  margin-top: 30px;
+`;
 
 interface Props {
   nextUrl: string;
-  previousUrl: string;
-  progress: number;
 }
 
-export const SeedphraseValueTab = ({ nextUrl, previousUrl, progress }: Props) => {
+export const SeedphraseValueTab = ({ nextUrl }: Props) => {
   const navigate = useNavigate();
   const { tempAccount, updateTempAccount } = useAccount();
 
@@ -62,22 +61,19 @@ export const SeedphraseValueTab = ({ nextUrl, previousUrl, progress }: Props) =>
   }, [updateTempAccount, tempAccount]);
 
   const handleContinue = () => {
+    // Change the hash for the nextUrl
+    window.location.hash = `#${nextUrl}`;
     navigate(nextUrl);
   };
 
   return (
-    <FullPage>
-      <Header
-        progress={progress}
-        title="Recovery Seed Phrase"
-        backLocation={previousUrl}
-      />
-      <Typo type="body" marginBottom="20px">
+    <FullPage title="Recovery Seed Phrase">
+      <Typo type="body" marginBottom="20px" align="left">
         Make sure to record these words in the correct order, using the corresponding
         numbers.
       </Typo>
       <CopyValue value={tempAccount?.mnemonic}>
-        <Typo type="bodyAlt">
+        <Typo type="bodyAlt" marginBottom="10px">
           Copy Seed&nbsp;
           <Sprite icon={ICON_NAMES.COPY} size="1.2rem" />
         </Typo>
@@ -95,9 +91,7 @@ export const SeedphraseValueTab = ({ nextUrl, previousUrl, progress }: Props) =>
       ) : (
         'Loading...'
       )}
-      <BottomFloat>
-        <Button onClick={handleContinue}>Continue</Button>
-      </BottomFloat>
+      <Button onClick={handleContinue}>Continue</Button>
     </FullPage>
   );
 };

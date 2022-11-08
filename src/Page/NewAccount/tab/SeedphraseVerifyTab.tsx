@@ -1,13 +1,5 @@
 import { useEffect, useState } from 'react';
-import {
-  Checkbox as CheckboxBase,
-  Button,
-  Header,
-  FullPage,
-  Typo,
-  BottomFloat,
-  ScrollContainer,
-} from 'Components';
+import { Checkbox as CheckboxBase, Button, FullPage, Typo } from 'Components';
 import styled from 'styled-components';
 import { useAccount } from 'redux/hooks';
 import { useNavigate } from 'react-router-dom';
@@ -19,8 +11,7 @@ const Checkbox = styled(CheckboxBase)`
   display: flex;
   align-items: flex-start;
   margin-top: 10px;
-  padding-top: 10px;
-  border-top: 1px solid ${COLORS.NEUTRAL_700};
+  padding-top: 20px;
   label {
     line-height: 1.5rem;
   }
@@ -28,19 +19,25 @@ const Checkbox = styled(CheckboxBase)`
     margin-top: 2px;
   }
 `;
-const FloatingError = styled(Typo)`
-  position: absolute;
-  font-size: 1.4rem;
-  bottom: 72px;
+const AllWordRows = styled.div`
+  background: ${COLORS.NEUTRAL_550};
+  padding: 6px 10px 30px 10px;
+  border-radius: 6px;
 `;
 const WordRow = styled.div`
-  margin-right: 12px;
+  margin: 0 12px;
 `;
 const WordBtnRow = styled.div`
   display: grid;
   grid-template-columns: 1fr 1fr 1fr;
   gap: 8px;
   width: 100%;
+`;
+const Bold = styled.span`
+  font-weight: bold;
+`;
+const ContinueButton = styled(Button)`
+  margin-top: 30px;
 `;
 
 interface Props {
@@ -139,11 +136,13 @@ export const SeedphraseVerifyTab = ({ nextUrl, previousUrl, progress }: Props) =
       setErrorMsg('Incorrect choices selected.');
     } else {
       setErrorMsg('');
+      // Change the hash for the nextUrl
+      window.location.hash = `#${nextUrl}`;
       navigate(nextUrl);
     }
   };
 
-  const renderWordRow = () =>
+  const renderWordRows = () =>
     wordRows.map(({ correctWordIndex, allRowWords }, rowIndex) => (
       <WordRow key={rowIndex}>
         <Typo type="body" marginBottom="10px" marginTop="20px">
@@ -164,27 +163,27 @@ export const SeedphraseVerifyTab = ({ nextUrl, previousUrl, progress }: Props) =
     ));
 
   return (
-    <FullPage>
-      <Header
-        progress={progress}
-        title="Verify Passphrase"
-        backLocation={previousUrl}
-      />
-      <ScrollContainer height="320px">{renderWordRow()}</ScrollContainer>
+    <FullPage title="Verify Seed Phrase">
+      <Typo type="body" marginBottom="20px" align="left">
+        Select the <Bold>{correctCount}</Bold> correct words from your seed phrase
+      </Typo>
+      <AllWordRows>{renderWordRows()}</AllWordRows>
       <Checkbox
         checked={termsAgree}
         labelClick={false}
         onChange={(isChecked: boolean) => {
           setTermsAgree(isChecked);
         }}
-        label="I agree that I'm solely responsible for my wallet and cannot recover the passphrase if lost."
+        label="I agree that I'm solely responsible for my wallet and cannot recover the seed phrase if lost."
       />
-      {errorMsg && <FloatingError type="error">{errorMsg}</FloatingError>}
-      <BottomFloat>
-        <Button onClick={handleContinue} variant="primary">
-          Continue
-        </Button>
-      </BottomFloat>
+      {errorMsg && (
+        <Typo type="error" align="left" marginTop="10px">
+          {errorMsg}
+        </Typo>
+      )}
+      <ContinueButton onClick={handleContinue} variant="primary">
+        Continue
+      </ContinueButton>
     </FullPage>
   );
 };

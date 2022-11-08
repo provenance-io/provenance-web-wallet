@@ -1,13 +1,6 @@
 import { useState } from 'react';
-import {
-  Button,
-  Header,
-  Input as InputBase,
-  FullPage,
-  Typo,
-  BottomFloat,
-} from 'Components';
-import { ICON_NAMES, PASSWORD_MIN_LENGTH } from 'consts';
+import { Button, Input as InputBase, FullPage, Typo } from 'Components';
+import { PASSWORD_MIN_LENGTH } from 'consts';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import { useAccount, useSettings, useActiveAccount } from 'redux/hooks';
@@ -26,17 +19,10 @@ const Input = styled(InputBase)`
 
 interface Props {
   nextUrl: string;
-  previousUrl: string;
   flowType: FlowType;
-  progress: number;
 }
 
-export const NewAccountPasswordTab = ({
-  nextUrl,
-  previousUrl,
-  flowType,
-  progress,
-}: Props) => {
+export const NewAccountPasswordTab = ({ nextUrl, flowType }: Props) => {
   const navigate = useNavigate();
   const { tempAccount, addAccount, accounts } = useAccount();
   const { bumpUnlockDuration } = useSettings();
@@ -46,13 +32,8 @@ export const NewAccountPasswordTab = ({
 
   const passwordMinLength = Number(PASSWORD_MIN_LENGTH)!;
   // Check for each flotType
-  const isSubAccount = flowType === 'sub';
-  const isImportAccount = flowType === 'import';
-  const isAddAccount = flowType === 'add';
-  const isCreateAccount = flowType === 'create';
-  const isRecoverAccount = flowType === 'recover';
-  const additionalAccount = isSubAccount || isImportAccount || isAddAccount;
-  const enterNewPassword = isCreateAccount || isRecoverAccount;
+  const additionalAccount = flowType === 'add';
+  const enterNewPassword = flowType === 'create';
   const password = walletPassword[0];
   const repeatedPassword = walletPassword[1];
   const accountsExist = accounts.length;
@@ -122,6 +103,8 @@ export const NewAccountPasswordTab = ({
       // -------------------------------------------------------
       await addAccount(newAccountData);
       await bumpUnlockDuration();
+      // Change the hash for the nextUrl
+      window.location.hash = `#${nextUrl}`;
       navigate(nextUrl);
     } else {
       // Update error
@@ -140,19 +123,12 @@ export const NewAccountPasswordTab = ({
   };
 
   return (
-    <FullPage>
-      <Header
-        iconLeft={ICON_NAMES.CLOSE}
-        progress={progress}
-        title="Wallet Password"
-        backLocation={previousUrl}
-      />
-      <Typo type="body" marginBottom="40px">
+    <FullPage title="Wallet Password">
+      <Typo type="body" marginBottom="40px" align="left">
         {additionalAccount
           ? 'Existing wallet password. Your password is required to add/import additional accounts.'
           : 'Enter a wallet password. This password will be used for permissions, authentication, and unlocking. This password is only stored locally.'}
       </Typo>
-
       <Input
         id="wallet-password"
         label="Wallet Password"
@@ -176,10 +152,7 @@ export const NewAccountPasswordTab = ({
           onKeyPress={(e) => keyPress(e, handleContinue)}
         />
       )}
-
-      <BottomFloat>
-        <Button onClick={handleContinue}>Continue</Button>
-      </BottomFloat>
+      <Button onClick={handleContinue}>Continue</Button>
     </FullPage>
   );
 };

@@ -23,7 +23,7 @@ const PageStyled = styled.div<Props>`
   justify-content: ${({ justify }) => justify};
   text-align: ${({ align }) => (align === 'flex-start' ? 'left' : 'center')};
   z-index: 10;
-  height: 100%;
+  height: auto;
   width: 100%;
   overflow-y: scroll;
   -ms-overflow-style: none;

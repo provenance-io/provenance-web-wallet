@@ -37,7 +37,6 @@ export const NEW_ACCOUNT_CREATE_TAB = {
       index: true,
       element: (
         <NewAccountNameTab
-          progress={16}
           nextUrl={CREATE_ACCOUNT_SEED_INFO_URL}
           flowType="create"
         />
@@ -47,8 +46,6 @@ export const NEW_ACCOUNT_CREATE_TAB = {
       path: CREATE_ACCOUNT_SEED_INFO_URL,
       element: (
         <SeedphraseInfoTab
-          progress={32}
-          previousUrl={NEW_ACCOUNT_CREATE_URL}
           nextUrl={CREATE_ACCOUNT_SEED_VALUE_URL}
           flowType="create"
         />
@@ -56,13 +53,7 @@ export const NEW_ACCOUNT_CREATE_TAB = {
     },
     {
       path: CREATE_ACCOUNT_SEED_VALUE_URL,
-      element: (
-        <SeedphraseValueTab
-          progress={48}
-          previousUrl={CREATE_ACCOUNT_SEED_INFO_URL}
-          nextUrl={CREATE_ACCOUNT_SEED_VERIFY_URL}
-        />
-      ),
+      element: <SeedphraseValueTab nextUrl={CREATE_ACCOUNT_SEED_VERIFY_URL} />,
     },
     {
       path: CREATE_ACCOUNT_SEED_VERIFY_URL,
@@ -78,8 +69,6 @@ export const NEW_ACCOUNT_CREATE_TAB = {
       path: CREATE_ACCOUNT_PASSWORD_URL,
       element: (
         <NewAccountPasswordTab
-          progress={80}
-          previousUrl={CREATE_ACCOUNT_SEED_VERIFY_URL}
           nextUrl={CREATE_ACCOUNT_SUCCESS_URL}
           flowType="create"
         />
@@ -102,33 +91,18 @@ export const NEW_ACCOUNT_ADD_TAB = {
     {
       index: true,
       element: (
-        <NewAccountNameTab
-          progress={16}
-          nextUrl={ADD_ACCOUNT_SEED_INFO_URL}
-          flowType="add"
-        />
+        <NewAccountNameTab nextUrl={ADD_ACCOUNT_SEED_INFO_URL} flowType="add" />
       ),
     },
     {
       path: ADD_ACCOUNT_SEED_INFO_URL,
       element: (
-        <SeedphraseInfoTab
-          progress={32}
-          previousUrl={NEW_ACCOUNT_ADD_URL}
-          nextUrl={ADD_ACCOUNT_SEED_VALUE_URL}
-          flowType="add"
-        />
+        <SeedphraseInfoTab nextUrl={ADD_ACCOUNT_SEED_VALUE_URL} flowType="add" />
       ),
     },
     {
       path: ADD_ACCOUNT_SEED_VALUE_URL,
-      element: (
-        <SeedphraseValueTab
-          progress={48}
-          previousUrl={ADD_ACCOUNT_SEED_INFO_URL}
-          nextUrl={ADD_ACCOUNT_SEED_VERIFY_URL}
-        />
-      ),
+      element: <SeedphraseValueTab nextUrl={ADD_ACCOUNT_SEED_VERIFY_URL} />,
     },
     {
       path: ADD_ACCOUNT_SEED_VERIFY_URL,
@@ -143,12 +117,7 @@ export const NEW_ACCOUNT_ADD_TAB = {
     {
       path: ADD_ACCOUNT_PASSWORD_URL,
       element: (
-        <NewAccountPasswordTab
-          progress={80}
-          previousUrl={ADD_ACCOUNT_SEED_VERIFY_URL}
-          nextUrl={ADD_ACCOUNT_SUCCESS_URL}
-          flowType="add"
-        />
+        <NewAccountPasswordTab nextUrl={ADD_ACCOUNT_SUCCESS_URL} flowType="add" />
       ),
     },
     {

@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import { Button, Header, Typo, FullPage, BottomFloat } from 'Components';
+import { Button, Typo, FullPage } from 'Components';
 import { useNavigate } from 'react-router-dom';
 import { useAccount } from 'redux/hooks';
 import backupComplete from 'images/backup-complete.svg';
@@ -13,7 +13,7 @@ interface Props {
 const Image = styled.img`
   width: 160px;
   display: flex;
-  margin: 50px auto;
+  margin: 0px auto;
 `;
 
 export const NewAccountSuccessTab = ({ nextUrl, flowType }: Props) => {
@@ -23,17 +23,12 @@ export const NewAccountSuccessTab = ({ nextUrl, flowType }: Props) => {
     // Remove temp data
     clearTempAccount();
     // Go to /dashboard
+    window.location.hash = '';
     navigate(nextUrl);
   };
   let message = '';
   let title = '';
   switch (flowType) {
-    case 'sub': {
-      message =
-        'Account has been successfully created.  Click continue to proceed to the dashboard.';
-      title = 'Sub Account Added';
-      break;
-    }
     case 'create': {
       message =
         'Wallet has been successfully created.  Click continue to proceed to the dashboard.';
@@ -46,29 +41,16 @@ export const NewAccountSuccessTab = ({ nextUrl, flowType }: Props) => {
       title = 'Account Created';
       break;
     }
-    case 'recover': {
-      message =
-        'Account has been successfully recovered.  Click continue to proceed to the dashboard.';
-      title = 'Account Recovered';
-      break;
-    }
-    case 'import': {
-      message =
-        'Account has been successfully imported.  Click continue to proceed to the dashboard.';
-      title = 'Account Imported';
-      break;
-    }
     default:
       break;
   }
   return (
-    <FullPage>
-      <Header progress={100} title={title} iconLeft="none" />
+    <FullPage title={title}>
       <Image src={backupComplete} />
-      <Typo type="body">{message}</Typo>
-      <BottomFloat>
-        <Button onClick={handleContinue}>Continue</Button>
-      </BottomFloat>
+      <Typo type="body" marginBottom="40px" marginTop="30px" align="left">
+        {message}
+      </Typo>
+      <Button onClick={handleContinue}>Continue</Button>
     </FullPage>
   );
 };

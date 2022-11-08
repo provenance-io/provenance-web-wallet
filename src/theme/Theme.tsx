@@ -25,6 +25,8 @@ export const GlobalStyles = createGlobalStyle`
     font-size: 62.5%; // 1rem = 10px
     box-sizing: border-box;
     background: black;
+    height: 100%;
+    width: 100%;
   }
 
   *, *:before, *:after {
@@ -36,6 +38,8 @@ export const GlobalStyles = createGlobalStyle`
     font-family: ${FONTS.PRIMARY_FONT};
     font-weight: 400;
     font-size: 1.6rem;
+    height: 100%;
+    width: 100%;
   }
 
   pre {

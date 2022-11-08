@@ -5,7 +5,7 @@ import {
   Button,
   Header,
   Input,
-  Content,
+  FullPage,
   BottomFloat,
   Typo,
   ScrollContainer,
@@ -111,7 +111,7 @@ export const SeedphraseInputTab: React.FC<Props> = ({
   };
 
   return (
-    <Content>
+    <FullPage>
       <Header
         title="Enter Recovery Seedphrase"
         progress={progress}
@@ -130,6 +130,6 @@ export const SeedphraseInputTab: React.FC<Props> = ({
           Continue
         </Button>
       </BottomFloat>
-    </Content>
+    </FullPage>
   );
 };

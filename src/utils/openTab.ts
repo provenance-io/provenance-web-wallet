@@ -1,5 +1,5 @@
-import { POPUP_ROOT_URL } from 'consts';
+import { NEW_TAB_ROOT_URL } from 'consts';
 
 export const openTab = (url: string) => {
-  chrome.tabs.create({ url: `${POPUP_ROOT_URL}${url}` });
+  chrome.tabs.create({ url: `${NEW_TAB_ROOT_URL}${url}` });
 };

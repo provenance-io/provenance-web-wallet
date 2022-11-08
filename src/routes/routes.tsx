@@ -15,12 +15,13 @@ import { RESET_WALLET } from './resetWallet';
 import { UNLOCK } from './unlock';
 import { NOTIFICATION } from './notification';
 import {
-  NEW_ACCOUNT_CREATE,
+  // NEW_ACCOUNT_CREATE,
   NEW_ACCOUNT_RECOVER,
   NEW_ACCOUNT_SUB,
-  NEW_ACCOUNT_ADD,
+  // NEW_ACCOUNT_ADD,
   NEW_ACCOUNT_IMPORT,
 } from './newAccount';
+import { NEW_ACCOUNT_CREATE_TAB, NEW_ACCOUNT_ADD_TAB } from './newAccountTab';
 import { REMOVE_ACCOUNT } from './removeAccount';
 import { RENAME_ACCOUNT } from './renameAccount';
 import { SEND } from './send';
@@ -44,11 +45,13 @@ export const routes = [
       SEND,
     ],
   },
-  NEW_ACCOUNT_ADD,
-  NEW_ACCOUNT_CREATE,
+  // NEW_ACCOUNT_ADD,
+  // NEW_ACCOUNT_CREATE,
   NEW_ACCOUNT_RECOVER,
   NEW_ACCOUNT_SUB,
   NEW_ACCOUNT_IMPORT,
+  NEW_ACCOUNT_CREATE_TAB,
+  NEW_ACCOUNT_ADD_TAB,
   NOTIFICATION,
   REMOVE_ACCOUNT,
   RENAME_ACCOUNT,

@@ -3,7 +3,7 @@ import {
   Checkbox as CheckboxBase,
   Button,
   Header,
-  Content,
+  FullPage,
   Typo,
   BottomFloat,
   ScrollContainer,
@@ -164,7 +164,7 @@ export const SeedphraseVerifyTab = ({ nextUrl, previousUrl, progress }: Props) =
     ));
 
   return (
-    <Content>
+    <FullPage>
       <Header
         progress={progress}
         title="Verify Passphrase"
@@ -185,6 +185,6 @@ export const SeedphraseVerifyTab = ({ nextUrl, previousUrl, progress }: Props) =
           Continue
         </Button>
       </BottomFloat>
-    </Content>
+    </FullPage>
   );
 };

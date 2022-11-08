@@ -1,16 +1,13 @@
 import { useState } from 'react';
 import {
-  Button,
-  Header,
+  AdvancedSettings,
+  Button as ButtonBase,
+  Checkbox,
+  FullPage,
   Input,
   Typo,
-  FullPage,
-  AdvancedSettings,
-  Alert,
-  BottomFloat,
-  Checkbox,
 } from 'Components';
-import { ICON_NAMES, DEFAULT_MAINNET_HD_PATH } from 'consts';
+import { DEFAULT_MAINNET_HD_PATH } from 'consts';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import {
@@ -34,6 +31,9 @@ const AdvancedSettingsCheckbox = styled(Checkbox)<{ active: boolean }>`
     font-weight: bold;
   }
 `;
+const Button = styled(ButtonBase)`
+  margin-top: 40px;
+`;
 
 interface Props {
   nextUrl: string;
@@ -41,18 +41,12 @@ interface Props {
   progress: number;
 }
 
-export const NewAccountNameTab = ({ nextUrl, flowType, progress }: Props) => {
+export const NewAccountNameTab = ({ nextUrl, flowType }: Props) => {
   // Shorthand flowtypes
   const flowTypeSub = flowType === 'sub';
   const flowTypeRecover = flowType === 'recover';
-  const {
-    accountLevel: parentAccountLevel,
-    name: parentAccountName,
-    hdPath: parentHdPath,
-    masterKey: parentMasterKey,
-  } = useActiveAccount();
-  // When we are adding an account, we need to write the HD path all the way down to addressIndex and account for the parent path
-  // TODO: completeHdPath can set a custom addressIndex, determine if an addressIndex already exists (loop through all accounts) and auto increment that value by 1 as needed.
+  const { hdPath: parentHdPath, masterKey: parentMasterKey } = useActiveAccount();
+
   const defaultHdPath = flowTypeSub
     ? completeHdPath(parentHdPath!, "0'", true)
     : DEFAULT_MAINNET_HD_PATH;
@@ -62,17 +56,10 @@ export const NewAccountNameTab = ({ nextUrl, flowType, progress }: Props) => {
   const [continueDisabled, setContinueDisabled] = useState(false);
   const [showAdvanced, setShowAdvanced] = useState(false);
   const navigate = useNavigate();
-  const {
-    updateTempAccount,
-    accounts,
-    resetAccountData,
-    tempAccount,
-    clearTempAccount,
-  } = useAccount();
+  const { updateTempAccount, resetAccountData, tempAccount } = useAccount();
   const [name, setName] = useState(tempAccount?.name || '');
   const { resetSettingsData } = useSettings();
   const { resetWalletConnectData } = useWalletConnect();
-  const accountType = 'account';
 
   const handleContinue = async () => {
     const validLength = name.length > 2 && name.length < 16;
@@ -81,10 +68,7 @@ export const NewAccountNameTab = ({ nextUrl, flowType, progress }: Props) => {
     if (!validCharacters)
       newError = 'Name must only contain alphanumeric characters.';
     if (!validLength) newError = 'Name must be 3 to 15 alphanumeric characters.';
-    if (!name)
-      newError = `Please enter ${
-        accountType === 'account' ? 'an account' : 'a wallet'
-      } name.`;
+    if (!name) newError = 'Please enter an account';
     if (!newError) {
       // If we are in the recovery page, nuke all existing data
       if (flowTypeRecover) {
@@ -107,30 +91,6 @@ export const NewAccountNameTab = ({ nextUrl, flowType, progress }: Props) => {
     }
   };
 
-  const renderAddressIndexError = () => (
-    <>
-      <Alert type="error" title="Error">
-        Unable to create additional account with account "{parentAccountName}". "
-        {parentAccountName}" is an "addressIndex" level account.
-      </Alert>
-      <BottomFloat>
-        <Button
-          onClick={() => {
-            console.log('close');
-          }}
-        >
-          Close
-        </Button>
-      </BottomFloat>
-    </>
-  );
-  const renderRecoverClearWarning = () => (
-    <Alert type="warning" title="Warning">
-      Continuing will remove all accounts and keys from this wallet. They cannot be
-      recovered without a seed phase.
-    </Alert>
-  );
-
   const toggleShowAdvanced = () => {
     if (showAdvanced) {
       // Restore path to default
@@ -149,64 +109,44 @@ export const NewAccountNameTab = ({ nextUrl, flowType, progress }: Props) => {
     setName(value);
   };
 
-  // If an 'addressIndex' is trying to add an account, don't let it -- not possible.
-  const createAccountDisabled = flowTypeSub && parentAccountLevel === 'addressIndex';
-  const recoverClearWallet = flowTypeRecover && !!accounts.length;
-
   return (
-    <FullPage>
-      <Header
-        iconLeft={ICON_NAMES.CLOSE}
-        progress={progress}
-        title={`Name Your ${accountType}`}
-        backCallback={clearTempAccount}
+    <FullPage title={flowType === 'add' ? 'Add New Account' : 'Create New Account'}>
+      <Typo type="body" marginBottom="26px" marginTop="10px" align="left">
+        Enter an account name to easily identify it while using the Provenance
+        Blockchain Wallet.
+      </Typo>
+      <Input
+        id="accountName"
+        label="Account Name"
+        placeholder="Enter account name"
+        value={name}
+        onChange={handleInputChange}
+        error={error}
+        onKeyPress={(e) => keyPress(e, handleContinue)}
+        autoFocus
       />
-      {createAccountDisabled ? (
-        renderAddressIndexError()
-      ) : (
-        <>
-          {recoverClearWallet && renderRecoverClearWarning()}
-          <Typo type="body" marginBottom="36px" marginTop="30px">
-            Name this {accountType} to easily identify it while using the Provenance
-            Blockchain Wallet.
-          </Typo>
-          <Input
-            id={`${accountType}Name`}
-            label={`${accountType} Name`}
-            placeholder={`Enter ${accountType} name`}
-            value={name}
-            onChange={handleInputChange}
-            error={error}
-            onKeyPress={(e) => keyPress(e, handleContinue)}
-            autoFocus
-          />
-          <AdvancedSettingsCheckbox
-            label="Advanced Settings"
-            checked={showAdvanced}
-            onChange={toggleShowAdvanced}
-            data-testid="advanced-settings"
-            active={showAdvanced}
-          />
-          {showAdvanced && (
-            <AdvancedSettings
-              setResults={(newHdPath) => {
-                setHdPath(newHdPath);
-              }}
-              parentHdPath={flowTypeSub ? parentHdPath : undefined}
-              setContinueDisabled={setContinueDisabled}
-            />
-          )}
-          <BottomFloat>
-            <Button
-              onClick={handleContinue}
-              disabled={continueDisabled}
-              title={`${continueDisabled ? 'Required HD Path value missing' : ''}`}
-            >
-              Continue
-            </Button>
-          </BottomFloat>
-        </>
+      <AdvancedSettingsCheckbox
+        label="Advanced Settings"
+        checked={showAdvanced}
+        onChange={toggleShowAdvanced}
+        data-testid="advanced-settings"
+        active={showAdvanced}
+      />
+      {showAdvanced && (
+        <AdvancedSettings
+          setResults={(newHdPath) => {
+            setHdPath(newHdPath);
+          }}
+          setContinueDisabled={setContinueDisabled}
+        />
       )}
+      <Button
+        onClick={handleContinue}
+        disabled={continueDisabled}
+        title={`${continueDisabled ? 'Required HD Path value missing' : ''}`}
+      >
+        Continue
+      </Button>
     </FullPage>
   );
 };

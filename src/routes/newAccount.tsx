@@ -1,24 +1,23 @@
 import {
-  ADD_ACCOUNT_PASSWORD_URL,
-  ADD_ACCOUNT_SEED_INFO_URL,
-  ADD_ACCOUNT_SEED_VALUE_URL,
-  ADD_ACCOUNT_SEED_VERIFY_URL,
-  ADD_ACCOUNT_SUCCESS_URL,
+  // ADD_ACCOUNT_PASSWORD_URL,
+  // ADD_ACCOUNT_SEED_INFO_URL,
+  // ADD_ACCOUNT_SEED_VALUE_URL,
+  // ADD_ACCOUNT_SEED_VERIFY_URL,
+  // ADD_ACCOUNT_SUCCESS_URL,
   APP_URL,
-  CREATE_ACCOUNT_PASSWORD_URL,
-  CREATE_ACCOUNT_SEED_INFO_URL,
-  CREATE_ACCOUNT_SEED_VALUE_URL,
-  CREATE_ACCOUNT_SEED_VERIFY_URL,
-  CREATE_ACCOUNT_SUCCESS_URL,
+  // CREATE_ACCOUNT_PASSWORD_URL,
+  // CREATE_ACCOUNT_SEED_INFO_URL,
+  // CREATE_ACCOUNT_SEED_VALUE_URL,
+  // CREATE_ACCOUNT_SEED_VERIFY_URL,
+  // CREATE_ACCOUNT_SUCCESS_URL,
   DASHBOARD_MENU_URL,
   DASHBOARD_URL,
   IMPORT_ACCOUNT_PASSWORD_URL,
   IMPORT_ACCOUNT_SEED_INFO_URL,
   IMPORT_ACCOUNT_SEED_INPUT_URL,
   IMPORT_ACCOUNT_SUCCESS_URL,
-  NEW_ACCOUNT_ADD_URL,
-  NEW_ACCOUNT_ADD_TAB_URL,
-  NEW_ACCOUNT_CREATE_URL,
+  // NEW_ACCOUNT_ADD_URL,
+  // NEW_ACCOUNT_CREATE_URL,
   NEW_ACCOUNT_IMPORT_URL,
   NEW_ACCOUNT_RECOVER_URL,
   NEW_ACCOUNT_SUB_URL,
@@ -32,18 +31,12 @@ import {
 import {
   NewAccountAuth,
   NewAccountName,
-  NewAccountNameTab,
   NewAccountPassword,
-  NewAccountPasswordTab,
   NewAccountSuccess,
-  NewAccountSuccessTab,
   SeedphraseInfo,
-  SeedphraseInfoTab,
   SeedphraseInput,
-  SeedphraseValue,
-  SeedphraseValueTab,
-  SeedphraseVerify,
-  SeedphraseVerifyTab,
+  // SeedphraseValue,
+  // SeedphraseVerify,
 } from 'Page';
 
 // 5 different ways to create a new account (create, recover, sub, add, import)
@@ -56,69 +49,69 @@ import {
 // ---------------
 // CREATE WALLET
 // ---------------
-export const NEW_ACCOUNT_CREATE = {
-  path: NEW_ACCOUNT_CREATE_URL,
-  element: <NewAccountAuth flowType="create" />,
-  children: [
-    {
-      index: true,
-      element: (
-        <NewAccountName
-          progress={16}
-          previousUrl={APP_URL}
-          nextUrl={CREATE_ACCOUNT_SEED_INFO_URL}
-          flowType="create"
-        />
-      ),
-    },
-    {
-      path: CREATE_ACCOUNT_SEED_INFO_URL,
-      element: (
-        <SeedphraseInfo
-          progress={32}
-          previousUrl={NEW_ACCOUNT_CREATE_URL}
-          nextUrl={CREATE_ACCOUNT_SEED_VALUE_URL}
-          flowType="create"
-        />
-      ),
-    },
-    {
-      path: CREATE_ACCOUNT_SEED_VALUE_URL,
-      element: (
-        <SeedphraseValue
-          progress={48}
-          previousUrl={CREATE_ACCOUNT_SEED_INFO_URL}
-          nextUrl={CREATE_ACCOUNT_SEED_VERIFY_URL}
-        />
-      ),
-    },
-    {
-      path: CREATE_ACCOUNT_SEED_VERIFY_URL,
-      element: (
-        <SeedphraseVerify
-          progress={64}
-          previousUrl={CREATE_ACCOUNT_SEED_VALUE_URL}
-          nextUrl={CREATE_ACCOUNT_PASSWORD_URL}
-        />
-      ),
-    },
-    {
-      path: CREATE_ACCOUNT_PASSWORD_URL,
-      element: (
-        <NewAccountPassword
-          progress={80}
-          previousUrl={CREATE_ACCOUNT_SEED_VERIFY_URL}
-          nextUrl={CREATE_ACCOUNT_SUCCESS_URL}
-          flowType="create"
-        />
-      ),
-    },
-    {
-      path: CREATE_ACCOUNT_SUCCESS_URL,
-      element: <NewAccountSuccess nextUrl={DASHBOARD_URL} flowType="create" />,
-    },
-  ],
-};
+// export const NEW_ACCOUNT_CREATE = {
+//   path: NEW_ACCOUNT_CREATE_URL,
+//   element: <NewAccountAuth flowType="create" />,
+//   children: [
+//     {
+//       index: true,
+//       element: (
+//         <NewAccountName
+//           progress={16}
+//           previousUrl={APP_URL}
+//           nextUrl={CREATE_ACCOUNT_SEED_INFO_URL}
+//           flowType="create"
+//         />
+//       ),
+//     },
+//     {
+//       path: CREATE_ACCOUNT_SEED_INFO_URL,
+//       element: (
+//         <SeedphraseInfo
+//           progress={32}
+//           previousUrl={NEW_ACCOUNT_CREATE_URL}
+//           nextUrl={CREATE_ACCOUNT_SEED_VALUE_URL}
+//           flowType="create"
+//         />
+//       ),
+//     },
+//     {
+//       path: CREATE_ACCOUNT_SEED_VALUE_URL,
+//       element: (
+//         <SeedphraseValue
+//           progress={48}
+//           previousUrl={CREATE_ACCOUNT_SEED_INFO_URL}
+//           nextUrl={CREATE_ACCOUNT_SEED_VERIFY_URL}
+//         />
+//       ),
+//     },
+//     {
+//       path: CREATE_ACCOUNT_SEED_VERIFY_URL,
+//       element: (
+//         <SeedphraseVerify
+//           progress={64}
+//           previousUrl={CREATE_ACCOUNT_SEED_VALUE_URL}
+//           nextUrl={CREATE_ACCOUNT_PASSWORD_URL}
+//         />
+//       ),
+//     },
+//     {
+//       path: CREATE_ACCOUNT_PASSWORD_URL,
+//       element: (
+//         <NewAccountPassword
+//           progress={80}
+//           previousUrl={CREATE_ACCOUNT_SEED_VERIFY_URL}
+//           nextUrl={CREATE_ACCOUNT_SUCCESS_URL}
+//           flowType="create"
+//         />
+//       ),
+//     },
+//     {
+//       path: CREATE_ACCOUNT_SUCCESS_URL,
+//       element: <NewAccountSuccess nextUrl={DASHBOARD_URL} flowType="create" />,
+//     },
+//   ],
+// };
 
 // ----------------
 // RECOVER WALLET
@@ -216,134 +209,69 @@ export const NEW_ACCOUNT_SUB = {
 // -------------
 // ADD ACCOUNT
 // -------------
-export const NEW_ACCOUNT_ADD = {
-  path: NEW_ACCOUNT_ADD_URL,
-  element: <NewAccountAuth flowType="add" />,
-  children: [
-    {
-      index: true,
-      element: (
-        <NewAccountName
-          progress={16}
-          previousUrl={DASHBOARD_MENU_URL}
-          nextUrl={ADD_ACCOUNT_SEED_INFO_URL}
-          flowType="add"
-        />
-      ),
-    },
-    {
-      path: ADD_ACCOUNT_SEED_INFO_URL,
-      element: (
-        <SeedphraseInfo
-          progress={32}
-          previousUrl={NEW_ACCOUNT_ADD_URL}
-          nextUrl={ADD_ACCOUNT_SEED_VALUE_URL}
-          flowType="add"
-        />
-      ),
-    },
-    {
-      path: ADD_ACCOUNT_SEED_VALUE_URL,
-      element: (
-        <SeedphraseValue
-          progress={48}
-          previousUrl={ADD_ACCOUNT_SEED_INFO_URL}
-          nextUrl={ADD_ACCOUNT_SEED_VERIFY_URL}
-        />
-      ),
-    },
-    {
-      path: ADD_ACCOUNT_SEED_VERIFY_URL,
-      element: (
-        <SeedphraseVerify
-          progress={64}
-          previousUrl={ADD_ACCOUNT_SEED_VALUE_URL}
-          nextUrl={ADD_ACCOUNT_PASSWORD_URL}
-        />
-      ),
-    },
-    {
-      path: ADD_ACCOUNT_PASSWORD_URL,
-      element: (
-        <NewAccountPassword
-          progress={80}
-          previousUrl={ADD_ACCOUNT_SEED_VERIFY_URL}
-          nextUrl={ADD_ACCOUNT_SUCCESS_URL}
-          flowType="add"
-        />
-      ),
-    },
-    {
-      path: ADD_ACCOUNT_SUCCESS_URL,
-      element: <NewAccountSuccess nextUrl={DASHBOARD_MENU_URL} flowType="add" />,
-    },
-  ],
-};
-
-// -------------
-// ADD ACCOUNT
-// -------------
-export const NEW_ACCOUNT_ADD_TAB = {
-  path: NEW_ACCOUNT_ADD_TAB_URL,
-  children: [
-    {
-      index: true,
-      element: (
-        <NewAccountNameTab
-          progress={16}
-          nextUrl={ADD_ACCOUNT_SEED_INFO_URL}
-          flowType="add"
-        />
-      ),
-    },
-    {
-      path: ADD_ACCOUNT_SEED_INFO_URL,
-      element: (
-        <SeedphraseInfoTab
-          progress={32}
-          previousUrl={NEW_ACCOUNT_ADD_URL}
-          nextUrl={ADD_ACCOUNT_SEED_VALUE_URL}
-          flowType="add"
-        />
-      ),
-    },
-    {
-      path: ADD_ACCOUNT_SEED_VALUE_URL,
-      element: (
-        <SeedphraseValueTab
-          progress={48}
-          previousUrl={ADD_ACCOUNT_SEED_INFO_URL}
-          nextUrl={ADD_ACCOUNT_SEED_VERIFY_URL}
-        />
-      ),
-    },
-    {
-      path: ADD_ACCOUNT_SEED_VERIFY_URL,
-      element: (
-        <SeedphraseVerifyTab
-          progress={64}
-          previousUrl={ADD_ACCOUNT_SEED_VALUE_URL}
-          nextUrl={ADD_ACCOUNT_PASSWORD_URL}
-        />
-      ),
-    },
-    {
-      path: ADD_ACCOUNT_PASSWORD_URL,
-      element: (
-        <NewAccountPasswordTab
-          progress={80}
-          previousUrl={ADD_ACCOUNT_SEED_VERIFY_URL}
-          nextUrl={ADD_ACCOUNT_SUCCESS_URL}
-          flowType="add"
-        />
-      ),
-    },
-    {
-      path: ADD_ACCOUNT_SUCCESS_URL,
-      element: <NewAccountSuccessTab nextUrl={DASHBOARD_MENU_URL} flowType="add" />,
-    },
-  ],
-};
+// export const NEW_ACCOUNT_ADD = {
+//   path: NEW_ACCOUNT_ADD_URL,
+//   element: <NewAccountAuth flowType="add" />,
+//   children: [
+//     {
+//       index: true,
+//       element: (
+//         <NewAccountName
+//           progress={16}
+//           previousUrl={DASHBOARD_MENU_URL}
+//           nextUrl={ADD_ACCOUNT_SEED_INFO_URL}
+//           flowType="add"
+//         />
+//       ),
+//     },
+//     {
+//       path: ADD_ACCOUNT_SEED_INFO_URL,
+//       element: (
+//         <SeedphraseInfo
+//           progress={32}
+//           previousUrl={NEW_ACCOUNT_ADD_URL}
+//           nextUrl={ADD_ACCOUNT_SEED_VALUE_URL}
+//           flowType="add"
+//         />
+//       ),
+//     },
+//     {
+//       path: ADD_ACCOUNT_SEED_VALUE_URL,
+//       element: (
+//         <SeedphraseValue
+//           progress={48}
+//           previousUrl={ADD_ACCOUNT_SEED_INFO_URL}
+//           nextUrl={ADD_ACCOUNT_SEED_VERIFY_URL}
+//         />
+//       ),
+//     },
+//     {
+//       path: ADD_ACCOUNT_SEED_VERIFY_URL,
+//       element: (
+//         <SeedphraseVerify
+//           progress={64}
+//           previousUrl={ADD_ACCOUNT_SEED_VALUE_URL}
+//           nextUrl={ADD_ACCOUNT_PASSWORD_URL}
+//         />
+//       ),
+//     },
+//     {
+//       path: ADD_ACCOUNT_PASSWORD_URL,
+//       element: (
+//         <NewAccountPassword
+//           progress={80}
+//           previousUrl={ADD_ACCOUNT_SEED_VERIFY_URL}
+//           nextUrl={ADD_ACCOUNT_SUCCESS_URL}
+//           flowType="add"
+//         />
+//       ),
+//     },
+//     {
+//       path: ADD_ACCOUNT_SUCCESS_URL,
+//       element: <NewAccountSuccess nextUrl={DASHBOARD_MENU_URL} flowType="add" />,
+//     },
+//   ],
+// };
 
 // -----------------
 // IMPORT ACCOUNT

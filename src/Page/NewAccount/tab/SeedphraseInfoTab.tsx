@@ -3,7 +3,7 @@ import {
   Button,
   Header,
   ImageContainer,
-  Content,
+  FullPage,
   Typo,
   BottomFloat,
 } from 'Components';
@@ -47,7 +47,7 @@ export const SeedphraseInfoTab = ({
     : 'Do not share this passphrase with anyone, as it grants full access to your account.';
 
   return (
-    <Content>
+    <FullPage>
       <Header progress={progress} title={headerTitle} backLocation={previousUrl} />
       <Typo type="headline2">{pageTitle}</Typo>
       <Typo type="body" marginTop="30px" marginBottom="60px">
@@ -63,6 +63,6 @@ export const SeedphraseInfoTab = ({
       <BottomFloat>
         <Button onClick={() => navigate(nextUrl)}>Continue</Button>
       </BottomFloat>
-    </Content>
+    </FullPage>
   );
 };

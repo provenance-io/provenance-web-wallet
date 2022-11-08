@@ -3,7 +3,7 @@ import {
   Button,
   Header,
   Input as InputBase,
-  Content,
+  FullPage,
   Typo,
   BottomFloat,
 } from 'Components';
@@ -140,7 +140,7 @@ export const NewAccountPasswordTab = ({
   };
 
   return (
-    <Content>
+    <FullPage>
       <Header
         iconLeft={ICON_NAMES.CLOSE}
         progress={progress}
@@ -180,6 +180,6 @@ export const NewAccountPasswordTab = ({
       <BottomFloat>
         <Button onClick={handleContinue}>Continue</Button>
       </BottomFloat>
-    </Content>
+    </FullPage>
   );
 };

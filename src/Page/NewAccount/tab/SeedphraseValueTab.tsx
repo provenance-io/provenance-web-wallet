@@ -5,7 +5,7 @@ import {
   Typo,
   Button,
   Header,
-  Content,
+  FullPage,
   BottomFloat,
   ScrollContainer,
   CopyValue,
@@ -66,7 +66,7 @@ export const SeedphraseValueTab = ({ nextUrl, previousUrl, progress }: Props) =>
   };
 
   return (
-    <Content>
+    <FullPage>
       <Header
         progress={progress}
         title="Recovery Seed Phrase"
@@ -98,6 +98,6 @@ export const SeedphraseValueTab = ({ nextUrl, previousUrl, progress }: Props) =>
       <BottomFloat>
         <Button onClick={handleContinue}>Continue</Button>
       </BottomFloat>
-    </Content>
+    </FullPage>
   );
 };

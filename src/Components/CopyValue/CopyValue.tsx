@@ -39,6 +39,7 @@ const CopiedNotice = styled.div<{ child: React.ReactNode }>`
 
 interface Props {
   value?: string;
+  specialValue?: string;
   title?: string;
   successText?: string;
   children?: React.ReactNode;
@@ -48,6 +49,7 @@ interface Props {
 
 export const CopyValue: React.FC<Props> = ({
   value = '',
+  specialValue,
   title = 'Copy Text',
   children,
   successText = 'Copied!',
@@ -72,7 +74,8 @@ export const CopyValue: React.FC<Props> = ({
     event.stopPropagation();
     setJustCopied(false);
     clearTimeout(timeoutInstance);
-    navigator.clipboard.writeText(value).then(() => {
+    const copyValue = specialValue && event.metaKey ? specialValue : value;
+    navigator.clipboard.writeText(copyValue).then(() => {
       clearTimeout(timeoutInstance);
       setJustCopied(true);
       const newTimeoutInstance = window.setTimeout(() => {

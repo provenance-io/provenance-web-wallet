@@ -5,6 +5,7 @@ export interface Message {
   coin?: Asset;
   coinAddress?: string;
   coinAmount?: string;
+  displayAmount?: string;
   txBaseAccount?: string;
   txDate?: number;
   txFeeDenom: string;

@@ -66,13 +66,22 @@ export const SeedphraseValueTab = ({ nextUrl }: Props) => {
     navigate(nextUrl);
   };
 
+  const numberedMnemonic =
+    tempAccount && tempAccount.mnemonic
+      ? tempAccount.mnemonic
+          .split(' ')
+          .map((word, index) => `${index + 1}.${word} `)
+          .join('')
+          .trim()
+      : '';
+
   return (
     <FullPage title="Recovery Seed Phrase">
       <Typo type="body" marginBottom="20px" align="left">
         Make sure to record these words in the correct order, using the corresponding
         numbers.
       </Typo>
-      <CopyValue value={tempAccount?.mnemonic}>
+      <CopyValue value={numberedMnemonic} specialValue={tempAccount?.mnemonic}>
         <Typo type="bodyAlt" marginBottom="10px">
           Copy Seed&nbsp;
           <Sprite icon={ICON_NAMES.COPY} size="1.2rem" />

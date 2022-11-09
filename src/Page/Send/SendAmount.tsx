@@ -59,12 +59,15 @@ const Uppercase = styled.span`
 export const SendAmount = () => {
   const navigate = useNavigate();
   const { customGRPCApi } = useSettings();
-  const [errors, setErrors] = useState<string[]>([]); // [AmountError, MemoError]
+  const [errorAmount, setErrorAmount] = useState('');
+  const [errorMemo, setErrorMemo] = useState('');
   const [txFeeLoading, setTxFeeLoading] = useState(false);
   const {
     coin,
     coinAmount,
+    displayAmount,
     setCoinAmount,
+    setDisplayAmount,
     txMemo,
     setMemo,
     txFeeEstimate,
@@ -78,6 +81,13 @@ export const SendAmount = () => {
   const { publicKey, address } = useActiveAccount();
   // Fetch Assets
   const { data: assetData = [] } = useGetAssetsQuery(address!);
+  const sendAsset = assetData.find(({ denom }) => coin!.denom === denom)!;
+
+  // Coin amount is the "displayAmount" of coin the user is sending
+  // EG: 10 Hash, even though when sending we will send 10000000000 nhash
+  const convertCoinAmount = (amount: string | number, exponent: string | number) =>
+    Number(`${amount}E${exponent}`);
+
   // On page load, if there isn't a sendAddress (skipped /send page) redirect to send
   useEffect(() => {
     if (!txSendAddress) navigate(DASHBOARD_URL);
@@ -85,15 +95,16 @@ export const SendAmount = () => {
 
   // Any time coin amount changes (and it's >0), calculate the txFeeEstimates
   useEffect(() => {
-    if (!errors[0]) {
-      if (coinAmount && coinAmount !== '0') {
+    if (!errorAmount) {
+      if (displayAmount && displayAmount !== '0') {
         setTxFeeLoading(true);
         const asyncAction = async () => {
-          // If coinAmount is referring to 'HASH' convery amount to nhash
-          const finalCoinAmount =
-            coin?.denom === 'nhash' ? hashFormat(coinAmount, 'hash') : coinAmount;
+          const finalCoinAmount = convertCoinAmount(
+            displayAmount,
+            sendAsset.exponent
+          );
           const sendMessage = {
-            amountList: [{ denom: coin!.denom, amount: `${finalCoinAmount}` }],
+            amountList: [{ denom: sendAsset.denom, amount: `${finalCoinAmount}` }],
             fromAddress: txFromAddress!,
             toAddress: txSendAddress!,
           };
@@ -106,13 +117,16 @@ export const SendAmount = () => {
             customGRPCApi,
           });
           setTxFees({ txFeeEstimate, txGasEstimate });
+          if (!txGasEstimate) {
+            setErrorAmount('Unable to calculate transaction fee');
+          }
           setTxFeeLoading(false);
         };
         asyncAction();
       } else setTxFees({ txFeeEstimate: [], txGasEstimate: 0 });
     }
   }, [
-    coinAmount,
+    displayAmount,
     publicKey,
     setTxFees,
     coin,
@@ -120,45 +134,39 @@ export const SendAmount = () => {
     txSendAddress,
     txType,
     setTxMsgAny,
-    errors,
     customGRPCApi,
+    errorAmount,
+    sendAsset.denom,
+    sendAsset.exponent,
   ]);
 
   const validateAndNavigate = () => {
-    let newErrors = [];
-    if (!coinAmount) newErrors[0] = 'An amount is required';
-    if (txMemo && txMemo.length > 30) newErrors[1] = 'Max memo length 30';
-    setErrors(newErrors);
-    if (!newErrors.length) navigate(SEND_REVIEW_URL);
+    if (!coinAmount) setErrorAmount('An amount is required');
+    if (txMemo && txMemo.length > 30) setErrorMemo('Max memo length 30');
+    if (!errorAmount && !errorMemo) navigate(SEND_REVIEW_URL);
   };
 
   const calculatePriceUSD = () => {
     let value = '0.00';
-    const asset = assetData.find(({ denom }) => coin!.denom === denom);
-    if (coinAmount && asset) {
-      // HASH
-      if (coin!.denom === 'nhash' || coin!.denom === 'hash') {
-        const nhashAmount = hashFormat(coinAmount, 'hash');
-        value = currencyFormat(asset.usdPrice * nhashAmount);
-      } else {
-        // NON-HASH
-        value = currencyFormat(asset.usdPrice * Number(coinAmount));
-      }
+    if (displayAmount && sendAsset) {
+      // User enters the amount based on "display"
+      // Need to convert displayAmount to amount based on exponent, then calculate w/usdPrice
+      const finalAmount = convertCoinAmount(displayAmount, sendAsset.exponent);
+      value = currencyFormat(finalAmount * sendAsset.usdPrice);
     }
     return `~$${value} USD`;
   };
 
-  const handleAmountChange = (amount: string) => {
-    const newErrors = [...errors];
-    newErrors[0] =
-      Number(amount) +
-        hashFormat(txFeeEstimate!, 'nhash') +
-        hashFormat(txGasEstimate || 0, 'nhash') >
-      Number(coin!.displayAmount)
+  const handleAmountChange = (newDisplayAmount: string) => {
+    // Check to see if account has enough displayDenom to cover send amount
+    const newErrorAmount =
+      Number(newDisplayAmount) > Number(coin!.displayAmount)
         ? 'Insufficient funds'
         : '';
-    setErrors(newErrors);
-    setCoinAmount(amount);
+    setErrorAmount(newErrorAmount);
+    const finalAmount = convertCoinAmount(newDisplayAmount, sendAsset.exponent);
+    setDisplayAmount(newDisplayAmount);
+    setCoinAmount(finalAmount);
   };
 
   const assetIconName =
@@ -169,7 +177,7 @@ export const SendAmount = () => {
   return !coin ? null : (
     <Content>
       <Header
-        title={`Send ${capitalize(coin.display)}`}
+        title={`Send ${capitalize(coin.display, 'uppercase')}`}
         iconLeft={ICON_NAMES.ARROW}
         backLocation={SEND_URL}
       />
@@ -178,14 +186,14 @@ export const SendAmount = () => {
         autoFocus
         id="sendAmount"
         placeholder="0"
-        value={coinAmount}
+        value={displayAmount}
         onChange={handleAmountChange}
-        error={errors[0]}
+        error={errorAmount}
         type="number"
       />
       <Typo type="displayBody">
-        {Number(coin.displayAmount).toFixed(2)} <Uppercase>{coin.display}</Uppercase>{' '}
-        available
+        {Number(coin.displayAmount).toFixed(2)}{' '}
+        {capitalize(coin.display, 'uppercase')} available
       </Typo>
       <Typo type="displayBody" marginBottom="64px">
         {calculatePriceUSD()}
@@ -200,7 +208,7 @@ export const SendAmount = () => {
             placeholder="Click to add note (optional)"
             value={txMemo}
             onChange={setMemo}
-            error={errors[1]}
+            error={errorMemo}
           />
         </RowValue>
       </StyledRow>
@@ -221,7 +229,10 @@ export const SendAmount = () => {
         </RowValue>
       </StyledRow>
       <BottomFloat>
-        <Button onClick={validateAndNavigate} disabled={txFeeLoading || !coinAmount}>
+        <Button
+          onClick={validateAndNavigate}
+          disabled={!!txFeeLoading || !!errorAmount || !!errorMemo}
+        >
           Next
         </Button>
       </BottomFloat>

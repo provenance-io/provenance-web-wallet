@@ -66,6 +66,7 @@ export const Send: React.FC = () => {
   const [error, setError] = useState('');
   const [recentAddressLimit, setRecentAddressLimit] = useState(3);
   const [filteredTxs, setFilteredTxs] = useState<string[]>([]);
+  const [initialLoad, setInitialLoad] = useState(true);
   const navigate = useNavigate();
   const { address } = useActiveAccount();
   // How many recent transactions should we comb through?
@@ -89,6 +90,10 @@ export const Send: React.FC = () => {
     isLoading: assetApiLoading,
     isFetching: assetApiFetching,
   } = useGetAssetsQuery(address!);
+  // Sort the assets to put hash first, then A-Z
+  const orderedAssets = [...assetData].sort((a, b) =>
+    a.display === 'hash' ? -1 : a.display > b.display ? 1 : -1
+  );
   const assetsLoading = assetApiLoading || assetApiFetching;
   // Get existing message fields/store functions
   const {
@@ -121,9 +126,20 @@ export const Send: React.FC = () => {
   }, [transactions, address]);
   // Update message fields
   useEffect(() => {
-    setCoin(assetData[0]);
-    setTxFromAddress(address);
-  }, [assetData, setCoin, address, setTxFromAddress]);
+    if (initialLoad && !assetsLoading) {
+      setInitialLoad(false);
+      console.log('Send.tsx | useEffect() | setCoin to: ', orderedAssets[0]);
+      setCoin(orderedAssets[0]);
+      setTxFromAddress(address);
+    }
+  }, [
+    orderedAssets,
+    setCoin,
+    address,
+    setTxFromAddress,
+    initialLoad,
+    assetsLoading,
+  ]);
 
   const renderRecentAddresses = () => {
     // Limit the amount of recent addresses rendered by the current limit
@@ -171,7 +187,7 @@ export const Send: React.FC = () => {
           {assetData.length > 1 ? 'Select Asset' : 'Asset'}
         </SectionTitle>
         <AssetDropdown
-          assets={assetData}
+          assets={orderedAssets}
           activeDenom={coin?.denom}
           onChange={setCoin}
         />

@@ -1,16 +1,15 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import {
-  Button,
-  Header,
-  Input,
-  Typo,
-  Content,
   AdvancedSettings,
   Alert,
   BottomFloat,
+  Button as ButtonBase,
   Checkbox,
+  FullPage,
+  Input,
+  Typo,
 } from 'Components';
-import { ICON_NAMES, DEFAULT_MAINNET_HD_PATH } from 'consts';
+import { DEFAULT_MAINNET_HD_PATH } from 'consts';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import {
@@ -34,20 +33,16 @@ const AdvancedSettingsCheckbox = styled(Checkbox)<{ active: boolean }>`
     font-weight: bold;
   }
 `;
+const Button = styled(ButtonBase)`
+  margin-top: 40px;
+`;
 
 interface Props {
   nextUrl: string;
-  previousUrl: string;
   flowType: FlowType;
-  progress: number;
 }
 
-export const NewAccountName = ({
-  previousUrl,
-  nextUrl,
-  flowType,
-  progress,
-}: Props) => {
+export const NewAccountName = ({ nextUrl, flowType }: Props) => {
   // Shorthand flowtypes
   const flowTypeSub = flowType === 'sub';
   const flowTypeRecover = flowType === 'recover';
@@ -57,13 +52,12 @@ export const NewAccountName = ({
     hdPath: parentHdPath,
     masterKey: parentMasterKey,
   } = useActiveAccount();
-  // When we are adding an account, we need to write the HD path all the way down to addressIndex and account for the parent path
-  // TODO: completeHdPath can set a custom addressIndex, determine if an addressIndex already exists (loop through all accounts) and auto increment that value by 1 as needed.
   const defaultHdPath = flowTypeSub
     ? completeHdPath(parentHdPath!, "0'", true)
     : DEFAULT_MAINNET_HD_PATH;
 
   const [error, setError] = useState('');
+  const [initialLoad, setInitialLoad] = useState(true);
   const [hdPath, setHdPath] = useState(defaultHdPath);
   const [continueDisabled, setContinueDisabled] = useState(false);
   const [showAdvanced, setShowAdvanced] = useState(false);
@@ -78,7 +72,14 @@ export const NewAccountName = ({
   const [name, setName] = useState(tempAccount?.name || '');
   const { resetSettingsData } = useSettings();
   const { resetWalletConnectData } = useWalletConnect();
-  const accountType = 'account';
+
+  // Whenever this page loads, nuke existing tempAccount data
+  useEffect(() => {
+    if (initialLoad) {
+      setInitialLoad(false);
+      clearTempAccount();
+    }
+  }, [clearTempAccount, initialLoad]);
 
   const handleContinue = async () => {
     const validLength = name.length > 2 && name.length < 16;
@@ -87,10 +88,7 @@ export const NewAccountName = ({
     if (!validCharacters)
       newError = 'Name must only contain alphanumeric characters.';
     if (!validLength) newError = 'Name must be 3 to 15 alphanumeric characters.';
-    if (!name)
-      newError = `Please enter ${
-        accountType === 'account' ? 'an account' : 'a wallet'
-      } name.`;
+    if (!name) newError = 'Please enter an account name.';
     if (!newError) {
       // If we are in the recovery page, nuke all existing data
       if (flowTypeRecover) {
@@ -106,6 +104,8 @@ export const NewAccountName = ({
         ...(flowTypeSub && parentHdPath && { parentHdPath }),
         ...(flowTypeSub && parentMasterKey && { parentMasterKey }),
       });
+      // Change the hash for the nextUrl
+      window.location.hash = `#${nextUrl}`;
       // Move to next step
       navigate(nextUrl);
     } else {
@@ -122,14 +122,18 @@ export const NewAccountName = ({
       <BottomFloat>
         <Button
           onClick={() => {
-            navigate(previousUrl);
+            // Close the current tab
+            chrome.tabs.getCurrent((tab) => {
+              if (tab?.id) chrome.tabs.remove(tab.id);
+            });
           }}
         >
-          Back
+          Close
         </Button>
       </BottomFloat>
     </>
   );
+
   const renderRecoverClearWarning = () => (
     <Alert type="warning" title="Warning">
       Continuing will remove all accounts and keys from this wallet. They cannot be
@@ -159,28 +163,38 @@ export const NewAccountName = ({
   const createAccountDisabled = flowTypeSub && parentAccountLevel === 'addressIndex';
   const recoverClearWallet = flowTypeRecover && !!accounts.length;
 
+  const getTitle = () => {
+    switch (flowType) {
+      case 'add':
+        return 'Add New Account';
+      case 'create':
+        return 'Create New Account';
+      case 'import':
+        return 'Import Account';
+      case 'recover':
+        return 'Recover Account';
+      case 'sub':
+        return 'Add New Sub Account';
+      default:
+        return 'Account Name';
+    }
+  };
+
   return (
-    <Content>
-      <Header
-        iconLeft={ICON_NAMES.CLOSE}
-        progress={progress}
-        title={`Name Your ${accountType}`}
-        backLocation={previousUrl}
-        backCallback={clearTempAccount}
-      />
+    <FullPage title={getTitle()}>
       {createAccountDisabled ? (
         renderAddressIndexError()
       ) : (
         <>
           {recoverClearWallet && renderRecoverClearWarning()}
-          <Typo type="body" marginBottom="36px" marginTop="30px">
-            Name this {accountType} to easily identify it while using the Provenance
+          <Typo type="body" marginBottom="26px" marginTop="10px" align="left">
+            Enter an account name to easily identify it while using the Provenance
             Blockchain Wallet.
           </Typo>
           <Input
-            id={`${accountType}Name`}
-            label={`${accountType} Name`}
-            placeholder={`Enter ${accountType} name`}
+            id="accountName"
+            label="Account Name"
+            placeholder="Enter account name"
             value={name}
             onChange={handleInputChange}
             error={error}
@@ -203,17 +217,15 @@ export const NewAccountName = ({
               setContinueDisabled={setContinueDisabled}
             />
           )}
-          <BottomFloat>
-            <Button
-              onClick={handleContinue}
-              disabled={continueDisabled}
-              title={`${continueDisabled ? 'Required HD Path value missing' : ''}`}
-            >
-              Continue
-            </Button>
-          </BottomFloat>
+          <Button
+            onClick={handleContinue}
+            disabled={continueDisabled}
+            title={`${continueDisabled ? 'Required HD Path value missing' : ''}`}
+          >
+            Continue
+          </Button>
         </>
       )}
-    </Content>
+    </FullPage>
   );
 };

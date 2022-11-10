@@ -1,17 +1,14 @@
-import {
-  CoinAsObject,
-  ReadableMessageNames,
-  SupportedDenoms,
-} from '@provenanceio/wallet-utils';
-import { Asset } from './Asset';
+import type { CoinAsObject, ReadableMessageNames } from '@provenanceio/wallet-utils';
+import type { Asset } from './Asset';
 
 export interface Message {
   coin?: Asset;
   coinAddress?: string;
   coinAmount?: string;
+  displayAmount?: string;
   txBaseAccount?: string;
   txDate?: number;
-  txFeeDenom: SupportedDenoms;
+  txFeeDenom: string;
   txFeeEstimate?: number;
   txFeeEstimateCoins?: CoinAsObject[];
   txFromAddress?: string;

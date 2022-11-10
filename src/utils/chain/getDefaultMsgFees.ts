@@ -1,8 +1,7 @@
 import { PROVENANCE_MESSAGE_FEES_URL } from 'consts';
-import { SupportedDenoms } from '@provenanceio/wallet-utils';
 
 interface MsgFeesResult {
-  denom: SupportedDenoms;
+  denom: string;
   amount: string;
 }
 interface ProvenanceMsgFees {

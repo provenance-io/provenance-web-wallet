@@ -3,10 +3,8 @@ import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import {
   Typo,
-  Button,
-  Header,
-  Content,
-  BottomFloat,
+  Button as ButtonBase,
+  FullPage,
   ScrollContainer,
   CopyValue,
   Sprite,
@@ -26,7 +24,7 @@ const MnuemonicList = styled.div`
   height: 580px;
   border-radius: 4px;
   font-size: 1.4rem;
-  background: ${COLORS.NEUTRAL_700};
+  background: ${COLORS.NEUTRAL_600};
 `;
 const ListItemNumber = styled.p`
   color: ${COLORS.NEUTRAL_250};
@@ -39,14 +37,15 @@ const MnuemonicItem = styled.p`
   display: flex;
   justify-content: flex-start;
 `;
+const Button = styled(ButtonBase)`
+  margin-top: 30px;
+`;
 
 interface Props {
   nextUrl: string;
-  previousUrl: string;
-  progress: number;
 }
 
-export const SeedphraseValue = ({ nextUrl, previousUrl, progress }: Props) => {
+export const SeedphraseValue = ({ nextUrl }: Props) => {
   const navigate = useNavigate();
   const { tempAccount, updateTempAccount } = useAccount();
 
@@ -62,22 +61,28 @@ export const SeedphraseValue = ({ nextUrl, previousUrl, progress }: Props) => {
   }, [updateTempAccount, tempAccount]);
 
   const handleContinue = () => {
+    // Change the hash for the nextUrl
+    window.location.hash = `#${nextUrl}`;
     navigate(nextUrl);
   };
 
+  const numberedMnemonic =
+    tempAccount && tempAccount.mnemonic
+      ? tempAccount.mnemonic
+          .split(' ')
+          .map((word, index) => `${index + 1}.${word} `)
+          .join('')
+          .trim()
+      : '';
+
   return (
-    <Content>
-      <Header
-        progress={progress}
-        title="Recovery Seed Phrase"
-        backLocation={previousUrl}
-      />
-      <Typo type="body" marginBottom="20px">
+    <FullPage title="Recovery Seed Phrase">
+      <Typo type="body" marginBottom="20px" align="left">
         Make sure to record these words in the correct order, using the corresponding
         numbers.
       </Typo>
-      <CopyValue value={tempAccount?.mnemonic}>
-        <Typo type="bodyAlt">
+      <CopyValue value={numberedMnemonic} specialValue={tempAccount?.mnemonic}>
+        <Typo type="bodyAlt" marginBottom="10px">
           Copy Seed&nbsp;
           <Sprite icon={ICON_NAMES.COPY} size="1.2rem" />
         </Typo>
@@ -95,9 +100,7 @@ export const SeedphraseValue = ({ nextUrl, previousUrl, progress }: Props) => {
       ) : (
         'Loading...'
       )}
-      <BottomFloat>
-        <Button onClick={handleContinue}>Continue</Button>
-      </BottomFloat>
-    </Content>
+      <Button onClick={handleContinue}>Continue</Button>
+    </FullPage>
   );
 };

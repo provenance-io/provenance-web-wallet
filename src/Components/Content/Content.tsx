@@ -1,9 +1,12 @@
 import styled from 'styled-components';
+import { MAX_HEIGHT, MAX_WIDTH } from 'consts';
 
 const ContentStyled = styled.div<{ padBottom?: string }>`
   position: relative;
-  width: 100%;
-  height: 100%;
+  max-width: ${MAX_WIDTH};
+  max-height: ${MAX_HEIGHT};
+  height: ${MAX_HEIGHT};
+  width: ${MAX_WIDTH};
   padding: 32px 16px 20px 16px;
   ${({ padBottom }) => padBottom && `padding-bottom: ${padBottom};`}
   // Prevent scroll bar

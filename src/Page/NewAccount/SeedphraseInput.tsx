@@ -1,24 +1,20 @@
 import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
 import { useState } from 'react';
-import {
-  Button,
-  Header,
-  Input,
-  Content,
-  BottomFloat,
-  Typo,
-  ScrollContainer,
-} from 'Components';
+import { Button, Input, Typo, FullPage } from 'Components';
 import { isMnemonic, validateMnemonic, keyPress, cleanMnemonic } from 'utils';
 import { useAccount } from 'redux/hooks';
 import { MNEMONIC_WORD_COUNT } from 'consts';
 
 const InputSection = styled.div`
   text-align: left;
-  margin-right: 20px;
-  input {
-    margin-bottom: 32px;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  margin-bottom: 40px;
+  & > div {
+    margin-bottom: 20px;
+    max-width: 30%;
   }
 `;
 
@@ -28,15 +24,9 @@ interface InputData {
 }
 interface Props {
   nextUrl: string;
-  previousUrl: string;
-  progress: number;
 }
 
-export const SeedphraseInput: React.FC<Props> = ({
-  nextUrl,
-  previousUrl,
-  progress,
-}) => {
+export const SeedphraseInput: React.FC<Props> = ({ nextUrl }) => {
   const navigate = useNavigate();
   const { updateTempAccount } = useAccount();
   const [inputValues, setInputValues] = useState<InputData[]>(
@@ -101,6 +91,8 @@ export const SeedphraseInput: React.FC<Props> = ({
       if (validMnemonic) {
         // Add mnemonic into the temp wallet
         updateTempAccount({ mnemonic });
+        // Change the hash for the nextUrl
+        window.location.hash = `#${nextUrl}`;
         navigate(nextUrl);
       } else {
         setSubmitError('Invalid Mnemonic Entered');
@@ -111,25 +103,20 @@ export const SeedphraseInput: React.FC<Props> = ({
   };
 
   return (
-    <Content>
-      <Header
-        title="Enter Recovery Seedphrase"
-        progress={progress}
-        backLocation={previousUrl}
-      />
-      <ScrollContainer height="400px">
-        <InputSection>{createSeedInputs()}</InputSection>
-      </ScrollContainer>
+    <FullPage title="Enter Recovery Seed Phrase">
+      <Typo type="body" align="left" marginBottom="30px">
+        Enter your 24-word recovery seed phrase. Note, you can paste most seed phrase
+        formats into any single input field to autofill.
+      </Typo>
+      <InputSection>{createSeedInputs()}</InputSection>
       {submitError && (
         <Typo type="error" marginTop="20px">
           {submitError}
         </Typo>
       )}
-      <BottomFloat>
-        <Button onClick={handleContinue} disabled={!allInputsValid()}>
-          Continue
-        </Button>
-      </BottomFloat>
-    </Content>
+      <Button onClick={handleContinue} disabled={!allInputsValid()}>
+        Continue
+      </Button>
+    </FullPage>
   );
 };

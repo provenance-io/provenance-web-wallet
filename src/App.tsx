@@ -96,6 +96,7 @@ function App() {
   // Check settings and url search params to potentially redirect user to a new page
   useEffect(() => {
     const urlSearchParams = new URLSearchParams(window?.location?.search);
+    const urlHash = window.location.hash;
     const walletConnectURI = urlSearchParams.get('wc');
     const walletConnectDuration = urlSearchParams.get('duration');
     const walletConnectReferral = urlSearchParams.get('referral');
@@ -116,6 +117,11 @@ function App() {
         : '';
       const newUrl = `${wcParam}${wcDuration}${wcReferral}`;
       navigate(`${NOTIFICATION_URL}${newUrl}`);
+    } else if (urlHash) {
+      // Remove the # from urlHash for a clean url
+      const cleanNewUrl = urlHash.split('#')[1];
+      // Redirect to the hash location
+      navigate(cleanNewUrl);
     }
   }, [navigate]);
 

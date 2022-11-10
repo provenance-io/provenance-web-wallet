@@ -2,7 +2,6 @@ import React from 'react';
 import styled from 'styled-components';
 import { Outlet } from 'react-router-dom';
 import { COLORS, FONTS } from 'theme';
-import { MAX_HEIGHT, MAX_WIDTH } from 'consts';
 import bg from 'images/bg.png';
 
 interface Props {
@@ -22,12 +21,10 @@ const PageStyled = styled.div<Props>`
   flex-direction: column;
   font-family: ${FONTS.SECONDARY_FONT};
   justify-content: ${({ justify }) => justify};
-  height: ${MAX_HEIGHT};
-  max-height: ${MAX_HEIGHT};
-  width: ${MAX_WIDTH};
-  max-width: ${MAX_WIDTH};
   text-align: ${({ align }) => (align === 'flex-start' ? 'left' : 'center')};
   z-index: 10;
+  height: auto;
+  width: 100%;
   overflow-y: scroll;
   -ms-overflow-style: none;
   &::-webkit-scrollbar {

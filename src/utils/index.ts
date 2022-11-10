@@ -15,6 +15,7 @@ export * from './isValidURL';
 export * from './keyPress';
 export * from './localChromeSpoof';
 export * from './numberFormat';
+export * from './openTab';
 export * from './percentChange';
 export * from './queryParams';
 export * from './randomizeArray';

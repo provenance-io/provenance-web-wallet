@@ -1,5 +1,6 @@
-import { RequiresAuth } from 'Page';
+import { ACTIONS } from './actions';
 import { APP_URL } from 'consts';
+import { ASSET } from './asset';
 import {
   DASHBOARD,
   DASHBOARD_MENU,
@@ -7,24 +8,21 @@ import {
   DASHBOARD_CONNECTION_DETAILS,
 } from './dashboard';
 import { LANDING } from './landing';
-import { ACTIONS } from './actions';
-import { ASSET } from './asset';
-import { TRANSACTIONS } from './transactions';
-import { SETTINGS } from './settings';
-import { RESET_WALLET } from './resetWallet';
-import { UNLOCK } from './unlock';
+import { NEW_ACCOUNT_ADD } from './newAccountAdd';
+import { NEW_ACCOUNT_CREATE } from './newAccountCreate';
+import { NEW_ACCOUNT_IMPORT } from './newAccountImport';
+import { NEW_ACCOUNT_RECOVER } from './newAccountRecover';
+import { NEW_ACCOUNT_SUB } from './newAccountSub';
 import { NOTIFICATION } from './notification';
-import {
-  NEW_ACCOUNT_CREATE,
-  NEW_ACCOUNT_RECOVER,
-  NEW_ACCOUNT_SUB,
-  NEW_ACCOUNT_ADD,
-  NEW_ACCOUNT_IMPORT,
-} from './newAccount';
 import { REMOVE_ACCOUNT } from './removeAccount';
 import { RENAME_ACCOUNT } from './renameAccount';
+import { RequiresAuth } from 'Page';
+import { RESET_WALLET } from './resetWallet';
 import { SEND } from './send';
+import { SETTINGS } from './settings';
 import { TRANSACTION_DETAILS } from './transactionDetails';
+import { TRANSACTIONS } from './transactions';
+import { UNLOCK } from './unlock';
 
 export const routes = [
   {
@@ -44,11 +42,11 @@ export const routes = [
       SEND,
     ],
   },
-  NEW_ACCOUNT_ADD,
-  NEW_ACCOUNT_CREATE,
   NEW_ACCOUNT_RECOVER,
   NEW_ACCOUNT_SUB,
   NEW_ACCOUNT_IMPORT,
+  NEW_ACCOUNT_CREATE,
+  NEW_ACCOUNT_ADD,
   NOTIFICATION,
   REMOVE_ACCOUNT,
   RENAME_ACCOUNT,

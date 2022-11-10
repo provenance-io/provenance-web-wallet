@@ -5,6 +5,7 @@ import type { Message as MessageSlice, CoinAsObject } from 'types';
 const initialState: MessageSlice = {
   coin: undefined,
   coinAmount: '',
+  displayAmount: '',
   txBaseAccount: '',
   txDate: undefined,
   txFeeDenom: 'nhash',
@@ -34,6 +35,10 @@ const messageSlice = createSlice({
 
     setCoinAmount(state, action) {
       state.coinAmount = action.payload;
+    },
+
+    setDisplayAmount(state, action) {
+      state.displayAmount = action.payload;
     },
 
     setCoin(state, action) {

@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router';
 import { Authenticate, Content, Header, List, Loading, Typo } from 'Components';
 import { ICON_NAMES, SEND_AMOUNT_URL, SEND_COMPLETE_URL } from 'consts';
 import { useMessage, useSettings } from 'redux/hooks';
-import { getChainId, getGrpcApi, hashFormat, trimAddress } from 'utils';
+import { getChainId, getGrpcApi, hashFormat, trimAddress, capitalize } from 'utils';
 import {
   buildBroadcastTxRequest,
   getAccountInfo,
@@ -17,7 +17,7 @@ export const SendReview = () => {
   const { customGRPCApi } = useSettings();
   const {
     coin,
-    coinAmount,
+    displayAmount,
     txMemo,
     txFromAddress,
     txSendAddress,
@@ -72,13 +72,30 @@ export const SendReview = () => {
     }
   };
 
+  // Convert total fees (nhash) into hash
   const totalFees = hashFormat(
     (txFeeEstimate || 0) + (txGasEstimate || 0),
     'nhash'
   ).toFixed(2);
-  const total = `${
-    txFeeEstimate ? Number(coinAmount) + Number(totalFees) : coinAmount
-  }`;
+
+  // Total depends on if we're sending hash or not
+  // Sending hash => combine fees with send hash for total (eg: Total: 12.3 Hash)
+  // Sending xCoin => combine fees as string with send for total (eg: Total 10 xCoin + 2.3 Hash)
+  const getTotal = () => {
+    if (!coin) return 'N/A';
+    const sendingHash = coin.denom === 'nhash';
+    // Sending hash
+    if (sendingHash)
+      return `${Number(displayAmount) + Number(totalFees)} ${capitalize(
+        coin.display,
+        'uppercase'
+      )}`; // 12.3 hash
+    // Sending non-hash
+    return `${displayAmount} ${capitalize(
+      coin.display,
+      'uppercase'
+    )} + ${totalFees} hash`;
+  };
 
   return !coin ? null : (
     <Content>
@@ -93,14 +110,10 @@ export const SendReview = () => {
         message={{
           to: trimAddress(txSendAddress) || 'N/A',
           from: trimAddress(txFromAddress) || 'N/A',
-          sending: `${coinAmount} ${coin.display}`,
+          sending: `${displayAmount} ${capitalize(coin.display, 'uppercase')}`,
           'Transaction Fee': `${totalFees} Hash`,
           ...(!!txMemo && { note: txMemo }),
-          // If we're sending something other than hash, just show that coin amount
-          total:
-            coin.display === 'hash'
-              ? `${total} ${coin.display}`
-              : `${coinAmount} ${coin.display}`,
+          total: getTotal(),
         }}
         marginBottom="80px"
         maxHeight="180px"

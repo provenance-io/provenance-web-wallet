@@ -6,7 +6,6 @@ import { BaseTypographyLoader, FONTS } from './fonts';
 import { COLORS } from './colors';
 import { ThemeProvider } from 'styled-components';
 import { SpriteSheet } from 'Components';
-import { MAX_HEIGHT, MAX_WIDTH } from 'consts';
 
 export const baseTheme: DefaultTheme = {
   colors: { ...COLORS },
@@ -25,11 +24,9 @@ export const GlobalStyles = createGlobalStyle`
   html {
     font-size: 62.5%; // 1rem = 10px
     box-sizing: border-box;
-    max-width: ${MAX_WIDTH};
-    max-height: ${MAX_HEIGHT};
-    height: ${MAX_HEIGHT};
-    width: ${MAX_WIDTH};
     background: black;
+    height: 100%;
+    width: 100%;
   }
 
   *, *:before, *:after {
@@ -41,10 +38,8 @@ export const GlobalStyles = createGlobalStyle`
     font-family: ${FONTS.PRIMARY_FONT};
     font-weight: 400;
     font-size: 1.6rem;
-    max-width: ${MAX_WIDTH};
-    max-height: ${MAX_HEIGHT};
-    height: ${MAX_HEIGHT};
-    width: ${MAX_WIDTH};
+    height: 100%;
+    width: 100%;
   }
 
   pre {

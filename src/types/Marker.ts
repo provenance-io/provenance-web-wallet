@@ -1,4 +1,4 @@
-import { TimePeriodType } from './ChartTypes';
+import type { TimePeriodType } from './ChartTypes';
 
 export interface MarkerPriceHistory {
   timestamp: string;

@@ -1,29 +1,20 @@
 import { useNavigate } from 'react-router-dom';
-import {
-  Button,
-  Header,
-  ImageContainer,
-  Content,
-  Typo,
-  BottomFloat,
-} from 'Components';
+import { Button as ButtonBase, ImageContainer, FullPage, Typo } from 'Components';
 import passphraseImg from 'images/passphrase-intro.png';
 import recoverImg from 'images/recover-intro.svg';
 import type { FlowType } from 'types';
+import styled from 'styled-components';
 
 interface Props {
   nextUrl: string;
-  previousUrl: string;
   flowType: FlowType;
-  progress: number;
 }
 
-export const SeedphraseInfo = ({
-  previousUrl,
-  nextUrl,
-  flowType,
-  progress,
-}: Props) => {
+const Button = styled(ButtonBase)`
+  margin-top: 60px;
+`;
+
+export const SeedphraseInfo = ({ nextUrl, flowType }: Props) => {
   const navigate = useNavigate();
   const isRecoveryFlow = flowType === 'recover';
   const isImportFlow = flowType === 'import';
@@ -34,11 +25,6 @@ export const SeedphraseInfo = ({
     : isImportFlow
     ? 'Import Account'
     : 'Recovery Seed Phrase';
-  const pageTitle = isRecoveryFlow
-    ? 'Recover Account'
-    : isImportFlow
-    ? 'Import Account'
-    : 'Save Seed Phrase';
   const pageBody = willEnterSeedPhrase
     ? "In the following steps, you'll enter your 24-word recovery passphrase to access your account"
     : 'Prepare to write down your recovery seed phrase. This is the only way to recover a lost account.';
@@ -46,11 +32,15 @@ export const SeedphraseInfo = ({
     ? ''
     : 'Do not share this passphrase with anyone, as it grants full access to your account.';
 
+  const handleContinue = () => {
+    // Change the hash for the nextUrl
+    window.location.hash = `#${nextUrl}`;
+    navigate(nextUrl);
+  };
+
   return (
-    <Content>
-      <Header progress={progress} title={headerTitle} backLocation={previousUrl} />
-      <Typo type="headline2">{pageTitle}</Typo>
-      <Typo type="body" marginTop="30px" marginBottom="60px">
+    <FullPage title={headerTitle}>
+      <Typo type="body" align="left" marginBottom="30px">
         {pageBody}
       </Typo>
       <ImageContainer
@@ -59,10 +49,12 @@ export const SeedphraseInfo = ({
         src={imageSrc}
         alt="Secure your account"
       />
-      {!!warning && <Typo type="error">{warning}</Typo>}
-      <BottomFloat>
-        <Button onClick={() => navigate(nextUrl)}>Continue</Button>
-      </BottomFloat>
-    </Content>
+      {!!warning && (
+        <Typo type="error" align="left" marginTop="30px">
+          {warning}
+        </Typo>
+      )}
+      <Button onClick={handleContinue}>Continue</Button>
+    </FullPage>
   );
 };

@@ -24,7 +24,7 @@ import {
   RENAME_ACCOUNT_URL,
 } from 'consts';
 import { useAccount, useWalletConnect } from 'redux/hooks';
-import { keyPress, trimAddress } from 'utils';
+import { keyPress, openTab, trimAddress } from 'utils';
 import { COLORS } from 'theme';
 
 const WalletItem = styled.div<{ active?: boolean }>`
@@ -203,9 +203,9 @@ export const DashboardMenu: React.FC = () => {
           </WalletCopy>
           {menuTargetAccountLevel !== 'addressIndex' && (
             <WalletAction
-              onClick={() => navigate(NEW_ACCOUNT_SUB_URL)}
+              onClick={() => openTab(NEW_ACCOUNT_SUB_URL)}
               tabIndex={0}
-              onKeyPress={(e) => keyPress(e, () => navigate(NEW_ACCOUNT_SUB_URL))}
+              onKeyPress={(e) => keyPress(e, () => openTab(NEW_ACCOUNT_IMPORT_URL))}
             >
               Create Sub Account
             </WalletAction>
@@ -245,12 +245,12 @@ export const DashboardMenu: React.FC = () => {
       )}
       <BottomFloat>
         <ButtonGroup>
-          <Button onClick={() => navigate(NEW_ACCOUNT_ADD_URL)}>
+          <Button onClick={() => openTab(NEW_ACCOUNT_ADD_URL)}>
             Create New Account
           </Button>
           <Button
             variant="secondary"
-            onClick={() => navigate(NEW_ACCOUNT_IMPORT_URL)}
+            onClick={() => openTab(NEW_ACCOUNT_IMPORT_URL)}
           >
             Import Account
           </Button>

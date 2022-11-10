@@ -27,7 +27,7 @@ export const SendComplete = () => {
   const {
     resetMessage,
     coin,
-    coinAmount,
+    displayAmount,
     txMemo,
     txFromAddress,
     txSendAddress,
@@ -46,7 +46,7 @@ export const SendComplete = () => {
     <Content>
       <SuccessIcon src={checkSuccessIcon} />
       <Typo type="display2" align="center" marginTop="20px">
-        {coinAmount} {capitalize(coin?.display, 'uppercase')}
+        {displayAmount} {capitalize(coin?.display, 'uppercase')}
       </Typo>
       <Typo type="displayBody" align="center" marginTop="14px" marginBottom="20px">
         Your transfer details are below

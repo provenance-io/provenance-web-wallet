@@ -42,7 +42,7 @@ interface Props {
   flowType: FlowType;
 }
 
-export const NewAccountNameTab = ({ nextUrl, flowType }: Props) => {
+export const NewAccountName = ({ nextUrl, flowType }: Props) => {
   // Shorthand flowtypes
   const flowTypeSub = flowType === 'sub';
   const flowTypeRecover = flowType === 'recover';

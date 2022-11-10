@@ -39,6 +39,8 @@ export const NewAccountAuth = ({ children = null, flowType }: Props) => {
   useEffect(() => {
     // If we don't have any tempAccount data and we're not already on the landing page redirect to the new account landing page
     if (!tempAccount && !isNewAccountLandingPage) {
+      // Change the hash for the nextUrl
+      window.location.hash = `#${newAccountLandingPages[flowType]}`;
       navigate(newAccountLandingPages[flowType]);
     }
   }, [

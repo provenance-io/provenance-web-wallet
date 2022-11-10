@@ -42,11 +42,9 @@ const ContinueButton = styled(Button)`
 
 interface Props {
   nextUrl: string;
-  previousUrl: string;
-  progress: number;
 }
 
-export const SeedphraseVerifyTab = ({ nextUrl, previousUrl, progress }: Props) => {
+export const SeedphraseVerify = ({ nextUrl }: Props) => {
   const [selectedWords, setSelectedWords] = useState<string[]>([]);
   const [correctWords, setCorrectWords] = useState<string[]>([]);
   const [initialLoad, setInitialLoad] = useState(true);

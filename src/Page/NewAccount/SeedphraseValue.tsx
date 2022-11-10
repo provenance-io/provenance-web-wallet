@@ -45,7 +45,7 @@ interface Props {
   nextUrl: string;
 }
 
-export const SeedphraseValueTab = ({ nextUrl }: Props) => {
+export const SeedphraseValue = ({ nextUrl }: Props) => {
   const navigate = useNavigate();
   const { tempAccount, updateTempAccount } = useAccount();
 

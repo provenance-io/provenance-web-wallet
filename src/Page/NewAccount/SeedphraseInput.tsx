@@ -1,15 +1,7 @@
 import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
 import { useState } from 'react';
-import {
-  Button,
-  Header,
-  Input,
-  Content,
-  BottomFloat,
-  Typo,
-  ScrollContainer,
-} from 'Components';
+import { Button, Input, Typo, ScrollContainer, FullPage } from 'Components';
 import { isMnemonic, validateMnemonic, keyPress, cleanMnemonic } from 'utils';
 import { useAccount } from 'redux/hooks';
 import { MNEMONIC_WORD_COUNT } from 'consts';
@@ -28,15 +20,9 @@ interface InputData {
 }
 interface Props {
   nextUrl: string;
-  previousUrl: string;
-  progress: number;
 }
 
-export const SeedphraseInput: React.FC<Props> = ({
-  nextUrl,
-  previousUrl,
-  progress,
-}) => {
+export const SeedphraseInput: React.FC<Props> = ({ nextUrl }) => {
   const navigate = useNavigate();
   const { updateTempAccount } = useAccount();
   const [inputValues, setInputValues] = useState<InputData[]>(
@@ -101,6 +87,8 @@ export const SeedphraseInput: React.FC<Props> = ({
       if (validMnemonic) {
         // Add mnemonic into the temp wallet
         updateTempAccount({ mnemonic });
+        // Change the hash for the nextUrl
+        window.location.hash = `#${nextUrl}`;
         navigate(nextUrl);
       } else {
         setSubmitError('Invalid Mnemonic Entered');
@@ -111,12 +99,7 @@ export const SeedphraseInput: React.FC<Props> = ({
   };
 
   return (
-    <Content>
-      <Header
-        title="Enter Recovery Seedphrase"
-        progress={progress}
-        backLocation={previousUrl}
-      />
+    <FullPage title="Enter Recovery Seed Phrase">
       <ScrollContainer height="400px">
         <InputSection>{createSeedInputs()}</InputSection>
       </ScrollContainer>
@@ -125,11 +108,9 @@ export const SeedphraseInput: React.FC<Props> = ({
           {submitError}
         </Typo>
       )}
-      <BottomFloat>
-        <Button onClick={handleContinue} disabled={!allInputsValid()}>
-          Continue
-        </Button>
-      </BottomFloat>
-    </Content>
+      <Button onClick={handleContinue} disabled={!allInputsValid()}>
+        Continue
+      </Button>
+    </FullPage>
   );
 };

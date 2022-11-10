@@ -1,29 +1,28 @@
 import styled from 'styled-components';
-import { Button, Header, Typo, Content, BottomFloat } from 'Components';
-import { useNavigate } from 'react-router-dom';
+import { Button, Typo, FullPage } from 'Components';
 import { useAccount } from 'redux/hooks';
 import backupComplete from 'images/backup-complete.svg';
 import type { FlowType } from 'types';
 
 interface Props {
-  nextUrl: string;
   flowType: FlowType;
 }
 
 const Image = styled.img`
   width: 160px;
   display: flex;
-  margin: 50px auto;
+  margin: 0px auto;
 `;
 
-export const NewAccountSuccess = ({ nextUrl, flowType }: Props) => {
-  const navigate = useNavigate();
+export const NewAccountSuccess = ({ flowType }: Props) => {
   const { clearTempAccount } = useAccount();
   const handleContinue = () => {
     // Remove temp data
     clearTempAccount();
-    // Go to /dashboard
-    navigate(nextUrl);
+    // Close the current tab
+    chrome.tabs.getCurrent((tab) => {
+      if (tab?.id) chrome.tabs.remove(tab.id);
+    });
   };
   let message = '';
   let title = '';
@@ -61,14 +60,14 @@ export const NewAccountSuccess = ({ nextUrl, flowType }: Props) => {
     default:
       break;
   }
+
   return (
-    <Content>
-      <Header progress={100} title={title} iconLeft="none" />
+    <FullPage title={title}>
       <Image src={backupComplete} />
-      <Typo type="body">{message}</Typo>
-      <BottomFloat>
-        <Button onClick={handleContinue}>Continue</Button>
-      </BottomFloat>
-    </Content>
+      <Typo type="body" marginBottom="40px" marginTop="30px" align="left">
+        {message}
+      </Typo>
+      <Button onClick={handleContinue}>Exit</Button>
+    </FullPage>
   );
 };

@@ -42,7 +42,6 @@ const messageSlice = createSlice({
     },
 
     setCoin(state, action) {
-      console.log('messageSlice.ts | setCoin: ', action.payload);
       state.coin = action.payload;
     },
 

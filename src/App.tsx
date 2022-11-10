@@ -120,7 +120,6 @@ function App() {
     } else if (urlHash) {
       // Remove the # from urlHash for a clean url
       const cleanNewUrl = urlHash.split('#')[1];
-      console.log('urlHash found, navigating to: ', cleanNewUrl);
       // Redirect to the hash location
       navigate(cleanNewUrl);
     }

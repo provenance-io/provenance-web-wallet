@@ -128,7 +128,6 @@ export const Send: React.FC = () => {
   useEffect(() => {
     if (initialLoad && !assetsLoading) {
       setInitialLoad(false);
-      console.log('Send.tsx | useEffect() | setCoin to: ', orderedAssets[0]);
       setCoin(orderedAssets[0]);
       setTxFromAddress(address);
     }

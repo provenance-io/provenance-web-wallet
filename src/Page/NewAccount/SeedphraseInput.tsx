@@ -1,16 +1,20 @@
 import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
 import { useState } from 'react';
-import { Button, Input, Typo, ScrollContainer, FullPage } from 'Components';
+import { Button, Input, Typo, FullPage } from 'Components';
 import { isMnemonic, validateMnemonic, keyPress, cleanMnemonic } from 'utils';
 import { useAccount } from 'redux/hooks';
 import { MNEMONIC_WORD_COUNT } from 'consts';
 
 const InputSection = styled.div`
   text-align: left;
-  margin-right: 20px;
-  input {
-    margin-bottom: 32px;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  margin-bottom: 40px;
+  & > div {
+    margin-bottom: 20px;
+    max-width: 30%;
   }
 `;
 
@@ -100,9 +104,11 @@ export const SeedphraseInput: React.FC<Props> = ({ nextUrl }) => {
 
   return (
     <FullPage title="Enter Recovery Seed Phrase">
-      <ScrollContainer height="400px">
-        <InputSection>{createSeedInputs()}</InputSection>
-      </ScrollContainer>
+      <Typo type="body" align="left" marginBottom="30px">
+        Enter your 24-word recovery seed phrase. Note, you can paste most seed phrase
+        formats into any single input field to autofill.
+      </Typo>
+      <InputSection>{createSeedInputs()}</InputSection>
       {submitError && (
         <Typo type="error" marginTop="20px">
           {submitError}

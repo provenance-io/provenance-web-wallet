@@ -1,13 +1,18 @@
 import { useNavigate } from 'react-router-dom';
-import { Button, ImageContainer, FullPage, Typo } from 'Components';
+import { Button as ButtonBase, ImageContainer, FullPage, Typo } from 'Components';
 import passphraseImg from 'images/passphrase-intro.png';
 import recoverImg from 'images/recover-intro.svg';
 import type { FlowType } from 'types';
+import styled from 'styled-components';
 
 interface Props {
   nextUrl: string;
   flowType: FlowType;
 }
+
+const Button = styled(ButtonBase)`
+  margin-top: 60px;
+`;
 
 export const SeedphraseInfo = ({ nextUrl, flowType }: Props) => {
   const navigate = useNavigate();
@@ -35,7 +40,7 @@ export const SeedphraseInfo = ({ nextUrl, flowType }: Props) => {
 
   return (
     <FullPage title={headerTitle}>
-      <Typo type="body" align="left" marginBottom="12px">
+      <Typo type="body" align="left" marginBottom="30px">
         {pageBody}
       </Typo>
       <ImageContainer
@@ -45,7 +50,7 @@ export const SeedphraseInfo = ({ nextUrl, flowType }: Props) => {
         alt="Secure your account"
       />
       {!!warning && (
-        <Typo type="error" align="left" marginTop="12px" marginBottom="60px">
+        <Typo type="error" align="left" marginTop="30px">
           {warning}
         </Typo>
       )}

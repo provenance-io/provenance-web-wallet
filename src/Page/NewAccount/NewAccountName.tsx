@@ -163,8 +163,25 @@ export const NewAccountName = ({ nextUrl, flowType }: Props) => {
   const createAccountDisabled = flowTypeSub && parentAccountLevel === 'addressIndex';
   const recoverClearWallet = flowTypeRecover && !!accounts.length;
 
+  const getTitle = () => {
+    switch (flowType) {
+      case 'add':
+        return 'Add New Account';
+      case 'create':
+        return 'Create New Account';
+      case 'import':
+        return 'Import Account';
+      case 'recover':
+        return 'Recover Account';
+      case 'sub':
+        return 'Add New Sub Account';
+      default:
+        return 'Account Name';
+    }
+  };
+
   return (
-    <FullPage title={flowType === 'add' ? 'Add New Account' : 'Create New Account'}>
+    <FullPage title={getTitle()}>
       {createAccountDisabled ? (
         renderAddressIndexError()
       ) : (
@@ -196,6 +213,7 @@ export const NewAccountName = ({ nextUrl, flowType }: Props) => {
               setResults={(newHdPath) => {
                 setHdPath(newHdPath);
               }}
+              parentHdPath={flowTypeSub ? parentHdPath : undefined}
               setContinueDisabled={setContinueDisabled}
             />
           )}

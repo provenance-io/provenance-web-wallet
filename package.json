@@ -9,7 +9,7 @@
     "node": "16.x.x"
   },
   "dependencies": {
-    "@craco/craco": "6.4.5",
+    "@craco/craco": "7.0.0",
     "@provenanceio/wallet-utils": "2.1.4",
     "@reduxjs/toolkit": "1.7.2",
     "@tendermint/belt": "0.3.0",

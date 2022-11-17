@@ -3,8 +3,6 @@ import { Page, Notification } from 'Page';
 
 export const NOTIFICATION = {
   path: NOTIFICATION_URL,
-  element: <Page bgImage/>,
-  children: [
-    { index: true, element: <Notification /> },
-  ],
+  element: <Page bgImage height="100%" />,
+  children: [{ index: true, element: <Notification /> }],
 };

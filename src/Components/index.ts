@@ -13,6 +13,7 @@ export * from './FullPage';
 export * from './FullPagePopup';
 export * from './GasAdjustment';
 export * from './Header';
+export * from './HolidaySpecial';
 export * from './ImageContainer';
 export * from './Input';
 export * from './InputDrag';

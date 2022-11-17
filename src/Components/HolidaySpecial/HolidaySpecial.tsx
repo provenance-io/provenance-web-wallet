@@ -1,4 +1,6 @@
-import { useState, KeyboardEvent as ReactKeyboardEvent, useEffect } from 'react';
+import { Sprite } from 'Components/Sprite';
+import { ICON_NAMES } from 'consts';
+import React, { useState, useEffect } from 'react';
 import styled, { keyframes } from 'styled-components';
 import { COLORS } from 'theme';
 import xMasJD2022 from './xMasJD2022.png';
@@ -62,6 +64,13 @@ const HappyHolidays = styled.div`
   transform: scale(1, 2);
 `;
 
+const Snowflake = styled(Sprite)`
+  cursor: pointer;
+  position: absolute;
+  top: 10px;
+  left: 187px;
+`;
+
 const Snow = styled.div<{
   size: string;
   leftInit: string;
@@ -91,19 +100,47 @@ const Snow = styled.div<{
 
 export const HolidaySpecial: React.FC = () => {
   const [active, setActive] = useState(false);
-  const [initialLoad, setInitialLoad] = useState(true);
+  const [keysPressed, setKeysPressed] = useState<string[]>([]);
+  const [showSnowflake, setShowSnowflake] = useState(false);
   const snowflakeCount = 50;
 
   useEffect(() => {
-    if (initialLoad) {
-      console.log('Creating click listener');
-      setInitialLoad(false);
-      // TODO: Hold buttons and type "JD"
-      document.body.addEventListener('click', (event) => {
-        setActive(true);
-      });
+    // Handle keypress
+    const keyboardEvent = (event: KeyboardEvent) => {
+      const { type, key } = event;
+      // Clone and add key to keysPressed
+      let newKeysPressed = [...keysPressed];
+      // Add key
+      if (type === 'keydown') newKeysPressed.push(key);
+      // Remove all matching keys
+      else if (type === 'keyup')
+        newKeysPressed = newKeysPressed.filter(
+          (previousPressed) => previousPressed !== key
+        );
+      // Save state
+      setKeysPressed(newKeysPressed);
+    };
+
+    document.body.addEventListener('keydown', keyboardEvent);
+    document.body.addEventListener('keyup', keyboardEvent);
+
+    // On offload, remove event listeners
+    return () => {
+      document.body.removeEventListener('keydown', keyboardEvent);
+      document.body.removeEventListener('keyup', keyboardEvent);
+    };
+  }, [keysPressed]);
+
+  // Check for secret keypress
+  useEffect(() => {
+    if (
+      keysPressed[0] === 'Shift' &&
+      keysPressed[1] === 'J' &&
+      keysPressed[2] === 'D'
+    ) {
+      setShowSnowflake(true);
     }
-  }, [initialLoad]);
+  }, [active, keysPressed]);
 
   const randomNumber = (min: number = 0, max: number) =>
     (Math.random() * (max - min + 1) + min).toPrecision(2);
@@ -132,14 +169,35 @@ export const HolidaySpecial: React.FC = () => {
     return allFlakes;
   };
 
-  return active ? (
-    <Container>
-      {active}
-      <HappyHolidays>HAPPY HOLIDAYS</HappyHolidays>
-      <ImagePopup>
-        <img src={xMasJD2022} alt="Happy Holidays" />
-      </ImagePopup>
-      {createSnowflakes()}
-    </Container>
-  ) : null;
+  const handleSnowflakeClick = () => {
+    if (active) {
+      setActive(false);
+      setShowSnowflake(false);
+    } else {
+      setActive(true);
+    }
+  };
+
+  return (
+    <>
+      {active ? (
+        <Container>
+          {active}
+          <HappyHolidays>HAPPY HOLIDAYS</HappyHolidays>
+          <ImagePopup>
+            <img src={xMasJD2022} alt="Happy Holidays" />
+          </ImagePopup>
+          {createSnowflakes()}
+        </Container>
+      ) : null}
+      {showSnowflake ? (
+        <Snowflake
+          icon={ICON_NAMES.SNOWFLAKE}
+          color={COLORS.WHITE_40}
+          size="2rem"
+          onClick={handleSnowflakeClick}
+        />
+      ) : null}
+    </>
+  );
 };

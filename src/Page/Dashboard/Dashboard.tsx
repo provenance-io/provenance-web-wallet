@@ -1,10 +1,11 @@
 import {
   Button,
   ButtonGroup,
-  FooterNav,
-  RowItem,
   Content,
+  FooterNav,
+  HolidaySpecial,
   Loading,
+  RowItem,
   ScrollContainer,
   Typo,
 } from 'Components';
@@ -120,6 +121,7 @@ export const Dashboard = () => {
         )}
       </ScrollContainer>
       <FooterNav />
+      <HolidaySpecial />
     </Content>
   );
 };

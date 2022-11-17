@@ -10,7 +10,7 @@
   },
   "dependencies": {
     "@craco/craco": "6.4.5",
-    "@provenanceio/wallet-utils": "2.1.4",
+    "@provenanceio/wallet-utils": "2.2.0",
     "@reduxjs/toolkit": "1.7.2",
     "@tendermint/belt": "0.3.0",
     "@tendermint/sig": "0.6.0",

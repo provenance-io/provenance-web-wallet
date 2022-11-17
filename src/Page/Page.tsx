@@ -9,6 +9,7 @@ interface Props {
   bgImage?: boolean;
   align?: string;
   justify?: string;
+  height?: string;
 }
 
 const PageStyled = styled.div<Props>`
@@ -23,7 +24,7 @@ const PageStyled = styled.div<Props>`
   justify-content: ${({ justify }) => justify};
   text-align: ${({ align }) => (align === 'flex-start' ? 'left' : 'center')};
   z-index: 10;
-  height: auto;
+  height: ${({ height }) => height};
   width: 100%;
   overflow-y: scroll;
   -ms-overflow-style: none;
@@ -38,8 +39,9 @@ export const Page = ({
   bgImage,
   align = 'flex-start',
   justify = 'flex-start',
+  height = 'auto',
 }: Props) => (
-  <PageStyled bgImage={bgImage} align={align} justify={justify}>
+  <PageStyled bgImage={bgImage} align={align} justify={justify} height={height}>
     <Outlet />
     {children}
   </PageStyled>

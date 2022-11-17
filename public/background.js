@@ -4,10 +4,11 @@
 // ----------------------------------------
 const notificationPopupEvent = async function(request, sender, sendResponse) {
   const EXTENSION_POPUP_HEIGHT = 628;
+  // const EXTENSION_POPUP_HEIGHT = 6280;
   const EXTENSION_POPUP_WIDTH = 375;
+  // const EXTENSION_POPUP_WIDTH = 3750;
   const EXTENSION_POPUP_TYPE = 'popup';
   const EXTENSION_POPUP_BASEURL = 'index.html';
-  const EXTENSION_POPUP_TOP = 0;
 
   // When just pinging, don't do anything else
   if (request === 'ping' || !request) {
@@ -19,15 +20,19 @@ const notificationPopupEvent = async function(request, sender, sendResponse) {
   const hasAccount = !!account?.accounts.length;
   // Open a new window popup as the extension
   await chrome.windows.get(sender.tab.windowId).then(async (senderWindow) => {
+    const popupLeft = (senderWindow.left + senderWindow.width) - EXTENSION_POPUP_WIDTH;
+    const popupTop = senderWindow.top;
     // Basic popup config
     const popupConfig = {
       focused: true,
       height: EXTENSION_POPUP_HEIGHT,
       width: EXTENSION_POPUP_WIDTH,
-      top: EXTENSION_POPUP_TOP,
+      top: popupTop,
       type: EXTENSION_POPUP_TYPE,
       url: EXTENSION_POPUP_BASEURL,
-      left: (senderWindow.left + senderWindow.width) - 375,
+      left: popupLeft,
+      // left: (senderWindow.left + senderWindow.width) - 375,
+      // left: 4000,
     };
     // If the user already has a popup open, destroy the open popup (no multiple wallet popups)
     const existingWindows = await chrome.windows.getAll();

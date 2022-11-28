@@ -3,7 +3,12 @@ import { Button, Input as InputBase, FullPage, Typo } from 'Components';
 import { PASSWORD_MIN_LENGTH } from 'consts';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
-import { useAccount, useSettings, useActiveAccount } from 'redux/hooks';
+import {
+  useAccount,
+  useSettings,
+  useActiveAccount,
+  useWalletConnect,
+} from 'redux/hooks';
 import {
   encryptKey,
   createRootAccount,
@@ -24,6 +29,7 @@ interface Props {
 
 export const NewAccountPassword = ({ nextUrl, flowType }: Props) => {
   const navigate = useNavigate();
+  const { connector } = useWalletConnect();
   const { tempAccount, addAccount, accounts } = useAccount();
   const { bumpUnlockDuration } = useSettings();
   const [walletPassword, setWalletPassword] = useState<string[]>(['', '']); // [password, repeated-password]
@@ -108,6 +114,8 @@ export const NewAccountPassword = ({ nextUrl, flowType }: Props) => {
       // -------------------------------------------------------
       await addAccount(newAccountData);
       await bumpUnlockDuration();
+      // Since adding an account will automatically set it to active, we need to kill any previous active account connections
+      if (connector) connector.killSession();
       // Change the hash for the nextUrl
       window.location.hash = `#${nextUrl}`;
       navigate(nextUrl);

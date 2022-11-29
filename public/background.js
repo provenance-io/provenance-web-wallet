@@ -7,6 +7,7 @@ const notificationPopupEvent = async function(request, sender, sendResponse) {
   const EXTENSION_POPUP_WIDTH = 375;
   const EXTENSION_POPUP_TYPE = 'popup';
   const EXTENSION_POPUP_BASEURL = 'index.html';
+  const { event, uri, duration, data, referral } = request;
 
   // When just pinging, don't do anything else
   if (request === 'ping' || !request) {
@@ -31,23 +32,28 @@ const notificationPopupEvent = async function(request, sender, sendResponse) {
       left: popupLeft,
     };
     // If the user already has a popup open, destroy the open popup (no multiple wallet popups)
-    const existingWindows = await chrome.windows.getAll();
-    existingWindows.forEach(async ({ id, type, width, height }) => {
-      // Note: If we want to check the URL we will need to add a new 'tabs' permission to the manifect
-      // This is a work around that should be fine 99% of the time until someone has a popup already open at this exact size...
-      if (type === EXTENSION_POPUP_TYPE && width === EXTENSION_POPUP_WIDTH && height === EXTENSION_POPUP_HEIGHT) {
-        // Remove this popup
-        await chrome.windows.remove(id);
+    // Only check this if we were going to be making a new window based on the request event name
+    const cleanDuplicateNotificationWindows = async () => {
+      const existingWindows = await chrome.windows.getAll();
+      for (const { id, type, width, height } of existingWindows) {
+        // Note: If we want to check the URL we will need to add a new 'tabs' permission to the manifect
+        // This is a work around that should be fine 99% of the time until someone has a popup already open at this exact size...
+        if (type === EXTENSION_POPUP_TYPE && width === EXTENSION_POPUP_WIDTH && height === EXTENSION_POPUP_HEIGHT) {
+          // Remove this popup
+          await chrome.windows.remove(id);
+        }
       }
-    });
+      return;
+    };
     // If the user doesn't have an account, just open a page telling them to make one
     if (!hasAccount) {
       // Redirect popup to the notifications page which will detect that the user has no accounts and show the proper messaging
       popupConfig.url = `${popupConfig.url}?redirectTo=NOTIFICATION_URL`;
+      // Check for existing notification windows before creating a new one
+      await cleanDuplicateNotificationWindows();
       chrome.windows.create(popupConfig);
     } else {
       // Run function based on the event
-      const { event, uri, duration, data, referral } = request;
       switch (event) {
         case 'resetConnectionTimeout':
           // Data is going to be the new connectionTimeout in ms
@@ -72,12 +78,16 @@ const notificationPopupEvent = async function(request, sender, sendResponse) {
             const durationUrl = duration ? `&duration=${duration}` : '';
             const referralUrl = referral ? `&referral=${referral}` : '';
             popupConfig.url = `${popupConfig.url}${wcUrl}${durationUrl}${referralUrl}`;
+            // Check for existing notification windows before creating a new one
+            await cleanDuplicateNotificationWindows();
             chrome.windows.create(popupConfig);
           }
           break;
         case 'walletconnect_event':
           // walletconnect event passed through, should trigger same as .on(event_name, callback)
           popupConfig.url = `${popupConfig.url}?redirectTo=NOTIFICATION_URL`;
+          // Check for existing notification windows before creating a new one
+          await cleanDuplicateNotificationWindows();
           chrome.windows.create(popupConfig);
           break;
         case 'walletconnect_disconnect':

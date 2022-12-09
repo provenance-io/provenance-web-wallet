@@ -24,8 +24,11 @@ interface ChromeInitialState {
   connectionTimer: number;
   killSession: boolean;
 }
+
+type Connector = IWalletConnectSession & WalletConnectClient;
+
 type State = ChromeInitialState & {
-  connector: WalletConnectClient | null;
+  connector: Connector | null;
   session: IWalletConnectSession;
   initialDataPulled: boolean;
 };
@@ -264,7 +267,7 @@ const walletConnectSlice = createSlice({
         state.totalPendingRequests = totalPendingRequests;
         // If we have a peerId and an expiration date, start the walletconnect connection
         if (session && session.peerId) {
-          const connector = new WalletConnectClient({ session });
+          const connector = new WalletConnectClient({ session }) as Connector;
           // Check if the session is already disconnected
           if (connector?.session?.connected) {
             // Make sure the session isn't expired, if it is we will kill the session
@@ -373,7 +376,7 @@ const walletConnectSlice = createSlice({
       state.connector = payload;
     },
     createConnector: (state, { payload: uri }) => {
-      const connector = new WalletConnectClient({ uri });
+      const connector = new WalletConnectClient({ uri }) as Connector;
       // connector must have a peerId
       if (connector.peerId) {
         state.connector = connector;

@@ -19,6 +19,7 @@ import { TransactionComplete } from './TransactionComplete';
 import { MissingAccount } from './MissingAccount';
 import { Disconnected } from './Disconnected';
 import { isValidURL } from 'utils';
+import { AlreadyConnected } from './AlreadyConnected';
 
 type PayloadTypes = EventPayload | WCInitEventPayload;
 
@@ -94,6 +95,8 @@ export const Notification: React.FC = () => {
     if (!hasAccount) setNotificationType('missing_account');
     // Connector must exist to create events
     if (connector) {
+      // Check if we're already connected
+      if (connector.connected) setNotificationType('already_connected');
       // Loop through each notification type and create event listener
       WC_NOTIFICATION_TYPES.forEach((NOTE_TYPE) => {
         connector.on(NOTE_TYPE, async (error, payload) => {
@@ -204,6 +207,8 @@ export const Notification: React.FC = () => {
     switch (notificationType) {
       case 'missing_account':
         return <MissingAccount {...(pageProps as PageProps)} />;
+      case 'already_connected':
+        return <AlreadyConnected {...(pageProps as PageProps)} />;
       case 'session_request':
         return <WalletConnectInit {...(pageProps as WCInitPageProps)} />;
       case 'provenance_sendTransaction':

@@ -43,6 +43,8 @@ export const Notification: React.FC = () => {
   const [extensionType, setExtensionType] = useState<ExtensionTypes>('');
   const [pageData, setPageData] = useState({});
   const [searchParams, setSearchParams] = useSearchParams();
+  const [notificationTimeout, setNotificationTimeout] = useState(0);
+  const TIMEOUT_DURATION = 3000;
   const navigate = useNavigate();
   const {
     setConnector,
@@ -93,10 +95,24 @@ export const Notification: React.FC = () => {
   useEffect(() => {
     // If we are missing an account, set the notification type to account_missing
     if (!hasAccount) setNotificationType('missing_account');
+    // If we haven't already started a notification timeout, start one now
+    if (!notificationTimeout) {
+      // Create new timeout event, after we wait this long, something went wrong
+      const newNoteTimeout = window.setTimeout(() => {
+        // Check if already connected
+        if (connector && connector.connected) {
+          console.log('newNotificationTimeout | already_connected');
+          setNotificationType('already_connected');
+        } else {
+          console.log('newNotificationTimeout | failed');
+          setNotificationType('failed');
+        }
+      }, TIMEOUT_DURATION);
+      // Save new timeout event
+      setNotificationTimeout(newNoteTimeout);
+    }
     // Connector must exist to create events
     if (connector) {
-      // Check if we're already connected
-      if (connector.connected) setNotificationType('already_connected');
       // Loop through each notification type and create event listener
       WC_NOTIFICATION_TYPES.forEach((NOTE_TYPE) => {
         connector.on(NOTE_TYPE, async (error, payload) => {
@@ -129,7 +145,13 @@ export const Notification: React.FC = () => {
         });
       });
     }
-  }, [connector, saveWalletConnectData, addPendingRequest, hasAccount]);
+  }, [
+    connector,
+    saveWalletConnectData,
+    addPendingRequest,
+    hasAccount,
+    notificationTimeout,
+  ]);
 
   // Listen for a new walletConnect URI.  When one is passed, create a new connector
   useEffect(() => {
@@ -206,20 +228,32 @@ export const Notification: React.FC = () => {
 
     switch (notificationType) {
       case 'missing_account':
+        window.clearTimeout(notificationTimeout);
         return <MissingAccount {...(pageProps as PageProps)} />;
       case 'already_connected':
+        window.clearTimeout(notificationTimeout);
         return <AlreadyConnected {...(pageProps as PageProps)} />;
       case 'session_request':
-        return <WalletConnectInit {...(pageProps as WCInitPageProps)} />;
+        window.clearTimeout(notificationTimeout);
+        return connector && connector.connected ? (
+          <AlreadyConnected {...(pageProps as PageProps)} />
+        ) : (
+          <WalletConnectInit {...(pageProps as WCInitPageProps)} />
+        );
       case 'provenance_sendTransaction':
+        window.clearTimeout(notificationTimeout);
         return <TransactionRequest {...(pageProps as PageProps)} />;
       case 'provenance_sign':
+        window.clearTimeout(notificationTimeout);
         return <SignRequest {...(pageProps as PageProps)} />;
       case 'failed':
+        window.clearTimeout(notificationTimeout);
         return <RequestFailed {...(pageProps as PageProps)} />;
       case 'complete':
+        window.clearTimeout(notificationTimeout);
         return <TransactionComplete {...(pageProps as PageProps)} />;
       case 'disconnect':
+        window.clearTimeout(notificationTimeout);
         return <Disconnected {...(pageProps as PageProps)} />;
       case 'connect': // fallthrough
       default:

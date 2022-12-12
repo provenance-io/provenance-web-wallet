@@ -20,8 +20,10 @@ export const RequestFailed: React.FC<Props> = ({
 }) => {
   const [initialLoad, setInitialLoad] = useState(true);
   const { connector, removePendingRequest, bumpWCDuration } = useWalletConnect();
-  const { failedMessage = 'Unknown Error Message', title = 'Unknown Error' } =
-    pageData;
+  const {
+    failedMessage = 'Unknown Error, Please close and try again.',
+    title = 'Unknown Error',
+  } = pageData;
 
   // If we landed here, something went wrong, kill the request
   useEffect(() => {

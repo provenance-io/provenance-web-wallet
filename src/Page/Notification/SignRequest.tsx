@@ -1,4 +1,4 @@
-import type { EventPayload, BIP32Interface } from 'types';
+import type { EventPayload, BIP32Interface, NotificationType } from 'types';
 import styled from 'styled-components';
 import { useWalletConnect } from 'redux/hooks';
 import { List, Authenticate, Content, Typo } from 'Components';
@@ -14,6 +14,7 @@ import {
 interface Props {
   payload: EventPayload;
   closeWindow: () => void;
+  changeNotificationPage: (type: NotificationType, data: {}) => void;
 }
 interface ParsedParams {
   address?: string;
@@ -32,7 +33,11 @@ const PaginationDisplay = styled.div`
   left: 0;
 `;
 
-export const SignRequest: React.FC<Props> = ({ payload, closeWindow }) => {
+export const SignRequest: React.FC<Props> = ({
+  payload,
+  closeWindow,
+  changeNotificationPage,
+}) => {
   const {
     connector,
     connectionEXP,
@@ -52,13 +57,21 @@ export const SignRequest: React.FC<Props> = ({ payload, closeWindow }) => {
       const [detailsJSONString, hexEncodedMessage] = params as string[];
       setEncodedMessage(hexEncodedMessage);
       const details = JSON.parse(detailsJSONString);
-      const decodedMessage = convertHexToUtf8(hexEncodedMessage);
-      setParsedParams({
-        ...details,
-        payload: decodedMessage,
-      });
+      // Use try/catch because this might not come through as a hex if the dApp messed up
+      try {
+        const decodedMessage = convertHexToUtf8(hexEncodedMessage);
+        setParsedParams({
+          ...details,
+          payload: decodedMessage,
+        });
+      } catch (error) {
+        changeNotificationPage('failed', {
+          failedMessage: `${error}`,
+          title: 'Signing Failed',
+        });
+      }
     }
-  }, [payload]);
+  }, [payload, changeNotificationPage]);
 
   // Connection to the dApp is on a timer, whenever the user interacts with the dApp (approve/deny) reset the timer
   const bumpWalletConnectTimeout = async () => {

@@ -101,10 +101,8 @@ export const Notification: React.FC = () => {
       const newNoteTimeout = window.setTimeout(() => {
         // Check if already connected
         if (connector && connector.connected) {
-          console.log('newNotificationTimeout | already_connected');
           setNotificationType('already_connected');
         } else {
-          console.log('newNotificationTimeout | failed');
           setNotificationType('failed');
         }
       }, TIMEOUT_DURATION);

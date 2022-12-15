@@ -206,6 +206,8 @@ export const TransactionRequest: React.FC<Props> = ({
     // Connector must exist to respond to request
     if (connector) {
       const address = parsedMetadata!.address;
+      const feePayer = parsedMetadata?.feePayer;
+      const feeGranter = parsedMetadata?.feeGranter;
       const privateKey = masterKey.privateKey!;
       const publicKey = masterKey.publicKey;
       const wallet = { address, privateKey, publicKey };
@@ -221,6 +223,8 @@ export const TransactionRequest: React.FC<Props> = ({
         memo: parsedMetadata!.memo || '',
         msgAny: txMsgAny,
         wallet,
+        feePayer,
+        feeGranter,
       });
       setIsLoading(true);
       const result = await broadcastTx(grpcAddress, broadcastTxRequest);
@@ -266,6 +270,8 @@ export const TransactionRequest: React.FC<Props> = ({
         ? format(new Date(parsedMetadata.date), 'MMM d, h:mm a')
         : 'N/A',
       description: parsedMetadata?.description || 'N/A',
+      ...(parsedMetadata?.feeGranter && { feeGranter: parsedMetadata.feeGranter }),
+      ...(parsedMetadata?.feePayer && { feePayer: parsedMetadata.feePayer }),
     };
     // Based on the current tx page, get the parsedTxMessages to display
     const txMsgListItems = { ...parsedTxMessages[msgPage] };

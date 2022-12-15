@@ -15,6 +15,8 @@ export type IClientMeta = {
   name: string;
   message?: string;
   memo?: string;
+  feePayer?: string;
+  feeGranter?: string;
 };
 
 type BasicPayload = {

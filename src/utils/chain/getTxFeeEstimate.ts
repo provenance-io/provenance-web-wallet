@@ -16,6 +16,8 @@ export const getTxFeeEstimate = async ({
   gasPriceDenom,
   gasAdjustment = 1.25,
   customGRPCApi,
+  feePayer,
+  feeGranter,
 }: GetTxFeeEstimate): Promise<GetTxFeeEstimateResponse> => {
   let finalGasPrice = gasPrice as number;
   let finalGasPriceDenom = gasPriceDenom;
@@ -34,6 +36,8 @@ export const getTxFeeEstimate = async ({
     gasPriceDenom: finalGasPriceDenom,
     gasLimit: finalGasPrice,
     gasAdjustment,
+    feeGranter,
+    feePayer,
   });
   const { estimatedGas: txGasEstimate, totalFeesList } = await calculateTxFees(
     grpcAddress,

@@ -154,6 +154,8 @@ export const TransactionRequest: React.FC<Props> = ({
                 gasPriceDenom: newParsedMetadata?.gasPrice?.gasPriceDenom,
                 gasAdjustment: Number(gasAdjustment),
                 customGRPCApi,
+                feePayer: newParsedMetadata?.feePayer,
+                feeGranter: newParsedMetadata?.feeGranter,
               });
               // Save the returned fee/gas estimates
               setTxFeeEstimate(newTxFeeEstimate);

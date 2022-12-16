@@ -69,6 +69,8 @@ export interface GetTxFeeEstimate {
   gasPriceDenom?: string;
   gasAdjustment?: number;
   customGRPCApi?: string;
+  feePayer?: string;
+  feeGranter?: string;
 }
 
 export type CoinAsObject = _CoinAsObject;

@@ -38,7 +38,7 @@
     "styled-normalize": "8.0.7"
   },
   "devDependencies": {
-    "@redux-devtools/cli": "1.0.7",
+    "@redux-devtools/cli": "2.0.0",
     "@tendermint/types": "0.1.2",
     "@testing-library/jest-dom": "5.16.4",
     "@testing-library/react": "12.1.5",

@@ -5,12 +5,12 @@
   "license": "Apache-2.0",
   "homepage": "/",
   "engines": {
-    "npm": "8.x.x",
-    "node": "16.x.x"
+    "npm": "^8.0.0",
+    "node": "^18.0.0"
   },
   "dependencies": {
     "@craco/craco": "6.4.5",
-    "@provenanceio/wallet-utils": "2.4.1",
+    "@provenanceio/wallet-utils": "2.6.0",
     "@reduxjs/toolkit": "1.7.2",
     "@tendermint/belt": "0.3.0",
     "@tendermint/sig": "0.6.0",
@@ -60,8 +60,8 @@
     "@types/secp256k1": "4.0.1",
     "@types/styled-components": "5.1.22",
     "buffer": "6.0.3",
-    "env-cmd": "10.1.0",
     "enquirer": "2.3.6",
+    "env-cmd": "10.1.0",
     "eslint-config-prettier": "8.5.0",
     "file-loader": "6.2.0",
     "grpc_tools_node_protoc_ts": "5.3.2",

@@ -13,6 +13,7 @@ type State = SettingsState;
  * STATE
  */
 const initialState: State = {
+  eolSeen: false,
   unlockDuration: DEFAULT_UNLOCK_DURATION,
   unlockEST: 0,
   unlockEXP: 0,
@@ -44,6 +45,7 @@ export const pullInitialSettingsData = createAsyncThunk(
   async () => {
     // Pull all settings data
     const {
+      eolSeen = initialState.eolSeen,
       unlockEST = initialState.unlockEST,
       unlockEXP = initialState.unlockEXP,
       unlockDuration = initialState.unlockDuration,
@@ -51,12 +53,13 @@ export const pullInitialSettingsData = createAsyncThunk(
     // After attemting to pull chrome saved data, populate any potentially missing chrome storage values
     await addSavedData({
       settings: {
+        eolSeen,
         unlockEST,
         unlockEXP,
         unlockDuration,
       },
     });
-    return { unlockEST, unlockEXP, unlockDuration };
+    return { eolSeen, unlockEST, unlockEXP, unlockDuration };
   }
 );
 // Save settings data into the chrome store
@@ -110,7 +113,8 @@ const settingsSlice = createSlice({
         state.initialDataPulled = true;
       })
       .addCase(saveSettingsData.fulfilled, (state, { payload }) => {
-        const { unlockEST, unlockEXP, unlockDuration } = payload;
+        const { eolSeen, unlockEST, unlockEXP, unlockDuration } = payload;
+        if (eolSeen) state.eolSeen = eolSeen;
         if (unlockEST) state.unlockEST = unlockEST;
         if (unlockEXP) state.unlockEXP = unlockEXP;
         if (unlockDuration) state.unlockDuration = unlockDuration;

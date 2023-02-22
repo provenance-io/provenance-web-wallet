@@ -11,6 +11,7 @@ import { TransactionRequest } from './TransactionRequest';
 import { RequestFailed } from './RequestFailed';
 import { ExtensionTypes, NotificationType } from 'types';
 import { TransactionComplete } from './TransactionComplete';
+import { EndOfLife } from './EndOfLife';
 
 interface PageProps {
   payload: EventPayload;
@@ -153,6 +154,8 @@ export const Notification: React.FC = () => {
         return <RequestFailed {...(pageProps as PageProps)} />;
       case 'complete':
         return <TransactionComplete {...(pageProps as PageProps)} />;
+      case 'eol':
+        return <EndOfLife {...(pageProps as PageProps)} />;
       case 'connect': // fallthrough
       case 'disconnect': // fallthrough
       default:

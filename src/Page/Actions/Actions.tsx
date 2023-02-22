@@ -59,7 +59,7 @@ const RequestTitle = styled.div`
   margin-bottom: 8px;
 `;
 const RequestDate = styled.div`
-  font-size: 1.0rem;
+  font-size: 1rem;
 `;
 const RequestArrow = styled.div`
   display: flex;
@@ -68,17 +68,22 @@ const RequestArrow = styled.div`
   align-items: center;
 `;
 
-export const Actions:React.FC = () => {
+export const Actions: React.FC = () => {
   const navigate = useNavigate();
   const { pendingRequests, totalPendingRequests } = useWalletConnect();
 
   const getMethodDisplayName = (rawName: string) => {
     switch (rawName) {
-      case 'session_request': return 'Session Request';
-      case 'provenance_sign': return 'Sign Request';
-      default: return rawName;
+      case 'session_request':
+        return 'Session Request';
+      case 'provenance_sign':
+        return 'Sign Request';
+      case 'eol':
+        return 'Wallet End of Life';
+      default:
+        return rawName;
     }
-  }
+  };
 
   const handleRequestClick = (id: string) => {
     navigate(`${NOTIFICATION_URL}?pid=${id}`);
@@ -90,12 +95,18 @@ export const Actions:React.FC = () => {
     return allPendingIds.map((pendingId: string) => {
       const targetRequest = pendingRequests[pendingId];
       const methodName = getMethodDisplayName(targetRequest.method!);
-      const requestDate = targetRequest?.date ? format(new Date(targetRequest.date), 'MMM d, h:mm:ss a') : 'N/A';
-      const peerMeta = targetRequest?.params[0]?.peerMeta || { icons: []};
-      const peerIcon = peerMeta?.icons[0] || '';
+      const requestDate = targetRequest?.date
+        ? format(new Date(targetRequest.date), 'MMM d, h:mm:ss a')
+        : 'N/A';
+      const peerMeta = targetRequest?.params?.[0]?.peerMeta || { icons: [] };
+      const peerIcon = peerMeta?.icons?.[0] || '';
 
       return (
-        <RequestItem onClick={() => {handleRequestClick(pendingId)}}>
+        <RequestItem
+          onClick={() => {
+            handleRequestClick(pendingId);
+          }}
+        >
           <RequestIcon>
             <RequestIconBg src={circleIcon} alt="request background" />
             {!!peerIcon && <RequestIconPeer src={peerIcon} alt="peer logo" />}
@@ -108,7 +119,7 @@ export const Actions:React.FC = () => {
             <Sprite icon={ICON_NAMES.CHEVRON} size="1rem" />
           </RequestArrow>
         </RequestItem>
-      )
+      );
     });
     /*
       {
@@ -131,14 +142,16 @@ export const Actions:React.FC = () => {
               }
             }
           ]
-        } 
+        }
     */
   };
 
   return (
     <Content>
       <Title>Pending Actions</Title>
-      {totalPendingRequests ? <AllRequests>{renderPendingRequests()}</AllRequests> : (
+      {totalPendingRequests ? (
+        <AllRequests>{renderPendingRequests()}</AllRequests>
+      ) : (
         <SubTitle>You have no pending requests at this time.</SubTitle>
       )}
       <FooterNav />

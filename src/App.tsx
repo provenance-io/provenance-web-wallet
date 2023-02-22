@@ -12,6 +12,8 @@ function App() {
   const { pullInitialAccountData, initialDataPulled: initialAccountDataPulled } =
     useAccount();
   const {
+    addPendingRequest,
+    removePendingRequest,
     connector,
     createConnectionTimer,
     pullInitialWCData,
@@ -22,6 +24,7 @@ function App() {
     initialDataPulled: initialWCDataPulled,
   } = useWalletConnect();
   const {
+    eolSeen,
     pullInitialSettingsData,
     initialDataPulled: initialSettingsDataPulled,
     initialAppLoad,
@@ -109,6 +112,37 @@ function App() {
       navigate(`${NOTIFICATION_URL}${wcParam}`);
     }
   }, [navigate]);
+
+  console.log('eol, loaded', eolSeen, allInitialDataLoaded);
+  useEffect(() => {
+    if (!eolSeen && allInitialDataLoaded) {
+      addPendingRequest({
+        id: 'eolSeen',
+        pendingRequest: {
+          jsonrpc: '2.0',
+          method: 'eol',
+          params: [
+            {
+              peerMeta: {
+                description:
+                  'Connect your existing Figure or Provenance wallet using WalletConnect',
+                icons: [
+                  'https://test.figure.tech/walletconnect/figure-favicons/favicon-32x32.png',
+                  'https://test.figure.tech/walletconnect/figure-favicons/android-icon-192x192.png',
+                ],
+                name: 'Figure Tech | WalletConnect',
+                url: 'https://test.figure.tech',
+              },
+            },
+          ],
+        },
+      } as any);
+    } else {
+      console.log('remove');
+      // TODO: not sure that I need to actually remove the request here...
+      removePendingRequest('eolSeen' as any);
+    }
+  }, [eolSeen, allInitialDataLoaded, addPendingRequest, removePendingRequest]);
 
   const routing = useRoutes(routes);
 

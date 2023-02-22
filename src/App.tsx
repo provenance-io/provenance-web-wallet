@@ -113,7 +113,6 @@ function App() {
     }
   }, [navigate]);
 
-  console.log('eol, loaded', eolSeen, allInitialDataLoaded);
   useEffect(() => {
     if (!eolSeen && allInitialDataLoaded) {
       addPendingRequest({
@@ -137,10 +136,6 @@ function App() {
           ],
         },
       } as any);
-    } else {
-      console.log('remove');
-      // TODO: not sure that I need to actually remove the request here...
-      removePendingRequest('eolSeen' as any);
     }
   }, [eolSeen, allInitialDataLoaded, addPendingRequest, removePendingRequest]);
 

@@ -18,17 +18,13 @@ const SuccessIcon = styled.img`
 
 export const EndOfLife: React.FC<Props> = ({ closeWindow, ...rest }) => {
   const { saveSettingsData } = useSettings();
-  const { bumpWCDuration, pendingRequests, removePendingRequest } =
-    useWalletConnect();
-
-  console.log({ pendingRequests });
+  const { bumpWCDuration, removePendingRequest } = useWalletConnect();
 
   const onClose = async () => {
     closeWindow();
     saveSettingsData({ eolSeen: true });
     await removePendingRequest('eolSeen' as any);
     bumpWCDuration();
-    console.log('stuff');
   };
 
   return (

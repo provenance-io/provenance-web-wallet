@@ -106,7 +106,8 @@ const settingsSlice = createSlice({
       // Reset redux store to initial values
       .addCase(resetSettingsData.fulfilled, () => initialState)
       .addCase(pullInitialSettingsData.fulfilled, (state, { payload }) => {
-        const { unlockEST, unlockEXP, unlockDuration } = payload;
+        const { eolSeen, unlockEST, unlockEXP, unlockDuration } = payload;
+        state.eolSeen = eolSeen;
         state.unlockEST = unlockEST;
         state.unlockEXP = unlockEXP;
         state.unlockDuration = unlockDuration;

@@ -1,7 +1,12 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { RootState } from 'redux/store';
 import WalletConnectClient from '@walletconnect/client';
-import type { IWalletConnectSession, SavedPendingRequests } from 'types';
+import type {
+  IWalletConnectSession,
+  NotificationRequest,
+  SavedPendingRequests,
+  SaveNotificationRequests,
+} from 'types';
 import {
   getSavedData,
   getStorageData,
@@ -19,6 +24,8 @@ interface ChromeInitialState {
   connectionEST: number;
   connectionEXP: number;
   connectionReferral?: string;
+  notificationRequests: SaveNotificationRequests;
+  totalNotificationRequests: number;
   pendingRequests: SavedPendingRequests;
   totalPendingRequests: number;
   connectionTimer: number;
@@ -37,6 +44,8 @@ interface WalletconnectChromeSave {
   connectionEXP?: number;
   connectionDuration?: number;
   connectionReferral?: string;
+  notificationRequests?: SaveNotificationRequests;
+  totalNotificationRequests?: number;
   pendingRequests?: SavedPendingRequests;
   totalPendingRequests?: number;
 }
@@ -49,6 +58,8 @@ const chromeInitialState: ChromeInitialState = {
   connectionReferral: '',
   connectionEST: 0,
   connectionEXP: 0,
+  notificationRequests: {},
+  totalNotificationRequests: 0,
   pendingRequests: {},
   totalPendingRequests: 0,
   connectionTimer: 0,
@@ -79,6 +90,8 @@ const initialState: State = {
 const PULL_INITIAL_WCCONNECTION_DATA = 'PULL_INITIAL_WCCONNECTION_DATA';
 const SAVE_WALLETCONNECT_DATA = 'SAVE_WALLETCONNECT_DATA';
 const WALLETCONNECT_DISCONNECT = 'WALLETCONNECT_DISCONNECT';
+const ADD_NOTIFICATION_REQUESTS = 'ADD_NOTIFICATION_REQUESTS';
+const REMOVE_NOTIFICATION_REQUESTS = 'REMOVE_NOTIFICATION_REQUESTS';
 const ADD_PENDING_REQUESTS = 'ADD_PENDING_REQUESTS';
 const REMOVE_PENDING_REQUESTS = 'REMOVE_PENDING_REQUESTS';
 const RESET_WALLETCONNECT_DATA = 'RESET_WALLETCONNECT_DATA';
@@ -110,6 +123,8 @@ export const pullInitialWCData = createAsyncThunk(
   async () => {
     // Chrome storage (Default missing values to initialState values)
     const {
+      notificationRequests = initialState.notificationRequests,
+      totalNotificationRequests = initialState.totalNotificationRequests,
       pendingRequests = initialState.pendingRequests,
       totalPendingRequests = initialState.totalPendingRequests,
       connectionEST = initialState.connectionEST,
@@ -127,6 +142,8 @@ export const pullInitialWCData = createAsyncThunk(
     // After attemting to pull chrome saved data, populate any potentially missing chrome storage values
     await addSavedData({
       walletconnect: {
+        notificationRequests,
+        totalNotificationRequests,
         pendingRequests,
         totalPendingRequests,
         connectionEST,
@@ -141,6 +158,8 @@ export const pullInitialWCData = createAsyncThunk(
       connectionEXP,
       connectionDuration,
       session,
+      notificationRequests,
+      totalNotificationRequests,
       pendingRequests,
       totalPendingRequests,
     };
@@ -156,7 +175,8 @@ export const saveWalletConnectData = createAsyncThunk(
     // Save to chrome storage
     await addSavedData({ walletconnect: newData });
     // Update chrome badges as needed
-    await updateChromeBadge(newData.totalPendingRequests);
+    const total = newData.totalPendingRequests + newData.totalNotificationRequests;
+    await updateChromeBadge(total);
     // Return new combined values to update redux store
     return newData;
   }
@@ -202,6 +222,56 @@ export const removePendingRequest = createAsyncThunk(
     return { pendingRequests, totalPendingRequests };
   }
 );
+
+// Update and save notification/total requests
+export const addNotificationRequest = createAsyncThunk(
+  ADD_NOTIFICATION_REQUESTS,
+  async (data: NotificationRequest) => {
+    const { id } = data;
+    // Get existing saved data (to merge into)
+    const existingData = await getSavedData('walletconnect');
+    const { notificationRequests } = existingData;
+    // notificationRequests should always be at least an empty {}, add this ID into the object
+    notificationRequests[id] = data;
+    const totalNotificationRequests = Object.keys(notificationRequests).length;
+    // Save to chrome storage
+    await addSavedData({
+      walletconnect: {
+        ...existingData,
+        notificationRequests,
+        totalNotificationRequests,
+      },
+    });
+    // Update badges
+    await updateChromeBadge(totalNotificationRequests);
+    // Return new combined values to update redux store
+    return { notificationRequests, totalNotificationRequests };
+  }
+);
+export const removeNotificationRequest = createAsyncThunk(
+  REMOVE_NOTIFICATION_REQUESTS,
+  async (id: number) => {
+    // Pull all walletconnect data
+    const existingData = await getSavedData('walletconnect');
+    // Get existing pendingRequests
+    const { notificationRequests } = existingData;
+    // notificationRequests should always be at least an empty {}, remove this ID from the object
+    delete notificationRequests[id];
+    const totalNotificationRequests = Object.keys(notificationRequests).length;
+    // Save to chrome storage
+    await addSavedData({
+      walletconnect: {
+        ...existingData,
+        notificationRequests,
+        totalNotificationRequests,
+      },
+    });
+    // Update badges
+    await updateChromeBadge(totalNotificationRequests);
+    // Return new combined values to update redux store
+    return { notificationRequests, totalNotificationRequests };
+  }
+);
 // Save walletconnect data into the chrome store (local storage is managed third party, don't save into it, only pull)
 export const walletconnectDisconnect = createAsyncThunk(
   WALLETCONNECT_DISCONNECT,
@@ -211,6 +281,8 @@ export const walletconnectDisconnect = createAsyncThunk(
       walletconnect: {
         connectionEST: initialState.connectionEST,
         connectionEXP: initialState.connectionEXP,
+        notificationRequests: initialState.notificationRequests,
+        totalNotificationRequests: initialState.totalNotificationRequests,
         pendingRequests: initialState.pendingRequests,
         totalPendingRequests: initialState.totalPendingRequests,
       },
@@ -257,12 +329,16 @@ const walletConnectSlice = createSlice({
           connectionEXP,
           connectionDuration,
           session,
+          notificationRequests,
+          totalNotificationRequests,
           pendingRequests,
           totalPendingRequests,
         } = payload;
         state.connectionEST = connectionEST;
         state.connectionEXP = connectionEXP;
         state.connectionDuration = connectionDuration;
+        state.notificationRequests = notificationRequests;
+        state.totalNotificationRequests = totalNotificationRequests;
         state.pendingRequests = pendingRequests;
         state.totalPendingRequests = totalPendingRequests;
         // If we have a peerId and an expiration date, start the walletconnect connection
@@ -290,6 +366,8 @@ const walletConnectSlice = createSlice({
             connectionEXP,
             connectionDuration,
             connectionReferral,
+            notificationRequests,
+            totalNotificationRequests,
             pendingRequests,
             totalPendingRequests,
           } = payload;
@@ -297,6 +375,10 @@ const walletConnectSlice = createSlice({
           if (connectionEXP) state.connectionEXP = connectionEXP;
           if (connectionDuration) state.connectionDuration = connectionDuration;
           if (connectionReferral) state.connectionReferral = connectionReferral;
+          if (notificationRequests)
+            state.notificationRequests = notificationRequests;
+          if (totalNotificationRequests)
+            state.totalNotificationRequests = totalNotificationRequests;
           if (pendingRequests) state.pendingRequests = pendingRequests;
           if (totalPendingRequests)
             state.totalPendingRequests = totalPendingRequests;
@@ -350,6 +432,42 @@ const walletConnectSlice = createSlice({
           const { totalPendingRequests, pendingRequests } = payload;
           state.pendingRequests = pendingRequests;
           state.totalPendingRequests = totalPendingRequests;
+        }
+      )
+      .addCase(
+        addNotificationRequest.fulfilled,
+        (
+          state,
+          {
+            payload,
+          }: {
+            payload: {
+              totalNotificationRequests: number;
+              notificationRequests: SaveNotificationRequests;
+            };
+          }
+        ) => {
+          const { totalNotificationRequests, notificationRequests } = payload;
+          state.notificationRequests = notificationRequests;
+          state.totalNotificationRequests = totalNotificationRequests;
+        }
+      )
+      .addCase(
+        removeNotificationRequest.fulfilled,
+        (
+          state,
+          {
+            payload,
+          }: {
+            payload: {
+              totalNotificationRequests: number;
+              notificationRequests: SaveNotificationRequests;
+            };
+          }
+        ) => {
+          const { totalNotificationRequests, notificationRequests } = payload;
+          state.notificationRequests = notificationRequests;
+          state.totalNotificationRequests = totalNotificationRequests;
         }
       )
       .addCase(
@@ -407,6 +525,8 @@ export const walletConnectActions = {
   pullInitialWCData,
   saveWalletConnectData,
   walletconnectDisconnect,
+  addNotificationRequest,
+  removeNotificationRequest,
   addPendingRequest,
   removePendingRequest,
   resetWalletConnectData,

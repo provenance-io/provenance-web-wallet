@@ -51,10 +51,14 @@ const RequestArrow = styled.div`
 
 export const Actions: React.FC = () => {
   const navigate = useNavigate();
-  const { pendingRequests, totalPendingRequests } = useWalletConnect();
+  const {
+    notificationRequests,
+    totalNotificationRequests,
+    pendingRequests,
+    totalPendingRequests,
+  } = useWalletConnect();
   const { address: activeAddress } = useActiveAccount();
   const { accounts } = useAccount();
-  const totalNotificationRequests = 0;
   const [activeTab, setActiveTab] = useState(0);
 
   const getMethodDisplayName = (rawName: string) => {
@@ -140,6 +144,31 @@ export const Actions: React.FC = () => {
     });
   };
 
+  const renderNotificationDetails = () => {
+    return Object.keys(notificationRequests).map((id) => {
+      const noti = notificationRequests[id];
+      return (
+        <RequestItem
+          onClick={() => {
+            navigate(`${NOTIFICATION_URL}?nid=${id}`);
+          }}
+        >
+          <RequestData>
+            <Typo type="body" align="left">
+              {noti.displayName}
+            </Typo>
+            <Typo type="footnote" align="left">
+              {noti.date || 'N/A'}
+            </Typo>
+          </RequestData>
+          <RequestArrow>
+            <Sprite icon={ICON_NAMES.CHEVRON} size="1rem" />
+          </RequestArrow>
+        </RequestItem>
+      );
+    });
+  };
+
   const renderActions = () =>
     totalPendingRequests ? (
       <AllRequests>{renderWalletDetails()}</AllRequests>
@@ -148,7 +177,7 @@ export const Actions: React.FC = () => {
     );
   const renderNotifications = () =>
     totalNotificationRequests ? (
-      <AllRequests>Notifications here</AllRequests>
+      <AllRequests>{renderNotificationDetails()}</AllRequests>
     ) : (
       <Typo type="footnote">No notifications at this time</Typo>
     );

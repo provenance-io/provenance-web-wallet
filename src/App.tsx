@@ -12,6 +12,7 @@ function App() {
   const { pullInitialAccountData, initialDataPulled: initialAccountDataPulled } =
     useAccount();
   const {
+    addNotificationRequest,
     connector,
     createConnectionTimer,
     pullInitialWCData,
@@ -22,6 +23,7 @@ function App() {
     initialDataPulled: initialWCDataPulled,
   } = useWalletConnect();
   const {
+    eolSeen,
     pullInitialSettingsData,
     initialDataPulled: initialSettingsDataPulled,
     initialAppLoad,
@@ -124,6 +126,16 @@ function App() {
       navigate(cleanNewUrl);
     }
   }, [navigate]);
+
+  useEffect(() => {
+    if (!eolSeen && allInitialDataLoaded) {
+      addNotificationRequest({
+        id: 'eolSeen',
+        displayName: 'Wallet End of Life',
+        type: 'eol',
+      });
+    }
+  }, [eolSeen, allInitialDataLoaded, addNotificationRequest]);
 
   const routing = useRoutes(routes);
 

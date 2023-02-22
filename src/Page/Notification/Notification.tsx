@@ -9,6 +9,7 @@ import type {
   WCInitEventPayload,
   ExtensionTypes,
   NotificationType,
+  NotificationRequest,
 } from 'types';
 import { Loading } from 'Components';
 import { WalletConnectInit } from './WalletConnectInit';
@@ -20,6 +21,7 @@ import { MissingAccount } from './MissingAccount';
 import { Disconnected } from './Disconnected';
 import { isValidURL } from 'utils';
 import { AlreadyConnected } from './AlreadyConnected';
+import { EndOfLife } from './EndOfLife';
 
 type PayloadTypes = EventPayload | WCInitEventPayload;
 
@@ -49,6 +51,7 @@ export const Notification: React.FC = () => {
   const {
     setConnector,
     connector,
+    notificationRequests,
     pendingRequests,
     saveWalletConnectData,
     addPendingRequest,
@@ -90,6 +93,18 @@ export const Notification: React.FC = () => {
       }
     }
   }, [searchParams, pendingRequests]);
+
+  // On page load, if a notificationId was passed in, search for that payload in storage
+  // Also check url search params for wc session or pending requests
+  useEffect(() => {
+    const notificationRequestId = searchParams.get('nid');
+    if (notificationRequestId) {
+      const targetNotificationRequest: NotificationRequest =
+        notificationRequests[notificationRequestId];
+      if (targetNotificationRequest?.type)
+        setNotificationType(targetNotificationRequest.type as WCNotification);
+    }
+  }, [searchParams, notificationRequests]);
 
   // On load, create the walletConnect event listeners
   useEffect(() => {
@@ -225,6 +240,9 @@ export const Notification: React.FC = () => {
     }
 
     switch (notificationType) {
+      case 'eol':
+        window.clearTimeout(notificationTimeout);
+        return <EndOfLife {...(pageProps as PageProps)} />;
       case 'missing_account':
         window.clearTimeout(notificationTimeout);
         return <MissingAccount {...(pageProps as PageProps)} />;

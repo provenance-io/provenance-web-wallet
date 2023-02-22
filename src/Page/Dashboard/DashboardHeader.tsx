@@ -69,7 +69,8 @@ const NotificationBubble = styled.div`
 
 export const DashboardHeader: React.FC = () => {
   const navigate = useNavigate();
-  const { session, connector, totalPendingRequests } = useWalletConnect();
+  const { session, connector, totalNotificationRequests, totalPendingRequests } =
+    useWalletConnect();
   const { connected } = session;
   const activeAccount = useActiveAccount();
   const { name, address = '', network } = activeAccount;
@@ -116,9 +117,12 @@ export const DashboardHeader: React.FC = () => {
           title="Notifications"
         >
           <Sprite icon={ICON_NAMES.NOTIFICATION} size="3.1rem" />
-          {!!totalPendingRequests && (
-            <NotificationBubble>{totalPendingRequests}</NotificationBubble>
-          )}
+          {!!totalPendingRequests ||
+            (!!totalNotificationRequests && (
+              <NotificationBubble>
+                {totalPendingRequests + totalNotificationRequests}
+              </NotificationBubble>
+            ))}
         </IconContainer>
       </RightSection>
     </HeaderRow>

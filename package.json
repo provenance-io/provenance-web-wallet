@@ -9,7 +9,7 @@
     "node": "^16.0.0"
   },
   "dependencies": {
-    "@craco/craco": "6.4.5",
+    "@craco/craco": "7.0.0",
     "@provenanceio/wallet-utils": "2.6.0",
     "@reduxjs/toolkit": "1.7.2",
     "@tendermint/belt": "0.3.0",
@@ -72,7 +72,7 @@
     "process": "0.11.10",
     "protoc-gen-grpc-web": "1.4.0",
     "protoc-gen-ts": "0.8.2",
-    "react-scripts": "4.0.3",
+    "react-scripts": "5.0.1",
     "regenerator-runtime": "0.13.9",
     "remote-redux-devtools": "0.5.16",
     "stream-browserify": "3.0.0",

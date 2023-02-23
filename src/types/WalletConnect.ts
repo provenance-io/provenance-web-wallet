@@ -45,6 +45,17 @@ export type WCInitEventPayload = BasicPayload & {
   }[];
 };
 
+export type NotificationRequest = {
+  id: string;
+  displayName: string;
+  date?: number;
+  type: string;
+};
+
+export type SaveNotificationRequests = {
+  [id: string]: NotificationRequest;
+};
+
 export type SavedPendingRequests = {
   [id: string]: EventPayload;
 };

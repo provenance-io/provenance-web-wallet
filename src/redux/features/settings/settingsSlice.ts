@@ -13,6 +13,7 @@ type State = SettingsState;
  * STATE
  */
 const initialState: State = {
+  eolSeen: false,
   unlockDuration: DEFAULT_UNLOCK_DURATION,
   unlockEST: 0,
   unlockEXP: 0,
@@ -48,6 +49,7 @@ export const pullInitialSettingsData = createAsyncThunk(
   async () => {
     // Pull all settings data
     const {
+      eolSeen = initialState.eolSeen,
       unlockEST = initialState.unlockEST,
       unlockEXP = initialState.unlockEXP,
       unlockDuration = initialState.unlockDuration,
@@ -61,13 +63,14 @@ export const pullInitialSettingsData = createAsyncThunk(
     // After attemting to pull chrome saved data, populate any potentially missing chrome storage values
     await addSavedData({
       settings: {
+        eolSeen,
         unlockEST,
         unlockEXP,
         unlockDuration,
         customGRPCApi,
       },
     });
-    return { unlockEST, unlockEXP, unlockDuration, customGRPCApi, locked };
+    return { eolSeen, unlockEST, unlockEXP, unlockDuration, customGRPCApi, locked };
   }
 );
 // Save settings data into the chrome store
@@ -138,8 +141,15 @@ const settingsSlice = createSlice({
       // Reset redux store to initial values
       .addCase(resetSettingsData.fulfilled, () => initialState)
       .addCase(pullInitialSettingsData.fulfilled, (state, { payload }) => {
-        const { unlockEST, unlockEXP, unlockDuration, customGRPCApi, locked } =
-          payload;
+        const {
+          eolSeen,
+          unlockEST,
+          unlockEXP,
+          unlockDuration,
+          customGRPCApi,
+          locked,
+        } = payload;
+        state.eolSeen = eolSeen;
         state.unlockEST = unlockEST;
         state.unlockEXP = unlockEXP;
         state.unlockDuration = unlockDuration;
@@ -148,7 +158,9 @@ const settingsSlice = createSlice({
         state.locked = locked;
       })
       .addCase(saveSettingsData.fulfilled, (state, { payload }) => {
-        const { unlockEST, unlockEXP, unlockDuration, customGRPCApi } = payload;
+        const { eolSeen, unlockEST, unlockEXP, unlockDuration, customGRPCApi } =
+          payload;
+        if (eolSeen) state.eolSeen = eolSeen;
         if (unlockEST) state.unlockEST = unlockEST;
         if (unlockEXP) state.unlockEXP = unlockEXP;
         if (unlockDuration) state.unlockDuration = unlockDuration;

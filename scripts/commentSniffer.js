@@ -3,7 +3,9 @@ const fs = require('fs');
 const PrettyError = require('pretty-error');
 
 const getDirectories = function (src, callback) {
-  const res = glob.sync(src + '/**/*');
+  const res = glob.sync(src + '/**/*', {
+    ignore: ['src/proto/**/*'],
+  });
   callback(res);
 };
 

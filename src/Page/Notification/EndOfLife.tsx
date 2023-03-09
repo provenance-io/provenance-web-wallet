@@ -24,23 +24,55 @@ export const EndOfLife: React.FC<Props> = ({ closeWindow, ...rest }) => {
 
   return (
     <Content>
-      <Typo type="headline2" marginBottom="80px">
-        Provenance Blockchain Wallet Announcement
+      <Typo type="headline2" marginBottom="20px">
+        Notice
       </Typo>
-      <Typo type="body" marginTop="60px">
-        The Provenance Blockchain Wallet is being discontinued. Please install the
-        Figure Wallet from{' '}
+      <Typo type="body" marginTop="20px">
+        With the availability other integrated wallets we are discontinuing support
+        for the Provenance Blockchain Wallet.
+      </Typo>
+
+      <Typo type="body" marginTop="20px">
+        <a
+          href="https://chrome.google.com/webstore/detail/figure-wallet/mgbfflhghaohmaecmaggieniidindaoc"
+          target="_blank"
+          rel="noreferrer"
+        >
+          Figure
+        </a>{' '}
+        and{' '}
+        <a href="https://chains.keplr.app/" target="_blank" rel="noreferrer">
+          Keplr
+        </a>{' '}
+        wallets are currently integrated with Provenance Blockchain. The Provenance
+        Blockchain Foundation is actively broadening the number of integrated
+        wallets.
+      </Typo>
+
+      <Typo type="body" marginTop="20px">
+        Your Provenance Blockchain Wallet will continue to be available for use,
+        although it is recommended to transition to either a Figure or Keplr wallet.
+      </Typo>
+
+      <Typo type="body" marginTop="20px">
+        Figure Wallet offers an import feature to seamlessly retrieve your Provenance
+        Blockchain Wallet holdings. Please visit the{' '}
         <a
           href="https://chrome.google.com/webstore/detail/figure-wallet/mgbfflhghaohmaecmaggieniidindaoc"
           target="_blank"
           rel="noreferrer"
         >
           Chrome Extension store
-        </a>
-        . Figure Wallet supports your existing assets and functionality that
-        Provenance Blockchain Wallet supports. Using your seed phrase, you can
-        recover your existing Provenance Blockchain assets in the Figure Wallet
+        </a>{' '}
+        to get started.
       </Typo>
+
+      <Typo type="body" marginTop="20px">
+        Please contact{' '}
+        <a href="mailto:inbound@provenance.io">inbound@provenance.io</a> with any
+        questions.
+      </Typo>
+
       <BottomFloat>
         <Button onClick={handleClose}>Close</Button>
       </BottomFloat>

@@ -21,7 +21,6 @@ import { MissingAccount } from './MissingAccount';
 import { Disconnected } from './Disconnected';
 import { isValidURL } from 'utils';
 import { AlreadyConnected } from './AlreadyConnected';
-import { EndOfLife } from './EndOfLife';
 
 type PayloadTypes = EventPayload | WCInitEventPayload;
 
@@ -240,9 +239,6 @@ export const Notification: React.FC = () => {
     }
 
     switch (notificationType) {
-      case 'eol':
-        window.clearTimeout(notificationTimeout);
-        return <EndOfLife {...(pageProps as PageProps)} />;
       case 'missing_account':
         window.clearTimeout(notificationTimeout);
         return <MissingAccount {...(pageProps as PageProps)} />;

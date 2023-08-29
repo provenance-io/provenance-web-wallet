@@ -11,7 +11,7 @@ import {
 } from 'Components';
 import {
   SEND_URL,
-  DASHBOARD_RECEIVE_URL,
+  // DASHBOARD_RECEIVE_URL,
   ICON_NAMES,
   ASSET_IMAGE_NAMES,
 } from 'consts';
@@ -82,7 +82,7 @@ export const Dashboard = () => {
           {calculatePortfolioValue()}
         </Typo>
       )}
-      <ButtonGroup direction="row">
+      <ButtonGroup direction="row" childWidth="100%">
         <Button
           icon={ICON_NAMES.ARROW}
           iconLocation="top"
@@ -92,7 +92,7 @@ export const Dashboard = () => {
         >
           Send
         </Button>
-        <Button
+        {/* <Button
           icon={ICON_NAMES.ARROW}
           iconLocation="top"
           iconGap="6px"
@@ -100,7 +100,7 @@ export const Dashboard = () => {
           onClick={() => navigate(DASHBOARD_RECEIVE_URL)}
         >
           Receive
-        </Button>
+        </Button> */}
       </ButtonGroup>
       <Typo type="subhead" align="left" marginBottom="12px" marginTop="26px">
         My Assets

@@ -62,7 +62,7 @@ interface ListProps {
   showRawLog?: boolean;
 }
 
-// TODO: List should just take an array of fields in the order we want to show them
+// // TODO: List should just take an array of fields in the order we want to show them
 // For now, going to just pass a boolean to show rawLog
 export const List = ({
   message,
